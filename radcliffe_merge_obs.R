@@ -99,7 +99,7 @@ taxoscrub <- function(dat, sitename) {
 clean.raw <- list()
 
 
-clean.raw$fitter <- function(filename="Fitter_data.csv", path=".",
+clean.raw$fitter <- function(filename="Fitter_data.csv", path="Observations/Raw/",
     names.only=FALSE) {
 
     ## Fitter ##
