@@ -17,11 +17,6 @@ library(zoo)
 # make list to store all the derived dataset cleaning functions
 clean.raw <- list()
 
-###Marchin et al. from Duke
-head(marchin_duke1)
-clean.raw <- list()
-
-
 clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/",names.only=FALSE) {
   
   ## Marchin ##
