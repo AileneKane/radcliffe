@@ -171,9 +171,31 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
   farnsworth1$species1[farnsworth1$species=="bbhg"] <- "corymbosum"
   farnsworth1$genus[farnsworth1$species=="bbhch"] <- "Vaccinium"
   farnsworth1$species1[farnsworth1$species=="bbhch"] <- "vacillans"
-  
-  farnsworth1a<- subsetfarnsworth1, select=c("genusspecies","plot", "doy"))
- 
+  farnsworth1$genus[farnsworth1$species=="blach"] <- "Prunus"
+  farnsworth1$species1[farnsworth1$species=="blach"] <- "serotina"
+  farnsworth1$genus[farnsworth1$species=="crata"] <- "Acer"
+  farnsworth1$species1[farnsworth1$species=="crata"] <- "rubrum"
+  farnsworth1$genus[farnsworth1$species=="ro"] <- "Quercus"
+  farnsworth1$species1[farnsworth1$species=="ro"] <- "rubra"
+  farnsworth1$genus[farnsworth1$species=="sa"] <- "Sorbus"
+  farnsworth1$species1[farnsworth1$species=="sa"] <- "americana"
+  farnsworth1$genus[farnsworth1$species=="wo"] <- "Quercus"
+  farnsworth1$species1[farnsworth1$species=="wo"] <- "alba"
+  farnsworth1$genus[farnsworth1$species=="viac1"] <- "Viburnum"
+  farnsworth1$species1[farnsworth1$species=="viac1"] <- "acerifolium"
+  farnsworth1$genus[farnsworth1$species=="sm"] <- "Acer"
+  farnsworth1$species1[farnsworth1$species=="sm"] <- "pensylvanicum"
+  farnsworth1$genus[farnsworth1$species=="chest"] <- "Castanea"
+  farnsworth1$species1[farnsworth1$species=="chest"] <- "dentata"
+  farnsworth1$genus[farnsworth1$species=="vest"] <- "Viburnum"
+  farnsworth1$species1[farnsworth1$species=="vest"] <- "lentago"
+  farnsworth1$genus[farnsworth1$species=="rm"] <- "Acer"
+  farnsworth1$species1[farnsworth1$species=="rm"] <- "rubrum"
+  farnsworth1$site<-"farnsworthharv"
+  farnsworth1$event<-"bbd"
+  farnsworth1$variety <- NA
+  farnsworth1$cult <- NA
+  farnsworth<- subset(farnsworth1, select=c("site","plot","event","genus","species", "doy","variety","cult"))
   return(farnsworth)
 }
 
