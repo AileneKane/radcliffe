@@ -2,8 +2,8 @@
 ### By Ailene Ettinger ###
 setwd("~/Dropbox/Documents/Work/Wolkovich/Radcliffe/Analyses")
 
+rm(list=ls()) 
 options(stringsAsFactors=FALSE)
-
 library(reshape)
 library(zoo)
 ##Want to get several files:
@@ -17,22 +17,19 @@ library(zoo)
 # make list to store all the derived dataset cleaning functions
 clean.raw <- list()
 
-clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/",names.only=FALSE) {
+clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/") {
   
   ## Marchin ##
   ## Data type: BBD,FFD ##
   ## Notes: Contact: Renee Marchin, renee.marchin@sydney.edu.au##
   file <- file.path(path, filename)
   marchin1 <- read.csv(file, check.names=FALSE, header=TRUE)
-  #marchin1<-read.csv("Experiments/Budburst_Marchin.csv", header=T)
   names(marchin1)[2] <- "genusspecies"
   names(marchin1)[1] <- "year"
   names(marchin1)[3] <- "plot"
   names(marchin1)[8] <- "doy"
   marchin1a<- subset(marchin1, select=c("year","genusspecies","plot", "doy"))
   marchin1a$site <- "marchin"
-  marchin1a$varetc <- NA
-  marchin1a$cult <- NA
   marchin1a$event <- "bbd"
   marchin2<-read.csv("Experiments/Flower_Marchin.csv", header=T)
   names(marchin2)[2] <- "genusspecies"
@@ -68,50 +65,14 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experimen
   marchin3$genus[marchin3$genusspecies=="TIDI"] <- "Tipularia"
   marchin3$species[marchin3$genusspecies=="TIDI"] <- "discolor"
   marchin<-subset(marchin3, select=c("site","plot","event","year","genus","species", "doy"))
-  marchin$varetc <- NA
+  marchin$variety <- NA
   marchin$cult <- NA
   
   return(marchin)
 }
 
-
-##Clark et al from Duke ##
-## Data type: FFD ##
-## Notes: Contact: Public data ##
-##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
-clean.raw$clarkduke <- function(filename="data-Duke-Q.csv", path="./Experiments/",names.only=FALSE) {
-  
-  file <- file.path(path, filename)
-  clarkduke1 <- read.csv(file, check.names=FALSE, header=TRUE)
-  #clarkduke1<-read.csv("Experiments/data-Duke-Q.csv", header=T)
- 
-  return(clarkduke)
-}
-
-##Clark et al from Harvard ##
-## Data type: FFD ##
-## Notes: Contact: Public data ##
-##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
-clean.raw$clarkharv <- function(filename="data-Duke-Q.csv", path="./Experiments/",names.only=FALSE) {
-  
-  file <- file.path(path, filename)
-  clarkharv1 <- read.csv(file, check.names=FALSE, header=TRUE)  
-  return(clark)
-}
-##Farnsworth from Harvard ##
-## Data type: FFD ##
-## Notes: Contact: Public data ##
-##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
-clean.raw$farnsworth <- function(filename="hf033-01", path="./Experiments/",names.only=FALSE) {
-  
-  file <- file.path(path, filename)
-  farnsworth1 <- read.csv(file, check.names=FALSE, header=TRUE)  
-  return(farnsworth)
-}
-
-clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path="./Experiments",names.only=FALSE) {
-  
-  ## Marchin ##
+clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path="./Experiments",names.only=FALSE) {  
+  ##BACE ##
   ## Data type: BBD,LOD ##
   ## Notes: Contact: Renee Marchin, renee.marchin@sydney.edu.au##
   file <- file.path(path, filename)
@@ -152,7 +113,79 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace3$genus[bace3$genusspecies=="Q. rubra   "] <- "Quercus"
   bace3$species[bace3$genusspecies=="Q. rubra   "] <- "rubra"
   bace<-subset(bace3, select=c("site","plot","event","year","genus","species", "doy"))
-  bace$varetc <- NA
+  bace$variety <- NA
   bace$cult <- NA
   return(bace)
 }
+
+##Clark et al from Duke ##
+## Data type: FFD ##
+## Notes: Contact: Public data ##
+##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
+clean.raw$clarkduke <- function(filename="data-Duke-Q.csv", path="./Experiments/",names.only=FALSE) {
+  
+  file <- file.path(path, filename)
+  clarkduke1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  #clarkduke1<-read.csv("Experiments/data-Duke-Q.csv", header=T)
+  
+  return(clarkduke)
+}
+
+##Clark et al from Harvard ##
+## Data type: FFD ##
+## Notes: Contact: Public data ##
+##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
+clean.raw$clarkharv <- function(filename="data-Duke-Q.csv", path="./Experiments/") {
+  
+  file <- file.path(path, filename)
+  clarkharv1 <- read.csv(file, check.names=FALSE, header=TRUE)  
+  
+  return(clarkharv)
+}
+
+
+##Farnsworth from Harvard ##
+## Data type: FFD ##
+## Notes: Contact: Public data ##
+##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
+clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Experiments",names.only=FALSE) {
+  file <- file.path(path, filename)
+  farnsworth1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  #phenological stage 1.5=budburst; need to get day of year for which this occurred
+  farnsworth1$plot<-paste(farnsworth1$treat,farnsworth1$block,farnsworth1$quad,sep=".")
+  farnsworth1$bb_doy<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:7]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-06-09")
+    bbdate<-names(inddat)[min(which(inddat>1))]
+    bbdoy<-strftime(bbdate, format = "%j")
+    farnsworth1$bb_doy[i]<-bbdoy
+  }
+  farnsworth1$genus<-NA
+  farnsworth1$species1<-NA
+  farnsworth1$genus[farnsworth1$species=="aaga"] <- "Amelanchier"
+  farnsworth1$species1[farnsworth1$species=="aaga"] <- "grandifolia"
+  farnsworth1$genus[farnsworth1$species=="beech"] <- "Fagus"
+  farnsworth1$species1[farnsworth1$species=="beech"] <- "grandifolia"
+  farnsworth1$genus[farnsworth1$species=="bbhg"] <- "Vaccinium"
+  farnsworth1$species1[farnsworth1$species=="bbhg"] <- "corymbosum"
+  farnsworth1$genus[farnsworth1$species=="bbhch"] <- "Vaccinium"
+  farnsworth1$species1[farnsworth1$species=="bbhch"] <- "vacillans"
+  
+  farnsworth1a<- subsetfarnsworth1, select=c("genusspecies","plot", "doy"))
+ 
+  return(farnsworth)
+}
+
+
+
+
+
+# Produce cleaned raw data
+#
+raw.data.dir <- "./Experiments/"
+cleandata.raw <- list()
+cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
+cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
+
+cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
