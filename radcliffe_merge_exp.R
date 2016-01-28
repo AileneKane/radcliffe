@@ -252,13 +252,24 @@ clean.raw$jasperridge <- function(filename="JasperRidge_data.csv", path="./Exper
   file <- file.path(path, filename)
   cleland1 <- read.csv(file, check.names=FALSE, header=TRUE)  
   colnames(cleland1)[8]<-"genus"
+  cleland1$species<-NA
+  cleland1$species[cleland1$genus=="Crepis"] <- "vessicaria"
+  cleland1$species[cleland1$genus=="Erodium"] <- "brachycarpum"
+  cleland1$species[cleland1$genus=="Geranium"] <- "dissectum"
+  cleland1$species[cleland1$genus=="Lolium"] <- "multiflorum"
+  cleland1$species[cleland1$genus=="Vicia"] <- "sativa"
+  cleland1$species[cleland1$genus=="Vulpia"] <- "myuros"
+  cleland1$species[cleland1$genus=="Bromusd"] <- "diandrus"
+  cleland1$species[cleland1$genus=="Bromush"] <- "hordeaceus"
+  cleland1$genus[cleland1$genus=="Bromusd"] <- "Bromus"
+  cleland1$genus[cleland1$genus=="Bromush"] <- "Bromus"
   colnames(cleland1)[10]<-"doy"
   cleland1$site<-"jasper"
   cleland1$event<-"ffd"
-  cleland<-subset(bace3, select=c("site","plot","event","year","genus","species", "doy"))
+  cleland<-subset(cleland1, select=c("site","plot","event","year","genus","species", "doy"))
   cleland$variety <- NA
   cleland$cult <- NA
-  return(clarkharv)
+  return(cleland)
 }
 
 
@@ -294,6 +305,6 @@ raw.data.dir <- "./Experiments/"
 cleandata.raw <- list()
 cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
 cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
-cleandata.raw$farnsworth <- clean.raw$bace(path=raw.data.dir)
-cleandata.raw$jasper <- clean.raw$bace(path=raw.data.dir)
+cleandata.raw$farnsworth <- clean.raw$farnsworth(path=raw.data.dir)
+cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
 cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
