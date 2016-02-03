@@ -278,13 +278,64 @@ clean.raw$jasperridge <- function(filename="JasperRidge_data.csv", path="./Exper
 ## Data type: FFD ##
 ## Notes: Contact: Public data ##
 ##have not done this one yet, as it is in a different form than others (raw observation dates with what observed each date)
-clean.raw$clarkduke <- function(filename="data-Duke-Q.csv", path="./Experiments/",names.only=FALSE) {
+clean.raw$clarkduke <- function(filename="DF_G01_A.csv", path="./Experiments/",names.only=FALSE) {
   
   file <- file.path(path, filename)
   clarkduke1 <- read.csv(file, check.names=FALSE, header=TRUE)
-  
+  clarkduke1$genus<-NA
+  clarkduke1$species<-NA
+  clarkduke1$genus[clarkduke1$species=="acru"] <- "Acer"
+  clarkduke1$species[clarkduke1$species=="acru"] <- "rubrum"
+  clarkduke1$genus[clarkduke1$species=="litu"] <- "Liriodendron"
+  clarkduke1$species[clarkduke1$species=="litu"] <- "tulipifera"
+  clarkduke1$genus[clarkduke1$species=="piun"] <- "Pinus"
+  clarkduke1$species[clarkduke1$species=="piun"] <- "un"
+  clarkduke1$genus[clarkduke1$species=="qual"] <- "Quercus"
+  clarkduke1$species[clarkduke1$species=="qual"] <- "alba"
+  clarkduke1$genus[clarkduke1$species=="pita"] <- "Pinus"
+  clarkduke1$species[clarkduke1$species=="pita"] <- "taeda"
+  clarkduke1$genus[clarkduke1$species=="acba"] <- "Acer"
+  clarkduke1$species[clarkduke1$species=="acba"] <- "ba"
+  clarkduke1$genus[clarkduke1$species=="unkn"] <- "unkn"
+  clarkduke1$species[clarkduke1$species=="unkn"] <- "unkn"
+  clarkduke1$genus[clarkduke1$species=="pipa"] <- "Pinus"
+  clarkduke1$species[clarkduke1$species=="pipa"] <- "palustris"
+  clarkduke1$genus[clarkduke1$species=="fram"] <- "Fraxinus"
+  clarkduke1$species[clarkduke1$species=="fram"] <- "americana"
+  clarkduke1$genus[clarkduke1$species=="nysy"] <- "Nyssa"
+  clarkduke1$species[clarkduke1$species=="nysy"] <- "sylvatica"
+  clarkduke1$genus[clarkduke1$species=="acsa"] <- "Acer"
+  clarkduke1$species[clarkduke1$species=="acsa"] <- "saccharum"
+  clarkduke1$genus[clarkduke1$species=="prse"] <- "Prunus"
+  clarkduke1$species[clarkduke1$species=="prse"] <- "serotina"
+  clarkduke1$genus[clarkduke1$species=="cofl"] <- "Cornus"
+  clarkduke1$species[clarkduke1$species=="cofl"] <- "florida"
+  clarkduke1$genus[clarkduke1$species=="list"] <- "Liquidambar"
+  clarkduke1$species[clarkduke1$species=="list"] <- "styraciflua"
+  clarkduke1$genus[clarkduke1$species=="ulam"] <- "Ulmus"
+  clarkduke1$species[clarkduke1$species=="ulam"] <- "americana"
+  clarkduke1$genus[clarkduke1$species=="quun"] <- "Quercus"
+  clarkduke1$species[clarkduke1$species=="quun"] <- "un"
+  clarkduke1$genus[clarkduke1$species=="quru"] <- "Quercus"
+  clarkduke1$species[clarkduke1$species=="quru"] <- "rubra"
+  clarkduke1$genus[clarkduke1$species=="oxar"] <- "Ox"
+  clarkduke1$species[clarkduke1$species=="oxar"] <- "ar"
+  clarkduke1$genus[clarkduke1$species=="pist"] <- "Pinus"
+  clarkduke1$species[clarkduke1$species=="pist"] <- "strobus"
+  clarkduke1$genus[clarkduke1$species=="pivi"] <- "Pinus"
+  clarkduke1$species[clarkduke1$species=="pivi"] <- "vi"
+  clarkduke1$genus[clarkduke1$species=="quph"] <- "Quercus"
+  clarkduke1$species[clarkduke1$species=="quph"] <- "ph"
+  clarkduke1$genus[clarkduke1$species=="magr"] <- "Magnolia"
+  clarkduke1$species[clarkduke1$species=="magr"] <- "grandiflora"
+  clarkduke1$genus[clarkduke1$species=="quve"] <- "Quercus"
+  clarkduke1$species[clarkduke1$species=="quve"] <- "velutina"
+colnames(cleland1)[10]<-"doy"
+  cleland1$site<-"jasper"
+  cleland1$event<-"ffd"
   return(clarkduke)
 }
+f<-apply(isoall_CH.ms,1,get.first)#first occasion of marking
 
 ##Clark et al from Harvard ##
 ## Data type: FFD ##
