@@ -331,8 +331,8 @@ clean.raw$clarkduke <- function(filename="DF_G01_A.csv", path="./Experiments/",n
   clarkduke1$genus[clarkduke1$species=="quve"] <- "Quercus"
   clarkduke1$species[clarkduke1$species=="quve"] <- "velutina"
 colnames(cleland1)[10]<-"doy"
-  cleland1$site<-"jasper"
-  cleland1$event<-"ffd"
+clarkduke1$site<-"duke"
+clarkduke1$event<-"ffd"
   return(clarkduke)
 }
 f<-apply(isoall_CH.ms,1,get.first)#first occasion of marking
