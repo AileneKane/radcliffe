@@ -284,58 +284,96 @@ clean.raw$clarkduke <- function(filename="DF_G01_A.csv", path="./Experiments/",n
   clarkduke1 <- read.csv(file, check.names=FALSE, header=TRUE)
   clarkduke1$genus<-NA
   clarkduke1$species<-NA
-  clarkduke1$genus[clarkduke1$species=="acru"] <- "Acer"
-  clarkduke1$species[clarkduke1$species=="acru"] <- "rubrum"
-  clarkduke1$genus[clarkduke1$species=="litu"] <- "Liriodendron"
-  clarkduke1$species[clarkduke1$species=="litu"] <- "tulipifera"
-  clarkduke1$genus[clarkduke1$species=="piun"] <- "Pinus"
-  clarkduke1$species[clarkduke1$species=="piun"] <- "un"
-  clarkduke1$genus[clarkduke1$species=="qual"] <- "Quercus"
-  clarkduke1$species[clarkduke1$species=="qual"] <- "alba"
-  clarkduke1$genus[clarkduke1$species=="pita"] <- "Pinus"
-  clarkduke1$species[clarkduke1$species=="pita"] <- "taeda"
-  clarkduke1$genus[clarkduke1$species=="acba"] <- "Acer"
-  clarkduke1$species[clarkduke1$species=="acba"] <- "ba"
-  clarkduke1$genus[clarkduke1$species=="unkn"] <- "unkn"
-  clarkduke1$species[clarkduke1$species=="unkn"] <- "unkn"
-  clarkduke1$genus[clarkduke1$species=="pipa"] <- "Pinus"
-  clarkduke1$species[clarkduke1$species=="pipa"] <- "palustris"
-  clarkduke1$genus[clarkduke1$species=="fram"] <- "Fraxinus"
-  clarkduke1$species[clarkduke1$species=="fram"] <- "americana"
-  clarkduke1$genus[clarkduke1$species=="nysy"] <- "Nyssa"
-  clarkduke1$species[clarkduke1$species=="nysy"] <- "sylvatica"
-  clarkduke1$genus[clarkduke1$species=="acsa"] <- "Acer"
-  clarkduke1$species[clarkduke1$species=="acsa"] <- "saccharum"
-  clarkduke1$genus[clarkduke1$species=="prse"] <- "Prunus"
-  clarkduke1$species[clarkduke1$species=="prse"] <- "serotina"
-  clarkduke1$genus[clarkduke1$species=="cofl"] <- "Cornus"
-  clarkduke1$species[clarkduke1$species=="cofl"] <- "florida"
-  clarkduke1$genus[clarkduke1$species=="list"] <- "Liquidambar"
-  clarkduke1$species[clarkduke1$species=="list"] <- "styraciflua"
-  clarkduke1$genus[clarkduke1$species=="ulam"] <- "Ulmus"
-  clarkduke1$species[clarkduke1$species=="ulam"] <- "americana"
-  clarkduke1$genus[clarkduke1$species=="quun"] <- "Quercus"
-  clarkduke1$species[clarkduke1$species=="quun"] <- "un"
-  clarkduke1$genus[clarkduke1$species=="quru"] <- "Quercus"
-  clarkduke1$species[clarkduke1$species=="quru"] <- "rubra"
-  clarkduke1$genus[clarkduke1$species=="oxar"] <- "Ox"
-  clarkduke1$species[clarkduke1$species=="oxar"] <- "ar"
-  clarkduke1$genus[clarkduke1$species=="pist"] <- "Pinus"
-  clarkduke1$species[clarkduke1$species=="pist"] <- "strobus"
-  clarkduke1$genus[clarkduke1$species=="pivi"] <- "Pinus"
-  clarkduke1$species[clarkduke1$species=="pivi"] <- "vi"
-  clarkduke1$genus[clarkduke1$species=="quph"] <- "Quercus"
-  clarkduke1$species[clarkduke1$species=="quph"] <- "ph"
-  clarkduke1$genus[clarkduke1$species=="magr"] <- "Magnolia"
-  clarkduke1$species[clarkduke1$species=="magr"] <- "grandiflora"
-  clarkduke1$genus[clarkduke1$species=="quve"] <- "Quercus"
-  clarkduke1$species[clarkduke1$species=="quve"] <- "velutina"
-colnames(cleland1)[10]<-"doy"
+  clarkduke1$genus[clarkduke1$Species=="acru"] <- "Acer"
+  clarkduke1$species[clarkduke1$Species=="acru"] <- "rubrum"
+  clarkduke1$genus[clarkduke1$Species=="litu"] <- "Liriodendron"
+  clarkduke1$species[clarkduke1$Species=="litu"] <- "tulipifera"
+  clarkduke1$genus[clarkduke1$Species=="piun"] <- "Pinus"
+  clarkduke1$species[clarkduke1$Species=="piun"] <- "spp"
+  clarkduke1$genus[clarkduke1$Species=="qual"] <- "Quercus"
+  clarkduke1$species[clarkduke1$Species=="qual"] <- "alba"
+  clarkduke1$genus[clarkduke1$Species=="pita"] <- "Pinus"
+  clarkduke1$species[clarkduke1$Species=="pita"] <- "taeda"
+  clarkduke1$genus[clarkduke1$Species=="acba"] <- "Acer"
+  clarkduke1$species[clarkduke1$Species=="acba"] <- "barbatum"
+  clarkduke1$genus[clarkduke1$Species=="unkn"] <- "unkn"
+  clarkduke1$species[clarkduke1$Species=="unkn"] <- "unkn"
+  clarkduke1$genus[clarkduke1$Species=="pipa"] <- "Pinus"
+  clarkduke1$species[clarkduke1$Species=="pipa"] <- "palustris"
+  clarkduke1$genus[clarkduke1$Species=="fram"] <- "Fraxinus"
+  clarkduke1$species[clarkduke1$Species=="fram"] <- "americana"
+  clarkduke1$genus[clarkduke1$Species=="nysy"] <- "Nyssa"
+  clarkduke1$species[clarkduke1$Species=="nysy"] <- "sylvatica"
+  clarkduke1$genus[clarkduke1$Species=="acsa"] <- "Acer"
+  clarkduke1$species[clarkduke1$Species=="acsa"] <- "saccharum"
+  clarkduke1$genus[clarkduke1$Species=="prse"] <- "Prunus"
+  clarkduke1$species[clarkduke1$Species=="prse"] <- "serotina"
+  clarkduke1$genus[clarkduke1$Species=="cofl"] <- "Cornus"
+  clarkduke1$species[clarkduke1$Species=="cofl"] <- "florida"
+  clarkduke1$genus[clarkduke1$Species=="list"] <- "Liquidambar"
+  clarkduke1$species[clarkduke1$Species=="list"] <- "styraciflua"
+  clarkduke1$genus[clarkduke1$Species=="ulam"] <- "Ulmus"
+  clarkduke1$species[clarkduke1$Species=="ulam"] <- "americana"
+  clarkduke1$genus[clarkduke1$Species=="quun"] <- "Quercus"
+  clarkduke1$species[clarkduke1$Species=="quun"] <- "spp"
+  clarkduke1$genus[clarkduke1$Species=="quru"] <- "Quercus"
+  clarkduke1$species[clarkduke1$Species=="quru"] <- "rubra"
+  clarkduke1$genus[clarkduke1$Species=="oxar"] <- "Oxydendrum"
+  clarkduke1$species[clarkduke1$Species=="oxar"] <- "arboreum"
+  clarkduke1$genus[clarkduke1$Species=="pist"] <- "Pinus"
+  clarkduke1$species[clarkduke1$Species=="pist"] <- "strobus"
+  clarkduke1$genus[clarkduke1$Species=="pivi"] <- "Pinus"
+  clarkduke1$species[clarkduke1$Species=="pivi"] <- "virginiana"
+  clarkduke1$genus[clarkduke1$Species=="quph"] <- "Quercus"
+  clarkduke1$species[clarkduke1$Species=="quph"] <- "phellos"
+  clarkduke1$genus[clarkduke1$Species=="magr"] <- "Magnolia"
+  clarkduke1$species[clarkduke1$Species=="magr"] <- "grandiflora"
+  clarkduke1$genus[clarkduke1$Species=="quve"] <- "Quercus"
+  clarkduke1$species[clarkduke1$Species=="quve"] <- "velutina"
 clarkduke1$site<-"duke"
-clarkduke1$event<-"ffd"
+colnames(clarkduke1)[5]<-"plot"
+
+#estimate first date of budburst, leaf unfolding, and leaf out
+get.bbd <- function(x) names(x)[min(which(x==3), na.rm=T)]#budburst
+get.lud <- function(x) names(x)[min(which(x==4), na.rm=T)]#leaves unfolding
+get.lod <- function(x) names(x)[min(which(x==6), na.rm=T)]#leafout
+bbd_2010<-substr(apply(clarkduke1[,17:30],1,get.bbd),6,13)
+bbd_2011<-substr(apply(clarkduke1[,31:55],1,get.bbd),6,13)
+bbd_2012<-substr(apply(clarkduke1[,56:81],1,get.bbd),6,13)
+bbd_2013<-substr(apply(clarkduke1[,82:101],1,get.bbd),6,13)
+lud_2010<-substr(apply(clarkduke1[,17:30],1,get.lud),6,13)
+lud_2011<-substr(apply(clarkduke1[,31:55],1,get.lud),6,13)
+lud_2012<-substr(apply(clarkduke1[,56:81],1,get.lud),6,13)
+lud_2013<-substr(apply(clarkduke1[,82:101],1,get.lud),6,13)
+lod_2010<-substr(apply(clarkduke1[,17:30],1,get.lod),6,13)
+lod_2011<-substr(apply(clarkduke1[,31:55],1,get.lod),6,13)
+lod_2012<-substr(apply(clarkduke1[,56:81],1,get.lod),6,13)
+lod_2013<-substr(apply(clarkduke1[,82:101],1,get.lod),6,13)
+bbd2010_doy<-strftime(strptime(bbd_2010, format = "%m.%d.%y"),format = "%j")
+bbd2011_doy<-strftime(strptime(bbd_2011, format = "%m.%d.%y"),format = "%j")
+bbd2012_doy<-strftime(strptime(bbd_2012, format = "%m.%d.%y"),format = "%j")
+bbd2013_doy<-strftime(strptime(bbd_2013, format = "%m.%d.%y"),format = "%j")
+lud2010_doy<-strftime(strptime(lud_2010, format = "%m.%d.%y"),format = "%j")
+lud2011_doy<-strftime(strptime(lud_2011, format = "%m.%d.%y"),format = "%j")
+lud2012_doy<-strftime(strptime(lud_2012, format = "%m.%d.%y"),format = "%j")
+lud2013_doy<-strftime(strptime(lud_2013, format = "%m.%d.%y"),format = "%j")
+lod2010_doy<-strftime(strptime(lod_2010, format = "%m.%d.%y"),format = "%j")
+lod2011_doy<-strftime(strptime(lod_2011, format = "%m.%d.%y"),format = "%j")
+lod2012_doy<-strftime(strptime(lod_2012, format = "%m.%d.%y"),format = "%j")
+lod2013_doy<-strftime(strptime(lod_2013, format = "%m.%d.%y"),format = "%j")
+clarkduke2<-cbind(clarkduke1,bbd2010_doy,bbd2011_doy,bbd2012_doy,bbd2013_doy,lud2010_doy,lud2011_doy,lud2012_doy,lud2013_doy,lod2010_doy,lod2011_doy,lod2012_doy,lod2013_doy)
+clarkduke2a<-subset(clarkduke2, select=c("site","plot","genus","species","bbd2010_doy","bbd2011_doy","bbd2012_doy","bbd2013_doy","lud2010_doy","lud2011_doy","lud2012_doy","lud2013_doy","lod2010_doy","lod2011_doy","lod2012_doy","lod2013_doy"))
+clarkduke3<-reshape(clarkduke2a,varying = list(names(clarkduke2a)[5:8], names(clarkduke2a)[9:12],names(clarkduke2a)[13:16]), direction = "long", v.names = c("BBD","LUD", "LOD"), times = c(2010:2013))
+clarkduke3<-clarkduke3[,-9]
+colnames(clarkduke3)[5]<-"year"
+clarkduke4<-reshape(clarkduke3,varying = list(names(clarkduke3)[6:8]), direction = "long", v.names = c("doy"), times = c(1:3))
+clarkduke4$event<-c(rep("bbd", times=dim(clarkduke3)[1]),rep("lud", times=dim(clarkduke3)[1]),rep("lod", times=dim(clarkduke3)[1]))
+clarkduke4[9430:9439,]
+clarkduke4$variety <- NA
+clarkduke4$cult <- NA
+clarkduke<-subset(clarkduke4, select=c("site","plot","event","year","genus","species","doy","variety","cult"))
   return(clarkduke)
 }
-f<-apply(isoall_CH.ms,1,get.first)#first occasion of marking
 
 ##Clark et al from Harvard ##
 ## Data type: FFD ##
@@ -359,3 +397,4 @@ cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
 cleandata.raw$farnsworth <- clean.raw$farnsworth(path=raw.data.dir)
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
 cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
+cleandata.raw$clarkharv <- clean.raw$clarkduke(path=raw.data.dir)
