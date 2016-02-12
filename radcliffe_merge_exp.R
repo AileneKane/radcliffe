@@ -65,11 +65,10 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experimen
   marchin<-subset(marchin3, select=c("site","plot","event","year","genus","species", "doy"))
   marchin$variety <- NA
   marchin$cult <- NA
-  
   return(marchin)
 }
 
-clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path="./Experiments",names.only=FALSE) {  
+clean.raw$bace <- function(filename="bace/BACE_deciduous2010_originaltrees.csv", path=".bace/",names.only=FALSE) {  
   ##BACE ##
   ## Data type: BBD,LOD ##
   ## Notes: Jeff Dukes##
@@ -276,7 +275,6 @@ clean.raw$jasperridge <- function(filename="JasperRidge_data.csv", path="./Exper
 ##Clark et al from Duke ##
 ## Data type: BBD,LUD, LOD ##
 ## Notes: Contact: Public data ##
-
 clean.raw$clarkduke <- function(filename, path) {
   clarkdukeplots<-c("DF_G01_A.csv","DF_G02_5.csv","DF_G03_3.csv","DF_G04_A.csv","DF_G05_3.csv","DF_G06_5.csv","DF_G07_A.csv","DF_G08_5.csv","DF_G09_3.csv","DF_G10_C.csv","DF_G11_C.csv","DF_G12_C.csv","DF_S01_5.csv","DF_S02_3.csv","DF_S03_A.csv","DF_S04_A.csv","DF_S05_3.csv","DF_S06_5.csv","DF_S07_5.csv","DF_S08_A.csv","DF_S09_3.csv","DF_S10_C.csv","DF_S11_C.csv","DF_S12_C.csv")
   clarkduke <- NA
@@ -342,7 +340,6 @@ return(clarkduke)
 ##Clark et al from Harvard ##
 ## Data type: BBD,LUD,LOD ##
 ## Notes: Contact: Public data ##
-
 clean.raw$clarkharvard <- function(filename, path) {
     clarkharvardplots<-c("HF_G01_3.csv","HF_G02_A.csv","HF_G03_5.csv","HF_G04_A.csv","HF_G05_5.csv","HF_G06_3.csv","HF_G07_A.csv","HF_G08_3.csv","HF_G09_5.csv","HF_G10_C.csv","HF_G11_C.csv","HF_G12_C.csv","HF_S01_5.csv","HF_S02_A.csv","HF_S03_3.csv","HF_S04_5.csv","HF_S05_A.csv","HF_S06_3.csv","HF_S07_A.csv","HF_S08_3.csv","HF_S09_5.csv","HF_S10_C.csv","HF_S11_C.csv","HF_S12_C.csv")
     clarkharvard <- NA
@@ -399,9 +396,44 @@ clean.raw$clarkharvard <- function(filename, path) {
     return(clarkharvard)
   }
   
-  
-
-
+##Sherry from Oklahoma##
+## Data type: FFD, FFRD ##
+## Notes: Rebecca Sherry
+#Phenological stages for Forbs: F0=vegetative plants; F1, unopened buds; F2, open flowers; F3, old flowers (postanthesis); F4, initiated fruit; F5,expanding fruit; and F6, dehisced fruit. 
+#Phenological stages For grasses: G0, plants with flower stalks (in boot); G1, spikelets present (out of boot); G2,exerted anthers or styles; G3, past the presence of anthers and styles (seed development); and G4, disarticulating florets. 
+#For forb species with very small flowers and fruits that were difficult to observe, stage 3 (initiated fruit) and stage 4 (expanding fruit) were lumped into a category of ‘‘fruit present,’’ (i.e., a score of F4.5)
+clean.raw$sherry <- function(filename, path="./Experiments/Sherry") {
+  sherryspp<-c("SherryPhenology2003_Achillea.csv","SherryPhenology2003_Ambrosia.csv","SherryPhenology2003_Andropogon.csv","SherryPhenology2003_Erigeron.csv","SherryPhenology2003_Panicum.csv","SherryPhenology2003_Schizachyrium.csv")
+  sherry <- NA
+  gen<-c("Achillea","Ambrosia","Andropogon","Erigeron","Panicum","Schizachyrium")
+  sp<-c("millefolium","psilostchya","gerardii","strigosus","virgatum","scoparium")
+  for (i in 1:length(sherryspp)){
+    file <- file.path(path, paste(sherryspp[i]))
+    sherry1 <- read.csv(file, skip=3, header=TRUE)
+    colnames(sherry1)[which(colnames(sherry1)=="Plot")]<-"plot"
+  #estimate first date of budburst, leaf unfolding, and leaf out
+  firstsurv<-min(which(substr(colnames(sherry1),1,1)=="X"))
+  lastsurv<-dim(sherry1)[2]  
+  get.ffd <- function(x) names(x)[min(which(x <= 3.5 & x >= 2.5), na.rm=T)]#first flower date
+  get.ffrd <- function(x) names(x)[min(which(x <= 5.5 & x >= 3.5), na.rm=T)]#leaves unfolding
+  ffd_doy<-substr(apply(sherry1[,firstsurv:lastsurv],1,get.ffd),2,4)
+  ffrd_doy<-substr(apply(sherry1[,firstsurv:lastsurv],1,get.ffrd),2,4)
+  sherry2<-cbind(sherry1,ffd_doy,ffrd_doy)
+  sherry2$genus<- paste(gen[i])
+  sherry2$species<-paste(sp[i])    
+  sherry3<-subset(sherry2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  sherry<-rbind(sherry,sherry3)
+  }
+  sherry<-sherry[-1,]
+  sherry4<-reshape(sherry,varying = list(names(sherry)[4:5]), direction = "long", v.names = c("doy"), times = c(1:2))
+  sherry4$event<-c(rep("ffd", times=dim(sherry)[1]),rep("ffrd", times=dim(sherry)[1]))
+  sherry4$year<-2003
+  sherry4$site<-"oklahoma"
+  sherryok<-subset(sherry4, select=c("site","plot","event","year","genus","species", "doy"))
+  sherryok$variety <- NA
+  sherryok$cult <- NA
+  return(sherryok)
+}
 # Produce cleaned raw data
 #
 raw.data.dir <- "./Experiments/"
@@ -412,3 +444,5 @@ cleandata.raw$farnsworth <- clean.raw$farnsworth(path=raw.data.dir)
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
 cleandata.raw$clarkduke <- clean.raw$clarkduke("DF_G01_A.csv",raw.data.dir)
 cleandata.raw$clarkharvard <- clean.raw$clarkharvard("HF_G01_A.csv",raw.data.dir)
+cleandata.raw$sherry <- clean.raw$sherry(path=raw.data.dir)
+i
