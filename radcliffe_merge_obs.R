@@ -1,22 +1,16 @@
 ### Started 4 January 2015 ##
 ### By Ailene Ettinger ###
-###Started with Lizzie's code for NECTAR and modified it.
-setwd("/Users/aileneettinger/Dropbox/Documents/Work/Wolkovich/Radcliffe/Analyses")
-
+setwd("~/GitHub/radcliffe")
+rm(list=ls()) 
 options(stringsAsFactors=FALSE)
-
 library(reshape)
 library(zoo)
 ##Want to get several files:
-#1. Phenology data: DatasetID, site, plot, event (phen event),year, doy,genus,species,Temp_treat	Precip_treat	Year	Genus	Species		onetempchange	precipchange	precipchangetyp)
+#1. Phenology data: site, plot, event (phen event),year, doy,genus,species,Temp_treat, Precip_treat, onetempchange, precipchange, precipchangetyp
 #2. Species names: site,genus,species,scrub,genus.prescrub,species.prescrub,ipni
-#3. Study info: DatasetID  Year	
-#4. Temperature data- don't have this yet
-#5. Precipitation data
-
-# make list to store all the derived dataset cleaning functions
-clean.raw <- list()
-
+#3. Study info: DatasetID  Year  medium	Temp_treat	onetempchange	Precip_treat	precipchange	precipchangetyp
+#4. Temperature data
+#5. Precipitation/moisture data
 
 ###Below code is from Lizzi'es NECTAR database 
 # Species binomials etc. extractions #
@@ -96,10 +90,10 @@ taxoscrub <- function(dat, sitename) {
 #########################
 
 # make list to store all the derived dataset cleaning functions
-clean.raw <- list()
+clean.rawobs <- list()
 
 
-clean.raw$fitter <- function(filename="Fitter_data.csv", path="Observations/Raw/",
+clean.rawobs$fitter <- function(filename="Fitter_data.csv", path="Observations/Raw/",
     names.only=FALSE) {
 
     ## Fitter ##
@@ -136,45 +130,45 @@ clean.raw$fitter <- function(filename="Fitter_data.csv", path="Observations/Raw/
     fitter$event <- "ffd"
 
     fitterrb <- subset(fitter, select=common.cols.raw)
-
+    row.names(fitterrb) <- NULL
     return(fitterrb)
 }
 
 
-clean.raw$harvard <- function(filename="hf003_03ObsPhenSpringPhen.csv",
-    path=".", names.only=FALSE) {
-
+clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
+    path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw", names.only=FALSE) {
     ## Harvard Forest ##
     ## Data type: Regular monitoring of multiple events ##
     ## I only entered one of the 4 possible files, in particular,
     ## there are also fall phenology data. ##
     file <- file.path(path, filename)
     harvard <- read.csv(file, header=TRUE)
-    names(harvard)[names(harvard) == "JULIAN"] <- "doy"
+    names(harvard)[names(harvard) == "julian"] <- "doy"
     harvard <- harvard[!is.na(harvard$doy),]
     splist <- read.csv(file.path(path, "specieslist_bylizzie.csv"),
         header=TRUE)
-    harvard$spcode <- sub("-.*", "", harvard$TREEID)
+    harvard$spcode <- sub("-.*", "", harvard$tree.id)
     harvard <- merge(harvard, splist, by.x="spcode", by.y="code",
         all.x=TRUE)
     harvard$genus <- sub(sppexpr, "\\1", harvard$genusspecies)
     harvard$species <- sub(sppexpr, "\\2", harvard$genusspecies)
     harvard <- taxoscrub(harvard, "harvard")
     if (names.only) return(harvard[common.cols.taxo])
-    harvard$date <- as.Date(harvard$DATE, "%Y-%m-%d")
+    names(harvard)[names(harvard) == "date"] <- "date2"
+    harvard$date <- as.Date(harvard$date2, "%m/%d/%Y")
     harvard$year <- format(harvard$date, "%Y")
 
-    # ffd = for each species*yr, the first time that BBRK > 0
-    ffd <- subset(harvard, BBRK > 0)
+    # bbd = for each species*yr, the first time that BBRK > 0
+    bbd <- subset(harvard, bbrk > 0)
+    bbd <- subsetEarliest(bbd, c("genus", "species", "year"))
+    bbd <- cbind(bbd, event="bbd")
+
+    # ffd = for each species*yr, the first time that FOPN > 0
+    ffd <- subset(harvard, fopn > 0)
     ffd <- subsetEarliest(ffd, c("genus", "species", "year"))
     ffd <- cbind(ffd, event="ffd")
 
-    # fld = for each species*yr, the first time that FOPN > 0
-    fld <- subset(harvard, FOPN > 0)
-    fld <- subsetEarliest(fld, c("genus", "species", "year"))
-    fld <- cbind(fld, event="fld")
-
-    harvardrb <- rbind(ffd, fld)
+    harvardrb <- rbind(bbd, ffd)
 
     # Add and adjust columns to match for rbind #
     harvardrb$site <- "harvard"
@@ -189,7 +183,7 @@ clean.raw$harvard <- function(filename="hf003_03ObsPhenSpringPhen.csv",
 }
 
 
-clean.raw$hubbard <- function(filename="phn.txt", path=".",
+clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw",
     names.only=FALSE) {
 
     ## Hubbard Brook ##
@@ -213,8 +207,10 @@ clean.raw$hubbard <- function(filename="phn.txt", path=".",
     hubbard1 <- taxoscrub(hubbard1, "hubbard")
     if (names.only) return(hubbard1[common.cols.taxo])
 
-    hubbard1$date <- as.Date(sprintf("%06d", hubbard1$DATE), format="%y%m%d")
+    hubbard1$Date <- as.Date(hubbard1$Date)
+    names(hubbard1)[names(hubbard1) == "Date"] <- "date"
     hubbard1$year <- format(hubbard1$date, "%Y")
+    
     hubbard1$doy <- as.numeric(format(hubbard1$date, "%j"))
     hubbard1 <- hubbard1[!is.na(hubbard1$doy),]
 
@@ -585,10 +581,11 @@ write.csv(all.pheno.species, "knb/nectarnames_all.csv", row.names=FALSE, quote=F
 #
 
 raw.data.dir <- "Observations/Raw"
-cleandata.raw <- list()
-cleandata.raw$fitter <- clean.raw$fitter(path=raw.data.dir)
-cleandata.raw$harvard <- clean.raw$harvard(path=raw.data.dir)
-cleandata.raw$hubbard <- clean.raw$hubbard(path=raw.data.dir)
+clean.rawobs <- list()
+clean.rawobs$fitter <- clean.rawobs$fitter(path=raw.data.dir)
+clean.rawobs$harvard <- clean.rawobs$harvard(path=raw.data.dir)
+clean.rawobs$ <- clean.rawobs$hubbard(path=raw.data.dir)
+
 cleandata.raw$konza <- clean.raw$konza(path=raw.data.dir)
 cleandata.raw$luquillo <- clean.raw$luquillo(path=raw.data.dir)
 cleandata.raw$niwot <- clean.raw$niwot(path=raw.data.dir)
@@ -596,6 +593,8 @@ cleandata.raw$sevcore <- clean.raw$sevcore(path=raw.data.dir)
 cleandata.raw$sevtrans <- clean.raw$sevtrans(path=raw.data.dir)
 cleandata.raw$mikesell <- clean.raw$mikesell(path=raw.data.dir)
 
+
+###
 ffdfld <- do.call("rbind", cleandata.raw)
 row.names(ffdfld) <- NULL
 write.csv(ffdfld, "knb/nectarpheno_raw.csv", row.names=FALSE)

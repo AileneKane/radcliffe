@@ -402,7 +402,7 @@ clean.raw$clarkharvard <- function(filename, path) {
 #Phenological stages for Forbs: F0=vegetative plants; F1, unopened buds; F2, open flowers; F3, old flowers (postanthesis); F4, initiated fruit; F5,expanding fruit; and F6, dehisced fruit. 
 #Phenological stages For grasses: G0, plants with flower stalks (in boot); G1, spikelets present (out of boot); G2,exerted anthers or styles; G3, past the presence of anthers and styles (seed development); and G4, disarticulating florets. 
 #For forb species with very small flowers and fruits that were difficult to observe, stage 3 (initiated fruit) and stage 4 (expanding fruit) were lumped into a category of ‘‘fruit present,’’ (i.e., a score of F4.5)
-clean.raw$sherry <- function(filename, path="./Experiments/Sherry") {
+clean.raw$sherry <- function(filename, path) {
   sherryspp<-c("SherryPhenology2003_Achillea.csv","SherryPhenology2003_Ambrosia.csv","SherryPhenology2003_Andropogon.csv","SherryPhenology2003_Erigeron.csv","SherryPhenology2003_Panicum.csv","SherryPhenology2003_Schizachyrium.csv")
   sherry <- NA
   gen<-c("Achillea","Ambrosia","Andropogon","Erigeron","Panicum","Schizachyrium")
@@ -432,6 +432,8 @@ clean.raw$sherry <- function(filename, path="./Experiments/Sherry") {
   sherryok<-subset(sherry4, select=c("site","plot","event","year","genus","species", "doy"))
   sherryok$variety <- NA
   sherryok$cult <- NA
+  #file2 <- file.path(path, "SherryPhenology2003_First6spp.csv")#need to add these in- they're just a little different than others in formattin
+  #sherryotherspp<-read.csv(file2, header=T)
   return(sherryok)
 }
 # Produce cleaned raw data
@@ -442,7 +444,8 @@ cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
 cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
 cleandata.raw$farnsworth <- clean.raw$farnsworth(path=raw.data.dir)
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
-cleandata.raw$clarkduke <- clean.raw$clarkduke("DF_G01_A.csv",raw.data.dir)
-cleandata.raw$clarkharvard <- clean.raw$clarkharvard("HF_G01_A.csv",raw.data.dir)
-cleandata.raw$sherry <- clean.raw$sherry(path=raw.data.dir)
-i
+cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
+cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path=raw.data.dir)
+cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/Sherry/")
+head(cleandata.raw$sherry)
+getwd()
