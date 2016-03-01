@@ -93,8 +93,8 @@ taxoscrub <- function(dat, sitename) {
 clean.rawobs <- list()
 
 
-clean.rawobs$fitter <- function(filename="Fitter_data.csv", path="Observations/Raw/",
-    names.only=FALSE) {
+clean.rawobs$fitter <- function(filename, path) 
+  {#file="Fitter_data.csv",path="Observations/Raw/"
 
     ## Fitter ##
     ## Data type: FFD ##
@@ -119,7 +119,6 @@ clean.rawobs$fitter <- function(filename="Fitter_data.csv", path="Observations/R
     fitter$species <- sub(sppexpr, "\\2", fitter$genusspecies, perl=TRUE)
     fitter$varetc <- sub(sppexpr, "\\4", fitter$genusspecies, perl=TRUE)
     fitter <- taxoscrub(fitter, "fitter")
-    if (names.only) return(fitter[common.cols.taxo])
     # Add columns to match for rbind #
     fitter$site <- "fitter"
     fitter$plot <- NA
@@ -136,7 +135,7 @@ clean.rawobs$fitter <- function(filename="Fitter_data.csv", path="Observations/R
 
 
 clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
-    path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw", names.only=FALSE) {
+    path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw") {
     ## Harvard Forest ##
     ## Data type: Regular monitoring of multiple events ##
     ## I only entered one of the 4 possible files, in particular,
@@ -153,7 +152,6 @@ clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
     harvard$genus <- sub(sppexpr, "\\1", harvard$genusspecies)
     harvard$species <- sub(sppexpr, "\\2", harvard$genusspecies)
     harvard <- taxoscrub(harvard, "harvard")
-    if (names.only) return(harvard[common.cols.taxo])
     names(harvard)[names(harvard) == "date"] <- "date2"
     harvard$date <- as.Date(harvard$date2, "%m/%d/%Y")
     harvard$year <- format(harvard$date, "%Y")
@@ -183,8 +181,7 @@ clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
 }
 
 
-clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw",
-    names.only=FALSE) {
+clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw") {
 
     ## Hubbard Brook ##
     ## Data type: Regular monitoring of multiple events I think ##
@@ -195,7 +192,9 @@ clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger
       na.strings="-9.0")
     hubbard1 <- subset(hubbard1, SEASON=="SPRING")
     indivs <- c("1B", "6T", "4B", "4T", "5B", "5T", "7B", "7T")
-    hubbard1$isinleaf <- rowSums(hubbard1[indivs]>=2)>0
+    hubbard1$budburst <- rowSums(hubbard1[indivs]>=2)>0
+    hubbard1$leafout <- rowSums(hubbard1[indivs]>=4)>0
+    
     hubbard1$genus <- NA_character_
     hubbard1$genus[hubbard1$SPECIES=="American_Beech"] <- "Fagus"
     hubbard1$genus[hubbard1$SPECIES=="Sugar_Maple"] <- "Acer"
@@ -205,8 +204,6 @@ clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger
     hubbard1$species[hubbard1$SPECIES=="Sugar_Maple"] <- "saccharum"
     hubbard1$species[hubbard1$SPECIES=="Yellow_Birch"] <- "alleghaniensis"
     hubbard1 <- taxoscrub(hubbard1, "hubbard")
-    if (names.only) return(hubbard1[common.cols.taxo])
-
     hubbard1$Date <- as.Date(hubbard1$Date)
     names(hubbard1)[names(hubbard1) == "Date"] <- "date"
     hubbard1$year <- format(hubbard1$date, "%Y")
@@ -214,28 +211,33 @@ clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger
     hubbard1$doy <- as.numeric(format(hubbard1$date, "%j"))
     hubbard1 <- hubbard1[!is.na(hubbard1$doy),]
 
-    # ffd = for each species*yr, the first time it's in leaf
-    hubbard <- subset(hubbard1, isinleaf)
-    hubbard <- subsetEarliest(hubbard, c("genus", "species", "year"),
+    # bbd = for each species*yr, the first time its buds have burst
+    hubbardbbd <- subset(hubbard1, budburst)
+    hubbardbbd  <- subsetEarliest(hubbard1, c("genus", "species", "year"),
         datevar="doy")
-    hubbard <- cbind(hubbard, event="fld")
-
+    hubbardbbd1 <- cbind(hubbardbbd, event="bbd")
+    
+    # lod = for each species*yr, the first time its buds have burst
+    hubbardlod <- subset(hubbard1, leafout)
+    hubbardlod <- subsetEarliest(hubbard1, c("genus", "species", "year"),
+                              datevar="doy")
+    hubbardlod1 <- cbind(hubbardlod, event="lod")
+    
+    hubbard<-rbind(hubbardbbd1,hubbardlod1)
     hubbard$site <- "hubbard"
     hubbard$plot <- NA
     hubbard$varetc <- NA
     hubbard$cult <- NA
-    hubbard <- subset(hubbard, select=common.cols.raw)
-    row.names(hubbard) <- NULL
+    hubbardrb <- subset(hubbard, select=common.cols.raw)
+    row.names(hubbardrb) <- NULL
 
     return(hubbard)
 }
 
-clean.raw$konza <- function(filename="Konza_PlantPhenology.csv", path=".",
-    names.only=FALSE) {
+clean.rawobs$konza <- function(filename="Konza_PlantPhenology.csv", path=".") {
   
     ## Konza ##
     ## Data type: FFD ##
-    ## I tossed out a lot of stuff while fixing this up, observer, site etc. ##
     file <- file.path(path, filename)
     konza1 <- read.csv(file, skip=1, check.names=FALSE, header=TRUE)
     names(konza1)[1] <- "common name"
@@ -255,7 +257,6 @@ clean.raw$konza <- function(filename="Konza_PlantPhenology.csv", path=".",
     konza$genus <-sub(sppexpr, "\\1", konza$genusspecies)
     konza$species <- sub(sppexpr, "\\2", konza$genusspecies)
     konza <- taxoscrub(konza, "konza")
-    if (names.only) return(konza[common.cols.taxo])
     konza$Date <- as.character(konza$Date)
     konza$Date[konza$Date=="8/14 04 "] <- "8/14/2004"
     konza$Date[konza$Date=="05 21 07 "] <- "5/21/2007"
@@ -272,224 +273,50 @@ clean.raw$konza <- function(filename="Konza_PlantPhenology.csv", path=".",
     konza$cult <- NA
     konza$event <- "ffd"
 
-    konza <- subset(konza, select=common.cols.raw)
+    konzarb <- subset(konza, select=common.cols.raw)
 
-    return(konza)
+    return(konzarb)
 }
 
 
-## Luquillo ##
-## Data type: Basket data ##
-## Change code to character field (phenological event) ##
-## Empty baskets are NA (double-check in pdf) if no species otherwise (w/species) -- WTF? ##
-clean.raw$luquillo <- function(path=".", names.only=FALSE) {
-    luqbisley <- read.csv(file.path(path, "Lfdp1-BisleyPhenology.txt"),
-        header=TRUE)
-    luqbisley$plot <- "bisley"
-    luqverde1 <- read.csv(file.path(path, "Lfdp1-ElVerdePhenology.txt"),
-        header=TRUE)
-    luqverde1$plot <- "verde1"
-    luqverde2 <- read.csv(file.path(path, "Lfdp2-ElVerdePhenology.txt"),
-        header=TRUE)
-    luqverde2$plot <- "verde2"
-    # Species list #
-    luqspecies1 <- read.delim(file.path(path, "Luquillo_species_JD.txt"),
-        header=TRUE, na.strings="na")
-    luqspecies1$spcode <- luqspecies1$SPECIES
-    luqspecies <- subset(luqspecies1, select=c("spcode","SPECIES", "Genus",
-        "Species"))
-    names(luqspecies)[names(luqspecies) == "Genus"] <- "genus"
-    names(luqspecies)[names(luqspecies) == "Species"] <- "species"
-    luqspecies$SPECIES <- luqspecies$spcode
-    luqspecies <- aggregate(luqspecies["spcode"],
-        luqspecies[c("genus", "species", "SPECIES")], FUN=length)
-    luq1 <- rbind(luqbisley, luqverde1, luqverde2)
-    luq <- merge(luq1, luqspecies, by="SPECIES", all.x=TRUE)
-    luq <- taxoscrub(luq, "luquillo")
-    if (names.only) return(luq[common.cols.taxo])
-#    lkupluq <- c("1"="flower"," 2 "="aborted fruit", "3"="immature fruit",
-#        "4"="mature fruit","5"="seed","6"="pedicel of fruit",
-#        ""="empty basket") # not using by good to remember
-    luq$date <- as.Date(luq$DATE, format="%m/%d/%y")
-    luq$doy <- format(luq$date, "%j")
-    luq <- luq[!is.na(luq$doy),]
-    luq$doy <- as.numeric(luq$doy)
-    luq$year <- format(luq$date, "%Y")
-    luq$site <- "luquillo"
-    luq$varetc <- NA
-    luq$cult <- NA
 
-    # ffd = for each species*yr*plot, the first time that CODE==1
-    ffd <- subset(luq, CODE==1)
-    ##jr: changing this to use plot, not site
-    ffd <- subsetEarliest(ffd, c("genus", "species", "year", "plot"))
-    ffd <- cbind(ffd, event="ffdbasket")
-    ffd$scrub <- NA
-    luqrb <- subset(ffd, select=common.cols.raw)
-    row.names(luqrb) <- NULL
-
-    return(luqrb)
-
-}
-
-
-clean.raw$niwot <- function(filename="Walker_IndPhenology.txt", path=".",
-    names.only=FALSE) {
+clean.rawobs$niwot <- function(filename="itexphen.mw.data.csv", path=".") {
 
     ## Niwot ##
     ## Data type: Regular monitoring of multiple events ##
     ## Empty cells mean lack of event ##
     ## ADD column names ##
     file <- file.path(path, filename)
-    niwot <- read.csv(file, skip=199, nrow=17051,
-        header=FALSE, col.names=c("year", "spcode", "plot", "quadrat",
-        "coordinates", "plantID", "doy", "plantheight", "longestleaflength",
-        "numleaves", "numinflor", "numbuds", "numflowers", "numdevfruits",
-        "numaturefruits"), colClasses=c(rep(NA, 15)) )
-    niwot <- niwot[!is.na(niwot$doy),]
-    splistniwot <- data.frame(cbind(spcode=c("ACOROS", "BISBIS", "BISVIV"),
-        genus=c("Acomastylis", "Bistorta", "Bistorta"), species=c("rossii",
-        "bistortoides", "vivipara")))
-    niwot <- merge(niwot, splistniwot, by="spcode", all.x=TRUE)
-    niwot$date <- as.Date(paste(niwot$year, niwot$doy), format="%Y %j")
-    niwot <- taxoscrub(niwot, "niwot")
-    if (names.only) return(niwot[common.cols.taxo])
-    niwot$site <- "niwot"
-    niwot$varetc <- NA
-    niwot$cult <- NA
-    niwot$year <- format(niwot$date, "%Y")
-
-    niwot$isflowering <- !is.na(niwot$numflowers) & niwot$numflowers>0
-    niwot$isinleaf <- !is.na(niwot$numleaves) & niwot$numleaves>0
-
-    # ffd = for each species*yr*plot, the first time flowering
-    ffd <- subset(niwot, isflowering)
-    ffd <- subsetEarliest(ffd, c("genus", "species", "year", "plot"))
-    ffd <- cbind(ffd, event="ffd")
-
-    # fld = for each species*yr*plot, the first time in leaf
-    fld <- subset(niwot, isinleaf)
-    fld <- subsetEarliest(fld, c("genus", "species", "year", "plot"))
-    fld <- cbind(fld, event="fld")
-
-    niwotrb <- rbind(ffd, fld)
-    niwotrb <- subset(niwotrb, select=common.cols.raw)
-    row.names(niwotrb) <- NULL 
-
+    niwot <- read.csv(file,header=TRUE)
+    colnames(niwot)[2]<-"plot"
+    niwot$species<-NA
+    niwot$genus<-NA
+    niwot[grep("AR",niwot$plant_id),]$genus<-"Acomastylis"
+    niwot[grep("AR",niwot$plant_id),]$species<-"rossii"
+    niwot[grep("BB",niwot$plant_id),]$genus<-"Bistorta"
+    niwot[grep("BB",niwot$plant_id),]$species<-"bistortoides"
+    niwot1<-niwot[grep("EP",niwot$plot),]
+    niwot2<-niwot[substr(niwot$plot,4,4)=="C",]
+    niwot3<-rbind(niwot1,niwot2)
+    niwot4<-subset(niwot3, select=c("year","plot","genus","species","X1st_leaf","X1st_flower","X1st_flower_open","X1st_petal_shed","last_petal_shed","X1st_seed_disp","X1st_red_leaf"))
+    niwot5<-reshape(niwot4,varying = list(names(niwot4)[5:11]), direction = "long", v.names = c("doy"), times = names(niwot4)[5:11])
+    niwot5$event<-NA
+    niwot5[niwot5$time=="X1st_leaf",]$event<-"bbd"
+    niwot5[niwot5$time=="X1st_flower_open",]$event<-"ffd"
+    niwot5[niwot5$time=="X1st_seed_disp",]$event<-"sd"
+    niwot6<-niwot5[which(niwot5$event=="bbd"|niwot5$event=="ffd"|niwot5$event=="sd"),]
+    niwot6$date <- as.Date(paste(niwot6$year, niwot6$doy), format="%Y %j")
+    niwot6$site <- "niwot"
+    niwot6$varetc <- NA
+    niwot6$cult <- NA
+    niwot <- taxoscrub(niwot6, "niwot")
+    niwotrb <- subset( niwot, select=common.cols.raw)            
+    rownames(niwotrb)<-NULL  
     return(niwotrb)
 }
 
-clean.raw$sevcore <- function(splistfile="sev048_1991_meta.dbf",
-    datafile="sev137_data.dbf", path=".", names.only=FALSE) {
-
-    ## Sevilleta ##
-    ## Data type: Regular monitoring of multiple events ##
-
-    ## Species codes ##
-    sevsplist <- read.table(file.path(path, splistfile), skip=315,
-        nrow=821, sep=" ", header=FALSE,  col.names=c("spcode", "genus",
-        "species", "variety"), comment.char="\\")
-    ## Core site phenology ##
-    ## Missing data is -999 ##
-    sev <- read.csv(file.path(path, datafile), skip=8, nrow=291435,
-        comment.char="\\", header=FALSE, col.names=c("moyr","Date",
-        "observer", "site", "rodentweb", "spcode","obsnum", "foliage",
-        "reprocond", "blah", "blah"), colClasses=c(rep(NA, 9),
-        rep("NULL", 2)))
-    lookupsevf <- c("N"="new green foliage", "O"="old green foliage only",
-        "B"="brown leaves only", "Z"="no leaves")
-    lookupsevr <- c("FL"="newflower", "FR"="newfruits",
-        "FF"="newfruitsflowers", "Z"="nofruitsorflower",
-        "B"="onlybuds", "BFL"="budsandflowers", "BFR"="budsandfruits")
-    sev$foliage <- unname(lookupsevf[sev$foliage])
-    sev$reprocond <- unname(lookupsevr[sev$reprocond])
-    sev <- merge(sev, sevsplist, by="spcode", all.x=TRUE)
-    sev <- taxoscrub(sev, "sev")
-    if (names.only) return(sev[common.cols.taxo])
-    sev$date <- as.Date(sev$Date, format="%m/%d/%Y")
-    sev$year <- format(sev$date, "%Y")
-    sev$doy <- as.numeric(format(sev$date, "%j"))
-    sev <- sev[!is.na(sev$doy),]
-
-    # sev "site" is really what we call "plot"
-    sev$plot <- sev$site 
-    sev$site <- "sevcore"
-
-    sev$isinleaf <- !is.na(sev$foliage) & sev$foliage=="new green foliage"
-    fld <- subset(sev, isinleaf)
-    fld <- subsetEarliest(fld, c("plot", "genus", "species", "year"))
-    fld <- cbind(fld, event="fld")
-
-    fld$varetc <- NA
-    fld$cult <- NA
-    sevrb <- subset(fld, select=common.cols.raw)
-    row.names(sevrb) <- NULL
-
-    return(sevrb)
-}
-
-clean.raw$sevtrans <- function(splistfile="sev048_1991_meta.dbf",
-    transect.files = c("sev048_1995_data.dbf", "sev048_1994_data.dbf",
-    "sev048_1993_data.dbf", "sev048_1991_data.dbf"), path=".",
-    names.only=FALSE) {
-
-    ## Phenology transects ##
-
-    ## Species codes ##
-    sevsplist <- read.table(file.path(path, splistfile), skip=315,
-        nrow=821, sep=" ", header=FALSE,  col.names=c("spcode", "genus",
-        "species", "variety"), comment.char="\\")
-
-    col.names <- c("weirddate", "maybeobserver", "plot", "spcode",
-        "germinating", "perenating", "vegetating", "budding", "flowering",
-        "fruiting", "dispersing", "dormant", "senescing", "dead", "notpresent")
-    sev95 <- read.table(file.path(path, transect.files[1]), skip=1568,
-        nrow=4532, header=FALSE, comment.char="\\", col.names=col.names)
-    sev94 <- read.table(file.path(path, transect.files[2]), skip=1568,
-        nrow=4532, header=FALSE, comment.char="\\", col.names=col.names)
-    sev93 <- read.table(file.path(path, transect.files[3]), skip=1420,
-        nrow=5163, header=FALSE, comment.char="\\", col.names=col.names)
-    # no data in Sev 1992 file, it's in 1991 file #
-    sev912 <- read.table(file.path(path, transect.files[4]), skip=1245,
-        nrow=8199, header=FALSE, comment.char="\\", col.names=col.names)
-    sevtrans <- rbind(sev95, sev94, sev93, sev912)
-    sevtrans <- merge(sevtrans, sevsplist, by="spcode", all.x=TRUE)
-    sevtrans <- taxoscrub(sevtrans, "sev")
-    if (names.only) return(sevtrans[common.cols.taxo])
-    sevtrans$date <- as.Date(as.character(sevtrans$weirddate),
-        format="%Y%m%d")
-    sevtrans$year <- format(sevtrans$date, "%Y")
-    sevtrans$doy <- as.numeric(format(sevtrans$date, "%j"))
-    sevtrans <- sevtrans[!is.na(sevtrans$doy),]
-    sevtrans$site <- "sevtrans"
-    sevtrans$varetc <- NA
-    sevtrans$cult <- NA
-
-    sevtrans$isflowering <- sevtrans$flowering=="y"
-    sevtrans$isinleaf <- (sevtrans$germinating=="y" |
-        sevtrans$perenating=="y" | sevtrans$vegetating=="y")
-
-    # ffd = for each species*yr*plot, the first time flowering
-    ffd <- subset(sevtrans, isflowering)
-    ffd <- subsetEarliest(ffd, c("plot", "genus", "species", "year"))
-    ffd <- cbind(ffd, event="ffd")
-
-    # fld = for each species*yr*plot, the first time in leaf
-    fld <- subset(sevtrans, isinleaf)
-    fld <- subsetEarliest(fld, c("plot", "genus", "species", "year"))
-    fld <- cbind(fld, event="fld")
-
-    sevtransrb <- rbind(ffd, fld)
-    sevtransrb <- subset(sevtransrb, select=common.cols.raw)
-    row.names(sevtransrb) <- NULL
-
-    return(sevtransrb)
-
-}
-
-
-clean.raw$mikesell <- function(filename="Mikesell_pheno_1883_1912.csv",
-    spkey="Mikesell_species_key.csv", path=".", names.only=FALSE) {
+clean.rawobs$mikesell <- function(filename="Mikesell_pheno_1883_1912.csv",
+    spkey="Mikesell_species_key.csv", path=".") {
  
     # Mikesell #
     # NA is 999 #
@@ -500,7 +327,6 @@ clean.raw$mikesell <- function(filename="Mikesell_pheno_1883_1912.csv",
     mikesell$genus <- sub(sppexpr, "\\1", mikesell$Plant.Name)
     mikesell$species <- sub(sppexpr, "\\2", mikesell$Plant.Name)
     mikesell <- taxoscrub(mikesell, "mikesell")
-    if (names.only) return(mikesell[common.cols.taxo])
     mikesell$varetc <- sub(sppexpr, "\\3", mikesell$Plant.Name)
     # remove columns that we don't need (and that we don't want to
     # participate in the melt)
@@ -508,11 +334,10 @@ clean.raw$mikesell <- function(filename="Mikesell_pheno_1883_1912.csv",
     mikesell$Plant.Name <- NULL
     mikesell$genus.prescrub <- NULL
     mikesell$species.prescrub <- NULL
-
     mikemelt <- melt(mikesell, id.var=c("year", "genus", "species",
         "scrub", "varetc"))
-    lookupmike <- c("bud_burst"="firstleafbud", "first_leaf"="firstleaf",
-        "full_leaf "="fullleaf")
+    lookupmike <- c("bud_burst"="bbd", "first_leaf"="lud",
+        "full_leaf "="lod")
     mikemelt$event <- unname(lookupmike[mikemelt$variable])
     mikemelt$doy <- mikemelt$value
     mikemelt <- mikemelt[!is.na(mikemelt$doy),]
@@ -520,12 +345,102 @@ clean.raw$mikesell <- function(filename="Mikesell_pheno_1883_1912.csv",
     mikemelt$date <- as.Date(paste(mikemelt$year, mikemelt$doy), format="%Y %j")
     mikemelt$plot <- NA
     mikemelt$cult <- NA
-    
     mikerb <- subset(mikemelt, select=common.cols.raw)
-    
     return(mikerb)
-
 }
+
+##Concord data from Richard Primack
+clean.rawobs$concord <- function(filename="Miller-Rushing_Primack_Concord_phenology_data_complete.csv", path=".") {
+  concord <- read.csv(file.path(path, filename), skip=35,header=TRUE)
+  colnames(concord)[1]<-"genus"
+  colnames(concord)[2]<-"species"
+  concord2<-reshape(concord,varying = list(names(concord)[16:46]), direction = "long", v.names = c("doy"), times = names(concord)[16:46])
+  concord2$site<-"concord"
+  concord2$plot<-NA
+  concord2$event<-"ffd"
+  concord2$year <- gsub("X","", concord2$time) 
+  concord2$date <- as.Date(paste(concord2$year, concord2$doy, sep="-"),format="%Y-%d-%b")            
+  concord2$varetc <- NA
+  concord2$cult <- NA
+  concord3 <- taxoscrub(concord2, "concord")
+  concordrb <- subset(concord3, select=common.cols.raw)
+  return(concordrb)
+}
+###Mohonk data from Ben Cook (directly from NECTAR)
+clean.rawobs$mohonk <- function(filename="mohonk.csv", path=".") {
+  mohonk <- read.csv(file.path(path, filename),header=TRUE)
+  colnames(mohonk)[2]<-"site"
+  colnames(mohonk)[3]<-"genus"
+  colnames(mohonk)[4]<-"species"
+  colnames(mohonk)[5]<-"event"
+  colnames(mohonk)[6]<-"year"
+  colnames(mohonk)[7]<-"doy"
+  mohonk$date <- as.Date(paste(mohonk$year, mohonk$doy, sep="-"),format="%Y-%d-%b")            
+  mohonk$plot<-NA
+  mohonk$varetc <- NA
+  mohonk$cult <- NA
+  mohonk2 <- taxoscrub(mohonk, "mohonk")
+  mohonkdrb <- subset(mohonk2, select=common.cols.raw)
+  return(mohonkdrb)
+}
+
+###Marsham data  (directly from NECTAR)
+clean.rawobs$marsham <- function(filename="marsham.csv", path=raw.data.dir) {
+  marsham <- read.csv(file.path(path, filename),header=TRUE)
+  colnames(marsham)[2]<-"site"
+  colnames(marsham)[3]<-"genus"
+  colnames(marsham)[4]<-"species"
+  colnames(marsham)[5]<-"event"
+  colnames(marsham)[6]<-"year"
+  colnames(marsham)[7]<-"doy"
+  marsham$date <- as.Date(paste(marsham$year, marsham$doy, sep="-"),format="%Y-%d-%b")            
+  marsham$plot<-NA
+  marsham$varetc <- NA
+  marsham$cult <- NA
+  marsham2 <- taxoscrub(marsham, "mohonk")
+  marshamdrb <- subset(marsham2, select=common.cols.raw)
+  return(marshamdrb)
+}
+#
+###Fargo data  (directly from NECTAR)
+clean.rawobs$fargo <- function(filename="fargo.csv", path=raw.data.dir) {
+  fargo <- read.csv(file.path(path, filename),header=TRUE)
+  colnames(fargo)[2]<-"site"
+  colnames(fargo)[3]<-"genus"
+  colnames(fargo)[4]<-"species"
+  colnames(fargo)[5]<-"event"
+  colnames(fargo)[6]<-"year"
+  colnames(fargo)[7]<-"doy"
+  fargo$date <- as.Date(paste(fargo$year, fargo$doy, sep="-"),format="%Y-%d-%b")            
+  fargo$plot<-NA
+  fargo$varetc <- NA
+  fargo$cult <- NA
+  fargo2 <- taxoscrub(fargo, "fargo")
+  fargorb <- subset(fargo2, select=common.cols.raw)
+  return(marshamdrb)
+}
+
+
+# Produce cleaned raw data
+#
+
+raw.data.dir <- "Observations/Raw"
+cleandata.rawobs$fitter <- clean.rawobs$fitter(file="Fitter_data.csv",path="Observations/Raw/")
+cleandata.rawobs$harvard <- clean.rawobs$harvard(path=raw.data.dir)
+cleandata.rawobs$hubbard <- clean.rawobs$hubbard(path=raw.data.dir)
+cleandata.rawobs$konza <- clean.rawobs$konza(path=raw.data.dir)
+cleandata.rawobs$niwot <- clean.rawobs$niwot(path=raw.data.dir)
+cleandata.rawobs$mikesell <- clean.rawobs$mikesell(path=raw.data.dir)
+cleandata.rawobs$concord<-clean.rawobs$concord(path=raw.data.dir)
+cleandata.rawobs$mohonk<-clean.rawobs$mohonk(path=raw.data.dir)
+cleandata.rawobs$marsham<-clean.rawobs$marsham(path=raw.data.dir)
+
+obsphendb <- do.call("rbind", cleandata.rawobs)
+row.names(obsphendb) <- NULL
+write.csv(obsphendb, "radmeeting/obspheno.csv", row.names=FALSE)
+
+stop()
+
 
 
 #
@@ -542,12 +457,10 @@ taxonomy$hubbard <- clean.raw$hubbard(path=raw.data.dir, names.only=TRUE)
 taxonomy$luquillo <- clean.raw$luquillo(path=raw.data.dir, names.only=TRUE)
 taxonomy$konza <- clean.raw$konza(path=raw.data.dir, names.only=TRUE)
 taxonomy$niwot <- clean.raw$niwot(path=raw.data.dir, names.only=TRUE)
-taxonomy$sevtrans <- clean.raw$sevtrans(path=raw.data.dir, names.only=TRUE)
-taxonomy$sevcore <- clean.raw$sevcore(path=raw.data.dir, names.only=TRUE)
 taxonomy$mikesell <- clean.raw$mikesell(path=raw.data.dir, names.only=TRUE)
 
 pnames <- unique(do.call("rbind", lapply(names(taxonomy),
-    function(site) data.frame(site=site, taxonomy[[site]]))))
+                                         function(site) data.frame(site=site, taxonomy[[site]]))))
 pheno.species <- tolower(paste(pnames$genus, pnames$species))
 
 ipni <- read.csv("TaxonScrubber/TS_AllTaxa.csv")
@@ -558,16 +471,16 @@ ipni.a <- ipni[!is.na(ipni$accepted) & ipni$accepted==1, ]
 
 pnames.inIPNI <- pnames[pheno.species %in% ipni.species,]
 pheno.species.inIPNI <- tolower(paste(pnames.inIPNI$genus,
-    pnames.inIPNI$species))
+                                      pnames.inIPNI$species))
 pnames.a <- pnames.inIPNI[pheno.species.inIPNI %in%
-    tolower(paste(ipni.a$Genus, ipni.a$Species)), ]
+                            tolower(paste(ipni.a$Genus, ipni.a$Species)), ]
 pnames.na <- pnames.inIPNI[!pheno.species.inIPNI %in%
-    tolower(paste(ipni.a$Genus, ipni.a$Species)), ]
+                             tolower(paste(ipni.a$Genus, ipni.a$Species)), ]
 pnames.noIPNI <- pnames[!pheno.species %in% ipni.species,]
 
 all.pheno.species <- rbind(data.frame(pnames.a, ipni="accepted"),
-    data.frame(pnames.na, ipni="not accepted"),
-    data.frame(pnames.noIPNI, ipni="unmatched"))
+                           data.frame(pnames.na, ipni="not accepted"),
+                           data.frame(pnames.noIPNI, ipni="unmatched"))
 
 stop("Stopping here...")
 write.csv(pnames.a, "knb/nectarnames_IPNIaccepted.csv", row.names=FALSE, quote=FALSE)
@@ -575,28 +488,3 @@ write.csv(pnames.na, "knb/nectarnames_IPNInotaccepted.csv", row.names=FALSE, quo
 write.csv(pnames.noIPNI, "knb/nectarnames_IPNIunmatched.csv", row.names=FALSE, quote=FALSE)
 write.csv(all.pheno.species, "knb/nectarnames_all.csv", row.names=FALSE, quote=FALSE)
 
-
-#
-# Produce cleaned raw data
-#
-
-raw.data.dir <- "Observations/Raw"
-clean.rawobs <- list()
-clean.rawobs$fitter <- clean.rawobs$fitter(path=raw.data.dir)
-clean.rawobs$harvard <- clean.rawobs$harvard(path=raw.data.dir)
-clean.rawobs$ <- clean.rawobs$hubbard(path=raw.data.dir)
-
-cleandata.raw$konza <- clean.raw$konza(path=raw.data.dir)
-cleandata.raw$luquillo <- clean.raw$luquillo(path=raw.data.dir)
-cleandata.raw$niwot <- clean.raw$niwot(path=raw.data.dir)
-cleandata.raw$sevcore <- clean.raw$sevcore(path=raw.data.dir)
-cleandata.raw$sevtrans <- clean.raw$sevtrans(path=raw.data.dir)
-cleandata.raw$mikesell <- clean.raw$mikesell(path=raw.data.dir)
-
-
-###
-ffdfld <- do.call("rbind", cleandata.raw)
-row.names(ffdfld) <- NULL
-write.csv(ffdfld, "knb/nectarpheno_raw.csv", row.names=FALSE)
-
-stop()
