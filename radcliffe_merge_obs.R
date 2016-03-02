@@ -417,9 +417,26 @@ clean.rawobs$fargo <- function(filename="fargo.csv", path=raw.data.dir) {
   fargo$cult <- NA
   fargo2 <- taxoscrub(fargo, "fargo")
   fargorb <- subset(fargo2, select=common.cols.raw)
-  return(marshamdrb)
+  return(fargorb)
 }
 
+###Fargo data  (directly from NECTAR)
+clean.rawobs$washdc <- function(filename="washdc.csv", path=raw.data.dir) {
+  washdc <- read.csv(file.path(path, filename),header=TRUE)
+  colnames(washdc)[2]<-"site"
+  colnames(washdc)[3]<-"genus"
+  colnames(washdc)[4]<-"species"
+  colnames(washdc)[5]<-"event"
+  colnames(washdc)[6]<-"year"
+  colnames(washdc)[7]<-"doy"
+  washdc$date <- as.Date(paste(washdc$year, washdc$doy, sep="-"),format="%Y-%d-%b")            
+  washdc$plot<-NA
+  washdc$varetc <- NA
+  washdc$cult <- NA
+  washdc2 <- taxoscrub(washdc, "washdc")
+  washdcrb <- subset(washdc2, select=common.cols.raw)
+  return(washdcrb)
+}
 
 # Produce cleaned raw data
 #
@@ -434,6 +451,7 @@ cleandata.rawobs$mikesell <- clean.rawobs$mikesell(path=raw.data.dir)
 cleandata.rawobs$concord<-clean.rawobs$concord(path=raw.data.dir)
 cleandata.rawobs$mohonk<-clean.rawobs$mohonk(path=raw.data.dir)
 cleandata.rawobs$marsham<-clean.rawobs$marsham(path=raw.data.dir)
+cleandata.rawobs$fargo<-clean.rawobs$fargo(path=raw.data.dir)
 
 obsphendb <- do.call("rbind", cleandata.rawobs)
 row.names(obsphendb) <- NULL
