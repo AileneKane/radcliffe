@@ -89,9 +89,6 @@ taxoscrub <- function(dat, sitename) {
 ####### Raw data ########
 #########################
 
-# make list to store all the derived dataset cleaning functions
-clean.rawobs <- list()
-
 
 clean.rawobs$fitter <- function(filename, path) 
   {#file="Fitter_data.csv",path="Observations/Raw/"
@@ -231,7 +228,7 @@ clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger
     hubbardrb <- subset(hubbard, select=common.cols.raw)
     row.names(hubbardrb) <- NULL
 
-    return(hubbard)
+    return(hubbardrb)
 }
 
 clean.rawobs$konza <- function(filename="Konza_PlantPhenology.csv", path=".") {
@@ -359,7 +356,7 @@ clean.rawobs$concord <- function(filename="Miller-Rushing_Primack_Concord_phenol
   concord2$plot<-NA
   concord2$event<-"ffd"
   concord2$year <- gsub("X","", concord2$time) 
-  concord2$date <- as.Date(paste(concord2$year, concord2$doy, sep="-"),format="%Y-%d-%b")            
+  concord2$date <- as.Date(paste(concord2$year, concord2$doy, sep="-"),format="%Y-%j")            
   concord2$varetc <- NA
   concord2$cult <- NA
   concord3 <- taxoscrub(concord2, "concord")
@@ -375,7 +372,7 @@ clean.rawobs$mohonk <- function(filename="mohonk.csv", path=".") {
   colnames(mohonk)[5]<-"event"
   colnames(mohonk)[6]<-"year"
   colnames(mohonk)[7]<-"doy"
-  mohonk$date <- as.Date(paste(mohonk$year, mohonk$doy, sep="-"),format="%Y-%d-%b")            
+  mohonk$date <- as.Date(paste(mohonk$year, mohonk$doy, sep="-"),format="%Y-%j")            
   mohonk$plot<-NA
   mohonk$varetc <- NA
   mohonk$cult <- NA
@@ -393,7 +390,7 @@ clean.rawobs$marsham <- function(filename="marsham.csv", path=raw.data.dir) {
   colnames(marsham)[5]<-"event"
   colnames(marsham)[6]<-"year"
   colnames(marsham)[7]<-"doy"
-  marsham$date <- as.Date(paste(marsham$year, marsham$doy, sep="-"),format="%Y-%d-%b")            
+  marsham$date <- as.Date(paste(marsham$year, marsham$doy, sep="-"),format="%Y-%j")            
   marsham$plot<-NA
   marsham$varetc <- NA
   marsham$cult <- NA
@@ -411,7 +408,7 @@ clean.rawobs$fargo <- function(filename="fargo.csv", path=raw.data.dir) {
   colnames(fargo)[5]<-"event"
   colnames(fargo)[6]<-"year"
   colnames(fargo)[7]<-"doy"
-  fargo$date <- as.Date(paste(fargo$year, fargo$doy, sep="-"),format="%Y-%d-%b")            
+  fargo$date <- as.Date(paste(fargo$year, fargo$doy, sep="-"),format="%Y-%j")            
   fargo$plot<-NA
   fargo$varetc <- NA
   fargo$cult <- NA
@@ -429,7 +426,7 @@ clean.rawobs$washdc <- function(filename="washdc.csv", path=raw.data.dir) {
   colnames(washdc)[5]<-"event"
   colnames(washdc)[6]<-"year"
   colnames(washdc)[7]<-"doy"
-  washdc$date <- as.Date(paste(washdc$year, washdc$doy, sep="-"),format="%Y-%d-%b")            
+  washdc$date <- as.Date(paste(washdc$year, washdc$doy, sep="-"),format="%Y-%j")            
   washdc$plot<-NA
   washdc$varetc <- NA
   washdc$cult <- NA
@@ -437,10 +434,32 @@ clean.rawobs$washdc <- function(filename="washdc.csv", path=raw.data.dir) {
   washdcrb <- subset(washdc2, select=common.cols.raw)
   return(washdcrb)
 }
-
+###Bolmgren data
+clean.rawobs$bolmgren <- function(filename="gunnar_copy2ailene_151126.csv", path=raw.data.dir) {
+  bolmgren <- read.csv(file.path(path, filename),header=TRUE)
+  bolmgren$year<-seq(from=1934, to=2006, by=1)
+  bolmgren2<-reshape(bolmgren,varying = list(names(bolmgren)[1:25]), direction = "long", v.names = c("doy"), times = names(bolmgren)[1:25])
+  bolmgren2$site<-"bolmgren"
+  gensp <- strsplit(as.character(bolmgren2$time),'_') 
+  gensp<-do.call(rbind, gensp)
+  bolmgren3<-cbind(bolmgren2,gensp[,1:2])
+  colnames(bolmgren3)[6]<-"genus"
+  bolmgren3$genus<-as.character(bolmgren3$genus)
+  colnames(bolmgren3)[7]<-"species"
+  bolmgren3$event<-"ffd"
+  bolmgren3$date <- as.Date(paste(bolmgren3$year, bolmgren3$doy, sep="-"),format="%Y-%j")            
+  bolmgren3$plot<-NA
+  bolmgren3$varetc <- NA
+  bolmgren3$cult <- NA
+  bolmgren3 <- taxoscrub(bolmgren3, "bolmgren")
+  bolmgrenrb <- subset(bolmgren3, select=common.cols.raw)
+  rownames(bolmgrenrb)<-NULL  
+  return(bolmgrenrb)
+}
 # Produce cleaned raw data
 #
-
+# make list to store all the derived dataset cleaning functions
+cleandata.rawobs <- list()
 raw.data.dir <- "Observations/Raw"
 cleandata.rawobs$fitter <- clean.rawobs$fitter(file="Fitter_data.csv",path="Observations/Raw/")
 cleandata.rawobs$harvard <- clean.rawobs$harvard(path=raw.data.dir)
@@ -452,6 +471,8 @@ cleandata.rawobs$concord<-clean.rawobs$concord(path=raw.data.dir)
 cleandata.rawobs$mohonk<-clean.rawobs$mohonk(path=raw.data.dir)
 cleandata.rawobs$marsham<-clean.rawobs$marsham(path=raw.data.dir)
 cleandata.rawobs$fargo<-clean.rawobs$fargo(path=raw.data.dir)
+cleandata.rawobs$washdc<-clean.rawobs$washdc(path=raw.data.dir)
+cleandata.rawobs$bolmgren<-clean.rawobs$bolmgren(path=raw.data.dir)
 
 obsphendb <- do.call("rbind", cleandata.rawobs)
 row.names(obsphendb) <- NULL
