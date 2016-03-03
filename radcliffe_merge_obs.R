@@ -456,6 +456,100 @@ clean.rawobs$bolmgren <- function(filename="gunnar_copy2ailene_151126.csv", path
   rownames(bolmgrenrb)<-NULL  
   return(bolmgrenrb)
 }
+
+###Gothic data: these data are not quite complete- Dr. Jane E. Ogilvie will send final datafile when it is complete
+clean.rawobs$gothic <- function(filename="gothicphenology1973-2015_March2016.csv", path=raw.data.dir) {
+  gothic <- read.csv(file.path(path, filename),header=TRUE)
+  gothic$site<-"gothic"
+  gensp <- strsplit(as.character(gothic$species),' ') 
+  gensp<-do.call(rbind, gensp)
+  gothic<-cbind(gothic,gensp[,1:2])
+  colnames(gothic)[8]<-"genus"
+  colnames(gothic)[9]<-"species"
+  gothic$event<-"ffd"
+  gothic$date <- as.Date(paste(gothic$year, gothic$doy, sep="-"),format="%Y-%j")            
+  gothic$varetc <- NA
+  gothic$cult <- NA
+  gothic <- taxoscrub(gothic, "gothic")
+  gothicrb <- subset(gothic, select=common.cols.raw)
+  return(gothicrb)
+}
+
+
+###UWM data from Mark Schwartz
+clean.rawobs$uwm <- function(filename="UWMFS_HFP_Pheno_2000.csv", path=raw.data.dir) {
+  files<-c("UWMFS_HFP_Pheno_2000.csv","UWMFS_HFP_Pheno_2001.csv","UWMFS_HFP_Pheno_2002.csv","UWMFS_HFP_Pheno_2003.csv","UWMFS_HFP_Pheno_2004.csv","UWMFS_HFP_Pheno_2005.csv","UWMFS_HFP_Pheno_2006.csv","UWMFS_HFP_Pheno_2007.csv","UWMFS_HFP_Pheno_2008.csv","UWMFS_HFP_Pheno_2009.csv","UWMFS_HFP_Pheno_2010.csv","UWMFS_HFP_Pheno_2011.csv","UWMFS_HFP_Pheno_2012.csv","UWMFS_HFP_Pheno_2013.csv","UWMFS_HFP_Pheno_2014.csv","UWMFS_HFP_Pheno_2015.csv")
+  years<-seq(from=2000,to=2015, by=1)
+  uwm<-NA
+  for(i in 1:16){
+    filename<-files[i]
+    uwm1 <- read.csv(file.path(path, filename),header=TRUE)
+    uwm1<-uwm1[,1:7]
+    names(uwm1)<-c("Code","Latin.name","Common.name","N","bbm50doy","L75mdoy","L95mdoy")
+    uwm1$year<-paste(years[i])
+    uwm<-rbind(uwm,uwm1)
+  }
+  uwm<-uwm[uwm$Code!='',]
+  uwm<-uwm[-1,]
+  uwm$site<-"uwm"
+  gensp <- strsplit(as.character(uwm$Latin.name),' ') 
+  gensp<-do.call(rbind, gensp)
+  uwm<-cbind(uwm,gensp[,1:2])
+  colnames(uwm)[10]<-"genus"
+  colnames(uwm)[11]<-"species"
+  uwm2<-reshape(uwm,varying = list(names(uwm)[5:7]), direction = "long", v.names = c("doy"), times = names(uwm)[5:7])
+  colnames(uwm2)[9]<-"event"
+  uwm2$event[uwm2$event == "bbm50doy"] <- "bbd"
+  uwm2$date <- as.Date(paste(uwm2$year, uwm2$doy, sep="-"),format="%Y-%j")            
+  uwm2$varetc <- NA
+  uwm2$cult <- NA
+  uwm2$plot <- NA
+  uwm2$site <-"uwm"
+  uwm2 <- taxoscrub(uwm2, "uwm")
+  uwmrb <- subset(uwm2, select=common.cols.raw)
+  rownames(uwmrb)<-NULL  
+  return(uwmrb)
+}
+
+
+###Rousi data on Betula pendula; these data begin when the first date of budburst occurred. 
+clean.rawobs$rousi <- function(filename="Rousi_BDbud_1997_2005.csv", path=raw.data.dir) {
+  rousi <- read.csv(file.path(path, filename),skip=1,header=T)
+  rousi$site<-"rousi"
+  colnames(rousi)[5]<-"doy"
+  rousi$event<-"bbd"
+  rousi$date <- as.Date(paste(rousi$year, rousi$doy, sep="-"),format="%Y-%j")            
+  rousi$plot<- NA
+  rousi$varetc <- NA
+  rousi$cult <- NA
+  rousi$genus <- "Betula"
+  rousi$species <- "pendula"
+  rousi2<-rousi[rousi$total>0,]#remove rows for which indiviudals did not burst their buds
+  
+  rousi2 <- taxoscrub(rousi2, "rousi")
+  rousirb <- subset(rousi2, select=common.cols.raw)
+  return(rousirb)
+}
+###Rousi data on Betula pendula and B. pubescens flowering; these data begin when the first date of budburst occurred. 
+clean.rawobs$rousifl <- function(filename="rousi_betula_flowering.csv", path=raw.data.dir) {
+  rousifl <- read.csv(file.path(path, filename),skip=2,header=T)
+  rousifl<-rousifl[-1,]
+  rousifl$site<-"rousi"
+  rousifl$genus <- "Betula"
+  rousifl$species <- "pendula"
+  colnames(rousifl)[4]<-"sp"
+  rousifl[rousifl$sp==2,]$species <- "pubescens"
+  
+  colnames(rousifl)[5]<-"doy"
+  rousifl$event<-"ffd"#use just female flowers for now?
+  rousifl$date <- as.Date(paste(rousifl$year, rousifl$doy, sep="-"),format="%Y-%j")            
+  rousifl$plot<- NA
+  rousifl$varetc <- NA
+  rousifl$cult <- NA  
+  rousifl <- taxoscrub(rousifl, "rousi")
+  rousiflrb <- subset(rousifl, select=common.cols.raw)
+  return(rousiflrb)
+}
 # Produce cleaned raw data
 #
 # make list to store all the derived dataset cleaning functions
@@ -473,6 +567,10 @@ cleandata.rawobs$marsham<-clean.rawobs$marsham(path=raw.data.dir)
 cleandata.rawobs$fargo<-clean.rawobs$fargo(path=raw.data.dir)
 cleandata.rawobs$washdc<-clean.rawobs$washdc(path=raw.data.dir)
 cleandata.rawobs$bolmgren<-clean.rawobs$bolmgren(path=raw.data.dir)
+cleandata.rawobs$gothic<-clean.rawobs$gothic(path=raw.data.dir)
+cleandata.rawobs$uwm<-clean.rawobs$uwm(path=raw.data.dir)
+cleandata.rawobs$rousi<-clean.rawobs$rousi(path=raw.data.dir)
+cleandata.rawobs$rousifl<-clean.rawobs$rousifl(path=raw.data.dir)
 
 obsphendb <- do.call("rbind", cleandata.rawobs)
 row.names(obsphendb) <- NULL
