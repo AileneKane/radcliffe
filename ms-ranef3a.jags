@@ -1,0 +1,145 @@
+
+    model {
+    
+    # -------------------------------------------------
+    # Parameters:
+    # phiA: survival probability for nonreproductive plants
+    # phiB: survival probability for reproductive plants
+    # psiAB: transition probability from nonreproductive to fruiting
+    # psiBA: transition probability from reproductive to nonfruiting
+    # pA: emergence probability for nonreproductive plants
+    # pB: emergence probability for reproductive plants
+    # -------------------------------------------------
+    # States (S):
+    # 1 alive and nonreproductive
+    # 2 alive and reproductive
+    # 3 dead
+    # Observations (O):  
+    # 1 seen nonreproductive
+    # 2 seen reproductive
+    # 3 not seen
+    # -------------------------------------------------
+    
+    # Priors and constraints
+    for (i in 1:nind){
+    for (t in f[i]:(n.occasions-1)){
+    logit(phiA[i,t]) <- eta.phiA[group[i],t]
+    logit(phiB[i,t]) <- eta.phiB[group[i],t]
+    logit(psiAB[i,t]) <- eta.psiAB[group[i],t]
+    logit(psiBA[i,t]) <- eta.psiBA[group[i],t]
+    logit(pA[i,t]) <- eta.pA[group[i],t]
+    logit(pB[i,t]) <- eta.pB[group[i],t]    
+    }#t
+    }#i
+    for (g in 1:2){#group  
+    for (t in 1:(n.occasions-1)){
+    eta.phiA[g,t]  <-mu.phiA[g]+beta.phiA[g]*x[g,t]+beta1.phiA[g]*x1[g,t]+epsilon.phiA[g,t]
+    eta.phiB[g,t]  <-mu.phiB[g]+beta.phiB[g]*x[g,t]+beta1.phiB[g]*x1[g,t]+epsilon.phiB[g,t]
+    eta.psiAB[g,t]  <-mu.psiAB[g]+beta.psiAB[g]*x[g,t]+beta1.psiAB[g]*x1[g,t]+epsilon.psiAB[g,t]
+    eta.psiBA[g,t]  <-mu.psiBA[g]+beta.psiBA[g]*x[g,t]+beta1.psiBA[g]*x1[g,t]+epsilon.psiBA[g,t]
+    eta.pA[g,t]  <-mu.pA[g]+beta.pA[g]*x[g,t]+beta1.pA[g]*x1[g,t]+epsilon.pA[g,t]
+    eta.pB[g,t]  <-mu.pB[g]+beta.pB[g]*x[g,t]+beta1.pB[g]*x1[g,t]+epsilon.pB[g,t]
+    epsilon.phiA[g,t]~dnorm(0,tau.phiA[g])
+    epsilon.phiB[g,t]~dnorm(0,tau.phiB[g])
+    epsilon.psiAB[g,t]~dnorm(0,tau.psiAB[g])
+    epsilon.psiBA[g,t]~dnorm(0,tau.psiBA[g])
+    epsilon.pA[g,t]~dnorm(0,tau.pA[g])
+    epsilon.pB[g,t]~dnorm(0,tau.pB[g])
+    }#t
+    mean.phiA[g]~dunif(0,1)# Priors for mean group-specific survival for veg plants
+    mu.phiA[g]<-log(mean.phiA[g]/(1-mean.phiA[g]))  
+    mean.phiB[g]~dunif(0,1)# Priors for mean group-specific survivalsurvival for rep plants
+    mu.phiB[g]<-log(mean.phiB[g]/(1-mean.phiB[g]))    
+    mean.psiAB[g]~dunif(0,1)# Priors for mean group-specific transition from veg to rep plants
+    mu.psiAB[g]<-log(mean.psiAB[g]/(1-mean.psiAB[g]))       
+    mean.psiBA[g]~dunif(0,1)# Priors for mean group-specific transition from rep to veg plants
+    mu.psiBA[g]<-log(mean.psiBA[g]/(1-mean.psiBA[g]))    
+    mean.pA[g]~dunif(0,1)#Priors for mean group-specific detection (emergence) probability or veg plants
+    mu.pA[g]<-log(mean.pA[g]/(1-mean.pA[g]))   
+    mean.pB[g]~dunif(0,1)#Priors for mean group-specific detection (emergence) probability or veg plants
+    mu.pB[g]<-log(mean.pB[g]/(1-mean.pB[g]))    
+    sigma.phiA[g]~dunif(0,10)#temporal variance for veg plants survival
+    tau.phiA[g]<-pow(sigma.phiA[g],-2)
+    sigma.phiA2[g]<-pow(sigma.phiA[g],2)
+    sigma.phiB[g]~dunif(0,10)#temporal variance for rep plants survival
+    tau.phiB[g]<-pow(sigma.phiB[g],-2)
+    sigma.phiB2[g]<-pow(sigma.phiB[g],2)
+    sigma.psiAB[g]~dunif(0,10)#temporal variance for veg plants transition to rep
+    tau.psiAB[g]<-pow(sigma.psiAB[g],-2)
+    sigma.psiAB2[g]<-pow(sigma.psiAB[g],2)
+    sigma.psiBA[g]~dunif(0,10)#temporal variance for rep plants transition to veg
+    tau.psiBA[g]<-pow(sigma.psiBA[g],-2)
+    sigma.psiBA2[g]<-pow(sigma.psiBA[g],2)
+    sigma.pA[g]~dunif(0,10)#temporal variance for veg plants recapture (emergence)
+    tau.pA[g]<-pow(sigma.pA[g],-2)
+    sigma.pA2[g]<-pow(sigma.pA[g],2)
+    sigma.pB[g]~dunif(0,10)#temporal variance for rep plants recapture (emergence)
+    tau.pB[g]<-pow(sigma.pB[g],-2)
+    sigma.pB2[g]<-pow(sigma.pB[g],2)
+    beta.phiA[g]~dnorm(0,0.001)I(-10,10)
+    beta.phiB[g]~dnorm(0,0.001)I(-10,10)
+    beta.psiAB[g]~dnorm(0,0.001)I(-10,10)
+    beta.psiBA[g]~dnorm(0,0.001)I(-10,10)
+    beta.pA[g]~dnorm(0,0.001)I(-10,10)
+    beta.pB[g]~dnorm(0,0.001)I(-10,10)
+    beta1.phiA[g]~dnorm(0,0.001)I(-10,10)
+    beta1.phiB[g]~dnorm(0,0.001)I(-10,10)
+    beta1.psiAB[g]~dnorm(0,0.001)I(-10,10)
+    beta1.psiBA[g]~dnorm(0,0.001)I(-10,10)
+    beta1.pA[g]~dnorm(0,0.001)I(-10,10)
+    beta1.pB[g]~dnorm(0,0.001)I(-10,10)
+    logit(phiA0[g])<- mu.phiA[g]
+    logit(phiA1[g])<- mu.phiA[g] + beta.phiA[g]
+    logit(phiB0[g])<- mu.phiB[g]
+    logit(phiB1[g])<- mu.phiB[g] + beta.phiB[g]
+    logit(psiA0[g])<- mu.psiAB[g]
+    logit(psiA1[g])<- mu.psiAB[g] + beta.psiAB[g]
+    logit(psiB0[g])<- mu.psiBA[g]
+    logit(psiB1[g])<- mu.psiBA[g] + beta.psiBA[g]
+    logit(pA0[g])<- mu.pA[g]
+    logit(pA1[g])<- mu.pA[g] + beta.pA[g]
+    logit(pB0[g])<- mu.pB[g]
+    logit(pB1[g])<- mu.pB[g] + beta.pB[g]
+    }#g
+    
+    # Define state-transition and observation matrices
+    for (i in 1:nind){  
+    # Define probabilities of state S(t+1) given S(t)
+    for (t in f[i]:(n.occasions-1)){
+    ps[1,i,t,1] <- phiA[i,t] * (1-psiAB[i,t])
+    ps[1,i,t,2] <- phiA[i,t] * psiAB[i,t]
+    ps[1,i,t,3] <- 1-phiA[i,t]
+    ps[2,i,t,1] <- phiB[i,t] * psiBA[i,t]
+    ps[2,i,t,2] <- phiB[i,t] * (1-psiBA[i,t])
+    ps[2,i,t,3] <- 1-phiB[i,t]
+    ps[3,i,t,1] <- 0
+    ps[3,i,t,2] <- 0
+    ps[3,i,t,3] <- 1
+    
+    # Define probabilities of O(t) given S(t) ##first coumn is observed state, last is true state
+    po[1,i,t,1] <- pA[i,t]
+    po[1,i,t,2] <- 0
+    po[1,i,t,3] <- 1-pA[i,t]
+    po[2,i,t,1] <- 0
+    po[2,i,t,2] <- pB[i,t]
+    
+    po[2,i,t,3] <- 1-pB[i,t]
+    po[3,i,t,1] <- 0
+    po[3,i,t,2] <- 0
+    po[3,i,t,3] <- 1
+    } #t
+    } #i
+    
+    # Likelihood 
+    for (i in 1:nind){
+    # Define latent state at first capture
+    z[i,f[i]] <- y[i,f[i]]
+    for (t in (f[i]+1):n.occasions){
+    # State process: draw S(t) given S(t-1)
+    z[i,t] ~ dcat(ps[z[i,t-1], i, t-1,])
+    # Observation process: draw O(t) given S(t)
+    y[i,t] ~ dcat(po[z[i,t], i, t-1,])
+    } #t
+    } #i
+    }
+    
