@@ -14,8 +14,7 @@ library(zoo)
 
 # make list to store all the derived dataset cleaning functions
 clean.raw <- list()
-
-clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/") {
+clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/marchin/") {
   
   ## Marchin ##
   ## Data type: BBD,FFD ##
@@ -436,6 +435,84 @@ clean.raw$sherry <- function(filename, path) {
   #sherryotherspp<-read.csv(file2, header=T)
   return(sherryok)
 }
+
+##Price & Wasser data RMBL
+## Data type: FFd, FFRD, SD
+## Notes: mary.price@ucr.edu
+#From Mary: "We chose up to 5 flowering individuals that spanned the elevational range of flowering individuals of that species on the small moraine.  The "DIST" column indicates the meters downslope from the upper edge of the plot.
+#There is some inconsistency in the ordering of columns.  Sometimes the "species" column domes before the "individual ID" column, and sometimes not -- you'll have to look for that if you concatenate files.
+#The "comments" column after each census date column sometimes includes estimates of fruiting success, measured as #fruits/#flowers on each plant, along with notes on whether the plant got frosted, parasitized, replaced, and the like.  I can help you translate the notes if you have problems and need to know what the notes mean.  The plant species vary considerably, as you know, in what fruit set means.  Our notes are incomplete (at least, I haven't found the relevant info in spot-checks of notes--since we didn't include fruit set info in the analyses for our published paper, I'd have to search...), but I suspect that for Asteraceae we used the head as the "flower" unit, and probably we used the umbel as the unit for Polygonaceae.
+#In all cases, 0 = not flowering; 1 = bud present; 2 = open flower present; 3   = senescent flower present (corolla still attached); 4 = initiated fruit (corolla off); 5 = expanding fruit; 6 = dehisced fruit.
+#Of course, these stages mean different things for each species.
+#Species names have changed in some cases, or if one uses different authorities.  For example, Potentilla gracilis is now P. pulcherrima, and I think Bill Weber is the only one who advocates the genus "Seriphidium" for shrubby Artemisia.  So you may want to double-check names.
+#The number of files should correspond more-or-less with the number of years reported in the 1998 paper, with the addition of a few files from 1990 censuses (which can probably be left out of analyses since we were working the bugs out of our methods in that year).
+clean.raw$price <- function(filename, path) {
+ pricefiles<-c("ATPHEN90g.csv","ATPHEN91g.csv","ATPHEN92g.csv","ATPHEN94g.csv","CLPHEN91g.csv","CLPHEN92g.csv","CLPHEN93g.csv","CLPHEN94g.csv","CRPHEN92g.csv","CRPHEN93g.csv","CRPHEN94g.csv","DNPHEN90g.csv","DNPHEN91g.csv","DNPHEN92g.csv","DNPHEN93g.csv","DNPHEN94g.csv","EGPHEN90g.csv","EGPHEN91g.csv","EGPHEN92g.csv","EGPHEN93g.csv","EGPHEN94g.csv","ESPHEN90g.csv","ESPHEN91g.csv","ESPHEN92g.csv","ESPHEN93g.csv","ESPHEN94g.csv","IAPHEN90g.csv","IAPHEN91g.csv","IAPHEN92g.csv","IAPHEN93g.csv","IAPHEN94g.csv","LLPHEN90G.csv","LLPHEN91G.csv","LLPHEN92G.csv","LLPHEN93G.csv","LLPHEN94G.csv","MFPHEN90G.csv","MFPHEN91g.csv","MFPHEN92g.csv","MFPHEN93g.csv","MFPHEN94g.csv","PGPHEN91g.csv","PGPHEN92g.csv","PGPHEN93g.csv","PGPHEN94g.csv")
+  skiplines<-c(3,3,2,2,rep(3,times=41))  
+  price <- NA
+  #gen<-c("Artemis",)
+  #sp<-c("tridentata",)
+  for (i in 1:length(pricefiles)){
+    file <- file.path(path, paste(pricefiles[i]))
+    price1 <- read.csv(file, skip=skiplines[i], header=TRUE)
+    colnames(price1)[which(colnames(price1)=="PLOT"|colnames(price1)=="plot")]<-"plot"
+    colnames(price1)[which(colnames(price1)=="SPE")]<-"SP"
+    price1<-price1[!is.na(price1$SP),]
+    price1<-price1[!is.na(price1$plot),]
+    #estimate first date of open flowers, fruits, and seeds dispersing
+    firstsurv<-min(which(substr(colnames(price1),1,1)=="X"))
+    lastsurv<-max(which(substr(colnames(price1),1,1)=="X"))    
+    get.ffd <- function(x) names(x)[which(x==2|x==12|x==123|x==1234|x==12345|x==123456)][1]#first flower date
+    get.ffrd <- function(x) names(x)[which(x==4|x==34|x==234|x==1234|x==12345|x==123456)][1]#first fruit date
+    get.sd <- function(x) names(x)[which(x==6|x==56|x==456|x==3456|x==2345|x==123456)][1]#seed dispersal/fruit dehiscing date
+    
+    ffd<-substr(apply(price1[,firstsurv:lastsurv],1,get.ffd),2,9)
+    ffrd<-substr(apply(price1[,firstsurv:lastsurv],1,get.ffrd),2,9)
+    sd<-substr(apply(price1[,firstsurv:lastsurv],1,get.sd),2,9)
+    price2<-cbind(price1,ffd,ffrd,sd)  
+    price2$filename<-paste(pricefiles[i])
+    price2$year<-paste("19",substr(price2$filename[i],7,8),sep="")
+    price3<-subset(price2, select=c("plot","SP", "ffd","ffrd","sd","filename","year"))
+    price<-rbind(price,price3)
+  }
+ price<-price[-1,]
+ price4<-reshape(price,varying = list(names(price)[3:5]), direction = "long", v.names = c("date"), times = c(names(price)[3:5]))
+ colnames(price4)[5]<-"event"
+ price4$site<-"rmbl"
+ price4$date[which(is.na(price4$date))]<-"NA.NA.NA"
+ price4$doy<-strftime(strptime(price4$date, format = "%m.%d.%y"),format = "%j") 
+ price4$genus<-NA
+ price4$species<-NA
+ price4$genus[price4$SP=="AT"] <- "Artemesia"
+ price4$species[price4$SP=="AT"] <- "tridentata"
+ price4$genus[price4$SP=="CL"] <- "Claytonia"
+ price4$species[price4$SP=="CL"] <- "lanceolata"
+ price4$genus[price4$SP=="CR"] <- "Delphinium"
+ price4$species[price4$SP=="CR"] <- "nelsonii"
+ price4$genus[price4$SP=="DN"] <- "Delphinium"
+ price4$species[price4$SP=="DN"] <- "nelsonii"
+ price4$genus[price4$SP=="EG"] <- "Erythronium"
+ price4$species[price4$SP=="EG"] <- "grandiflorum"
+ price4$genus[price4$SP=="ES"] <- "Eriogonum"
+ price4$species[price4$SP=="ES"] <- "subalpinum"
+ price4$genus[price4$SP=="es"] <- "Eriogonum"
+ price4$species[price4$SP=="es"] <- "subalpinum"
+ price4$genus[price4$SP=="IA"] <- "Ipomopsis"
+ price4$species[price4$SP=="IA"] <- "aggregata"
+ price4$genus[price4$SP=="LL"] <- "Lathyrus"
+ price4$species[price4$SP=="LL"] <- "leucanthus"
+ price4$genus[price4$SP=="MF"] <- "Mertensia"
+ price4$species[price4$SP=="MF"] <- "fusiformes"
+ price4$genus[price4$SP=="PG"] <- "Potentilla"
+ price4$species[price4$SP=="PG"] <- "gracilis"
+ price4<-price4[!is.na(price4$doy),]
+ price5<-subset(price4, select=c("site","plot","event","year","genus","species", "doy"))
+ price5$variety <- NA
+ price5$cult <- NA
+  return(price5)
+}
+
+
 # Produce cleaned raw data
 #
 raw.data.dir <- "./Experiments/"
@@ -446,6 +523,13 @@ cleandata.raw$farnsworth <- clean.raw$farnsworth(path=raw.data.dir)
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
 cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
 cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path=raw.data.dir)
-cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/Sherry/")
+cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/sherry/")
+cleandata.raw$price <- clean.raw$price(path="./Experiments/price")
+
 head(cleandata.raw$sherry)
-getwd()
+expphendb <- do.call("rbind", cleandata.raw)
+row.names(expphendb) <- NULL
+write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
+
+
+##
