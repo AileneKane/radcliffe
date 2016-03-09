@@ -125,7 +125,7 @@ clean.raw$bace <- function(filename="bace/BACE_deciduous2010_originaltrees.csv",
 ##Farnsworth from Harvard ##
 ## Data type: BBD,LOD,LUD,FFD ##
 ## Notes: Contact: Public data, http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf033 ##
-clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Experiments",names.only=FALSE) {
+clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Experiments/farnsworth/",names.only=FALSE) {
   file <- file.path(path, filename)
   farnsworth1 <- read.csv(file, check.names=FALSE, header=TRUE)
   #phenological stage 1.5=budburst; need to get day of year for which this occurred
@@ -519,11 +519,11 @@ raw.data.dir <- "./Experiments/"
 cleandata.raw <- list()
 cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
 cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
-cleandata.raw$farnsworth <- clean.raw$farnsworth(path=raw.data.dir)
+cleandata.raw$farnsworth <- clean.raw$farnsworth(path="./Experiments/farnsworth")
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
 cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
 cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path=raw.data.dir)
-cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/sherry/")
+cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/sherry")
 cleandata.raw$price <- clean.raw$price(path="./Experiments/price")
 
 head(cleandata.raw$sherry)
