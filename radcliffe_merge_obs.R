@@ -88,7 +88,7 @@ taxoscrub <- function(dat, sitename) {
 #########################
 ####### Raw data ########
 #########################
-
+clean.rawobs<- list()
 
 clean.rawobs$fitter <- function(filename, path) 
   {#file="Fitter_data.csv",path="Observations/Raw/"
@@ -577,51 +577,4 @@ row.names(obsphendb) <- NULL
 write.csv(obsphendb, "radmeeting/obspheno.csv", row.names=FALSE)
 
 stop()
-
-
-
-#
-# Taxonomy
-#
-
-taxonomy <- list()
-
-raw.data.dir <- "Observations/Raw"
-
-taxonomy$fitter <- clean.raw$fitter(path=raw.data.dir, names.only=TRUE)
-taxonomy$harvard <- clean.raw$harvard(path=raw.data.dir, names.only=TRUE)
-taxonomy$hubbard <- clean.raw$hubbard(path=raw.data.dir, names.only=TRUE)
-taxonomy$luquillo <- clean.raw$luquillo(path=raw.data.dir, names.only=TRUE)
-taxonomy$konza <- clean.raw$konza(path=raw.data.dir, names.only=TRUE)
-taxonomy$niwot <- clean.raw$niwot(path=raw.data.dir, names.only=TRUE)
-taxonomy$mikesell <- clean.raw$mikesell(path=raw.data.dir, names.only=TRUE)
-
-pnames <- unique(do.call("rbind", lapply(names(taxonomy),
-                                         function(site) data.frame(site=site, taxonomy[[site]]))))
-pheno.species <- tolower(paste(pnames$genus, pnames$species))
-
-ipni <- read.csv("TaxonScrubber/TS_AllTaxa.csv")
-ipni.species <- tolower(paste(ipni$Genus, ipni$Species))
-
-ipni.na <- ipni[is.na(ipni$accepted) | ipni$accepted==0, ]
-ipni.a <- ipni[!is.na(ipni$accepted) & ipni$accepted==1, ]
-
-pnames.inIPNI <- pnames[pheno.species %in% ipni.species,]
-pheno.species.inIPNI <- tolower(paste(pnames.inIPNI$genus,
-                                      pnames.inIPNI$species))
-pnames.a <- pnames.inIPNI[pheno.species.inIPNI %in%
-                            tolower(paste(ipni.a$Genus, ipni.a$Species)), ]
-pnames.na <- pnames.inIPNI[!pheno.species.inIPNI %in%
-                             tolower(paste(ipni.a$Genus, ipni.a$Species)), ]
-pnames.noIPNI <- pnames[!pheno.species %in% ipni.species,]
-
-all.pheno.species <- rbind(data.frame(pnames.a, ipni="accepted"),
-                           data.frame(pnames.na, ipni="not accepted"),
-                           data.frame(pnames.noIPNI, ipni="unmatched"))
-
-stop("Stopping here...")
-write.csv(pnames.a, "knb/nectarnames_IPNIaccepted.csv", row.names=FALSE, quote=FALSE)
-write.csv(pnames.na, "knb/nectarnames_IPNInotaccepted.csv", row.names=FALSE, quote=FALSE)
-write.csv(pnames.noIPNI, "knb/nectarnames_IPNIunmatched.csv", row.names=FALSE, quote=FALSE)
-write.csv(all.pheno.species, "knb/nectarnames_all.csv", row.names=FALSE, quote=FALSE)
 

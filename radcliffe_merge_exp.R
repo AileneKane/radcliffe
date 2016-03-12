@@ -14,7 +14,7 @@ library(zoo)
 
 # make list to store all the derived dataset cleaning functions
 clean.raw <- list()
-clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/marchin/") {
+clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experiments/marchin") {
   
   ## Marchin ##
   ## Data type: BBD,FFD ##
@@ -517,7 +517,7 @@ clean.raw$price <- function(filename, path) {
 #
 raw.data.dir <- "./Experiments/"
 cleandata.raw <- list()
-cleandata.raw$marchin <- clean.raw$marchin(path="./Experiments/marchin")
+cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
 cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
 cleandata.raw$farnsworth <- clean.raw$farnsworth(path="./Experiments/farnsworth")
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
