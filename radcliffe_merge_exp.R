@@ -28,7 +28,7 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experimen
   marchin1a<- subset(marchin1, select=c("year","genusspecies","plot", "doy"))
   marchin1a$site <- "marchin"
   marchin1a$event <- "bbd"
-  marchin2<-read.csv("Experiments/Flower_Marchin.csv", header=T)
+  marchin2<-read.csv("Experiments/marchin/Flower_Marchin.csv", header=T)
   names(marchin2)[2] <- "genusspecies"
   names(marchin2)[1] <- "year"
   names(marchin2)[3] <- "plot"
@@ -515,9 +515,9 @@ clean.raw$price <- function(filename, path) {
 
 # Produce cleaned raw data
 #
-raw.data.dir <- "./Experiments/"
+raw.data.dir <- "./Experiments"
 cleandata.raw <- list()
-cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
+cleandata.raw$marchin <- clean.raw$marchin(path="./Experiments/marchin")
 cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
 cleandata.raw$farnsworth <- clean.raw$farnsworth(path="./Experiments/farnsworth")
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
@@ -526,7 +526,6 @@ cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path="./Experiments/clark")
 cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/sherry")
 cleandata.raw$price <- clean.raw$price(path="./Experiments/price")
 
-head(cleandata.raw$sherry)
 expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
