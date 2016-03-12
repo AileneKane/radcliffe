@@ -248,8 +248,6 @@ cleanclimdata.raw$marchin <- clean.clim$marchin(path="./Experiments/marchin")
 cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Experiments/farnsworth/")
 cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/clark/")
 cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
-
-head(cleanclimdata.raw$farnsworth)
 expphenclim <- do.call("rbind", cleanclimdata.raw)
 row.names(expphenclim) <- NULL
 write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
