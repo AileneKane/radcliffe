@@ -274,8 +274,8 @@ clean.raw$jasperridge <- function(filename="JasperRidge_data.csv", path="./Exper
 ##Clark et al from Duke ##
 ## Data type: BBD,LUD, LOD ##
 ## Notes: Contact: Public data ##
-clean.raw$clarkduke <- function(filename, path) {
-  clarkdukeplots<-c("DF_G01_A.csv","DF_G02_5.csv","DF_G03_3.csv","DF_G04_A.csv","DF_G05_3.csv","DF_G06_5.csv","DF_G07_A.csv","DF_G08_5.csv","DF_G09_3.csv","DF_G10_C.csv","DF_G11_C.csv","DF_G12_C.csv","DF_S01_5.csv","DF_S02_3.csv","DF_S03_A.csv","DF_S04_A.csv","DF_S05_3.csv","DF_S06_5.csv","DF_S07_5.csv","DF_S08_A.csv","DF_S09_3.csv","DF_S10_C.csv","DF_S11_C.csv","DF_S12_C.csv")
+clean.raw$clarkduke <- function(filename, path="./Experiments/clark/") {
+   clarkdukeplots<-c("DF_G01_A.csv","DF_G02_5.csv","DF_G03_3.csv","DF_G04_A.csv","DF_G05_3.csv","DF_G06_5.csv","DF_G07_A.csv","DF_G08_5.csv","DF_G09_3.csv","DF_G10_C.csv","DF_G11_C.csv","DF_G12_C.csv","DF_S01_5.csv","DF_S02_3.csv","DF_S03_A.csv","DF_S04_A.csv","DF_S05_3.csv","DF_S06_5.csv","DF_S07_5.csv","DF_S08_A.csv","DF_S09_3.csv","DF_S10_C.csv","DF_S11_C.csv","DF_S12_C.csv")
   clarkduke <- NA
   spfile <- file.path(path, "speciesList_clark.csv")
   specieslist<-read.csv(spfile, header=TRUE)
@@ -289,7 +289,7 @@ clean.raw$clarkduke <- function(filename, path) {
   clarkduke1$genus[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
   clarkduke1$species[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
   }
-clarkduke1$site<-"duke_clark"
+clarkduke1$site<-"clarkduke"
 colnames(clarkduke1)[5]<-"plot"
 
 #estimate first date of budburst, leaf unfolding, and leaf out
@@ -339,7 +339,7 @@ return(clarkduke)
 ##Clark et al from Harvard ##
 ## Data type: BBD,LUD,LOD ##
 ## Notes: Contact: Public data ##
-clean.raw$clarkharvard <- function(filename, path) {
+clean.raw$clarkharvard <- function(filename, path="./Experiments/clark/") {
     clarkharvardplots<-c("HF_G01_3.csv","HF_G02_A.csv","HF_G03_5.csv","HF_G04_A.csv","HF_G05_5.csv","HF_G06_3.csv","HF_G07_A.csv","HF_G08_3.csv","HF_G09_5.csv","HF_G10_C.csv","HF_G11_C.csv","HF_G12_C.csv","HF_S01_5.csv","HF_S02_A.csv","HF_S03_3.csv","HF_S04_5.csv","HF_S05_A.csv","HF_S06_3.csv","HF_S07_A.csv","HF_S08_3.csv","HF_S09_5.csv","HF_S10_C.csv","HF_S11_C.csv","HF_S12_C.csv")
     clarkharvard <- NA
     spfile <- file.path(path, "speciesList_clark.csv")
@@ -354,9 +354,7 @@ clean.raw$clarkharvard <- function(filename, path) {
         clarkharvard1$genus[clarkharvard1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
         clarkharvard1$species[clarkharvard1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
       }
-      clarkharvard1$site<-"harvard_clark"
-      colnames(clarkharvard1)[5]<-"plot"
-      
+      clarkharvard1$site<-"clarkharvard"      
       #estimate first date of budburst, leaf unfolding, and leaf out
       get.bbd <- function(x) names(x)[min(which(x==3), na.rm=T)]#budburst
       get.lud <- function(x) names(x)[min(which(x==4), na.rm=T)]#leaves unfolding
@@ -380,6 +378,7 @@ clean.raw$clarkharvard <- function(filename, path) {
       lod2011_doy<-strftime(strptime(lod_2011, format = "%m.%d.%y"),format = "%j")
       lod2012_doy<-strftime(strptime(lod_2012, format = "%m.%d.%y"),format = "%j")
       clarkharvard2<-cbind(clarkharvard1,bbd2010_doy,bbd2011_doy,bbd2012_doy,lud2010_doy,lud2011_doy,lud2012_doy,lod2010_doy,lod2011_doy,lod2012_doy)
+      clarkharvard2$plot<-substr(clarkharvard1$Chamber,1,3)
       clarkharvard2a<-subset(clarkharvard2, select=c("site","plot","genus","species","bbd2010_doy","bbd2011_doy","bbd2012_doy","lud2010_doy","lud2011_doy","lud2012_doy","lod2010_doy","lod2011_doy","lod2012_doy"))
       clarkharvard3<-reshape(clarkharvard2a,varying = list(names(clarkharvard2a)[5:7], names(clarkharvard2a)[8:10],names(clarkharvard2a)[11:13]), direction = "long", v.names = c("BBD","LUD", "LOD"), times = c(2010:2012))
       clarkharvard3<-clarkharvard3[,-9]
@@ -388,6 +387,7 @@ clean.raw$clarkharvard <- function(filename, path) {
       clarkharvard4$event<-c(rep("bbd", times=dim(clarkharvard3)[1]),rep("lud", times=dim(clarkharvard3)[1]),rep("lod", times=dim(clarkharvard3)[1]))
       clarkharvard4$variety <- NA
       clarkharvard4$cult <- NA
+      
       clarkharvard5<-subset(clarkharvard4, select=c("site","plot","event","year","genus","species","doy","variety","cult"))
       clarkharvard<-rbind(clarkharvard,clarkharvard5)
     }
@@ -521,8 +521,8 @@ cleandata.raw$marchin <- clean.raw$marchin(path=raw.data.dir)
 cleandata.raw$bace <- clean.raw$bace(path=raw.data.dir)
 cleandata.raw$farnsworth <- clean.raw$farnsworth(path="./Experiments/farnsworth")
 cleandata.raw$jasperridge <- clean.raw$jasperridge(path=raw.data.dir)
-cleandata.raw$clarkduke <- clean.raw$clarkduke(path=raw.data.dir)
-cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path=raw.data.dir)
+cleandata.raw$clarkduke <- clean.raw$clarkduke(path="./Experiments/clark")
+cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path="./Experiments/clark")
 cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/sherry")
 cleandata.raw$price <- clean.raw$price(path="./Experiments/price")
 
