@@ -6,6 +6,8 @@
 \usepackage{Sweave}
 \usepackage{graphicx}
 \usepackage{tabularx}
+\usepackage{hyperref}
+
 
 %Strongly recommended
   %put your figures in one place
@@ -56,7 +58,10 @@
 \renewcommand{\labelitemi}{$-$}
 
 %%%%%%%%%%%%%%%% Here we go, boys and girls %%%%%%
-\section {Let's go look at the data!}
+\section {Overview of the phenological data}
+
+There are two main files with the phenological data. They can both be downloaded from \url{https://github.com/AileneKane/radcliffe}.
+
 \subsection{Experimental data}
 
 <<echo=FALSE>>=
@@ -66,17 +71,65 @@ options(width=90)
 <<echo=FALSE, label=getdata>>=
 setwd("~/Documents/git/projects/meta_ep2/radcliffe")
 obsdata <- read.csv("radmeeting/obspheno.csv", header=TRUE)
+expdata <- read.csv("radmeeting/exppheno.csv", header=TRUE)
+@
+
+We'll walk through the experimental datafile first. Repeat what's below for the observational data ....
+
+<<echo=TRUE, label=headexp>>=
+head(expdata)
+@
+
+\subsection{Observational data}
+
+Next, the observational data. Here we explain what each column means ....
+
+<<echo=TRUE, label=headobs>>=
 head(obsdata)
 @
 
-\newpage
-\begin{figure}[width=2in]
+Then we could discuss the sites, and the phenological events ...
+
+<<echo=TRUE, label=siteobs>>=
+unique(obsdata$site)
+@
+
+<<echo=TRUE, label=eventobs>>=
+table(obsdata$site, obsdata$event)
+@
+
+\begin{figure}[width=5in]
 \begin{center}
-<<label=histofdata,fig=TRUE,echo=FALSE, height=4, width=4>>=
-hist(as.numeric(obsdata$doy))
+<<label=figobsdata,fig=TRUE,echo=FALSE, height=4, width=6>>=
+obsdata$doy <- as.numeric(obsdata$doy)
+obsagg <- aggregate(obsdata[c("doy")], obsdata[c("site", "year")], FUN=mean, na.action = na.omit)
+
+#hist(obsdata$year)
+obsitez <- unique(obsdata$site)
+somecolors <- rainbow(length(obsitez))
+plot(doy~year, data=obsagg, type="n")
+for (i in seq_along(obsitez)){
+     subby <- subset(obsagg, site==obsitez[i])
+     lines(doy~year, data=subby, col=somecolors[i])
+}
 @
 \end{center}
-\caption{A histogram, hear me roar.}
+\caption{Mean day of year (averaged across all events and species) by year from the observational data.}
 \end{figure}
+
+\subsection{Species}
+
+<<echo=TRUE, label=getsppnum>>=
+expdata$latbi <- paste(expdata$genus, expdata$species)
+obsdata$latbi <- paste(obsdata$genus, obsdata$species)
+length(expdata$latbi)
+length(obsdata$latbi)
+@
+
+How many (and which species overlap between the two approaches?
+
+<<echo=TRUE, label=sppoverlap>>=
+unique(expdata$latbi)[which(unique(expdata$latbi) %in% unique(obsdata$latbi))]
+@
 
 \end{document}
