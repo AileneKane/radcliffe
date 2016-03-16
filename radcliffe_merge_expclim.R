@@ -9,6 +9,7 @@ library(zoo)
 clean.clim <- list()
 
 clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Experiments/marchin") {
+  ###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
   
   ## Marchin ##
   ## Data type: temp (air and soil), soil moisture, in chambers (incuding 3 unheated control chambers, 9 heated chambers, and 3 outside controls that lack chambers); regression heating design
@@ -270,7 +271,8 @@ soilmois<-read.csv(file2, header=T,na.strings = ".")
 colnames(soilmois)[3]<-"doy"
 allclim<-merge(soiltemp,soilmois,by=c("year","doy","plot"),all=TRUE) 
 colnames(allclim)[19]<-"soilmois"
-allclim[which(allclim$soilmois==max(allclim$soilmois, na.rm=T)),]$soilmois<-NA
+allclim[which(allclim$soilmois==209),]$soilmois<-NA#remove weird values for soil moisture, which should be between 0 and 1 (209, 1.87)
+allclim[which(allclim$soilmois==1.87),]$soilmois<-NA
 allclim$airtemp<-NA
 allclim$site<-"bace"
 baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
@@ -294,7 +296,12 @@ expphenclim <- do.call("rbind", cleanclimdata.raw)
 row.names(expphenclim) <- NULL
 write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
 
-##Look at the data
+##Look at the data to check for errors
 boxplot(as.numeric(soiltemp)~site, data=expphenclim)
 boxplot(as.numeric(soilmois)~site, data=expphenclim)
 boxplot(as.numeric(airtemp)~site, data=expphenclim)
+boxplot(as.numeric(soiltemp)~temptreat, data=expphenclim)
+boxplot(as.numeric(soilmois)~temptreat, data=expphenclim)
+boxplot(as.numeric(airtemp)~temptreat, data=expphenclim)
+boxplot(as.numeric(soiltemp)~preciptreat, data=expphenclim)
+boxplot(as.numeric(soilmois)~preciptreat, data=expphenclim)
