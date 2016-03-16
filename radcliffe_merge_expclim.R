@@ -50,11 +50,12 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Experi
   airtemp<-rowMeans(temp,na.rm=T)#not sure if we want to do this? average across all airtemps
   soiltemp<-rowMeans(soiltemp,na.rm=T)#not sure if we want to do this? average across all soiltemps
   allclim1<-cbind(allclim1,airtemp,soiltemp)
-  allclim1$treatment<-"warm"
-  allclim1[allclim1$plot==2,]$treatment<-"control"
-  allclim1[allclim1$plot==5,]$treatment<-"control"
-  allclim1[allclim1$plot==11,]$treatment<-"control"
-  allclim2<-subset(allclim1, select=c("treatment","plot","year","doy","airtemp","soiltemp","soilmois"))
+  allclim1$preciptreat<-NA
+  allclim1$temptreat<-"warm"
+  allclim1[allclim1$plot==2,]$temptreat<-"control"
+  allclim1[allclim1$plot==5,]$temptreat<-"control"
+  allclim1[allclim1$plot==11,]$temptreat<-"control"
+  allclim2<-subset(allclim1, select=c("temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
   
   file2<-file.path(path, "hf113-11-df-outside.csv")
   marchin2<-read.csv(file2, header=TRUE)
@@ -91,12 +92,13 @@ soiltemp<-subset(oallclim, select=c("sotemp_mn1","sotemp_mn2","sotemp_mn3","site
 airtemp<-rowMeans(temp, na.rm=T)#not sure if we want to do this? average across all airtemps
 soiltemp<-rowMeans(soiltemp,na.rm=T)#not sure if we want to do this? average across all soiltemps
 oallclim1<-cbind(oallclim,airtemp,soiltemp)
-oallclim1$treatment<-"outside control"
-oallclim2<-subset(oallclim1, select=c("treatment","plot","year","doy","airtemp","soiltemp","soilmois"))
+oallclim1$temptreat<-"outside control"
+oallclim1$preciptreat<-NA
+oallclim2<-subset(oallclim1, select=c("temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
 
 allclim3<-rbind(allclim2,oallclim2)
 allclim3$site<-"marchin"
-marchinclim<-subset(allclim3, select=c("site","treatment","plot","year","doy","airtemp","soiltemp","soilmois"))
+marchinclim<-subset(allclim3, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
   row.names(marchinclim) <- NULL
   return(marchinclim)
 }
@@ -128,12 +130,13 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Exp
   allclim$airtemp<-NA 
   colnames(allclim)[6]<-"soilmois"
   colnames(allclim)[5]<-"treatment2"
-  allclim$treatment<-NA
-  allclim[which(allclim$treatment2=="H"),]$treatment<-"warm"
-  allclim[which(allclim$treatment2=="C"),]$treatment<-"control"
-  allclim[which(allclim$treatment2=="DC"),]$treatment<-"ambient"
+  allclim$temptreat<-NA
+  allclim[which(allclim$treatment2=="H"),]$temptreat<-"warm"
+  allclim[which(allclim$treatment2=="C"),]$temptreat<-"control"
+  allclim[which(allclim$treatment2=="DC"),]$temptreat<-"ambient"
   allclim$site<-"farnsworth"
-  farnsworthclim<-subset(allclim, select=c("site","treatment","plot","year","doy","airtemp","soiltemp","soilmois"))
+  allclim$preciptreat<-NA
+  farnsworthclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
   row.names(farnsworthclim) <- NULL
   return(farnsworthclim) 
 }
@@ -180,12 +183,13 @@ clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Exp
   allclim<-merge(airtemp2,soiltemp2,by=c("year","doy","plot","id"), all.y=TRUE)  
   allclim2<-merge(allclim,mois2,by=c("year","doy","plot","id"), all=TRUE) 
   allclim2$site<-"clarkharvard"
-  allclim2$treatment<-NA
-  allclim2[allclim2$plot=="G02"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S07",]$treatment<-"ambient"
-  allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S01"|allclim2$plot=="S04"|allclim2$plot=="S09",]$treatment<-"warm5C"
-  allclim2[allclim2$plot=="G01"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S03"|allclim2$plot=="S06"|allclim2$plot=="S08",]$treatment<-"warm3C"
-  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$treatment<-"warm3C"
-  clarkharvardclim<-subset(allclim2, select=c("site","treatment","plot","year","doy","airtemp","soiltemp","soilmois"))
+  allclim2$temptreat<-NA
+  allclim2[allclim2$plot=="G02"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S07",]$temptreat<-"ambient"#disturbance control
+  allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S01"|allclim2$plot=="S04"|allclim2$plot=="S09",]$temptreat<-"warm5C"
+  allclim2[allclim2$plot=="G01"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S03"|allclim2$plot=="S06"|allclim2$plot=="S08",]$temptreat<-"warm3C"
+  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-"warm3C"
+  allclim2$preciptreat<-NA
+  clarkharvardclim<-subset(allclim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
   row.names(clarkharvardclim) <- NULL
   return(clarkharvardclim) 
 }
@@ -231,15 +235,51 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Experiment
   allclim<-merge(airtemp2,soiltemp2,by=c("year","doy","plot","id"), all.y=TRUE)  
   allclim2<-merge(allclim,mois2,by=c("year","doy","plot","id"), all=TRUE) 
   allclim2$site<-"clarkduke"
-  allclim2$treatment<-NA
-  allclim2[allclim2$plot=="G01"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S03"|allclim2$plot=="S04"|allclim2$plot=="S08",]$treatment<-"ambient"
-  allclim2[allclim2$plot=="G02"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S01"|allclim2$plot=="S06"|allclim2$plot=="S07",]$treatment<-"warm5C"
-  allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S09",]$treatment<-"warm3C"
-  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$treatment<-"warm3C"
-  clarkdukeclim<-subset(allclim2, select=c("site","treatment","plot","year","doy","airtemp","soiltemp","soilmois"))
+  allclim2$temptreat<-NA
+  allclim2[allclim2$plot=="G01"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S03"|allclim2$plot=="S04"|allclim2$plot=="S08",]$temptreat<-"ambient"#disturbance control
+  allclim2[allclim2$plot=="G02"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S01"|allclim2$plot=="S06"|allclim2$plot=="S07",]$temptreat<-"warm5C"
+  allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S09",]$temptreat<-"warm3C"
+  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-"warm3C"
+  allclim2$preciptreat<-NA
+  clarkdukeclim<-subset(allclim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
   row.names(clarkdukeclim) <- NULL
   return(clarkdukeclim) 
 }
+
+##Dukes et al. data from BACE ##
+## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
+## Notes: data shared by Jeff Dukes (jsdukes@purdue.edu)
+clean.clim$bace <- function(filename="2010SoilTempDaily.csv", path="./Experiments/bace") {
+file <- file.path(path, filename)
+soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
+colnames(soiltemp) [3:4]<-c("doy","plot")
+#soiltemp$avg.temp..2.cm<-as.numeric(soiltemp$avg.temp..2.cm)
+#soiltemp$avg.temp..10.cm<-as.numeric(soiltemp$avg.temp..10.cm)
+soiltemp$soiltemp<-rowMeans(subset(soiltemp, select = c("avg.temp..2.cm", "avg.temp..10.cm")), na.rm = TRUE)
+soiltemp$temptreat<-NA
+soiltemp[soiltemp$warming.treatment==0,]$temptreat<-"control"#no heating element=no disturbance? or is installation more like "ambient"/disturbance control plots?
+soiltemp[soiltemp$warming.treatment==1,]$temptreat<-"warmlow"#200 watts
+soiltemp[soiltemp$warming.treatment==2,]$temptreat<-"warmmed"#600 watts
+soiltemp[soiltemp$warming.treatment==3,]$temptreat<-"warmhigh"#1000 watts
+soiltemp$preciptreat<-NA
+soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-"control"#ambient precip
+soiltemp[soiltemp$precip.treatment==0,]$preciptreat<-"dry"#50% precip
+soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-"wet"#150% ambient precip
+file2 <- file.path(path, "bace_soilmoisture2010.csv")
+soilmois<-read.csv(file2, header=T,na.strings = ".")
+colnames(soilmois)[3]<-"doy"
+allclim<-merge(soiltemp,soilmois,by=c("year","doy","plot"),all=TRUE) 
+colnames(allclim)[19]<-"soilmois"
+allclim[which(allclim$soilmois==max(allclim$soilmois, na.rm=T)),]$soilmois<-NA
+allclim$airtemp<-NA
+allclim$site<-"bace"
+baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp","soiltemp","soilmois"))
+#baceclim$soilmois<-as.numeric(baceclim$soilmois)#for some reason this is coming up as NA in the output...
+
+row.names(baceclim) <- NULL
+return(baceclim) 
+}
+
 
 ##Produce cleaned, raw climate data
 raw.data.dir <- "./Experiments/"
@@ -248,6 +288,13 @@ cleanclimdata.raw$marchin <- clean.clim$marchin(path="./Experiments/marchin")
 cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Experiments/farnsworth/")
 cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/clark/")
 cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
+cleanclimdata.raw$bace <- clean.clim$bace(path="./Experiments/bace")
+
 expphenclim <- do.call("rbind", cleanclimdata.raw)
 row.names(expphenclim) <- NULL
 write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
+
+##Look at the data
+boxplot(as.numeric(soiltemp)~site, data=expphenclim)
+boxplot(as.numeric(soilmois)~site, data=expphenclim)
+boxplot(as.numeric(airtemp)~site, data=expphenclim)
