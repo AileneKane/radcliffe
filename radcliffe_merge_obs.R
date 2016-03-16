@@ -1,6 +1,6 @@
 ### Started 4 January 2015 ##
 ### By Ailene Ettinger ###
-setwd("~/GitHub/radcliffe")
+setwd("~/GitHub/radcliffe") # setwd("~/Documents/git/projects/meta_ep2/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
