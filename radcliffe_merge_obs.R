@@ -132,7 +132,7 @@ clean.rawobs$fitter <- function(filename, path)
 
 
 clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
-    path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw") {
+    path="Observations/Raw") {
     ## Harvard Forest ##
     ## Data type: Regular monitoring of multiple events ##
     ## I only entered one of the 4 possible files, in particular,
@@ -140,7 +140,7 @@ clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
     file <- file.path(path, filename)
     harvard <- read.csv(file, header=TRUE)
     names(harvard)[names(harvard) == "julian"] <- "doy"
-    harvard <- harvard[!is.na(harvard$doy),]
+    #harvard <- harvard[!is.na(harvard$doy),]
     splist <- read.csv(file.path(path, "specieslist_bylizzie.csv"),
         header=TRUE)
     harvard$spcode <- sub("-.*", "", harvard$tree.id)
@@ -178,7 +178,7 @@ clean.rawobs$harvard <- function(filename="hf003-03-spring.csv",
 }
 
 
-clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger/GitHub/radcliffe/Observations/Raw") {
+clean.rawobs$hubbard <- function(filename="phn.txt", path="Observations/Raw") {
 
     ## Hubbard Brook ##
     ## Data type: Regular monitoring of multiple events I think ##
@@ -204,7 +204,6 @@ clean.rawobs$hubbard <- function(filename="phn.txt", path="/Users/aileneettinger
     hubbard1$Date <- as.Date(hubbard1$Date)
     names(hubbard1)[names(hubbard1) == "Date"] <- "date"
     hubbard1$year <- format(hubbard1$date, "%Y")
-    
     hubbard1$doy <- as.numeric(format(hubbard1$date, "%j"))
     hubbard1 <- hubbard1[!is.na(hubbard1$doy),]
 
@@ -269,15 +268,13 @@ clean.rawobs$konza <- function(filename="Konza_PlantPhenology.csv", path=".") {
     konza$varetc <- NA
     konza$cult <- NA
     konza$event <- "ffd"
-
     konzarb <- subset(konza, select=common.cols.raw)
-
     return(konzarb)
 }
 
 
 
-clean.rawobs$niwot <- function(filename="itexphen.mw.data.csv", path=".") {
+clean.rawobs$niwot <- function(filename="itexphen.mw.data.csv", path=raw.data.dir) {
 
     ## Niwot ##
     ## Data type: Regular monitoring of multiple events ##
@@ -306,8 +303,11 @@ clean.rawobs$niwot <- function(filename="itexphen.mw.data.csv", path=".") {
     niwot6$site <- "niwot"
     niwot6$varetc <- NA
     niwot6$cult <- NA
+    niwot6<-niwot6[-grep("<",niwot6$doy),]#for now, remove all sites with "<"
+    niwot6<-niwot6[-which(niwot6$doy=="A"),]
+    niwot6<-niwot6[-which(niwot6$doy=="NaN"),]
     niwot <- taxoscrub(niwot6, "niwot")
-    niwotrb <- subset( niwot, select=common.cols.raw)            
+    niwotrb <- subset( niwot, select=common.cols.raw)
     rownames(niwotrb)<-NULL  
     return(niwotrb)
 }
@@ -360,6 +360,11 @@ clean.rawobs$concord <- function(filename="Miller-Rushing_Primack_Concord_phenol
   concord2$varetc <- NA
   concord2$cult <- NA
   concord3 <- taxoscrub(concord2, "concord")
+  concord3<-concord3[!is.na(concord3$genus),]
+  concord3<-concord3[!is.na(concord3$doy),]
+  concord3<-concord3[-which(concord3$doy=="236226"),]
+  concord3<-concord3[-which(concord3$doy==""),]
+  concord3<-concord3[-which(concord3$doy=="#REF!"),]
   concordrb <- subset(concord3, select=common.cols.raw)
   return(concordrb)
 }
@@ -417,7 +422,7 @@ clean.rawobs$fargo <- function(filename="fargo.csv", path=raw.data.dir) {
   return(fargorb)
 }
 
-###Fargo data  (directly from NECTAR)
+###Washdc data  (directly from NECTAR)
 clean.rawobs$washdc <- function(filename="washdc.csv", path=raw.data.dir) {
   washdc <- read.csv(file.path(path, filename),header=TRUE)
   colnames(washdc)[2]<-"site"
@@ -451,6 +456,7 @@ clean.rawobs$bolmgren <- function(filename="gunnar_copy2ailene_151126.csv", path
   bolmgren3$plot<-NA
   bolmgren3$varetc <- NA
   bolmgren3$cult <- NA
+  bolmgren3<-bolmgren3[!is.na(bolmgren3$doy),]
   bolmgren3 <- taxoscrub(bolmgren3, "bolmgren")
   bolmgrenrb <- subset(bolmgren3, select=common.cols.raw)
   rownames(bolmgrenrb)<-NULL  
@@ -461,7 +467,8 @@ clean.rawobs$bolmgren <- function(filename="gunnar_copy2ailene_151126.csv", path
 clean.rawobs$gothic <- function(filename="gothicphenology1973-2015_March2016.csv", path=raw.data.dir) {
   gothic <- read.csv(file.path(path, filename),header=TRUE)
   gothic$site<-"gothic"
-  gensp <- strsplit(as.character(gothic$species),' ') 
+  colnames(gothic)[3]<-"genus.species"
+  gensp <- strsplit(as.character(gothic$genus.species),' ') 
   gensp<-do.call(rbind, gensp)
   gothic<-cbind(gothic,gensp[,1:2])
   colnames(gothic)[8]<-"genus"
@@ -471,6 +478,9 @@ clean.rawobs$gothic <- function(filename="gothicphenology1973-2015_March2016.csv
   gothic$varetc <- NA
   gothic$cult <- NA
   gothic <- taxoscrub(gothic, "gothic")
+  gothic<-gothic[!gothic$genus=="unknforb",]
+  gothic<-gothic[!gothic$genus=="unkngrass",]
+  gothic<-gothic[!is.na(gothic$doy),]
   gothicrb <- subset(gothic, select=common.cols.raw)
   return(gothicrb)
 }
@@ -505,6 +515,7 @@ clean.rawobs$uwm <- function(filename="UWMFS_HFP_Pheno_2000.csv", path=raw.data.
   uwm2$cult <- NA
   uwm2$plot <- NA
   uwm2$site <-"uwm"
+  uwm2<-uwm2[-which(uwm2$doy=="999"),]
   uwm2 <- taxoscrub(uwm2, "uwm")
   uwmrb <- subset(uwm2, select=common.cols.raw)
   rownames(uwmrb)<-NULL  
@@ -525,7 +536,6 @@ clean.rawobs$rousi <- function(filename="Rousi_BDbud_1997_2005.csv", path=raw.da
   rousi$genus <- "Betula"
   rousi$species <- "pendula"
   rousi2<-rousi[rousi$total>0,]#remove rows for which indiviudals did not burst their buds
-  
   rousi2 <- taxoscrub(rousi2, "rousi")
   rousirb <- subset(rousi2, select=common.cols.raw)
   return(rousirb)
@@ -539,8 +549,8 @@ clean.rawobs$rousifl <- function(filename="rousi_betula_flowering.csv", path=raw
   rousifl$species <- "pendula"
   colnames(rousifl)[4]<-"sp"
   rousifl[rousifl$sp==2,]$species <- "pubescens"
-  
   colnames(rousifl)[5]<-"doy"
+  rousifl<-rousifl[-which(rousifl$doy==""),]
   rousifl$event<-"ffd"#use just female flowers for now?
   rousifl$date <- as.Date(paste(rousifl$year, rousifl$doy, sep="-"),format="%Y-%j")            
   rousifl$plot<- NA
@@ -555,7 +565,7 @@ clean.rawobs$rousifl <- function(filename="rousi_betula_flowering.csv", path=raw
 # make list to store all the derived dataset cleaning functions
 cleandata.rawobs <- list()
 raw.data.dir <- "Observations/Raw"
-cleandata.rawobs$fitter <- clean.rawobs$fitter(file="Fitter_data.csv",path="Observations/Raw/")
+cleandata.rawobs$fitter <- clean.rawobs$fitter(file="Fitter_data.csv",path=raw.data.dir)
 cleandata.rawobs$harvard <- clean.rawobs$harvard(path=raw.data.dir)
 cleandata.rawobs$hubbard <- clean.rawobs$hubbard(path=raw.data.dir)
 cleandata.rawobs$konza <- clean.rawobs$konza(path=raw.data.dir)
@@ -574,7 +584,16 @@ cleandata.rawobs$rousifl<-clean.rawobs$rousifl(path=raw.data.dir)
 
 obsphendb <- do.call("rbind", cleandata.rawobs)
 row.names(obsphendb) <- NULL
+obsphendb<-obsphendb[!obsphendb$genus=="na",]#look at these- some rows from konza and washdc have doys...why na?
+obsphendb<-obsphendb[!is.na(obsphendb$site),]#look at these-why NA?
+dim(obsphendb)
+#211952 rows
 write.csv(obsphendb, "radmeeting/obspheno.csv", row.names=FALSE)
-
-stop()
-
+head(obsphendb)
+unique(obsphendb$site)#15 sites
+unique(obsphendb$event)#6 events
+sort(unique(obsphendb$genus))
+sort(unique(paste(obsphendb$genus,obsphendb$species, sep=".")))
+unique(obsphendb$doy)
+#questions: what to do with things like "rush sp" ribes sp? keep or get rid of?
+#questions: what to do with things like "<178" for doy- remove or use number without< (for now removed- just for niwot and chuine
