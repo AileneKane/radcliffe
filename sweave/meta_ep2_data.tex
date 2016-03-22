@@ -11,7 +11,7 @@
 
 %Strongly recommended
   %put your figures in one place
-% \SweaveOpts{prefix.string=/Users/Lizzie/Documents/git/projects/meta_ep2/radcliffe/sweave/figures, eps=FALSE} 
+ 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 \setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
@@ -44,7 +44,7 @@
 
 %Start of the document
 \begin{document}
-\input{meta_ep2_data-concordance}
+\input{figures/-concordance}
 % \SweaveOpts{concordance=TRUE}
 % \bibliographystyle{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/styles/nature.bst}
 
@@ -143,59 +143,3 @@ Then we could discuss the sites, and the phenological events ...
 
 \begin{figure}
 \begin{center}
-\includegraphics{meta_ep2_data-figobsdata}
-\end{center}
-\caption{Mean day of year (averaged across all events and species) by year from the observational data.}
-\end{figure}
-
-\subsection{Species}
-
-\begin{Schunk}
-\begin{Sinput}
-> expdata$latbi <- paste(expdata$genus, expdata$species)
-> obsdata$latbi <- paste(obsdata$genus, obsdata$species)
-> length(expdata$latbi)
-\end{Sinput}
-\begin{Soutput}
-[1] 64099
-\end{Soutput}
-\begin{Sinput}
-> length(obsdata$latbi)
-\end{Sinput}
-\begin{Soutput}
-[1] 211952
-\end{Soutput}
-\end{Schunk}
-
-How many (and which species overlap between the two approaches?
-
-\begin{Schunk}
-\begin{Sinput}
-> unique(expdata$latbi)[which(unique(expdata$latbi) %in% unique(obsdata$latbi))]
-\end{Sinput}
-\begin{Soutput}
- [1] "Acer rubrum"              "Carya tomentosa"          "Quercus alba"            
- [4] "Vaccinium pallidum"       "Vaccinium stamineum"      "Quercus rubra"           
- [7] "Chimaphila maculata"      "Hieracium venosum"        "Thalictrum thalictroides"
-[10] "Betula lenta"             "Fagus grandifolia"        "Acer pensylvanicum"      
-[13] "Castanea dentata"         "Viburnum lentago"         "Vaccinium corymbosum"    
-[16] "Vaccinium vacillans"      "Prunus serotina"          "Viburnum acerifolium"    
-[19] "Bromus hordeaceus"        "Geranium dissectum"       "Vicia sativa"            
-[22] "Vulpia myuros"            "Pinus taeda"              "Nyssa sylvatica"         
-[25] "Liquidambar styraciflua"  "Pinus strobus"            "Liriodendron tulipifera" 
-[28] "Pinus virginiana"         "Fraxinus americana"       "Quercus velutina"        
-[31] "Acer saccharum"           "Quercus phellos"          "Cornus florida"          
-[34] "Juniperus virginiana"     "Diospyros virginiana"     "Betula alleghaniensis"   
-[37] "Carya ovata"              "Ilex opaca"               "Quercus falcata"         
-[40] "Quercus nigra"            "Carya glabra"             "Quercus stellata"        
-[43] "Quercus coccinea"         "Magnolia virginiana"      "Cercis canadensis"       
-[46] "Ulmus americana"          "Betula papyrifera"        "Prunus pensylvanica"     
-[49] "Achillea millefolium"     "Andropogon gerardii"      "Erigeron strigosus"      
-[52] "Panicum virgatum"         "Claytonia lanceolata"     "Campanula rotundifolia"  
-[55] "Erythronium grandiflorum" "Eriogonum subalpinum"     "Ipomopsis aggregata"     
-[58] "Lathyrus leucanthus"      "Amaranthus retroflexus"   "Setaria viridis"         
-[61] "Lolium perenne"          
-\end{Soutput}
-\end{Schunk}
-
-\end{document}

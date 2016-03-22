@@ -11,7 +11,7 @@
 
 %Strongly recommended
   %put your figures in one place
-% \SweaveOpts{prefix.string=/Users/Lizzie/Documents/git/projects/meta_ep2/radcliffe/sweave/figures, eps=FALSE} 
+ \SweaveOpts{prefix.string=figures/, eps=FALSE} 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 \setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
