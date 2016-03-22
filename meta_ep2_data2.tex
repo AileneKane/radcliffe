@@ -86,5 +86,72 @@ We'll walk through the experimental datafile first.
 6 marchin    1   bbd 2011  Acer  rubrum  80
 \end{Soutput}
 \end{Schunk}
+site: the first author's name (usually)
+
+plot: the plot or chamber number, given by the author
+
+event: phenological event (bbd=leaf budburst date,  lod=leaf out date, lud=leaf unfolding date,ffd=first flower date,ffrd=first fruiting date)
+
+genus and species: 
+
+doy: day of year that the phenological event occured
+
+\subsection{Observational data}
+
+Next, the observational data. 
+
+\begin{Schunk}
+\begin{Sinput}
+> head(obsdata)
+\end{Sinput}
+\begin{Soutput}
+    site plot event year doy       date genus   species scrub varetc cult
+1 fitter <NA>   ffd 1954 130 1954-05-10  Acer campestre     0     NA   NA
+2 fitter <NA>   ffd 1955 131 1955-05-11  Acer campestre     0     NA   NA
+3 fitter <NA>   ffd 1956 137 1956-05-16  Acer campestre     0     NA   NA
+4 fitter <NA>   ffd 1957 121 1957-05-01  Acer campestre     0     NA   NA
+5 fitter <NA>   ffd 1958 128 1958-05-08  Acer campestre     0     NA   NA
+6 fitter <NA>   ffd 1959 129 1959-05-09  Acer campestre     0     NA   NA
+\end{Soutput}
+\end{Schunk}
+
+Then we could discuss the sites, and the phenological events ...
+
+\begin{Schunk}
+\begin{Sinput}
+> unique(obsdata$site)
+\end{Sinput}
+\begin{Soutput}
+ [1] fitter   harvard  hubbard  konza    niwot    mikesell concord  mohonk   marsham 
+[10] fargo    washdc   bolmgren gothic   uwm      rousi   
+15 Levels: bolmgren concord fargo fitter gothic harvard hubbard konza ... washdc
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> table(obsdata$site, obsdata$event)
+\end{Sinput}
+\begin{Soutput}
+              bbd    ffd    fld L75mdoy L95mdoy    lod    lud
+  bolmgren      0   1622      0       0       0      0      0
+  concord       0   9320      0       0       0      0      0
+  fargo         0   4725      0       0       0      0      0
+  fitter        0  13721      0       0       0      0      0
+  gothic        0 162352      0       0       0      0      0
+  harvard     483    284      0       0       0      0      0
+  hubbard      72      0      0       0       0     72      0
+  konza         0   3403      0       0       0      0      0
+  marsham       0   2131    660       0       0      0      0
+  mikesell    445      0      0       0       0    549    554
+  mohonk        0    673      0       0       0      0      0
+  niwot       648    371      0       0       0      0      0
+  rousi      1021    147      0       0       0      0      0
+  uwm         414      0      0     415     415      0      0
+  washdc        0   7455      0       0       0      0      0
+\end{Soutput}
+\end{Schunk}
+
+\subsection{Species}
 
 \end{document}

@@ -76,5 +76,34 @@ We'll walk through the experimental datafile first.
 <<echo=TRUE>>=
 head(expdata)
 @
+site: the first author's name (usually)
+
+plot: the plot or chamber number, given by the author
+
+event: phenological event (bbd=leaf budburst date,  lod=leaf out date, lud=leaf unfolding date,ffd=first flower date,ffrd=first fruiting date)
+
+genus and species: 
+
+doy: day of year that the phenological event occured
+
+\subsection{Observational data}
+
+Next, the observational data. 
+
+<<echo=TRUE, label=headobs>>=
+head(obsdata)
+@
+
+Then we could discuss the sites, and the phenological events ...
+
+<<echo=TRUE, label=siteobs>>=
+unique(obsdata$site)
+@
+
+<<echo=TRUE, label=eventobs>>=
+table(obsdata$site, obsdata$event)
+@
+
+\subsection{Species}
 
 \end{document}
