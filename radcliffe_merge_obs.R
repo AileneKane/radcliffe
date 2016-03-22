@@ -597,3 +597,5 @@ sort(unique(paste(obsphendb$genus,obsphendb$species, sep=".")))
 unique(obsphendb$doy)
 #questions: what to do with things like "rush sp" ribes sp? keep or get rid of?
 #questions: what to do with things like "<178" for doy- remove or use number without< (for now removed- just for niwot and chuine
+specieslist<-sort(unique(paste(obsphendb$genus,obsphendb$species, sep=".")))
+write.csv(specieslist,"obs_splist.csv")

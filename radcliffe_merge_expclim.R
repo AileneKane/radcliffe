@@ -256,29 +256,14 @@ row.names(baceclim) <- NULL
 return(baceclim) 
 }
 ##Chuine et al. data from ??? ##
-## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
+## Data type: sporadic measurements of soil temp and humidity?
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr)
 clean.clim$chuine <- function(path="./Experiments/chuine") {
-  maxtempfiles<-c("meteoTE05_maxtemp2005.csv","meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
-  mintempfiles<-c("meteoTE05_mintemp2005.csv","meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
- temp <- NA
+  soilfiles<-c("TDR2002.csv","TDR2003.csv","TDR2004.csv","TDR2005.csv")
+  soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
   for (i in 1:length(maxtempfiles)){
     file <- file.path(path, paste(maxtempfiles[i]))
     maxtemp1 <- read.csv(file, skip=1,header=TRUE)
-    colnames(maxtemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-    maxtemp2<-subset(maxtemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-    maxtemp.long<-reshape(maxtemp2,varying = list(colnames(maxtemp2)[2:13]), direction = "long", v.names = c("maxairtemp"), times = c(colnames(maxtemp2)[2:13]))
-    colnames(maxtemp.long)[2]<-"month"
-    file2 <- file.path(path, paste(mintempfiles[i]))
-    mintemp1 <- read.csv(file2, skip=1,header=TRUE)
-    colnames( mintemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-    mintemp2<-subset(mintemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-    mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
-    colnames(mintemp.long)[2]<-"month"
-    
-    allairtemp <- merge(maxtemp.long,mintemp.long)
-  soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
-  col
 
 ##Produce cleaned, raw climate data
 raw.data.dir <- "./Experiments/"
@@ -288,21 +273,27 @@ cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Experiments/farnsw
 cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/clark/")
 cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
 cleanclimdata.raw$bace <- clean.clim$bace(path="./Experiments/bace")
-cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
-
+#cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
 #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")still waiting for data
 #cleanclimdata.raw$oklahoma <- clean.clim$oklahoma(path="./Experiments/sherry")still waiting for data
 
-expphenclim <- do.call("rbind", cleanclimdata.raw)
-row.names(expphenclim) <- NULL
+expphenclim1 <- do.call("rbind", cleanclimdata.raw)
+row.names(expphenclim1) <- NULL
+
+expphenclim<-expphenclim[-which(expphenclim$doy=="NA"),]
+expphenclim$doy<-as.numeric(expphenclim$doy)
+###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
 tbase<-10
 expphenclim$gdd_soil<-expphenclim$soiltemp1_mean-tbase
 expphenclim$gdd_air<-((as.numeric(expphenclim$airtemp_min)+as.numeric(expphenclim$airtemp_max))/2)-tbase
-
-###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
-
+expphenclim$gdd_soil[expphenclim$gdd_soil < 10] <- 0
+expphenclim$gdd_air[expphenclim$gdd_air < 10] <- 0
+expphenclim<-expphenclim[order(expphenclim$site,expphenclim$plot,expphenclim$year, expphenclim$doy),]
+expphenclim$cumgdd_air <- ave(expphenclim$gdd_air,list(expphenclim$site,expphenclim$plot,expphenclim$year), FUN=cumsum)
+expphenclim$cumgdd_soil <- ave(expphenclim$gdd_soil,list(expphenclim$site,expphenclim$plot,expphenclim$year), FUN=cumsum)
+cumsum(ifelse(is.na(x), 0, x)) + x*0
 write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
-
+expphenclim
 ##Look at the data to check for errors
 boxplot(as.numeric(airtemp_min)~site, data=expphenclim)
 boxplot(as.numeric(airtemp_max)~site, data=expphenclim)
@@ -312,3 +303,23 @@ boxplot(as.numeric(soiltemp1_max)~temptreat, data=expphenclim)
 boxplot(as.numeric(soiltemp2_max)~temptreat, data=expphenclim)
 boxplot(as.numeric(soiltemp1_mean)~preciptreat, data=expphenclim)
 boxplot(as.numeric(soilmois)~site, data=expphenclim)
+
+###unused code:
+##air temp files from chuine (not on plot level, so not useful?)
+maxtempfiles<-c("meteoTE05_maxtemp2005.csv","meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
+mintempfiles<-c("meteoTE05_mintemp2005.csv","meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
+temp <- NA
+for (i in 1:length(maxtempfiles)){
+  file <- file.path(path, paste(maxtempfiles[i]))
+  maxtemp1 <- read.csv(file, skip=1,header=TRUE)
+  colnames(maxtemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+  maxtemp2<-subset(maxtemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+  maxtemp.long<-reshape(maxtemp2,varying = list(colnames(maxtemp2)[2:13]), direction = "long", v.names = c("maxairtemp"), times = c(colnames(maxtemp2)[2:13]))
+  colnames(maxtemp.long)[2]<-"month"
+  file2 <- file.path(path, paste(mintempfiles[i]))
+  mintemp1 <- read.csv(file2, skip=1,header=TRUE)
+  colnames( mintemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+  mintemp2<-subset(mintemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+  mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
+  colnames(mintemp.long)[2]<-"month"
+  allairtemp <- merge(maxtemp.long,mintemp.long)

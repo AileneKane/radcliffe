@@ -579,6 +579,8 @@ clean.raw$chuine <- function(filename, path="./Experiments/chuine") {
   chuine$species[chuine$sp=="sv"] <- "viridis"
   chuine$genus[chuine$sp=="sp"] <- "Setaria"
   chuine$species[chuine$sp=="sp"] <- "parviflora"
+  chuine$genus[chuine$sp=="lp3"] <- "Lolium"
+  chuine$species[chuine$sp=="lp3"] <- "perenne"
   chuine$site<-"chuine"
   chuine4<-subset(chuine, select=c("site","plot","event","year","genus","species", "doy"))
   #chuine4$variety <- NA
@@ -603,15 +605,19 @@ cleandata.raw$chuine<- clean.raw$chuine(path="./Experiments/chuine")
 expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #expphendb<-expphendb[!is.na(expphendb$doy),]
+expphendb<-expphendb[-which(expphendb$genus=="Ob"),]#unknown genus at clarkduke
+expphendb<-expphendb[-which(expphendb$genus=="Le"),]#unknown genus at clarkharvard
 write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
 dim(expphendb)
-#64112 rows, from 
+#64099 rows,
 head(expphendb)
 unique(expphendb$site)#9 experiments (will be 10 with Aaron ellisons phenology, 11 with zackenberg) across 7 sites (8 with zackenberg)
 unique(expphendb$plot)#some NA/blanks to fix...
 unique(expphendb$genus)#59 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
-unique(expphendb$genus.species)#97 species
+unique(expphendb$genus.species)#92 species
 unique(expphendb$event)#7 phenological events
 tapply(expphendb$doy,list(expphendb$site,expphendb$event),length)
 max(as.numeric(expphendb$doy))
+
+

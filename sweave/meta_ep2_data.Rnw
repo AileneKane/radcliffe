@@ -44,6 +44,7 @@
 
 %Start of the document
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 % \SweaveOpts{concordance=TRUE}
 % \bibliographystyle{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/styles/nature.bst}
 
@@ -70,10 +71,10 @@ options(width=90)
 @
 
 <<echo=FALSE, label=getdata>>=
-setwd("~/Documents/git/projects/meta_ep2/radcliffe")
+setwd("~/GitHub/radcliffe")
 obsdata <- read.csv("radmeeting/obspheno.csv", header=TRUE)
 expdata <- read.csv("radmeeting/exppheno.csv", header=TRUE)
-setwd("~/Documents/git/projects/meta_ep2/radcliffe/sweave/figures") # sadly SweaveOpts above is not working so making it work through this hack
+#setwd("~/GitHub/radcliffe/sweave/figures") # sadly SweaveOpts above is not working so making it work through this hack
 @
 
 We'll walk through the experimental datafile first. Repeat what's below for the observational data ....
