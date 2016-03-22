@@ -273,6 +273,7 @@ cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Experiments/farnsw
 cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/clark/")
 cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
 cleanclimdata.raw$bace <- clean.clim$bace(path="./Experiments/bace")
+
 #cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
 #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")still waiting for data
 #cleanclimdata.raw$oklahoma <- clean.clim$oklahoma(path="./Experiments/sherry")still waiting for data
