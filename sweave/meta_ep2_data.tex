@@ -42,6 +42,50 @@
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
 
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{Sweave}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+
+%Strongly recommended
+  %put your figures in one place
+ 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+\setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%Here's how to do that
+ \topmargin -1.5cm        
+ \oddsidemargin -0.04cm   
+ \evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+ \textwidth 16.59cm
+ \textheight 21.94cm 
+ %\pagestyle{empty}       % Uncomment if don't want page numbers
+ \parskip 7.2pt           % sets spacing between paragraphs
+ %\renewcommand{\baselinestretch}{1.5} 	% Uncomment for 1.5 spacing between lines
+\parindent 0pt		  % sets leading space for paragraphs
+\usepackage{setspace}
+%\doublespacing
+
+%Optional: I like fancy headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[LO]{Meta-analysis, episode 2}
+\fancyhead[RO]{2016}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
 %Start of the document
 \begin{document}
 \input{figures/-concordance}
@@ -141,5 +185,54 @@ Then we could discuss the sites, and the phenological events ...
 \end{Soutput}
 \end{Schunk}
 
-\begin{figure}
-\begin{center}
+\subsection{Species}
+
+\begin{Schunk}
+\begin{Sinput}
+> expdata$latbi <- paste(expdata$genus, expdata$species)
+> obsdata$latbi <- paste(obsdata$genus, obsdata$species)
+> length(expdata$latbi)
+\end{Sinput}
+\begin{Soutput}
+[1] 64099
+\end{Soutput}
+\begin{Sinput}
+> length(obsdata$latbi)
+\end{Sinput}
+\begin{Soutput}
+[1] 211952
+\end{Soutput}
+\end{Schunk}
+
+How many (and which species overlap between the two approaches?
+
+\begin{Schunk}
+\begin{Sinput}
+> unique(expdata$latbi)[which(unique(expdata$latbi) %in% unique(obsdata$latbi))]
+\end{Sinput}
+\begin{Soutput}
+ [1] "Acer rubrum"              "Carya tomentosa"          "Quercus alba"            
+ [4] "Vaccinium pallidum"       "Vaccinium stamineum"      "Quercus rubra"           
+ [7] "Chimaphila maculata"      "Hieracium venosum"        "Thalictrum thalictroides"
+[10] "Betula lenta"             "Fagus grandifolia"        "Acer pensylvanicum"      
+[13] "Castanea dentata"         "Viburnum lentago"         "Vaccinium corymbosum"    
+[16] "Vaccinium vacillans"      "Prunus serotina"          "Viburnum acerifolium"    
+[19] "Bromus hordeaceus"        "Geranium dissectum"       "Vicia sativa"            
+[22] "Vulpia myuros"            "Pinus taeda"              "Nyssa sylvatica"         
+[25] "Liquidambar styraciflua"  "Pinus strobus"            "Liriodendron tulipifera" 
+[28] "Pinus virginiana"         "Fraxinus americana"       "Quercus velutina"        
+[31] "Acer saccharum"           "Quercus phellos"          "Cornus florida"          
+[34] "Juniperus virginiana"     "Diospyros virginiana"     "Betula alleghaniensis"   
+[37] "Carya ovata"              "Ilex opaca"               "Quercus falcata"         
+[40] "Quercus nigra"            "Carya glabra"             "Quercus stellata"        
+[43] "Quercus coccinea"         "Magnolia virginiana"      "Cercis canadensis"       
+[46] "Ulmus americana"          "Betula papyrifera"        "Prunus pensylvanica"     
+[49] "Achillea millefolium"     "Andropogon gerardii"      "Erigeron strigosus"      
+[52] "Panicum virgatum"         "Claytonia lanceolata"     "Campanula rotundifolia"  
+[55] "Erythronium grandiflorum" "Eriogonum subalpinum"     "Ipomopsis aggregata"     
+[58] "Lathyrus leucanthus"      "Amaranthus retroflexus"   "Setaria viridis"         
+[61] "Lolium perenne"          
+\end{Soutput}
+\end{Schunk}
+
+\end{document}

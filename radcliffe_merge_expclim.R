@@ -260,11 +260,9 @@ return(baceclim)
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr)
 clean.clim$chuine <- function(path="./Experiments/chuine") {
   soilfiles<-c("TDR2002.csv","TDR2003.csv","TDR2004.csv","TDR2005.csv")
-  soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
-  for (i in 1:length(maxtempfiles)){
+  for (i in 1:length(soilfiles)){
     file <- file.path(path, paste(maxtempfiles[i]))
-    maxtemp1 <- read.csv(file, skip=1,header=TRUE)
-
+    soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
 ##Produce cleaned, raw climate data
 raw.data.dir <- "./Experiments/"
 cleanclimdata.raw <- list()
