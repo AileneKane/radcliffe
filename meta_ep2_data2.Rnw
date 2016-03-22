@@ -94,7 +94,7 @@ Next, the observational data.
 head(obsdata)
 @
 
-Then we could discuss the sites, and the phenological events ...
+The observational data come from 15 sites (see XX file for details).
 
 <<echo=TRUE, label=siteobs>>=
 unique(obsdata$site)
