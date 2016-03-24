@@ -4,7 +4,8 @@ setwd("~/GitHub/radcliffe") # setwd("~/Documents/git/projects/meta_ep2/radcliffe
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
-library(zoo)
+#library(zoo)
+library(tidyr)
 ##Want to get several files:
 #1. Phenology data: site, plot, event (phen event),year, doy,genus,species,Temp_treat, Precip_treat, onetempchange, precipchange, precipchangetyp
 #2. Species names: site,genus,species,scrub,genus.prescrub,species.prescrub,ipni
@@ -69,7 +70,7 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Experimen
 
 clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path="./Experiments/bace",names.only=FALSE) {  
   ##BACE ##
-  ## Data type: BBD,LOD, LUD ##
+  ## Data type: BBD,LOD,LUD ##
   ## Notes: Jeff Dukes##
   ##Decided to follow NPN's definitios: >3 of observations of each event needed to count
   file <- file.path(path, filename)
@@ -139,7 +140,7 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
   for(i in 1:dim(farnsworth1)[1]){
     inddat<-farnsworth1[i,20:31]
     names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
-    bbdate<-names(inddat)[min(which(inddat>1))]
+    bbdate<-names(inddat)[min(which(inddat==1.5))]#1.5="leaves just emerging"
     bbdoy<-strftime(bbdate, format = "%j")
     farnsworth1$bb_doy[i]<-bbdoy
   }
@@ -148,7 +149,7 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
   for(i in 1:dim(farnsworth1)[1]){
     inddat<-farnsworth1[i,20:31]
     names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
-    ludate<-names(inddat)[min(which(inddat>1.5))]
+    ludate<-names(inddat)[min(which(inddat==2))]
     ludoy<-strftime(ludate, format = "%j")
     farnsworth1$leafunf_doy[i]<-ludoy
   }
@@ -157,7 +158,7 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
   for(i in 1:dim(farnsworth1)[1]){
     inddat<-farnsworth1[i,20:31]
     names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
-    lodate<-names(inddat)[min(which(inddat>2))]
+    lodate<-names(inddat)[min(which(inddat==3))]
     lodoy<-strftime(lodate, format = "%j")
     farnsworth1$leafout_doy[i]<-lodoy
   }
@@ -178,6 +179,24 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
     ffrdate<-names(inddat)[min(which(inddat==5))]
     ffrdoy<-strftime(ffrdate, format = "%j")
     farnsworth1$ffrd[i]<-ffrdoy
+  }
+  #now leaf coloration=leaves turned color" first date this was observed
+  farnsworth1$col<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    coldate<-names(inddat)[min(which(inddat==7))]
+    coldoy<-strftime(coldate, format = "%j")
+    farnsworth1$col[i]<-coldoy
+  }
+  #now leaf drop="some or all leaves abscised" (8,9)-first date this was observed
+  farnsworth1$drop<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    dropdate<-names(inddat)[min(which(inddat>7))]
+    dropdoy<-strftime(dropdate, format = "%j")
+    farnsworth1$drop[i]<-dropdoy
   }
   farnsworth1$genus<-NA
   farnsworth1$species1<-NA
@@ -222,29 +241,41 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
   farnsworth2a$event <- "bbd"
   #pull out all leafunf rows
   farnsworth3<-farnsworth1[which(farnsworth1$leafunf_doy>0),]
-  farnsworth3a<-subset(farnsworth3, select=c("site","plot","event","year","genus","species1","bb_doy"))
+  farnsworth3a<-subset(farnsworth3, select=c("site","plot","event","year","genus","species1","leafunf_doy"))
   colnames(farnsworth3a)[6]<-"species"
   colnames(farnsworth3a)[7]<-"doy"
   farnsworth3a$event <- "lud"
   #pull out all leafout rows
   farnsworth4<-farnsworth1[which(farnsworth1$leafout_doy>0),]
-  farnsworth4a<-subset(farnsworth4, select=c("site","plot","event","year","genus","species1","bb_doy"))
+  farnsworth4a<-subset(farnsworth4, select=c("site","plot","event","year","genus","species1","leafout_doy"))
   colnames(farnsworth4a)[6]<-"species"
   colnames(farnsworth4a)[7]<-"doy"
   farnsworth4a$event <- "lod"
   #pull out all flowering rows
   farnsworth5<-farnsworth1[which(farnsworth1$ffd>0),]
-  farnsworth5a<-subset(farnsworth5, select=c("site","plot","event","year","genus","species1","bb_doy"))
+  farnsworth5a<-subset(farnsworth5, select=c("site","plot","event","year","genus","species1","ffd"))
   colnames(farnsworth5a)[6]<-"species"
   colnames(farnsworth5a)[7]<-"doy"
   farnsworth5a$event <- "ffd"
   #pull out all fruiting rows
   farnsworth6<-farnsworth1[which(farnsworth1$ffrd>0),]
-  farnsworth6a<-subset(farnsworth6, select=c("site","plot","event","year","genus","species1","bb_doy"))
+  farnsworth6a<-subset(farnsworth6, select=c("site","plot","event","year","genus","species1","ffrd"))
   colnames(farnsworth6a)[6]<-"species"
   colnames(farnsworth6a)[7]<-"doy"
   farnsworth6a$event <- "ffrd"
-  farnsworth<- rbind(farnsworth2a,farnsworth3a,farnsworth3a,farnsworth4a,farnsworth5a,farnsworth6a)
+  #pull out all coloration rows
+  farnsworth7<-farnsworth1[which(farnsworth1$col>0),]
+  farnsworth7a<-subset(farnsworth7, select=c("site","plot","event","year","genus","species1","col"))
+  colnames(farnsworth7a)[6]<-"species"
+  colnames(farnsworth7a)[7]<-"doy"
+  farnsworth7a$event <- "col"
+  #pull out all drop rows
+  farnsworth8<-farnsworth1[which(farnsworth1$drop>0),]
+  farnsworth8a<-subset(farnsworth7, select=c("site","plot","event","year","genus","species1","drop"))
+  colnames(farnsworth8a)[6]<-"species"
+  colnames(farnsworth8a)[7]<-"doy"
+  farnsworth8a$event <- "drop"
+  farnsworth<- rbind(farnsworth2a,farnsworth3a,farnsworth3a,farnsworth4a,farnsworth5a,farnsworth6a,farnsworth7a,farnsworth8a)
   return(farnsworth)
 }
 ###Cleland et al Jasper Ridge data
@@ -340,7 +371,8 @@ clarkduke<-rbind(clarkduke,clarkduke5)
 }
 clarkduke<-clarkduke[-1,]
 clarkduke<-clarkduke[!is.na(clarkduke$doy),]
-
+clarkduke<-clarkduke[-which(clarkduke$genus=="Ob"),]#unknown genus at clarkduke
+clarkduke[which(clarkduke$genus=="Carya "),]$genus<-"Carya"
 return(clarkduke)
 }
 
@@ -589,6 +621,68 @@ clean.raw$chuine <- function(filename, path="./Experiments/chuine") {
   return(chuine4)
   ##
 }
+##Data from FORCE
+##Contact: Christy Rollinson
+clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", path="./Experiments/force") {
+    file <- file.path(path, filename)
+    force1 <- read.csv(file, check.names=FALSE, header=TRUE)
+    force1$plot<-paste(force1$Block,force1$Treatment,sep="")
+    force2<-aggregate(x=force1$Survey.DOY, by=list(force1$Year,force1$plot,force1$Species,force1$Phenology.State), FUN=min)
+    colnames(force2)<-c("year","plot","SP","phenstate","doy")
+    force2$event<-NA
+    force2[force2$phenstate==1,]$event<-"lod"
+    force2[force2$phenstate==2,]$event<-"ffd"
+    force2[force2$phenstate==3,]$event<-"ffrd"
+    force2[force2$phenstate==4,]$event<-"sd"
+    force2[force2$phenstate==5,]$event<-"sen"
+    force3<-force2[-which(is.na(force2$event)),]
+    force3<-force3[-which(force3$SP=="11-Oct"),]
+    force3<-force3[-which(force3$SP=="9-Oct"),]
+    force3<-force3[-which(force3$SP=="CEOB"),]
+    force3<-force3[-which(force3$SP=="U44"),]
+    spfile <- file.path(path, "Species_List.csv")
+    specieslist<-read.csv(spfile, header=TRUE)
+    force3$genussp<-NA
+    species1<-unique(force3$SP)
+    species1[which(species1=="U80")]<-"ARMI"
+      for (j in 1:length(species1)){
+        force3$genussp[force3$SP==species1[j]] <- specieslist[specieslist$Species.CODE==species1[j],]$Species
+        }
+    force4<-force3 %>% separate(genussp, c("genus", "species"), sep=" ", remove=F)
+    force4[which(force4$genus=="Sisynchium"),]$genus<-"Sisyrinchium"
+    force4[which(force4$genus=="Oenethera"),]$genus<-"Oenothera"
+    force4$site<-"force"
+    force<-subset(force4, select=c("site","plot","event","year","genus","species", "doy"))
+    return(force)
+    ##
+}
+
+##Data from Aaron Ellison's warming/phenology/ant experiment at Harvard Forest
+##Fall phenology
+##Contact: Aaron Ellison
+clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Experiments/ellison") {
+  file <- file.path(path, filename)
+  ellison1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  colnames(ellison1)[2]<-"plot"
+  colnames(ellison1)[4]<-"genussp"
+  ellison1$doy<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%j") 
+  ellison1$year<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%Y")
+  ellison2<-aggregate(x=ellison1$doy, by=list(ellison1$year,ellison1$plot,ellison1$genussp,ellison1$plant,ellison1$phenology), FUN=min)
+  ellison3<-ellison2 %>% separate(Group.3, c("genus", "species"), sep="_", remove=F)
+  colnames(ellison3)<-c("year","plot","gensp")
+  colnames(ellison3)[4:8]<-c("genus","species","plant","phenology","doy")
+  ellison3$event<-NA
+  ellison3[ellison3$phenology=="F2",]$event<-"sen"
+  ellison3[ellison3$phenology=="F3",]$event<-"drop"
+  ellison3[ellison3$phenology=="S3",]$event<-"bbd"
+  ellison3[ellison3$phenology=="S4",]$event<-"lud"
+  ellison3[ellison3$phenology=="S5",]$event<-"lod"
+  ellison3$site<-"harvardellison"
+  ellison<-subset(ellison3, select=c("site","plot","event","year","genus","species", "doy"))
+  return(ellison)
+  }
+
+
 # Produce cleaned raw data
 #
 raw.data.dir <- "./Experiments"
@@ -602,22 +696,49 @@ cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path="./Experiments/clark")
 cleandata.raw$sherry <- clean.raw$sherry(path="./Experiments/sherry")
 cleandata.raw$price <- clean.raw$price(path="./Experiments/price")
 cleandata.raw$chuine<- clean.raw$chuine(path="./Experiments/chuine")
+cleandata.raw$force<- clean.raw$force(path="./Experiments/force")
+cleandata.raw$ellison<- clean.raw$ellison(path="./Experiments/ellison")
+
 expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
-#expphendb<-expphendb[!is.na(expphendb$doy),]
-expphendb<-expphendb[-which(expphendb$genus=="Ob"),]#unknown genus at clarkduke
-expphendb<-expphendb[-which(expphendb$genus=="Le"),]#unknown genus at clarkharvard
-write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
+#Do some additional cleaning and checking:
 dim(expphendb)
-#64099 rows,
+#68838 rows,
+expphendb<-expphendb[!is.na(expphendb$event),]
+expphendb<-expphendb[!is.na(expphendb$doy),]
+expphendb$doy<-as.numeric(expphendb$doy)
+dim(expphendb)#68309 rows,7 columns     7
+expphendb<-expphendb[!is.na(expphendb$genus),]
+expphendb<-expphendb[-which(expphendb$genus==""),]
+expphendb<-expphendb[-which(expphendb$genus=="spp."),]#should look at these
+expphendb<-expphendb[-which(expphendb$genus=="Le"),]#should look at these
+expphendb<-expphendb[-which(expphendb$genus=="Unknown"),]#should look at these
+expphendb[which(expphendb$species=="pensylvanicum "),]$species<-"pensylvanicum"#harvardellison
+expphendb[which(expphendb$species=="(incanum?)"),]$species<-"incanum"#force
+expphendb[which(expphendb$species=="spp"),]$species<-"sp"#force
+expphendb[which(expphendb$species=="spp."),]$species<-"sp"#force
+
+dim(expphendb)#66834  rows,7 columns     7
 head(expphendb)
-unique(expphendb$site)#9 experiments (will be 10 with Aaron ellisons phenology, 11 with zackenberg) across 7 sites (8 with zackenberg)
+unique(expphendb$site)#11 experiments across 9 sites
 unique(expphendb$plot)#some NA/blanks to fix...
-unique(expphendb$genus)#59 genera
+unique(expphendb$genus)#126 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
-unique(expphendb$genus.species)#92 species
-unique(expphendb$event)#7 phenological events
+sort(unique(expphendb$genus.species))#209 species
+unique(expphendb$event)#10 phenological events
+# simple plot, need to add a legend
+expsitez <- unique(expphendb$site)
+somecolors <- rainbow(length(expsitez))
+expagg<-aggregate(x=expphendb$doy, by=list(expphendb$year,expphendb$site), FUN=mean)
+colnames(expagg)<-c("year","site","mndoy")
+plot(mndoy~year, data=expagg, type="n")
+for (i in seq_along(expsitez)){
+  subby <- subset(expagg, site==expsitez[i])
+  lines(mndoy~year, data=subby, col=somecolors[i])
+}
+
+write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
 tapply(expphendb$doy,list(expphendb$site,expphendb$event),length)
-max(as.numeric(expphendb$doy))
+expphendb[which(expphendb$doy==min(expphendb$doy)),]
 
 
