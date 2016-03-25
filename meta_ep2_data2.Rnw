@@ -57,14 +57,16 @@
 %%%%%%%%%%%%%%%% Here we go, boys and girls %%%%%%
 \section {Overview of the data}
 
-This is a quick description of the data we will use at our working group. The goal of our working group is to understand (the) underlying cause(s) of the recent finding that results obtained from observational versus experimental studies make radically different predictions for future plant phenology (Wolkovich et al. 2012). The underlying cause of this discrepancy is curently unclear, and to address this we have compiled phenology and climate data for experimental and observational studies. 
+This is a quick description of the data we will use at our working group. The goal of our working group is to understand (the) underlying cause(s) of the recent finding that results obtained from observational versus experimental studies make radically different predictions for future plant phenology (Wolkovich et al. 2012). The underlying cause of this discrepancy is currently unclear, and to address this we have compiled phenology and climate data for experimental and observational studies. 
 
-There are two main files with the phenological data, one file with the experimental climate data, and a folder with temperature data for the observational sites. They can all be downloaded at \url{https://github.com/AileneKane/radcliffe}. The phenology data files and experimental climate data file are found in the "radmeeting" folder. The temperature data for the observational sites are found in the "Observations/Temp."
+There are two main files with the phenological data, one file with the experimental climate data, and a folder with temperature data for the observational sites. They can all be downloaded at \url{https://github.com/AileneKane/radcliffe}. The phenology data files and experimental climate data file are found in the `radmeeting' folder. The temperature data for the observational sites are found in the `Observations/Temp.'
 
 A note about the data: they are still being cleaned and compiled so please let Ailene know if you find any mistakes or notice anything strange! 
 <<echo=FALSE>>=
 options(width=90)
 @
+
+First up, we just read in all the data. 
 
 <<echo=TRUE, label=getdata>>=
 setwd("~/GitHub/radcliffe")
@@ -73,7 +75,7 @@ expdata <- read.csv("radmeeting/exppheno.csv", header=TRUE)
 expclim<-read.csv("radmeeting/expclim.csv", header=TRUE)
 @
 
-We'll walk through the experimental phenology data first. We selected experimental studies that used active warming methods (including above-canopy heating, as well as combined air and soil warming methods) to apply temperature treatments. We additionally limited studies to those that either/both: 1) applied atleast 2 different levels of warming, in addition to controls; and/or 2) measured soil moisture or humidity in all treatments. In many cases those studies that measure soil moisture also manipulate precipitation/moisture through an experimental treatment (i.e. drought and/or increased precipitation treatments).
+We'll walk through the experimental phenology data first. We selected experimental studies that used active warming methods (including above-canopy heating, as well as combined air and soil warming methods) to apply temperature treatments. We additionally limited studies to those that either/both: 1) applied at least 2 different levels of warming, in addition to controls; and/or 2) measured soil moisture or humidity in all treatments. In many cases those studies that measure soil moisture also manipulate precipitation/moisture through an experimental treatment (i.e. drought and/or increased precipitation treatments).
 \subsection{Phenology Data from Experiments}
 
 <<echo=TRUE>>=
@@ -82,15 +84,15 @@ head(expdata)
 The experimental phenology data file has the following columns:
 \begin{itemize}
   \item site: the first author's name (usually)
-\item plot: the plot or chamber number, given by the author; this can be used to identify the treatment with the "expclim.csv "file, which contains plot and treatment codes, and the "expsiteinfo.csv" file, which contains details on the experimental treatment. For full details on each experiment, see the individual site folders in the "Experiments" folder.
-\item event: phenological event (bbd=first leaf budburst date,lod=first leaf out date, lud= first leaf unfolding date,ffd=first flower date,ffrd=first fruiting date,sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senesence observed,drop=leaf drop)
+\item plot: the plot or chamber number, given by the author; this can be used to identify the treatment with the `expclim.csv' file, which contains plot and treatment codes, and the `expsiteinfo.csv' file, which contains details on the experimental treatment. For full details on each experiment, see the individual site folders in the 'Experiments' folder.
+\item event: phenological event (bbd=first leaf budburst date, lod=first leaf out date, lud= first leaf unfolding date, ffd=first flower date, ffrd=first fruiting date, sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senescence observed,drop=leaf drop)
 \item genus and species: 
-\item doy: day of year that the phenological event first occured
+\item doy: day of year that the phenological event first occurred
 
 \end{itemize}
 Each row is an observation of an individual or plot (whatever the finest scale of observation for that study).
 
-The experimental data come from 8 different sites (see "expsiteinfo.csv" file for details on the locations).
+The experimental data come from 8 different sites (see 'expsiteinfo.csv' file for details on the locations).
 
 <<echo=TRUE, label=siteobs>>=
 unique(expdata$site)
@@ -113,15 +115,15 @@ head(obsdata)
 The observational phenology data file has the following columns:
 \begin{itemize}
 \item site: the location or the first author's name 
-\item plot: the plot number- often not relevent for observational studies
-\item event: phenological event (bbd=first leaf budburst date,lod=first leaf out date, lud= first leaf unfolding date,ffd=first flower date,ffrd=first fruiting date,sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senesence observed,drop=leaf drop)
+\item plot: the plot number- often not relevant for observational studies
+\item event: phenological event (bbd=first leaf budburst date, lod=first leaf out date, lud= first leaf unfolding date, ffd=first flower date, ffrd=first fruiting date, sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senescence observed,drop=leaf drop)
 \item genus and species: 
 \item doy: day of year that the phenological event first occured
 \item scrub: whether or not the species names have been scrubbed.
 \item variety and cultivar: if included by the author, but not frequently used
 \end{itemize}
 
-The observational data come from 15 sites (see "obssiteinfo.csv" file for details).
+The observational data come from 15 sites (see `obssiteinfo.csv' file for details).
 
 <<echo=TRUE, label=siteobs>>=
 unique(obsdata$site)
@@ -152,8 +154,8 @@ head(expclim)
 
 The experimental climate data file has the following columns:
 \begin{itemize}
-  \item temptreat: temperature treatment level (1-9; these levels are defined in "expsiteinfo.csv")
- \item preciptreat: temperature treatment level (1-2; these levels are defined in "expsiteinfo.csv")
+  \item temptreat: temperature treatment level (1-9; these levels are defined in `expsiteinfo.csv')
+ \item preciptreat: temperature treatment level (1-2; these levels are defined in `expsiteinfo.csv')
  \item plot
  \item year
  \item doy: day of year
