@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  24 MAR 2016 21:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  24 MAR 2016 23:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -438,35 +438,36 @@ LaTeX Font Info:    External font `cmex10' loaded for size
  [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 236.
  [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 236.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 280.
+ [5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 280.
 
 (./meta_ep2_data2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 236.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 236.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 280.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 280.
 Package rerunfilecheck Info: File `meta_ep2_data2.out' has not changed.
-(rerunfilecheck)             Checksum: 331719BA7D1D843D69B21916C871A886;257.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 236.
+(rerunfilecheck)             Checksum: 9C40CD18DF2EE53CFF71885BE0C0C4BA;390.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 280.
  ) 
 Here is how much of TeX's memory you used:
- 7478 strings out of 493089
- 114038 string characters out of 6134842
- 198449 words of memory out of 5000000
- 10854 multiletter control sequences out of 15000+600000
+ 7481 strings out of 493089
+ 114074 string characters out of 6134842
+ 199449 words of memory out of 5000000
+ 10855 multiletter control sequences out of 15000+600000
  23933 words of font info for 55 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,43p,634b,471s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,43p,830b,471s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><
 /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></u
 sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr
 /local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></us
 r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on meta_ep2_data2.pdf (4 pages, 95676 bytes).
+Output written on meta_ep2_data2.pdf (5 pages, 101429 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
- 57 compressed objects within 1 object stream
- 9 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 80 PDF objects out of 1000 (max. 8388607)
+ 66 compressed objects within 1 object stream
+ 11 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

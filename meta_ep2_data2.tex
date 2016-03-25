@@ -55,7 +55,7 @@
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% Here we go, boys and girls %%%%%%
-\section {Overview of the phenological data}
+\section {Overview of the data}
 
 This is a quick description of the data we will use at our working group. The goal of our working group is to understand (the) underlying cause(s) of the recent finding that results obtained from observational versus experimental studies make radically different predictions for future plant phenology (Wolkovich et al. 2012). The underlying cause of this discrepancy is curently unclear, and to address this we have compiled phenology and climate data for experimental and observational studies. 
 
@@ -72,8 +72,8 @@ A note about the data: they are still being cleaned and compiled so please let m
 \end{Sinput}
 \end{Schunk}
 
-We'll walk through the experimental data first. We selected experimental studies that used active warming methods (including above-canopy heating, as well as combined air and soil warming methods) to apply temperature treatments. We additionally limited studies to those that either/both: 1) applied atleast 2 different levels of warming, in addition to controls; and/or 2) measured soil moisture or humidity in all treatments. In many cases those studies that measure soil moisture also manipulate precipitation/moisture through an experimental treatment (i.e. drought and/or increased precipitation treatments).
-\subsection{Experimental data}
+We'll walk through the experimental phenology data first. We selected experimental studies that used active warming methods (including above-canopy heating, as well as combined air and soil warming methods) to apply temperature treatments. We additionally limited studies to those that either/both: 1) applied atleast 2 different levels of warming, in addition to controls; and/or 2) measured soil moisture or humidity in all treatments. In many cases those studies that measure soil moisture also manipulate precipitation/moisture through an experimental treatment (i.e. drought and/or increased precipitation treatments).
+\subsection{Phenology Data from Experiments}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -138,44 +138,8 @@ Ten different phenological events were monitored across all sites:
   rmbl               0     0     0     0  1071   650     0     0   476     0
 \end{Soutput}
 \end{Schunk}
-We tried to compile daily air and soil temperature, as well as soil moisture or humidity data for all sites.
-\begin{Schunk}
-\begin{Sinput}
-> head(expclim)
-\end{Sinput}
-\begin{Soutput}
-     site temptreat preciptreat plot year doy airtemp_min airtemp_max soiltemp1_min
-1 marchin         1        <NA>    1 2010   1       2.932       30.87         4.596
-2 marchin         1        <NA>    1 2010  10          NA          NA            NA
-3 marchin         1        <NA>    1 2010 100       6.683       32.76            NA
-4 marchin         1        <NA>    1 2010 101       5.883       36.37            NA
-5 marchin         1        <NA>    1 2010 102       7.922       36.90            NA
-6 marchin         1        <NA>    1 2010 103       9.980       40.81            NA
-  soiltemp2_min soiltemp1_max soiltemp2_max soiltemp1_mean  soilmois gdd_soil gdd_air
-1            NA          8.97            NA          6.783 0.1777083   -3.217  6.9010
-2            NA            NA            NA             NA        NA       NA      NA
-3         12.16            NA         15.18             NA 0.1608333       NA  9.7215
-4            NA            NA            NA             NA 0.1558333       NA 11.1265
-5            NA            NA            NA             NA 0.1513333       NA 12.4110
-6         13.58            NA         17.03             NA 0.1463333       NA 15.3950
-\end{Soutput}
-\end{Schunk}
-The experimental climate data file has the following columns:
-temptreat: temperature treatment level (1-9; these levels are defined in "expsiteinfo.csv")
-preciptreat: temperature treatment level (1-2; these levels are defined in "expsiteinfo.csv")
-plot
-year
-doy: day of year
-airtemp-min: minimum daily air temperature (degrees C), measured
-airtemp-max: maximum daily air temperature (degrees C), measured
-soiltemp1-min: minimum daily soil temperature (degrees C), measured, depth closest to the soil surface
-soiltemp2-min: minimum daily soil temperature (degrees C), measured, depth second closest to soil surface
-soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth closest to the soil surface
-soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
-soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
-soilmos: soil moisture (percent)
 
-\subsection{Observational data}
+\subsection{Phenology Data from Observational Studies}
 
 Next, the observational data. 
 
@@ -231,6 +195,86 @@ The observational data come from 15 sites (see XX file for details).
 \end{Soutput}
 \end{Schunk}
 
-\subsection{Species}
+\subsection{Climate Data from Experiments}
+We tried to compile daily air and soil temperature, as well as soil moisture or humidity data for all sites.
+\begin{Schunk}
+\begin{Sinput}
+> head(expclim)
+\end{Sinput}
+\begin{Soutput}
+     site temptreat preciptreat plot year doy airtemp_min airtemp_max soiltemp1_min
+1 marchin         1        <NA>    1 2010   1       2.932       30.87         4.596
+2 marchin         1        <NA>    1 2010  10          NA          NA            NA
+3 marchin         1        <NA>    1 2010 100       6.683       32.76            NA
+4 marchin         1        <NA>    1 2010 101       5.883       36.37            NA
+5 marchin         1        <NA>    1 2010 102       7.922       36.90            NA
+6 marchin         1        <NA>    1 2010 103       9.980       40.81            NA
+  soiltemp2_min soiltemp1_max soiltemp2_max soiltemp1_mean  soilmois gdd_soil gdd_air
+1            NA          8.97            NA          6.783 0.1777083   -3.217  6.9010
+2            NA            NA            NA             NA        NA       NA      NA
+3         12.16            NA         15.18             NA 0.1608333       NA  9.7215
+4            NA            NA            NA             NA 0.1558333       NA 11.1265
+5            NA            NA            NA             NA 0.1513333       NA 12.4110
+6         13.58            NA         17.03             NA 0.1463333       NA 15.3950
+\end{Soutput}
+\end{Schunk}
+The experimental climate data file has the following columns:
+temptreat: temperature treatment level (1-9; these levels are defined in "expsiteinfo.csv")
+preciptreat: temperature treatment level (1-2; these levels are defined in "expsiteinfo.csv")
+plot
+year
+doy: day of year
+airtemp-min: minimum daily air temperature (degrees C), measured
+airtemp-max: maximum daily air temperature (degrees C), measured
+soiltemp1-min: minimum daily soil temperature (degrees C), measured, depth closest to the soil surface
+soiltemp2-min: minimum daily soil temperature (degrees C), measured, depth second closest to soil surface
+soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth closest to the soil surface
+soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
+soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
+soilmos: soil moisture (percent)
+
+\subsection{Climate Data for Observational Studies}
+
+We extracted temperature data from Berkeley Earth Surface Temperatures (BEST) \url{http://berkeleyearth.org/}. The BEST data are daily gridded tmax and tmin, covering (for most areas) 1880-2013. We took the latitudes and longitudes for the observational phenological data sites, and found the closest BEST grid cell with at least 25 percent land area coverage (in some cases the absolute nearest grid cell was ocean, for where there are no data. Hence the land fraction threshold). The data are in comma delimited text files in Observations/Temp on github; one file for tmax and one for tmin for each site. Each row is a year and each column is a day of year (1-365 for a normal year, 1-366 for a leap year). Some sites do have missing data for some years, but most are pretty much complete.
+
+
+Here is a summary of the site info and associated BEST gridcell information (from file 
+distinfo-site-BEST-.csv):
+:
+
+\begin{Schunk}
+\begin{Soutput}
+            X Lat..Site.  Lon..Site. Dist..km. Lat..BEST. Lon..BEST. Frac.Land
+1      fitter   51.42000   -0.540000  9.320189       51.5       -0.5      1.00
+2     concord   42.27000  -71.210000 34.959232       42.5      -71.5      1.00
+3       fargo   46.51000  -96.280000 16.879558       46.5      -96.5      1.00
+4    bolmgren   60.13000   16.950000 48.043302       60.5       16.5      1.00
+5     harvard   42.53000  -72.190000 25.634244       42.5      -72.5      1.00
+6     hubbard   43.94000  -71.750000 52.906733       43.5      -71.5      1.00
+7       konza   39.13000  -96.430000 41.593559       39.5      -96.5      1.00
+8      mohonk   41.77000  -74.160000 41.241097       41.5      -74.5      1.00
+9       niwot   40.30000 -105.360000 25.209401       40.5     -105.5      1.00
+10     gothic   38.57000 -106.590000 11.042735       38.5     -106.5      1.00
+11    marsham   52.37000    1.180000 26.076351       52.5        1.5      0.59
+12     washdc   38.40000  -76.700000 20.669903       38.5      -76.5      0.70
+13   mikesell   41.33000  -84.090000 39.079552       41.5      -84.5      1.00
+14        uwm   43.23000  -88.220000 37.610769       43.5      -88.5      1.00
+15      rousi   61.80000   29.316700 34.745032       61.5       29.5      0.76
+16   siernev1   36.87000   -3.690000 44.507990       36.5       -3.5      0.29
+17   siernev2   37.36000   -2.560000 16.449278       37.5       -2.5      1.00
+18     zacken   74.46667  -20.566667  4.205057       74.5      -20.5      0.71
+19       bock   49.46344   -2.596667 79.354125       49.5       -1.5      0.44
+20 augspurger   40.15000  -88.166667 48.110043       40.5      -88.5      1.00
+\end{Soutput}
+\end{Schunk}
+
+
+The other file, map-sites.eps, plots the locations of the phenology sites (in red) and the chosen BEST gridcell (in blue):
+
+\begin{Schunk}
+\begin{Sinput}
+> 
+\end{Sinput}
+\end{Schunk}
 
 \end{document}

@@ -55,7 +55,7 @@
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% Here we go, boys and girls %%%%%%
-\section {Overview of the phenological data}
+\section {Overview of the data}
 
 This is a quick description of the data we will use at our working group. The goal of our working group is to understand (the) underlying cause(s) of the recent finding that results obtained from observational versus experimental studies make radically different predictions for future plant phenology (Wolkovich et al. 2012). The underlying cause of this discrepancy is curently unclear, and to address this we have compiled phenology and climate data for experimental and observational studies. 
 
@@ -141,10 +141,28 @@ soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth close
 soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
 soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
 soilmos: soil moisture (percent)
+
 \subsection{Climate Data for Observational Studies}
-We extracted daily temperature data from gridcells encompassing each observational study site from Berkeley Earth Surface Temperatures \url{http://berkeleyearth.org/}.
+
+We extracted temperature data from Berkeley Earth Surface Temperatures (BEST) \url{http://berkeleyearth.org/}. The BEST data are daily gridded tmax and tmin, covering (for most areas) 1880-2013. We took the latitudes and longitudes for the observational phenological data sites, and found the closest BEST grid cell with at least 25 percent land area coverage (in some cases the absolute nearest grid cell was ocean, for where there are no data. Hence the land fraction threshold). The data are in comma delimited text files in Observations/Temp on github; one file for tmax and one for tmin for each site. Each row is a year and each column is a day of year (1-365 for a normal year, 1-366 for a leap year). Some sites do have missing data for some years, but most are pretty much complete.
+
+<<echo=FALSE>>=
+obssites<-read.csv("Observations/Temp/distinfo_site_BEST_.csv", header=T)
+@
+
+Here is a summary of the site info and associated BEST gridcell information (from file 
+distinfo-site-BEST-.csv):
+:
+
+<<echo=FALSE>>=
+obssites[,-8]
+@
+
+
+The other file, map-sites.eps, plots the locations of the phenology sites (in red) and the chosen BEST gridcell (in blue):
 
 <<echo=TRUE>>=
-head(expclim)
+
 @
+
 \end{document}
