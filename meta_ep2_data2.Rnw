@@ -79,21 +79,18 @@ We'll walk through the experimental phenology data first. We selected experiment
 <<echo=TRUE>>=
 head(expdata)
 @
-The phenology data file has the following columns:
+The experimental phenology data file has the following columns:
+\begin{itemize}
+  \item site: the first author's name (usually)
+\item plot: the plot or chamber number, given by the author; this can be used to identify the treatment with the "expclim.csv "file, which contains plot and treatment codes, and the "expsiteinfo.csv" file, which contains details on the experimental treatment. For full details on each experiment, see the individual site folders in the "Experiments" folder.
+\item event: phenological event (bbd=first leaf budburst date,lod=first leaf out date, lud= first leaf unfolding date,ffd=first flower date,ffrd=first fruiting date,sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senesence observed,drop=leaf drop)
+\item genus and species: 
+\item doy: day of year that the phenological event first occured
 
-site: the first author's name (usually)
+\end{itemize}
+Each row is an observation of an individual or plot (whatever the finest scale of observation for that study).
 
-plot: the plot or chamber number, given by the author; this can be used to identify the treatment with the "expclim.csv "file, which contains plot and treatment codes, and the "expsiteinfo.csv" file, which contains details on the experimental treatment. For full details on each experiment, see the individual site folders in the "Experiments" folder.
-
-event: phenological event (bbd=first leaf budburst date,lod=first leaf out date, lud= first leaf unfolding date,ffd=first flower date,ffrd=first fruiting date,sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senesence observed,drop=leaf drop)
-
-genus and species: 
-
-doy: day of year that the phenological event first occured
-
-Each row is an observation of an individual or plot (whatever the finest scale of observation for that study)
-
-The experimental data come from 8 different sites (see "expsiteinfo.csv" file for details on the locations)
+The experimental data come from 8 different sites (see "expsiteinfo.csv" file for details on the locations).
 
 <<echo=TRUE, label=siteobs>>=
 unique(expdata$site)
@@ -112,6 +109,17 @@ Next, the observational data.
 <<echo=TRUE, label=headobs>>=
 head(obsdata)
 @
+
+The observational phenology data file has the following columns:
+\begin{itemize}
+\item site: the location or the first author's name 
+\item plot: the plot number- often not relevent for observational studies
+\item event: phenological event (bbd=first leaf budburst date,lod=first leaf out date, lud= first leaf unfolding date,ffd=first flower date,ffrd=first fruiting date,sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senesence observed,drop=leaf drop)
+\item genus and species: 
+\item doy: day of year that the phenological event first occured
+\item scrub: whether or not the species names have been scrubbed.
+\item variety and cultivar: if included by the author, but not frequently used
+\end{itemize}
 
 The observational data come from 15 sites (see "obssiteinfo.csv" file for details).
 
@@ -141,33 +149,24 @@ We compiled daily air and soil temperature, whenever possible, as well as soil m
 <<echo=TRUE>>=
 head(expclim)
 @
+
 The experimental climate data file has the following columns:
-
-temptreat: temperature treatment level (1-9; these levels are defined in "expsiteinfo.csv")
-
-preciptreat: temperature treatment level (1-2; these levels are defined in "expsiteinfo.csv")
-
-plot
-
-year
-
-doy: day of year
-
-airtemp-min: minimum daily air temperature (degrees C), measured
-
-airtemp-max: maximum daily air temperature (degrees C), measured
-
-soiltemp1-min: minimum daily soil temperature (degrees C), measured, depth closest to the soil surface
-
-soiltemp2-min: minimum daily soil temperature (degrees C), measured, depth second closest to soil surface
-
-soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth closest to the soil surface
-
-soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
-
-soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
-
-soilmos: soil moisture (percent)
+\begin{itemize}
+  \item temptreat: temperature treatment level (1-9; these levels are defined in "expsiteinfo.csv")
+ \item preciptreat: temperature treatment level (1-2; these levels are defined in "expsiteinfo.csv")
+ \item plot
+ \item year
+ \item doy: day of year
+ \item airtemp-min: minimum daily air temperature (degrees C), measured
+ \item airtemp-max: maximum daily air temperature (degrees C), measured
+ \item soiltemp1-min: minimum daily soil temperature (degrees C), measured, depth closest to the soil surface
+ \item soiltemp2-min: minimum daily soil temperature (degrees C), measured, depth second closest to soil surface
+ \item soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth closest to the soil surface
+ \item soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
+ \item soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
+ \item soilmos: soil moisture (percent)
+ 
+\end{itemize}
 
 \subsection{Climate Data for Observational Studies}
 
