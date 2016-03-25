@@ -430,7 +430,7 @@ clean.rawobs$washdc <- function(filename="washdc.csv", path=raw.data.dir) {
   colnames(washdc)[4]<-"species"
   colnames(washdc)[5]<-"event"
   colnames(washdc)[6]<-"year"
-  colnames(washdc)[7]<-"doy"
+  washdc$doy<-washdc[,7]+1
   washdc$date <- as.Date(paste(washdc$year, washdc$doy, sep="-"),format="%Y-%j")            
   washdc$plot<-NA
   washdc$varetc <- NA
@@ -587,8 +587,24 @@ row.names(obsphendb) <- NULL
 obsphendb<-obsphendb[!obsphendb$genus=="na",]#look at these- some rows from konza and washdc have doys...why na?
 obsphendb<-obsphendb[!is.na(obsphendb$site),]#look at these-why NA?
 dim(obsphendb)
-#211952 rows
-write.csv(obsphendb, "radmeeting/obspheno.csv", row.names=FALSE)
+#211952  rows
+##check some other things...
+unique(obsphendb$site)
+sort(unique(obsphendb$year))
+sort(unique(as.numeric(obsphendb$doy)))
+sort(unique(obsphendb$genus))
+sort(unique(obsphendb$species))
+obsphendb[which(obsphendb$species=="sect."),]$species<-"sp."#bolmgren
+obsphendb[which(obsphendb$species=="sect. Erythrosperma"),]$species<-"sp."#fitter
+obsphendb[which(obsphendb$species=="na"),]$species<-"sp."#fargo
+sort(unique(obsphendb$species))
+unique(obsphendb$scrub)
+unique(obsphendb$cult)
+#variety and cult not used; remove
+obsphendb2<-obsphendb[,-9]
+obsphendb2<-obsphendb2[,-9]
+obsphendb2<-obsphendb2[,-9]
+write.csv(obsphendb2, "radmeeting/obspheno.csv", row.names=FALSE)
 head(obsphendb)
 unique(obsphendb$site)#15 sites
 unique(obsphendb$event)#6 events
