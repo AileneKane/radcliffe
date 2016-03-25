@@ -296,7 +296,7 @@ clean.raw$jasper <- function(filename="JasperRidge_data.csv", path="./Experiment
   cleland1$genus[cleland1$genus=="Bromusd"] <- "Bromus"
   cleland1$genus[cleland1$genus=="Bromush"] <- "Bromus"
   colnames(cleland1)[10]<-"doy"
-  cleland1$site<-"jasper"
+  cleland1$site<-"cleland"
   cleland1$event<-"ffd"
   cleland<-subset(cleland1, select=c("site","plot","event","year","genus","species", "doy"))
   #cleland$variety <- NA
@@ -305,8 +305,6 @@ clean.raw$jasper <- function(filename="JasperRidge_data.csv", path="./Experiment
   
   return(cleland)
 }
-
-
 
 ##Clark et al from Duke ##
 ## Data type: BBD,LUD, LOD ##
@@ -658,7 +656,7 @@ clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", pa
 }
 
 ##Data from Aaron Ellison's warming/phenology/ant experiment at Harvard Forest
-##Fall phenology
+##Spring and Fall phenology
 ##Contact: Aaron Ellison
 clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Experiments/ellison") {
   file <- file.path(path, filename)
@@ -683,6 +681,61 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Expe
   }
 
 
+##Data from Jennifer Dunne's study at RMBL
+##Phenological stages:0=not yet flowering, 1=unopened flower buds, 2=open flowers,3 =old flowers,4=initiated fruit, 5=enlarged fruit, and 6= for dehisced fruit. 
+#For Festuca we used five phenological stages: 0=plant with flower stalks,1=presence of spikelets, 2=exerted anthers and styles from the spikelet florets, 3=dried and broken-off anthers and styles, indicating a developing seed, and 4=disarticulated seeds.
+##Contact: Jennifer Dunne
+clean.raw$dunne <- function(path="./Experiments/dunne") {
+  dunnefiles<-c("1995DunnePhenologyData_Artemisia.csv","1995DunnePhenologyData_Delphinium.csv","1995DunnePhenologyData_Erigeron.csv","1995DunnePhenologyData_Helianthella.csv","1995DunnePhenologyData_Lathyrus.csv","1995DunnePhenologyData_Mertensiana.csv","1995DunnePhenologyData_Potentilla.csv","1996DunnePhenologyData_Artemisia.csv","1996DunnePhenologyData_Delphinium.csv","1996DunnePhenologyData_Erigeron.csv","1996DunnePhenologyData_Eriogonums.csv","1996DunnePhenologyData_Festuca.csv","1996DunnePhenologyData_Helianthella.csv","1996DunnePhenologyData_Lathyrus.csv","1996DunnePhenologyData_Mertensiana.csv","1996DunnePhenologyData_Potentilla.csv","1997DunnePhenologyData_Achillea.csv","1997DunnePhenologyData_Artemisia.csv","1997DunnePhenologyData_Claytonia.csv","1997DunnePhenologyData_Delphinium.csv","1997DunnePhenologyData_Erigeron.csv","1997DunnePhenologyData_Eriogonumu.csv","1997DunnePhenologyData_Festuca.csv","1997DunnePhenologyData_Helianthella.csv","1997DunnePhenologyData_Lathyrus.csv","1997DunnePhenologyData_Mertensia.csv","1997DunnePhenologyData_Potentilla.csv","1998DunnePhenologyData_Artemisia.csv","1998DunnePhenologyData_Claytonia.csv","1998DunnePhenologyData_Delphinium.csv","1998DunnePhenologyData_Erigeron.csv","1998DunnePhenologyData_Eriogonumu.csv","1998DunnePhenologyData_Eriogonums.csv","1998DunnePhenologyData_Festuca.csv","1998DunnePhenologyData_Helianthella.csv","1998DunnePhenologyData_Lathyrus.csv","1998DunnePhenologyData_Mertensia.csv","1998DunnePhenologyData_Potentilla.csv")
+  dunne <- NA
+  for (i in 1:length(dunnefiles)){
+    file <- file.path(path, paste(dunnefiles[i]))
+    dunne1 <- read.csv(file,  header=TRUE)
+    dunne_ffd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage2), FUN=min)#first date of open flowers for each site/plot/rep
+    dunne_ffd$event<-"ffd"
+    if(is.element("stage4", colnames(dunne1)))(dunne_ffrd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage4), FUN=min)) #first date of fruit for each site/plot/rep
+    else(dunne2<-dunne_ffd)
+    if(is.element("stage4", colnames(dunne1)))(dunne_ffrd$event<-"ffrd")
+    if(is.element("stage4", colnames(dunne1)))(dunne2<-rbind(dunne_ffd, dunne_ffrd))
+     dunne2$plot<-paste(dunne2$Group.1,dunne2$Group.2,sep="-")
+     stop<-nchar(dunnefiles[i])-4
+     dunne2$genussp<-paste(substr(dunnefiles[i],24,stop))
+    dunne2$year<-substr(dunnefiles[i],1,4)
+    colnames(dunne2)[5]<-c("doy")
+    dunne <- rbind(dunne,dunne2)
+  }
+    dunne$genus<-NA 
+    dunne$species<-NA
+    dunne$genus[dunne$genussp=="Artemisia"] <- "Artemisia"
+    dunne$species[dunne$genussp=="Artemisia"] <- "tridentata"
+    dunne$genus[dunne$genussp=="Claytonia"] <- "Claytonia"
+    dunne$species[dunne$genussp=="Claytonia"] <- "lanceolata"
+    dunne$genus[dunne$genussp=="Delphinium"] <- "Delphinium"
+    dunne$species[dunne$genussp=="Delphinium"] <- "nuttallianum"
+    dunne$genus[dunne$genussp=="Erigeron"] <- "Erigeron"
+    dunne$species[dunne$genussp=="Erigeron"] <- "speciosus"
+    dunne$genus[dunne$genussp=="Helianthella"] <- "Helianthella"
+    dunne$species[dunne$genussp=="Helianthella"] <- "quinquenervis"
+    dunne$genus[dunne$genussp=="Lathyrus"] <- "Lathyrus"
+    dunne$species[dunne$genussp=="Lathyrus"] <- "lanszwertii"
+    dunne$genus[dunne$genussp=="Potentilla"] <- "Potentilla"
+    dunne$species[dunne$genussp=="Potentilla"] <- "hippiana"
+    dunne$genus[dunne$genussp=="Mertensiana"] <- "Mertensiana"
+    dunne$species[dunne$genussp=="Mertensiana"] <- "fusiformis"
+    dunne$genus[dunne$genussp=="Eriogonums"] <- "Eriogonum"
+    dunne$species[dunne$genussp=="Eriogonums"] <- "subalpinum"
+    dunne$genus[dunne$genussp=="Festuca"] <- "Festuca"
+    dunne$species[dunne$genussp=="Festuca"] <- "thurberi"
+    dunne$genus[dunne$genussp=="Achillea"] <- "Achillea"
+    dunne$species[dunne$genussp=="Achillea"] <- "sp"
+    dunne$genus[dunne$genussp=="Eriogonumu"] <- "Eriogonum"
+    dunne$species[dunne$genussp=="Eriogonumu"] <- "umbellatum"
+    dunne$site<-"dunnermbl"
+    dunne<-dunne[-1,]
+    dunnermbl<-subset(dunne, select=c("site","plot","event","year","genus","species", "doy"))
+    dunnermbl<-dunnermbl[!is.na(dunnermbl$genus),]
+    return(dunnermbl)
+  }
 # Produce cleaned raw data
 #
 raw.data.dir <- "./Experiments"
@@ -698,16 +751,17 @@ cleandata.raw$price <- clean.raw$price(path="./Experiments/price")
 cleandata.raw$chuine<- clean.raw$chuine(path="./Experiments/chuine")
 cleandata.raw$force<- clean.raw$force(path="./Experiments/force")
 cleandata.raw$ellison<- clean.raw$ellison(path="./Experiments/ellison")
+cleandata.raw$dunne<- clean.raw$dunne(path="./Experiments/dunne")
 
 expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#68838 rows,
+#78401 rows,
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#68309 rows,7 columns     7
+dim(expphendb)#77827 rows,7 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[-which(expphendb$genus==""),]
 expphendb<-expphendb[-which(expphendb$genus=="spp."),]#should look at these
@@ -717,12 +771,11 @@ expphendb[which(expphendb$species=="pensylvanicum "),]$species<-"pensylvanicum"#
 expphendb[which(expphendb$species=="(incanum?)"),]$species<-"incanum"#force
 expphendb[which(expphendb$species=="spp"),]$species<-"sp"#force
 expphendb[which(expphendb$species=="spp."),]$species<-"sp"#force
-
-dim(expphendb)#66834  rows,7 columns     7
+dim(expphendb)#76844  rows,7 columns     7
 head(expphendb)
-unique(expphendb$site)#11 experiments across 9 sites
+unique(expphendb$site)#12 experiments across 9 sites
 unique(expphendb$plot)#some NA/blanks to fix...
-unique(expphendb$genus)#126 genera
+sort(unique(expphendb$genus))#130 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
 sort(unique(expphendb$genus.species))#209 species
 unique(expphendb$event)#10 phenological events
@@ -736,7 +789,7 @@ for (i in seq_along(expsitez)){
   subby <- subset(expagg, site==expsitez[i])
   lines(mndoy~year, data=subby, col=somecolors[i])
 }
-
+expphendb<-expphendb[,-8]
 write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
 tapply(expphendb$doy,list(expphendb$site,expphendb$event),length)
 expphendb[which(expphendb$doy==min(expphendb$doy)),]

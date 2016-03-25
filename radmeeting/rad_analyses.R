@@ -2,16 +2,11 @@
 ##March 18, 2016
 ##Read in climate and phenology data
 setwd("~/GitHub/radcliffe/radmeeting")
-obsclim<-read.csv("obsclim.csv", header=T)
+#obsclim<-read.csv("obsclim.csv", header=T)
 expclim<-read.csv("expclim.csv", header=T)
 exppheno<-read.csv("exppheno.csv", header=T)
 obspheno<-read.csv("obspheno.csv", header=T)
 head(expclim)
-obsmat<-aggregate(x=subset(obsclim, select=c("tmean")), by=list(obsclim$year,obsclim$site), FUN=mean, na.rm=T)
-colnames(obsmat)[1:2]<-c("year","site")
-obsmat_subset<-obsmat[which(obsmat$site=="fitter"|obsmat$site=="harvard"|obsmat$site=="hubbard"|obsmat$site=="konza"|obsmat$site=="niwot"|obsmat$site=="mikesell"|obsmat$site=="concord"|obsmat$site=="mohonk"|obsmat$site=="marsham"|obsmat$site=="fargo"|obsmat$site=="washdc"|obsmat$site=="bolmgren"|obsmat$site=="gothic"|obsmat$site=="uwm"|obsmat$site=="rousi"),]
-obsdat<-merge(obsmat_subset,obspheno)
-obsdat$spgen<-paste(obsdat$genus,obsdat$species,sep=".")
 
 expmat<-aggregate(x=subset(expclim, select=c("soiltemp1_mean")), by=list(expclim$year,expclim$site,expclim$plot), FUN=mean, na.rm=T)
 colnames(expmat)[1:3]<-c("year","site","plot")
