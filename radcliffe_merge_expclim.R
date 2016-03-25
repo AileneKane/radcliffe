@@ -255,6 +255,76 @@ baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year
 row.names(baceclim) <- NULL
 return(baceclim) 
 }
+##Climate data for Ellison from Harvard Forest##
+## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
+## Notes: http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf113; i had to subset this datafile before pushing it to github as it was too large. i selected out the columns that we wanted and removed 2009 (not included in phenology data), but otherwise left data untouched
+clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Experiments/ellison") {
+  file <- file.path(path, filename)
+  ellison1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  names(ellison1)[9]<-"plot"
+  ellison1$year_doy<-paste(ellison1$year,ellison1$doy, sep="-")
+  #get min airtemp across both measurements for each plot
+  temp_min<-aggregate(x=subset(ellison1, select=c("cat1.min","cat2.min","csto1.min","csto2.min","csti1.min","csti2.min")), by=list(ellison1$year_doy,ellison1$plot), FUN=min)
+  airtemp_min<-apply(temp_min[,3:4],1,min)
+  soiltemp1_min<-apply(temp_min[,5:6],1,min)#temp at 2cm depth(organic)
+  soiltemp2_min<-apply(temp_min[,7:8],1,min)#temp at 6cm depth(inorganic)
+  temp_max<-aggregate(x=subset(ellison1, select=c("cat1.max","cat2.max","csto1.max","csto2.max","csti1.max","csti2.max")), by=list(ellison1$year_doy,ellison1$plot), FUN=max)
+  airtemp_max<-apply(temp_max[,3:4],1,max)
+  soiltemp1_max<-apply(temp_max[,5:6],1,max)#temp at 2cm depth(organic)
+  soiltemp2_max<-apply(temp_max[,7:8],1,max)#temp at 6cm depth(inorganic)
+  soilmois<-aggregate(x=subset(ellison1, select=c("csm.avg")), by=list(ellison1$year_doy,ellison1$plot), FUN=mean)
+  colnames(temp_min)[1:2]<-c("year_doy","plot")
+  year_doy <- strsplit(temp_min$year_doy,'-') 
+  year_doy<-do.call(rbind, year_doy)
+  allclim<-as.data.frame(cbind(year_doy,airtemp_min,airtemp_max,soiltemp1_min,soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois))
+  colnames(allclim)[9:11]<-c("year_doy","plot","soilmois")
+  colnames(allclim)[1:2]<-c("year","doy")
+  allclim$preciptreat<-NA
+  allclim$temptreat<-NA
+  allclim[allclim$plot==6,]$temptreat<-0
+  allclim[allclim$plot==4,]$temptreat<-0
+  allclim[allclim$plot==11,]$temptreat<-0
+  allclim[allclim$plot==7,]$temptreat<-4
+  allclim[allclim$plot==8,]$temptreat<-1
+  allclim[allclim$plot==9,]$temptreat<-3
+  allclim[allclim$plot==10,]$temptreat<-7
+  allclim[allclim$plot==12,]$temptreat<-5
+  allclim[allclim$plot==1,]$temptreat<-9
+  allclim[allclim$plot==2,]$temptreat<-6
+  allclim[allclim$plot==3,]$temptreat<-2
+  allclim[allclim$plot==5,]$temptreat<-8
+  allclim1<-subset(allclim, select=c("temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soilmois"))
+  file2<-file.path(path, "hf113-03-hf-outside.csv")
+  ellison2<-read.csv(file2, header=TRUE)
+  ellison2<-ellison2[-which(ellison2$year==2009),]
+  ellison2$year_doy<-paste(ellison2$year,ellison2$doy, sep="-")
+  ellison2$plot<-"outside"
+  temp_min2<-aggregate(x=subset(ellison2, select=c("oat1.min","oat2.min","oat3.min","osto1.min","osto2.min","osto3.min","osti1.min","osti2.min","osti3.min")), by=list(ellison2$year_doy,ellison2$plot), FUN=min)
+  airtemp_min<-apply(temp_min2[,3:5],1,min)
+  soiltemp1_min<-apply(temp_min2[,6:8],1,min)#temp at 2cm depth(organic)
+  soiltemp2_min<-apply(temp_min2[,9:11],1,min)#temp at 6cm depth(inorganic)
+  temp_max2<-aggregate(x=subset(ellison2, select=c("oat1.max","oat2.max","oat3.max","osto1.max","osto2.max","osto3.max","osti1.max","osti2.max","osti3.max")), by=list(ellison2$year_doy,ellison2$plot), FUN=max)
+  airtemp_max<-apply(temp_max2[,3:5],1,max)
+  soiltemp1_max<-apply(temp_max2[,6:8],1,max)#temp at 2cm depth(organic)
+  soiltemp2_max<-apply(temp_max2[,9:11],1,max)#temp at 6cm depth(inorganic)
+  soilmois2<-aggregate(x=subset(ellison2, select=c("oc1sm.avg","oc2sm.avg","oc3sm.avg")), by=list(ellison2$year_doy,ellison2$plot), FUN=mean)
+  soilmois<-apply(soilmois2[,3:5],1,mean)#temp at 6cm depth(inorganic)
+  colnames(temp_min2)[1:2]<-c("year_doy","plot")
+  year_doy <- strsplit(temp_min2$year_doy,'-') 
+  year_doy<-do.call(rbind, year_doy)
+  temptreat<-rep("outside",times=dim(year_doy)[1])
+  preciptreat<-rep("outside",times=dim(year_doy)[1])
+  oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois))
+  colnames(oallclim)[3:5]<-c("plot","year","doy")
+  allclim2<-rbind(allclim1,oallclim)
+  allclim2$site<-"harvardellison"
+  allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
+  ellisonclim<-subset(allclim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
+  row.names(ellisonclim) <- NULL
+  return(ellisonclim)
+}
+
+
 ##Chuine et al. data from ??? ##
 ## Data type: sporadic measurements of soil temp and humidity?
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr)
@@ -263,6 +333,8 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
   for (i in 1:length(soilfiles)){
     file <- file.path(path, paste(maxtempfiles[i]))
     soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
+
+    
 ##Produce cleaned, raw climate data
 raw.data.dir <- "./Experiments/"
 cleanclimdata.raw <- list()
@@ -271,15 +343,16 @@ cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Experiments/farnsw
 cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/clark/")
 cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
 cleanclimdata.raw$bace <- clean.clim$bace(path="./Experiments/bace")
+cleanclimdata.raw$ellison <- clean.clim$ellison(path="./Experiments/ellison")
 
 #cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
-#cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")still waiting for data
-#cleanclimdata.raw$oklahoma <- clean.clim$oklahoma(path="./Experiments/sherry")still waiting for data
+#cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")
+#cleanclimdata.raw$oklahoma <- clean.clim$oklahoma(path="./Experiments/sherry")
 
 expphenclim1 <- do.call("rbind", cleanclimdata.raw)
 row.names(expphenclim1) <- NULL
 
-expphenclim<-expphenclim[-which(expphenclim$doy=="NA"),]
+expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
 expphenclim$doy<-as.numeric(expphenclim$doy)
 ###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
 tbase<-10

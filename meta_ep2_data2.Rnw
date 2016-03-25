@@ -145,7 +145,7 @@ for (i in seq_along(obsitez)){
 @
 
 \subsection{Climate Data for Experiments}
-We compiled daily air and soil temperature, whenever possible, as well as soil moisture or humidity data for all sites.
+We compiled daily air and soil temperature, whenever possible, as well as soil moisture or humidity data for all sites. This data is still being compiled, as we've just recently recieved some of the data. It should be done by the meeting!
 <<echo=TRUE>>=
 head(expclim)
 @

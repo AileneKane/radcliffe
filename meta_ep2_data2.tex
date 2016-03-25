@@ -165,8 +165,6 @@ The observational phenology data file has the following columns:
 \item event: phenological event (bbd=first leaf budburst date, lod=first leaf out date, lud= first leaf unfolding date, ffd=first flower date, ffrd=first fruiting date, sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senescence observed,drop=leaf drop)
 \item genus and species: 
 \item doy: day of year that the phenological event first occured
-\item scrub: whether or not the species names have been scrubbed.
-\item variety and cultivar: if included by the author, but not frequently used
 \end{itemize}
 
 The observational data come from 15 sites (see `obssiteinfo.csv' file for details).
@@ -221,7 +219,7 @@ And include 7 phenological stages:
 \end{Schunk}
 
 \subsection{Climate Data for Experiments}
-We compiled daily air and soil temperature, whenever possible, as well as soil moisture or humidity data for all sites.
+We compiled daily air and soil temperature, whenever possible, as well as soil moisture or humidity data for all sites. This data is still being compiled, as we've just recently recieved some of the data. It should be done by the meeting!
 \begin{Schunk}
 \begin{Sinput}
 > head(expclim)
@@ -234,13 +232,13 @@ We compiled daily air and soil temperature, whenever possible, as well as soil m
 4 marchin         1        <NA>    1 2010 101       5.883       36.37            NA
 5 marchin         1        <NA>    1 2010 102       7.922       36.90            NA
 6 marchin         1        <NA>    1 2010 103       9.980       40.81            NA
-  soiltemp2_min soiltemp1_max soiltemp2_max soiltemp1_mean  soilmois gdd_soil gdd_air
-1            NA          8.97            NA          6.783 0.1777083   -3.217  6.9010
-2            NA            NA            NA             NA        NA       NA      NA
-3         12.16            NA         15.18             NA 0.1608333       NA  9.7215
-4            NA            NA            NA             NA 0.1558333       NA 11.1265
-5            NA            NA            NA             NA 0.1513333       NA 12.4110
-6         13.58            NA         17.03             NA 0.1463333       NA 15.3950
+  soiltemp2_min soiltemp1_max soiltemp2_max soiltemp1_mean  soilmois
+1            NA          8.97            NA          6.783 0.1777083
+2            NA            NA            NA             NA        NA
+3         12.16            NA         15.18             NA 0.1608333
+4            NA            NA            NA             NA 0.1558333
+5            NA            NA            NA             NA 0.1513333
+6         13.58            NA         17.03             NA 0.1463333
 \end{Soutput}
 \end{Schunk}
 
@@ -258,7 +256,7 @@ The experimental climate data file has the following columns:
  \item soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth closest to the soil surface
  \item soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
  \item soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
- \item soilmos: soil moisture (percent)
+ \item soilmois: soil moisture (percent)
  
 \end{itemize}
 
@@ -300,7 +298,8 @@ distinfo-site-BEST-.csv):
 
 
 The other file, map-sites.eps, plots the locations of the phenology sites (in red) and the chosen BEST gridcell (in blue):
-
+\subsection{Species}
+We have done preliminary cleaning of the species names. Here's a quick look at the numbers of species included in experimental and observational databases, and the species that occur in both study types.
 \begin{Schunk}
 \begin{Sinput}
 > ## look at species numbers and overlap
