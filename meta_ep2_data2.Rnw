@@ -119,8 +119,6 @@ The observational phenology data file has the following columns:
 \item event: phenological event (bbd=first leaf budburst date, lod=first leaf out date, lud= first leaf unfolding date, ffd=first flower date, ffrd=first fruiting date, sd= first seeds dispersing date,col=first date leaf coloration observed, sen=first date senescence observed,drop=leaf drop)
 \item genus and species: 
 \item doy: day of year that the phenological event first occured
-\item scrub: whether or not the species names have been scrubbed.
-\item variety and cultivar: if included by the author, but not frequently used
 \end{itemize}
 
 The observational data come from 15 sites (see `obssiteinfo.csv' file for details).
@@ -166,7 +164,7 @@ The experimental climate data file has the following columns:
  \item soiltemp1-max: maximum daily soil temperature (degrees C), measured, depth closest to the soil surface
  \item soiltemp2-max: maximum daily soil temperature (degrees C), measured, depth second closest to soil surface
  \item soiltemp1-mean: mean daily soil temperature (degrees C), measured, depth closest to the soil surface (some studies only have data for mean, rather than min or max)
- \item soilmos: soil moisture (percent)
+ \item soilmois: soil moisture (percent)
  
 \end{itemize}
 
@@ -189,7 +187,8 @@ obssites[,-8]
 
 
 The other file, map-sites.eps, plots the locations of the phenology sites (in red) and the chosen BEST gridcell (in blue):
-
+\subsection{Species}
+We have done preliminary cleaning of the species names. Here's a quick look at the numbers of species included in experimental and observational databases, and the species that occur in both study types.
 <<echo=TRUE>>=
 
 ## look at species numbers and overlap
