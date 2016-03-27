@@ -324,6 +324,59 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Experi
   return(ellisonclim)
 }
 
+##
+clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", path="./Experiments/sherry") {
+  file <- file.path(path, filename)
+  soilmois<- read.csv(file, skip=2,na.strings = "-99999",header=TRUE)
+  site<-"oklahoma"
+  soilmois$year<-paste("20",substr(soilmois$Date,(nchar(soilmois$Date)+1)-2,nchar(soilmois$Date)), sep="")
+  colnames(soilmois)[2]<-"doy"
+  colnames(soilmois)[3]<-"soilmois"
+  soilmois.control<-rbind(soilmois[,1:3],soilmois[,1:3],soilmois[,1:3],soilmois[,1:3],soilmois[,1:3])
+  soilmois.control$plot<-c(rep(2,times=dim(soilmois)[1]),rep(6,times=dim(soilmois)[1]),rep(10,times=dim(soilmois)[1]),rep(14,times=dim(soilmois)[1]),rep(18,times=dim(soilmois)[1]))
+  soilmois.control$temptreat<-0
+  soilmois.control$preciptreat<-0
+  soilmois.water<-rbind(cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1))
+  soilmois.water$plot<-c(rep(4,times=dim(soilmois)[1]),rep(8,times=dim(soilmois)[1]),rep(11,times=dim(soilmois)[1]),rep(16,times=dim(soilmois)[1]),rep(20,times=dim(soilmois)[1]))
+  colnames(soilmois.water)[3]<-"soilmois"
+  soilmois.water$temptreat<-0
+  soilmois.water$preciptreat<-1
+  soilmois.heat<-rbind(cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1))
+  soilmois.heat$plot<-c(rep(3,times=dim(soilmois)[1]),rep(7,times=dim(soilmois)[1]),rep(12,times=dim(soilmois)[1]),rep(15,times=dim(soilmois)[1]),rep(19,times=dim(soilmois)[1]))
+  soilmois.heat$temptreat<-1
+  soilmois.heat$preciptreat<-0
+  colnames(soilmois.heat)[3]<-"soilmois"
+  soilmois.both<-rbind(cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1))
+  soilmois.both$plot<-c(rep(5,times=dim(soilmois)[1]),rep(9,times=dim(soilmois)[1]),rep(13,times=dim(soilmois)[1]),rep(17,times=dim(soilmois)[1]),rep(1,times=dim(soilmois)[1]))
+  soilmois.both$temptreat<-1
+  soilmois.both$preciptreat<-1
+  colnames(soilmois.both)[3]<-"soilmois"
+  soilmois.all<-rbind(soilmois.control,soilmois.water,soilmois.heat,soilmois.both)
+  sherrytempfiles<-c("IRCEB2003JD1_35.csv","IRCEB2003JD36_69.csv","IRCEB2003JD69_103.csv","IRCEB2003JD104_205.csv","IRCEB2003JD206_239.csv","IRCEB2003JD240_273.csv","IRCEB2003JD274_303.csv","IRCEB2003JD308_340.csv","IRCEB2003JD341_365.csv","IRCEB2004JD1_102.csv","IRCEB2004JD103_170.csv","IRCEB2004JD171_204.csv","IRCEB2004JD205_238.csv","IRCEB2004JD239_249.csv","IRCEB2004JD287_320.csv","IRCEB2004JD321_323.csv","IRCEB2004JD326_359.csv","IRCEB2004JD360_366.csv")
+  alltemp<-NA
+  for (i in 1:length(sherrytempfiles)){
+    file <- file.path(path, paste(sherrytempfiles[i]))
+    temp <- read.csv(file, header=TRUE,na.strings = "-99999")
+    if(i<4){colnames(temp)[4]<-"Air.15.cm"}
+    temp2<-temp[which(temp$Plot>=1),]
+    print(colnames(temp2))
+    minairtemp<-aggregate(x=temp2$Air.15.cm, by=list(temp2$J,temp2$Plot), FUN=min)
+    colnames(minairtemp)<-c("doy","plot","airtemp_minn")
+    maxairtemp<-aggregate(x=temp2$Air.15.cm, by=list(temp2$J,temp2$Plot), FUN=max)
+    colnames(maxairtemp)<-c("doy","plot","airtemp_max")
+    minsoiltemp<-aggregate(x=temp2$X7.5, by=list(temp2$J,temp2$Plot), FUN=min)
+    colnames(minairtemp)<-c("doy","plot","airtemp_minn")
+    maxsoiltemp<-aggregate(x=temp2$X7.5, by=list(temp2$J,temp2$Plot), FUN=max)
+    colnames(maxairtemp)<-c("doy","plot","airtemp_mean")
+    temps<-cbind(minairtemp, maxairtemp[,3],minsoiltemp[,3],maxsoiltemp[,3])
+    alltemp<-rbind(alltemp,temps)
+  }
+    
+  airtemp_min<-apply(temp_min[,3:5],1,min)
+      
+  ellisonclim<-subset(allclim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
+  row.names(ellisonclim) <- NULL
+}
 
 ##Chuine et al. data from ??? ##
 ## Data type: sporadic measurements of soil temp and humidity?
@@ -344,10 +397,11 @@ cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/cl
 cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
 cleanclimdata.raw$bace <- clean.clim$bace(path="./Experiments/bace")
 cleanclimdata.raw$ellison <- clean.clim$ellison(path="./Experiments/ellison")
+cleanclimdata.raw$oklahoma <- clean.clim$sherry(path="./Experiments/sherry")
 
 #cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
 #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")
-#cleanclimdata.raw$oklahoma <- clean.clim$oklahoma(path="./Experiments/sherry")
+
 
 expphenclim1 <- do.call("rbind", cleanclimdata.raw)
 row.names(expphenclim1) <- NULL
