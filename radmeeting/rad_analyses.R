@@ -7,6 +7,26 @@ expclim<-read.csv("expclim.csv", header=T)
 exppheno<-read.csv("exppheno.csv", header=T)
 obspheno<-read.csv("obspheno.csv", header=T)
 head(expclim)
+##get species lists with sites for obs and exp data
+expsites<-unique(exppheno$site)
+allsitespp<-NA
+for (i in 1:length(expsites)){
+sitedat<-exppheno[exppheno$site==expsites[i],]
+specieslist<-sort(unique(paste(sitedat$genus,sitedat$species, sep=".")))
+sitespp<-cbind(rep(expsites[i], times=length(specieslist)),specieslist)
+allsitespp<-rbind(allsitespp,sitespp)
+}
+write.csv(allsitespp,"exp_splist_Site.csv")
+obssites<-unique(obspheno$site)
+
+allsitespp<-NA
+for (i in 1:length(obssites)){
+  sitedat<-obspheno[obspheno$site==obssites[i],]
+  specieslist<-sort(unique(paste(sitedat$genus,sitedat$species, sep=".")))
+  sitespp<-cbind(rep(obssites[i], times=length(specieslist)),specieslist)
+  allsitespp<-rbind(allsitespp,sitespp)
+}
+write.csv(allsitespp,"obs_splist_Site.csv")
 
 #first, add gdd to expclim file:
 ###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
@@ -37,6 +57,7 @@ for (i in 1:length(expsites)){
   if (length(which(!is.na(spdat$cumgdd_air)))>0){gdd.mod.air<-lm(doy ~ cumgdd_air, data=spdat)
   sens.air<-coef(gdd.mod.air)[2]} else (sens.air<-NA)
   dat.sens<-c(paste(expsites[i]),paste(species[j]),round(sens.soil, digits=3),round(sens.air, digits=3))
+  plot()
   all.spp.sens<-rbind(all.spp.sens,dat.sens)
   }
 allsitesens<-rbind(allsitesens,all.spp.sens)
