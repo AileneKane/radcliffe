@@ -228,7 +228,7 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Exp
   farnsworth1$species1[farnsworth1$species=="vest"] <- "lentago"
   farnsworth1$genus[farnsworth1$species=="rm"] <- "Acer"
   farnsworth1$species1[farnsworth1$species=="rm"] <- "rubrum"
-  farnsworth1$site<-"farnsworthharv"  
+  farnsworth1$site<-"farnsworth"  
   #farnsworth1$variety <- NA
   #farnsworth1$cult <- NA
   farnsworth1$event <- NA
@@ -466,7 +466,7 @@ clean.raw$sherry <- function(filename, path) {
   sherry4<-reshape(sherry,varying = list(names(sherry)[4:5]), direction = "long", v.names = c("doy"), times = c(1:2))
   sherry4$event<-c(rep("ffd", times=dim(sherry)[1]),rep("ffrd", times=dim(sherry)[1]))
   sherry4$year<-2003
-  sherry4$site<-"oklahoma"
+  sherry4$site<-"sherry"
   sherryok<-subset(sherry4, select=c("site","plot","event","year","genus","species", "doy"))
   #sherryok$variety <- NA
   #sherryok$cult <- NA
@@ -517,7 +517,7 @@ clean.raw$price <- function(filename, path) {
  price<-price[-1,]
  price4<-reshape(price,varying = list(names(price)[3:5]), direction = "long", v.names = c("date"), times = c(names(price)[3:5]))
  colnames(price4)[5]<-"event"
- price4$site<-"rmbl"
+ price4$site<-"price"
  price4$date[which(is.na(price4$date))]<-"NA.NA.NA"
  price4$doy<-strftime(strptime(price4$date, format = "%m.%d.%y"),format = "%j") 
  price4$genus<-NA
@@ -675,7 +675,7 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Expe
   ellison3[ellison3$phenology=="S3",]$event<-"bbd"
   ellison3[ellison3$phenology=="S4",]$event<-"lud"
   ellison3[ellison3$phenology=="S5",]$event<-"lod"
-  ellison3$site<-"harvardellison"
+  ellison3$site<-"ellison"
   ellison<-subset(ellison3, select=c("site","plot","event","year","genus","species", "doy"))
   return(ellison)
   }
@@ -730,7 +730,7 @@ clean.raw$dunne <- function(path="./Experiments/dunne") {
     dunne$species[dunne$genussp=="Achillea"] <- "sp"
     dunne$genus[dunne$genussp=="Eriogonumu"] <- "Eriogonum"
     dunne$species[dunne$genussp=="Eriogonumu"] <- "umbellatum"
-    dunne$site<-"dunnermbl"
+    dunne$site<-"dunne"
     dunne<-dunne[-1,]
     dunnermbl<-subset(dunne, select=c("site","plot","event","year","genus","species", "doy"))
     dunnermbl<-dunnermbl[!is.na(dunnermbl$genus),]
