@@ -324,11 +324,12 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Experi
   return(ellisonclim)
 }
 
-##
+##Climate data for Sherry Oklahoma data
+##treatments were only applied in 2003; probably should use only these data!
+
 clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", path="./Experiments/sherry") {
   file <- file.path(path, filename)
   soilmois<- read.csv(file, skip=2,na.strings = "-99999",header=TRUE)
-  site<-"sherry"
   soilmois$year<-paste("20",substr(soilmois$Date,(nchar(soilmois$Date)+1)-2,nchar(soilmois$Date)), sep="")
   colnames(soilmois)[2]<-"doy"
   colnames(soilmois)[3]<-"soilmois"
@@ -377,12 +378,57 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   allclim$soiltemp2_min<-NA
   allclim$soiltemp2_max<-NA
   allclim$soiltemp1_mean<-(allclim$soiltemp1_max+allclim$soiltemp1_min)/2
-  allclim$site<-sherry
+  allclim$site<-"sherry"
   sherryclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
   row.names(sherryclim) <- NULL
   return(sherryclim)
 }
-
+##Climate data for RMBL (Price & Wasser & Dunne) from RMBL
+## Data type: soil temp and moisture, measured every 2 hours
+##Notes: for Dunne: 1995-1998
+###1 - 10 = Plot (ODD = control, EVEN = Heated); A - C = Zone (A = lower, B = middle, C = upper in terms of local topography); 1 - 3 = Depth (1 = 5cm, 2 = 12cm, 3 = 25cm)  
+###average across zones,and just use plot numbers to climate data
+###for 1991: only soil depth 2 (12 cm) in cleaned file
+clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Experiments/dunne") {
+  file <- file.path(path, filename)
+  soiltemp<- read.csv(file,header=TRUE)
+  soiltemp2_min_plot1<-aggregate(x=subset(soiltemp,select=c("X1A2","X1B2","X1C2")),by=list(soiltemp$Year,soiltemp$DOY),FUN=min)
+  soiltemp2_min_plot2<-aggregate(x=subset(soiltemp,select=c("X2A2","X2B2","X2C2")),by=list(soiltemp$Year,soiltemp$DOY),FUN=min)
+  soiltemp2_min_plot3<-aggregate(x=subset(soiltemp, select=c("X3A2","X3B2","X3C2")),by=list(soiltemp$Year,soiltemp$DOY),FUN=min)
+  soiltemp2_min_plot4<-aggregate(x=subset(soiltemp, select=c("X4A2","X4B2","X4C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_min_plot5<-aggregate(x=subset(soiltemp, select=c("X5A2","X5B2","X5C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_min_plot6<-aggregate(x=subset(soiltemp, select=c("X6A2","X6B2","X6C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_min_plot7<-aggregate(x=subset(soiltemp, select=c("X7A2","X7B2","X7C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_min_plot8<-aggregate(x=subset(soiltemp, select=c("X8A2","X8B2","X8C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_min_plot9<-aggregate(x=subset(soiltemp, select=c("X9A2","X9B2","X9C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_min_plot10<-aggregate(x=subset(soiltemp, select=c("X10A2","X10B2","X10C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=min)
+  soiltemp2_max_plot1<-aggregate(x=subset(soiltemp, select=c("X1A2","X1B2","X1C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot2<-aggregate(x=subset(soiltemp, select=c("X2A2","X2B2","X2C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot3<-aggregate(x=subset(soiltemp, select=c("X3A2","X3B2","X3C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot4<-aggregate(x=subset(soiltemp, select=c("X4A2","X4B2","X4C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot5<-aggregate(x=subset(soiltemp, select=c("X5A2","X5B2","X5C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot6<-aggregate(x=subset(soiltemp, select=c("X6A2","X6B2","X6C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot7<-aggregate(x=subset(soiltemp, select=c("X7A2","X7B2","X7C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)                          
+  soiltemp2_max_plot8<-aggregate(x=subset(soiltemp, select=c("X8A2","X8B2","X8C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot9<-aggregate(x=subset(soiltemp, select=c("X9A2","X9B2","X9C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+  soiltemp2_max_plot10<-aggregate(x=subset(soiltemp, select=c("X10A2","X10B2","X10C2")), by=list(soiltemp$Year,soiltemp$DOY), FUN=max)
+                                                                                                                                                                                                                                                    
+  dunneclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
+  row.names(dunneclim) <- NULL
+  return(dunneclim)
+}  
+  ##Climate data for RMBL (Price & Wasser & Dunne) from RMBL
+  ## Data type: soil temp and moisture, measured every 2 hours
+  ## Notes: for Price & Wasser, 1990-1994 (climate data doesn't start until 1991)
+  clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Experiments/dunne") {
+    file <- file.path(path, filename)
+    soiltemp<- read.csv(file,header=TRUE)
+    
+  priceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
+  row.names(priceclim) <- NULL
+  return(priceclim)
+  }
+  
 ##Chuine et al. data from ??? ##
 ## Data type: sporadic measurements of soil temp and humidity?
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr)
@@ -394,18 +440,10 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
 
     
 ##Produce cleaned, raw climate data
-raw.data.dir <- "./Experiments/"
-cleanclimdata.raw <- list()
-cleanclimdata.raw$marchin <- clean.clim$marchin(path="./Experiments/marchin")
-cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Experiments/farnsworth/")
-cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Experiments/clark/")
-cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Experiments/clark/")
-cleanclimdata.raw$bace <- clean.clim$bace(path="./Experiments/bace")
-cleanclimdata.raw$ellison <- clean.clim$ellison(path="./Experiments/ellison")
-cleanclimdata.raw$sherry <- clean.clim$sherry(path="./Experiments/sherry")
-
+]
 #cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
 #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")
+#cleanclimdata.raw$force <- clean.clim$price(path="./Experiments/price")
 
 
 expphenclim1 <- do.call("rbind", cleanclimdata.raw)
@@ -413,16 +451,8 @@ row.names(expphenclim1) <- NULL
 
 expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
 expphenclim$doy<-as.numeric(expphenclim$doy)
-###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
-tbase<-10
-expphenclim$gdd_soil<-expphenclim$soiltemp1_mean-tbase
-expphenclim$gdd_air<-((as.numeric(expphenclim$airtemp_min)+as.numeric(expphenclim$airtemp_max))/2)-tbase
-expphenclim$gdd_soil[expphenclim$gdd_soil < 10] <- 0
-expphenclim$gdd_air[expphenclim$gdd_air < 10] <- 0
-expphenclim<-expphenclim[order(expphenclim$site,expphenclim$plot,expphenclim$year, expphenclim$doy),]
-expphenclim$cumgdd_air <- ave(expphenclim$gdd_air,list(expphenclim$site,expphenclim$plot,expphenclim$year), FUN=cumsum)
-expphenclim$cumgdd_soil <- ave(expphenclim$gdd_soil,list(expphenclim$site,expphenclim$plot,expphenclim$year), FUN=cumsum)
-cumsum(ifelse(is.na(x), 0, x)) + x*0
+expphenclim$year<-as.numeric(expphenclim$year)
+
 write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
 expphenclim
 ##Look at the data to check for errors

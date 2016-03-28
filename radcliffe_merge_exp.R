@@ -697,7 +697,7 @@ clean.raw$dunne <- function(path="./Experiments/dunne") {
     else(dunne2<-dunne_ffd)
     if(is.element("stage4", colnames(dunne1)))(dunne_ffrd$event<-"ffrd")
     if(is.element("stage4", colnames(dunne1)))(dunne2<-rbind(dunne_ffd, dunne_ffrd))
-     dunne2$plot<-paste(dunne2$Group.1,dunne2$Group.2,sep="-")
+     dunne2$plot<-dunne2$Group.2
      stop<-nchar(dunnefiles[i])-4
      dunne2$genussp<-paste(substr(dunnefiles[i],24,stop))
     dunne2$year<-substr(dunnefiles[i],1,4)
@@ -794,4 +794,6 @@ write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
 tapply(expphendb$doy,list(expphendb$site,expphendb$event),length)
 expphendb[which(expphendb$doy==min(expphendb$doy)),]
 
+specieslist<-sort(unique(paste(expphendb$genus,expphendb$species, sep=".")))
+write.csv(specieslist,"exp_splist.csv")
 
