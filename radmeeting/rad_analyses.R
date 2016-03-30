@@ -28,6 +28,7 @@ for (i in 1:length(obssites)){
 }
 write.csv(allsitespp,"obs_splist_Site.csv")
 
+#Now, some preliminary analyses:
 #first, add gdd to expclim file:
 ###Add GDD to all: soiltemp-tbase (=10), cumulative GDD for that year (sum up to that date)
 tbase<-10
@@ -54,12 +55,24 @@ for (i in 1:length(expsites)){
   spdat<-expdat[expdat$genus.species==species[j],]
   if (length(which(!is.na(spdat$cumgdd_soil)))>0) {gdd.mod.soil<-lm(doy ~ cumgdd_soil, data=spdat)
   sens.soil<-coef(gdd.mod.soil)[2]} else (sens.soil<-NA)
+  print(expsites[i])
+  print(species[j])
+  print(summary(gdd.mod.soil))
   if (length(which(!is.na(spdat$cumgdd_air)))>0){gdd.mod.air<-lm(doy ~ cumgdd_air, data=spdat)
   sens.air<-coef(gdd.mod.air)[2]} else (sens.air<-NA)
+  print(summary(gdd.mod.air))
   dat.sens<-c(paste(expsites[i]),paste(species[j]),round(sens.soil, digits=3),round(sens.air, digits=3))
-  plot()
+  #plot()
   all.spp.sens<-rbind(all.spp.sens,dat.sens)
   }
 allsitesens<-rbind(allsitesens,all.spp.sens)
 }
-
+colnames(allsitesens)<-c("site","species","sens_gddsoil","sens_gddair")
+rownames(allsitesens)<-NULL
+allsitesens1<-as.data.frame(allsitesens[-which(is.na(allsitesens[,1])),])
+allsitesens1$sens_gddsoil<-as.numeric(allsitesens1$sens_gddsoil)
+allsitesens1$sens_gddair<-as.numeric(allsitesens1$sens_gddair)
+head(allsitesens1)
+boxplot(allsitesens1$sens_gddair~allsitesens1$site)
+boxplot(allsitesens1$sens_gddsoil~allsitesens1$site)
+allsitesens1[allsitesens1$site=="sherry",]
