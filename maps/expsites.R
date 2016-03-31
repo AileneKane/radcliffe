@@ -12,7 +12,7 @@ options(stringsAsFactors=FALSE)
 library(ggplot2)
 library(rgdal)
 
-setwd("~/Documents/git/projects/meta_ep2/radcliffe/maps")
+setwd("~/GitHub/radcliffe/maps")
 
 ## get the sites
 expsites <- read.csv("input/expsiteinfo.csv", header=TRUE)

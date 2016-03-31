@@ -625,7 +625,7 @@ clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", pa
     file <- file.path(path, filename)
     force1 <- read.csv(file, check.names=FALSE, header=TRUE)
     force1$plot<-paste(force1$Block,force1$Treatment,sep="")
-    force2<-aggregate(x=force1$Survey.DOY, by=list(force1$Year,force1$plot,force1$Species,force1$Phenology.State), FUN=min)
+    force2<-aggregate(x=force1$Survey.DOY, by=list(force1$Year,force1$plot,force1$Species,force1$Phenology.State), FUN=min, na.rm=F)
     colnames(force2)<-c("year","plot","SP","phenstate","doy")
     force2$event<-NA
     force2[force2$phenstate==1,]$event<-"lod"
@@ -644,11 +644,11 @@ clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", pa
     species1<-unique(force3$SP)
     species1[which(species1=="U80")]<-"ARMI"
       for (j in 1:length(species1)){
-        force3$genussp[force3$SP==species1[j]] <- specieslist[specieslist$Species.CODE==species1[j],]$Species
+        force3$genussp[force3$SP==species1[j]] <- specieslist[specieslist$Species.CODE==species1[j],]$Species[1]
         }
     force4<-force3 %>% separate(genussp, c("genus", "species"), sep=" ", remove=F)
     force4[which(force4$genus=="Sisynchium"),]$genus<-"Sisyrinchium"
-    force4[which(force4$genus=="Oenethera"),]$genus<-"Oenothera"
+    #force4[which(force4$genus=="Oenethera"),]$genus<-"Oenothera"
     force4$site<-"force"
     force<-subset(force4, select=c("site","plot","event","year","genus","species", "doy"))
     return(force)
@@ -665,7 +665,7 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Expe
   colnames(ellison1)[4]<-"genussp"
   ellison1$doy<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%j") 
   ellison1$year<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%Y")
-  ellison2<-aggregate(x=ellison1$doy, by=list(ellison1$year,ellison1$plot,ellison1$genussp,ellison1$plant,ellison1$phenology), FUN=min)
+  ellison2<-aggregate(x=ellison1$doy, by=list(ellison1$year,ellison1$plot,ellison1$genussp,ellison1$plant,ellison1$phenology), FUN=min,na.rm=F)
   ellison3<-ellison2 %>% separate(Group.3, c("genus", "species"), sep="_", remove=F)
   colnames(ellison3)<-c("year","plot","gensp")
   colnames(ellison3)[4:8]<-c("genus","species","plant","phenology","doy")
@@ -691,9 +691,9 @@ clean.raw$dunne <- function(path="./Experiments/dunne") {
   for (i in 1:length(dunnefiles)){
     file <- file.path(path, paste(dunnefiles[i]))
     dunne1 <- read.csv(file,  header=TRUE)
-    dunne_ffd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage2), FUN=min)#first date of open flowers for each site/plot/rep
+    dunne_ffd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage2), FUN=min,na.rm=F)#first date of open flowers for each site/plot/rep
     dunne_ffd$event<-"ffd"
-    if(is.element("stage4", colnames(dunne1)))(dunne_ffrd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage4), FUN=min)) #first date of fruit for each site/plot/rep
+    if(is.element("stage4", colnames(dunne1)))(dunne_ffrd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage4), FUN=min,na.rm=F)) #first date of fruit for each site/plot/rep
     else(dunne2<-dunne_ffd)
     if(is.element("stage4", colnames(dunne1)))(dunne_ffrd$event<-"ffrd")
     if(is.element("stage4", colnames(dunne1)))(dunne2<-rbind(dunne_ffd, dunne_ffrd))
@@ -782,7 +782,7 @@ unique(expphendb$event)#10 phenological events
 # simple plot, need to add a legend
 expsitez <- unique(expphendb$site)
 somecolors <- rainbow(length(expsitez))
-expagg<-aggregate(x=expphendb$doy, by=list(expphendb$year,expphendb$site), FUN=mean)
+expagg<-aggregate(x=expphendb$doy, by=list(expphendb$year,expphendb$site), FUN=mean,na.rm=F)
 colnames(expagg)<-c("year","site","mndoy")
 plot(mndoy~year, data=expagg, type="n")
 for (i in seq_along(expsitez)){

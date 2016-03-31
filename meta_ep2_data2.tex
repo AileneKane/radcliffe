@@ -82,13 +82,13 @@ We'll walk through the experimental phenology data first. We selected experiment
 > head(expdata)
 \end{Sinput}
 \begin{Soutput}
-     site plot event year genus species doy
-1 marchin    1   bbd 2011  Acer  rubrum  88
-2 marchin    1   bbd 2011  Acer  rubrum  83
-3 marchin    1   bbd 2011  Acer  rubrum  96
-4 marchin    1   bbd 2011  Acer  rubrum  79
-5 marchin    1   bbd 2011  Acer  rubrum  83
-6 marchin    1   bbd 2011  Acer  rubrum  80
+     site plot event year genus species doy genus.species
+1 marchin    1   bbd 2011  Acer  rubrum  88   Acer.rubrum
+2 marchin    1   bbd 2011  Acer  rubrum  83   Acer.rubrum
+3 marchin    1   bbd 2011  Acer  rubrum  96   Acer.rubrum
+4 marchin    1   bbd 2011  Acer  rubrum  79   Acer.rubrum
+5 marchin    1   bbd 2011  Acer  rubrum  83   Acer.rubrum
+6 marchin    1   bbd 2011  Acer  rubrum  80   Acer.rubrum
 \end{Soutput}
 \end{Schunk}
 The experimental phenology data file has the following columns:
@@ -102,17 +102,16 @@ The experimental phenology data file has the following columns:
 \end{itemize}
 Each row is an observation of an individual or plot (whatever the finest scale of observation for that study).
 
-The experimental data come from 8 different sites (see 'expsiteinfo.csv' file for details on the locations).
+These are the experimental sites (see 'expsiteinfo.csv' file for details on the locations):
 
 \begin{Schunk}
 \begin{Sinput}
 > unique(expdata$site)
 \end{Sinput}
 \begin{Soutput}
- [1] marchin        bace           farnsworthharv cleland        clarkduke     
- [6] clarkharvard   oklahoma       rmbl           chuine         force         
-[11] harvardellison dunnermbl     
-12 Levels: bace chuine clarkduke clarkharvard cleland dunnermbl farnsworthharv ... rmbl
+ [1] marchin      bace         farnsworth   cleland      clarkduke    clarkharvard
+ [7] sherry       price        chuine       force        ellison      dunne       
+12 Levels: bace chuine clarkduke clarkharvard cleland dunne ellison farnsworth ... sherry
 \end{Soutput}
 \end{Schunk}
 \includegraphics{maps/expsites.pdf}
@@ -123,19 +122,19 @@ Ten different phenological events were monitored across all sites:
 > table(expdata$site, expdata$event)
 \end{Sinput}
 \begin{Soutput}
-                   bbd   col  drop   ffb   ffd  ffrd   lod   lud    sd   sen
-  bace             243     0     0     0     0     0   254   256     0     0
-  chuine             0     0     0  3367  3284  2238     0     0     0     0
-  clarkduke       8304     0     0     0     0     0 12573 13989     0     0
-  clarkharvard    2527     0     0     0     0     0  4503  3698     0     0
-  cleland            0     0     0     0  2368     0     0     0     0     0
-  dunnermbl          0     0     0     0  9117   938     0     0     0     0
-  farnsworthharv   262    45     0     0    12    20   305   170     0     0
-  force              0     0     0     0   585   388  1333     0   179   551
-  harvardellison    68     0   146     0     0     0   196    91     0   214
-  marchin          849     0     0     0   280     0     0     0     0     0
-  oklahoma           0     0     0     0   623   671     0     0     0     0
-  rmbl               0     0     0     0  1071   650     0     0   476     0
+                 bbd   col  drop   ffb   ffd  ffrd   lod   lud    sd   sen
+  bace           243     0     0     0     0     0   254   256     0     0
+  chuine           0     0     0  3367  3284  2238     0     0     0     0
+  clarkduke     8304     0     0     0     0     0 12573 13989     0     0
+  clarkharvard  2527     0     0     0     0     0  4503  3698     0     0
+  cleland          0     0     0     0  2368     0     0     0     0     0
+  dunne            0     0     0     0  9117   938     0     0     0     0
+  ellison         68     0   146     0     0     0   196    91     0   214
+  farnsworth     262    45     0     0    12    20   305   170     0     0
+  force            0     0     0     0   585   388  1333     0   179   551
+  marchin        849     0     0     0   280     0     0     0     0     0
+  price            0     0     0     0  1071   650     0     0   476     0
+  sherry           0     0     0     0   623   671     0     0     0     0
 \end{Soutput}
 \end{Schunk}
 
