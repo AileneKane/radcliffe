@@ -140,7 +140,7 @@ clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Exp
   mois.long$plot<-substr(mois.long$time,1,3)
   mois.long$doy<-strftime(strptime(paste(mois.long$year,mois.long$month,mois.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")   
   mois.long$year_doy <- paste(mois.long$year,mois.long$doy, sep="") 
-  soilmois<-aggregate(x=subset(mois.long, select="soilmois"), by=list(soiltemp.long$year_doy,soiltemp.long$plot), FUN=mean,na.rm=F)
+  soilmois<-aggregate(x=subset(mois.long, select="soilmois"), by=list(mois.long$year_doy,mois.long$plot), FUN=mean,na.rm=F)
   colnames(soilmois)<-c("year_doy","plot","soilmois")
   
   file3<-file.path(path, "data-Harvard-AT.csv")
@@ -485,8 +485,8 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   Tsurf2$variable<-as.character(Tsurf2$variable)
   Tsurf2$plot<-substr(Tsurf2$variable,(nchar(Tsurf2$variable)+1)-2,nchar(Tsurf2$variable))
   colnames(Tsurf2)[6]<-"Tsurf"
-  surftemp_min<-aggregate(x=Tsurf2$Tsurf, by=list(Tsurf2$Year,Tsurf2$doy,Tsurf2$plot), FUN=min, na.rm=FALSE)
-  surftemp_max<-aggregate(x=Tsurf2$Tsurf, by=list(Tsurf2$Year,Tsurf2$doy,Tsurf2$plot), FUN=max, na.rm=FALSE)
+  surftemp_min<-aggregate(x=Tsurf2$Tsurf, by=list(Tsurf2$Year,Tsurf2$doy,Tsurf2$plot), FUN=min, na.rm=F)
+  surftemp_max<-aggregate(x=Tsurf2$Tsurf, by=list(Tsurf2$Year,Tsurf2$doy,Tsurf2$plot), FUN=max, na.rm=F)
   surftemp<-cbind(surftemp_min,surftemp_max[,4])
   colnames(surftemp)<-c("year","doy","plot","airtemp_min","airtemp_max")
   Tsoil<-subset(clim,select = c("Year","Month","Day","doy","Tsoil_A1","Tsoil_H1","Tsoil_W1","Tsoil_B1","Tsoil_A2","Tsoil_H2","Tsoil_W2","Tsoil_B2","Tsoil_A3","Tsoil_H3","Tsoil_W3","Tsoil_B3","Tsoil_A4","Tsoil_H4","Tsoil_W4","Tsoil_B4"))
@@ -494,8 +494,8 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   Tsoil2$variable<-as.character(Tsoil2$variable)
   Tsoil2$plot<-substr(Tsoil2$variable,(nchar(Tsoil2$variable)+1)-2,nchar(Tsoil2$variable))
   colnames(Tsoil2)[6]<-"Tsoil"
-  soiltemp1_min<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=min, na.rm=FALSE)
-  soiltemp1_max<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=max, na.rm=FALSE)
+  soiltemp1_min<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=min, na.rm=F)
+  soiltemp1_max<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=max, na.rm=F)
   soiltemp<-cbind(soiltemp1_min,soiltemp1_max[,4])
   colnames(soiltemp)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
   mois<-subset(clim,select = c("Year","Month","Day","doy","H2O_H1","H2O_W1","H2O_B1","H2O_A2","H2O_H2","H2O_W2","H2O_B2","H2O_A3","H2O_H3","H2O_W3","H2O_B3","H2O_A4","H2O_W4","H2O_B4"))
@@ -503,7 +503,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   mois2$variable<-as.character(mois2$variable)
   mois2$plot<-substr(mois2$variable,(nchar(mois2$variable)+1)-2,nchar(mois2$variable))
   colnames(mois2)[6]<-"mois"
-  mois<-aggregate(x=mois2$mois, by=list(mois2$Year,mois2$doy,mois2$plot), FUN=mean, na.rm=FALSE)
+  mois<-aggregate(x=mois2$mois, by=list(mois2$Year,mois2$doy,mois2$plot), FUN=mean, na.rm=F)
   colnames(mois)<-c("year","doy","plot","soilmois")
   clim<-merge(surftemp,soiltemp)
   clim2<-merge(clim,mois)
@@ -519,10 +519,33 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   row.names(forceclim) <- NULL
   return(forceclim)
 }
+
+
 ##Chuine et al. data from ??? ##
-## Data type: sporadic measurements of soil temp and humidity?
+## Data type: sporadic measurements of soil temp and humidity? plus airtemp measurements frmo local climate station- isabelle says its best to use these plus the treatment differences rather than their measured airtemp data as the sensors drifted
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr)
 clean.clim$chuine <- function(path="./Experiments/chuine") {
+  ###unused code:
+  ##air temp files from chuine (not on plot level, so not useful?)
+  maxtempfiles<-c("meteoTE05_maxtemp2005.csv","meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
+  mintempfiles<-c("meteoTE05_mintemp2005.csv","meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
+  temp <- NA
+  for (i in 1:length(maxtempfiles)){
+    file <- file.path(path, paste(maxtempfiles[i]))
+    maxtemp1 <- read.csv(file, skip=1,header=TRUE)
+    colnames(maxtemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+    maxtemp2<-subset(maxtemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+    maxtemp.long<-reshape(maxtemp2,varying = list(colnames(maxtemp2)[2:13]), direction = "long", v.names = c("maxairtemp"), times = c(colnames(maxtemp2)[2:13]))
+    colnames(maxtemp.long)[2]<-"month"
+    file2 <- file.path(path, paste(mintempfiles[i]))
+    mintemp1 <- read.csv(file2, skip=1,header=TRUE)
+    colnames( mintemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+    mintemp2<-subset(mintemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+    mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
+    colnames(mintemp.long)[2]<-"month"
+    allairtemp <- merge(maxtemp.long,mintemp.long)
+    temp<=rbind(temp,allairtemp)
+  }
   soilfiles<-c("TDR2002.csv","TDR2003.csv","TDR2004.csv","TDR2005.csv")
   for (i in 1:length(soilfiles)){
     file <- file.path(path, paste(maxtempfiles[i]))
@@ -542,16 +565,15 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     cleanclimdata.raw$price <- clean.clim$price(path="./Experiments/price")
     cleanclimdata.raw$force <- clean.clim$force(path="./Experiments/force")
     
-    
     #cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
     #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")
     
-    
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    
+    dim(expphenclim1)#320436     14
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    unique(expphenclim$preciptreat)
+    dim(expphenclim)#320411     14
+    unique(expphenclim$airtemp_min)
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -562,12 +584,13 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     expphenclim$soiltemp1_max<-as.numeric(expphenclim$soiltemp1_max)
     expphenclim$soiltemp1_mean<-as.numeric(expphenclim$soiltemp1_mean)
     expphenclim$soilmois<-as.numeric(expphenclim$soilmois)
-    max(expphenclim$airtemp_max, na.rm=F)
+    max(expphenclim$airtemp_max, na.rm=T)
+    row.names(expphenclim) <- NULL
     
     write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
     head(expphenclim)
     dim(expphenclim)
-    
+    dim(expphenclim[which(expphenclim$airtemp_min=="Inf"),])
     ##Look at the data to check for errors
     boxplot(airtemp_min~site, data=expphenclim)
     boxplot(airtemp_max~site, data=expphenclim)
@@ -587,24 +610,5 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     boxplot(soiltemp2_max~alltreat, data=expphenclim)
     boxplot(soiltemp1_mean~alltreat, data=expphenclim)
     boxplot(soilmois~alltreat, data=expphenclim)
-    dim(expphenclim[which(expphenclim$alltreat=="NA.NA"),])
+
     
-    ###unused code:
-    ##air temp files from chuine (not on plot level, so not useful?)
-    maxtempfiles<-c("meteoTE05_maxtemp2005.csv","meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
-    mintempfiles<-c("meteoTE05_mintemp2005.csv","meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
-    temp <- NA
-    for (i in 1:length(maxtempfiles)){
-      file <- file.path(path, paste(maxtempfiles[i]))
-      maxtemp1 <- read.csv(file, skip=1,header=TRUE)
-      colnames(maxtemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-      maxtemp2<-subset(maxtemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-      maxtemp.long<-reshape(maxtemp2,varying = list(colnames(maxtemp2)[2:13]), direction = "long", v.names = c("maxairtemp"), times = c(colnames(maxtemp2)[2:13]))
-      colnames(maxtemp.long)[2]<-"month"
-      file2 <- file.path(path, paste(mintempfiles[i]))
-      mintemp1 <- read.csv(file2, skip=1,header=TRUE)
-      colnames( mintemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-      mintemp2<-subset(mintemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-      mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
-      colnames(mintemp.long)[2]<-"month"
-      allairtemp <- merge(maxtemp.long,mintemp.long)

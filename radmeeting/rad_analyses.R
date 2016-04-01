@@ -29,94 +29,73 @@ for (i in 1:length(tbase)){
 #check
 aggregate(expclim[, 15:24], list(expclim$site), mean, na.rm=T)
 #now add columns for cumulative
-for (i in 1:length(tbase)){
-  expclim[,24+(i-1)+i]<-expclim$soiltemp1_mean-tbase[i]
-  expclim[,25+(i-1)+i]<-((as.numeric(expclim$airtemp_min)+as.numeric(expclim$airtemp_max))/2)-tbase[i]
-  expclim[,24+(i-1)+i][expclim[24+i] < tbase[i]] <- 0
-  expclim[,25+(i-1)+i][expclim[25+i] < tbase[i]] <- 0
-}
-for (i in 1:length(tbase)){
-  colnames(expclim)[14+(i-1)+i]<-paste("gdd_soil",tbase[i],sep=".")
-  colnames(expclim)[15+(i-1)+i]<-paste("gdd_air",tbase[i],sep=".")
-}
 cumsumnona <- function(x){cumsum(ifelse(is.na(x), 0, x)) + x*0}
-expclim$cumgdd_air<- ave(expclim$gdd_air,list(expclim$site,expclim$plot,expclim$year), FUN=cumsumnona)
-expclim$cumgdd_soil <- ave(expclim$gdd_soil,list(expclim$site,expclim$plot,expclim$year), FUN=cumsumnona)
+for (i in 1:length(tbase)){
+  expclim[,24+(i-1)+i]<-ave(expclim[,14+(i-1)+i],list(expclim$site,expclim$plot,expclim$year), FUN=cumsumnona)
+  expclim[,25+(i-1)+i]<-ave(expclim[,15+(i-1)+i],list(expclim$site,expclim$plot,expclim$year), FUN=cumsumnona)
+}
+for (i in 1:length(tbase)){
+  colnames(expclim)[24+(i-1)+i]<-paste("cumgdd_soil",tbase[i],sep=".")
+  colnames(expclim)[25+(i-1)+i]<-paste("cumgdd_air",tbase[i],sep=".")
+}
 expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
-#Generate GDDs using 5 different base temps (2,4,6,8,10)
 
-
-
-
-#Look at how treatment affects growing degree days
-quartz(height=6,width=10)
-par(mfrow=c(2,1))
-boxplot(expclim$cumgdd_air~expclim$alltreat)
-boxplot(expclim$cumgdd_soil~expclim$alltreat)
-#Try fitting a model to look at this:
-#remove sham and outside treatments for now
-expclim2<-expclim[!expclim$temptreat=="sham",]
-expclim2<-expclim2[!expclim2$temptreat=="outside",]
-temptreat.mod<-lmer(cumgdd_air~doy*temptreat+(1|site),data=expclim2)
-temptreat.mod2<-lmer(cumgdd_air~doy+temptreat+(1|site),data=expclim2)
-temptreat.mod3<-lmer(cumgdd_air~doy+(1|site),data=expclim2)
-AIC(temptreat.mod,temptreat.mod2,temptreat.mod3)
-
-##Now fit models to get climate sensitivity (shift in phenological event per degree)
+##Now fit models to get climate sensitivity (shift in phenological event per degree day)
 expsites<-unique(exppheno$site)
-allsitesens<-NA
+expsites<-expsites[-which(expsites=="cleland")]
+expsites<-expsites[-which(expsites=="chuine")]
+
+exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
+
+allsitesens<-c()
 for (i in 1:length(expsites)){
   phendat<-exppheno[exppheno$site==expsites[i],]
   climdat<-expclim[expclim$site==expsites[i],]
   expdat<-merge(climdat,phendat)
   #preciptreat<-unique(expdat$preciptreat)
   species<-unique(expdat$genus.species)
-  all.spp.sens<-NA
+  all.spp.sens<-c()
   for (j in 1:length(species)){
     spdat<-expdat[expdat$genus.species==species[j],]
-    if (length(which(!is.na(spdat$cumgdd_soil)))>0) {gdd.mod.soil<-lm(doy ~ cumgdd_soil, data=spdat)
-    sens.soil<-coef(gdd.mod.soil)[2]} else (sens.soil<-NA)
-    print(expsites[i])
-    print(species[j])
-    print(summary(gdd.mod.soil))
-    if (length(which(!is.na(spdat$cumgdd_air)))>0){gdd.mod.air<-lm(doy ~ cumgdd_air, data=spdat)
-    sens.air<-coef(gdd.mod.air)[2]} else (sens.air<-NA)
-    print(summary(gdd.mod.air))
-    dat.sens<-c(paste(expsites[i]),paste(species[j]),round(sens.soil, digits=3),round(sens.air, digits=3))
-    #plot()
-    all.spp.sens<-rbind(all.spp.sens,dat.sens)
+    all.tbase.sens<-c()
+    if(dim(spdat)[1]<3) next
+    all.tbase.sens<-matrix(NA,nrow=length(tbase),ncol=13)
+    for (k in 1:length(tbase)){
+    cumgdd_soil<-spdat[,24+(k-1)+k]
+    cumgdd_air<-spdat[,25+(k-1)+k]
+    sens.soil<-c(NA,NA,NA,NA)
+    sens.air<-c(NA,NA,NA,NA)
+    if (length(which(!is.na(cumgdd_soil)))>0) {gdd.mod.soil<-lm(spdat$doy ~ cumgdd_soil)} else (sens.soil<-c(NA,NA,NA,NA))
+    if (dim(coef(summary(gdd.mod.soil)))[1]==2) {sens.soil<-coef(summary(gdd.mod.soil))[2,]} else (sens.soil<-c(NA,NA,NA,NA))
+    if (length(which(!is.na(cumgdd_soil)))>0) {aic.soil<-AIC(gdd.mod.soil)} else (aic.soil<-NA)
+    if (length(which(!is.na(cumgdd_air)))>0){gdd.mod.air<-lm(spdat$doy ~ cumgdd_air)}else (sens.air<-c(NA,NA,NA,NA))
+    if (dim(coef(summary(gdd.mod.air)))[1]==2){sens.air<-coef(summary(gdd.mod.air))[2,]} else (sens.air<-c(NA,NA,NA,NA))
+    if (length(which(!is.na(cumgdd_air)))>0) {aic.air<-AIC(gdd.mod.air)} else (aic.air<-NA)
+    all.tbase.sens[k,]<-c(paste(expsites[i]),paste(species[j]),paste(tbase[k]),round(sens.soil, digits=3),round(aic.soil, digits=3),round(sens.air, digits=3),round(aic.air, digits=3))
+    }
+    all.spp.sens<-rbind(all.spp.sens,all.tbase.sens)
   }
   allsitesens<-rbind(allsitesens,all.spp.sens)
 }
 
-colnames(allsitesens)<-c("site","species","sens_gddsoil","sens_gddair")
+colnames(allsitesens)<-c("site","species","tbase","sens_gddsoil","se_soil","t_soil","p_soil","aic_gddsoil","sens_gddair","se_air","t_air","p_air","aic_gddair")
 rownames(allsitesens)<-NULL
-allsitesens1<-as.data.frame(allsitesens[-which(is.na(allsitesens[,1])),])
-allsitesens1$sens_gddsoil<-as.numeric(allsitesens1$sens_gddsoil)
-allsitesens1$sens_gddair<-as.numeric(allsitesens1$sens_gddair)
+head(allsitesens)
+allsitesens1<-as.data.frame(allsitesens)
+allsitesens1$aic_gddsoil<-as.numeric(allsitesens1$aic_gddsoil)
+allsitesens1$aic_gddair<-as.numeric(allsitesens1$aic_gddair)
 head(allsitesens1)
+sens_gddsoil_best<-aggregate(x=allsitesens1$sens_gddsoil, by=list(allsitesens1$site,allsitesens1$species), FUN=min, na.rm=F)
+sens_gddair_best<-aggregate(x=allsitesens1$sens_gddair, by=list(allsitesens1$site,allsitesens1$species), FUN=min,na.rm=F)
+colnames(sens_gddsoil_best)<-c("site","species","aic_gddsoil")
+colnames(sens_gddair_best)<-c("site","species","aic_gddair")
+
+sens_gdd<-merge(sens_gddsoil_best,sens_gddair_best)
+colnames(sens_gdd)<-c("site","species","aic_gddsoil","aic_gddair")
+
 boxplot(allsitesens1$sens_gddair~allsitesens1$site)
 boxplot(allsitesens1$sens_gddsoil~allsitesens1$site)
 allsitesens1[allsitesens1$site=="sherry",]
 
-
-##get species lists with sites for obs and exp data
-expsites<-unique(exppheno$site)
-allsitespp<-NA
-for (i in 1:length(expsites)){
-  sitedat<-exppheno[exppheno$site==expsites[i],]
-  specieslist<-sort(unique(paste(sitedat$genus,sitedat$species, sep=".")))
-  sitespp<-cbind(rep(expsites[i], times=length(specieslist)),specieslist)
-  allsitespp<-rbind(allsitespp,sitespp)
-}
-write.csv(allsitespp,"exp_splist_Site.csv")
-obssites<-unique(obspheno$site)
-
-allsitespp<-NA
-for (i in 1:length(obssites)){
-  sitedat<-obspheno[obspheno$site==obssites[i],]
-  specieslist<-sort(unique(paste(sitedat$genus,sitedat$species, sep=".")))
-  sitespp<-cbind(rep(obssites[i], times=length(specieslist)),specieslist)
-  allsitespp<-rbind(allsitespp,sitespp)
-}
-write.csv(allsitespp,"obs_splist_Site.csv")
+exp.mod<-lmer(doy ~ soiltemp1_mean + (1|site/spgen), data=expdat)
+head(spdat)
