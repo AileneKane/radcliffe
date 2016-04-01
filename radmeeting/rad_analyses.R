@@ -1,5 +1,5 @@
 ###Preliminary analyses of exp and obs data for radcliff
-##STarted March 18, 2016
+##Started March 18, 2016
 library(RColorBrewer)
 library(lme4)
 library(car)
@@ -42,12 +42,63 @@ expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
 
 ##Now fit models to get climate sensitivity (shift in phenological event per degree day)
 expsites<-unique(exppheno$site)
-expsites<-expsites[-which(expsites=="cleland")]
-expsites<-expsites[-which(expsites=="chuine")]
+expsites<-expsites[-which(expsites=="cleland")]#only soil moisture data currently
+expsites<-expsites[-which(expsites=="chuine")]#remove for now, as i have quesitons for isabelle
 
 exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
-
-allsitesens<-c()
+allsitesgdd<-c()
+for (i in 1:length(expsites)){
+  phendat<-exppheno[exppheno$site==expsites[i],]
+  climdat<-expclim[expclim$site==expsites[i],]
+  expdat<-merge(climdat,phendat)
+  #preciptreat<-unique(expdat$preciptreat)
+  species<-unique(expdat$genus.species)
+  allsppgdd<-c()
+  for (j in 1:length(species)){
+    spdat<-expdat[expdat$genus.species==species[j],]
+    gdd.est<-c()
+    for (k in 1:length(tbase)){
+      cumgdd_soil<-spdat[,24+(k-1)+k]
+      cumgdd_air<-spdat[,25+(k-1)+k]###right now, only fitting models when there is more than one plot per species per site.
+      if (length(which(!is.na(cumgdd_soil)))>0 && length(unique(spdat$plot))>1){gdd.mod.soil<-lm(cumgdd_soil ~ -1+spdat$plot)
+      est.soil<-cbind(rep(expsites[i],times=dim(coef(summary(gdd.mod.soil)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.soil)))[1]),rep("soilgdd",times=dim(coef(summary(gdd.mod.soil)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.soil)))[1]),round(coef(summary(gdd.mod.soil))[,1:2],digits=3),rep(round(AIC(gdd.mod.soil), digits=3), times=dim(coef(summary(gdd.mod.soil)))[1])) } 
+      else {est.soil<-c(expsites[i],species[j],"soilgdd",tbase[k],NA,NA,NA)}
+      if (length(which(!is.na(cumgdd_air)))>0 && length(unique(spdat$plot))>1){gdd.mod.air<-lm(cumgdd_air ~ -1+spdat$plot)
+      est.air<-cbind(rep(expsites[i],times=dim(coef(summary(gdd.mod.air)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.air)))[1]),rep("airgdd",times=dim(coef(summary(gdd.mod.air)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.air)))[1]),round(coef(summary(gdd.mod.air))[,1:2],digits=3),rep(round(AIC(gdd.mod.air),digits=3), times=dim(coef(summary(gdd.mod.air)))[1]))} 
+      else {est.air<-c(expsites[i],species[j],"airgdd",tbase[k],NA,NA,NA)}
+      gdd.est<-rbind(gdd.est,est.soil,est.air)
+      }
+      allsppgdd<-rbind(allsppgdd,gdd.est)
+    }
+    allsitesgdd<-rbind(allsitesgdd,allsppgdd)
+  }
+  
+  colnames(allsitesens)<-c("site","species","tbase","sens_gddsoil","se_soil","t_soil","p_soil","aic_gddsoil","sens_gddair","se_air","t_air","p_air","aic_gddair")
+  rownames(allsitesens)<-NULL
+  write.csv(allsitesens,"gddsens.csv" )
+  head(allsitesens)
+  allsitesens1<-as.data.frame(allsitesens)
+  allsitesens1$aic_gddsoil<-as.numeric(allsitesens1$aic_gddsoil)
+  allsitesens1$aic_gddair<-as.numeric(allsitesens1$aic_gddair)
+  head(allsitesens1)
+  sens_gddsoil_best<-aggregate(x=allsitesens1$sens_gddsoil, by=list(allsitesens1$site,allsitesens1$species), FUN=min, na.rm=F)
+  sens_gddair_best<-aggregate(x=allsitesens1$sens_gddair, by=list(allsitesens1$site,allsitesens1$species), FUN=min,na.rm=F)
+  colnames(sens_gddsoil_best)<-c("site","species","aic_gddsoil")
+  colnames(sens_gddair_best)<-c("site","species","aic_gddair")
+  
+  sens_gdd<-merge(sens_gddsoil_best,sens_gddair_best)
+  colnames(sens_gdd)<-c("site","species","aic_gddsoil","aic_gddair")
+  
+##################################################################
+###Old code to get effect of GDD (slope)- the code below doesn't quite work!!!
+##Now fit models to get climate sensitivity (shift in phenological event per degree day)
+  expsites<-unique(exppheno$site)
+  expsites<-expsites[-which(expsites=="cleland")]#only soil moisture data currently
+  expsites<-expsites[-which(expsites=="chuine")]#reomve for now, as i have quesitons for isabelle
+  
+  exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
+  
+  allsitesens<-c()
 for (i in 1:length(expsites)){
   phendat<-exppheno[exppheno$site==expsites[i],]
   climdat<-expclim[expclim$site==expsites[i],]
@@ -65,12 +116,15 @@ for (i in 1:length(expsites)){
     cumgdd_air<-spdat[,25+(k-1)+k]
     sens.soil<-c(NA,NA,NA,NA)
     sens.air<-c(NA,NA,NA,NA)
-    if (length(which(!is.na(cumgdd_soil)))>0) {gdd.mod.soil<-lm(spdat$doy ~ cumgdd_soil)} else (sens.soil<-c(NA,NA,NA,NA))
+    aic.soil<-NA
+    aic.air<-NA
+    if (length(which(!is.na(cumgdd_soil)))>0) {gdd.mod.soil<-lm(spdat$doy ~ cumgdd_soil)
     if (dim(coef(summary(gdd.mod.soil)))[1]==2) {sens.soil<-coef(summary(gdd.mod.soil))[2,]} else (sens.soil<-c(NA,NA,NA,NA))
-    if (length(which(!is.na(cumgdd_soil)))>0) {aic.soil<-AIC(gdd.mod.soil)} else (aic.soil<-NA)
-    if (length(which(!is.na(cumgdd_air)))>0){gdd.mod.air<-lm(spdat$doy ~ cumgdd_air)}else (sens.air<-c(NA,NA,NA,NA))
-    if (dim(coef(summary(gdd.mod.air)))[1]==2){sens.air<-coef(summary(gdd.mod.air))[2,]} else (sens.air<-c(NA,NA,NA,NA))
-    if (length(which(!is.na(cumgdd_air)))>0) {aic.air<-AIC(gdd.mod.air)} else (aic.air<-NA)
+    if (length(which(!is.na(cumgdd_soil)))>0) {aic.soil<-AIC(gdd.mod.soil)}
+    
+    if (length(which(!is.na(cumgdd_air)))>0){gdd.mod.air<-lm(spdat$doy ~ cumgdd_air)
+    sens.air<-coef(summary(gdd.mod.air))[2,]
+    aic.air<-AIC(gdd.mod.air)} # else (aic.air<-NA);} else (sens.air<-c(NA,NA,NA,NA)) if (length(which(!is.na(cumgdd_air)))>0) {
     all.tbase.sens[k,]<-c(paste(expsites[i]),paste(species[j]),paste(tbase[k]),round(sens.soil, digits=3),round(aic.soil, digits=3),round(sens.air, digits=3),round(aic.air, digits=3))
     }
     all.spp.sens<-rbind(all.spp.sens,all.tbase.sens)
@@ -80,6 +134,7 @@ for (i in 1:length(expsites)){
 
 colnames(allsitesens)<-c("site","species","tbase","sens_gddsoil","se_soil","t_soil","p_soil","aic_gddsoil","sens_gddair","se_air","t_air","p_air","aic_gddair")
 rownames(allsitesens)<-NULL
+write.csv(allsitesens,"gddsens.csv" )
 head(allsitesens)
 allsitesens1<-as.data.frame(allsitesens)
 allsitesens1$aic_gddsoil<-as.numeric(allsitesens1$aic_gddsoil)
