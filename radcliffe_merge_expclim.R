@@ -431,7 +431,7 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim1$soiltemp2_max<-NA
   allclim1$soiltemp1_mean<-(allclim1$soiltemp1_min+allclim1$soiltemp1_max)/2
   allclim1$soilmois<-NA
-  allclim2<-allclim1[allclim1$year<1995,]
+  allclim2<-allclim1[allclim1$year>1994,]
   dunneclim<-subset(allclim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
   row.names(dunneclim) <- NULL
   return(dunneclim)
@@ -457,7 +457,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim<-cbind(soiltemp_min,soiltemp_max$x)
   colnames(allclim)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
   allclim1<-rbind(allclim1991,allclim)
-  allclim1$site<-"dunne"
+  allclim1$site<-"price"
   allclim1$temptreat<-0
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
   allclim1$preciptreat<-NA
@@ -467,7 +467,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim1$soiltemp2_max<-NA
   allclim1$soiltemp1_mean<-(allclim1$soiltemp1_min+allclim1$soiltemp1_max)/2
   allclim1$soilmois<-NA
-  allclim2<-allclim1[allclim1$year>1994,]
+  allclim2<-allclim1[allclim1$year<1995,]
   priceclim<-subset(allclim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
   row.names(priceclim) <- NULL
   return(priceclim)
@@ -515,6 +515,22 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   clim2$preciptreat<-0
   clim2[substr(clim2$plot,1,1)=="B"|substr(clim2$plot,1,1)=="W",]$preciptreat<-1
   clim2$soiltemp1_mean<-(clim2$soiltemp1_min+clim2$soiltemp1_max)/2
+  colnames(clim2)[3]<-"plot2"
+  clim2$plot<-NA
+  clim2[clim2$plot2=="A2",]$plot<-"2A"
+  clim2[clim2$plot2=="A3",]$plot<-"3A"
+  clim2[clim2$plot2=="A4",]$plot<-"4A"
+  clim2[clim2$plot2=="B1",]$plot<-"1B"
+  clim2[clim2$plot2=="B2",]$plot<-"2B"
+  clim2[clim2$plot2=="B3",]$plot<-"3B"
+  clim2[clim2$plot2=="B4",]$plot<-"4B"
+  clim2[clim2$plot2=="H1",]$plot<-"1H"
+  clim2[clim2$plot2=="H2",]$plot<-"2H"
+  clim2[clim2$plot2=="H3",]$plot<-"3H"
+  clim2[clim2$plot2=="W1",]$plot<-"1W"
+  clim2[clim2$plot2=="W2",]$plot<-"2W"
+  clim2[clim2$plot2=="W3",]$plot<-"3W"
+  clim2[clim2$plot2=="W4",]$plot<-"4W"
   forceclim<-subset(clim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
   row.names(forceclim) <- NULL
   return(forceclim)
@@ -573,7 +589,6 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     dim(expphenclim1)#320436     14
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
     dim(expphenclim)#320411     14
-    unique(expphenclim$airtemp_min)
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -584,13 +599,10 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     expphenclim$soiltemp1_max<-as.numeric(expphenclim$soiltemp1_max)
     expphenclim$soiltemp1_mean<-as.numeric(expphenclim$soiltemp1_mean)
     expphenclim$soilmois<-as.numeric(expphenclim$soilmois)
-    max(expphenclim$airtemp_max, na.rm=T)
     row.names(expphenclim) <- NULL
-    
     write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
     head(expphenclim)
     dim(expphenclim)
-    dim(expphenclim[which(expphenclim$airtemp_min=="Inf"),])
     ##Look at the data to check for errors
     boxplot(airtemp_min~site, data=expphenclim)
     boxplot(airtemp_max~site, data=expphenclim)
