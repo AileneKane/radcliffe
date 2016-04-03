@@ -90,7 +90,13 @@ for (i in 1:length(expsites)){
 treats<-read.csv("treats.csv", header=T)
 allsitesgdd3<-merge(allsitesgdd2,treats)
 write.csv(allsitesgdd3,"gddest.csv" )
+head(allsitesgdd3)
+allsitesgdd3$gdd.est<-as.numeric(allsitesgdd3$gdd.est)
+boxplot(as.numeric(allsitesgdd3$gdd.est)~as.factor(allsitesgdd3$temptreat))
+mod<-lmer(gdd.est~temptreat+ (1|site/species), data=allsitesgdd3)
 
+
+#choose  best-fit model (based on lowest AIC) for each species/site sens_gddsoil_best<-aggregate(x=allsitesens1$sens_gddsoil, by=list(allsitesens1$site,allsitesens1$species), FUN=min, na.rm=F)
 ##################################################################
 ###Old code to get effect of GDD (slope)- the code below doesn't quite work!!!
 ##Now fit models to get climate sensitivity (shift in phenological event per degree day)
