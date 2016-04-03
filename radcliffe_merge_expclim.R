@@ -4,7 +4,7 @@ setwd("~/GitHub/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
-library(zoo)
+#library(zoo)
 ##Daily temp  data and whatever soil moisture data are available
 clean.clim <- list()
 
@@ -545,7 +545,7 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
   ##air temp files from chuine (not on plot level, so not useful?)
   maxtempfiles<-c("meteoTE05_maxtemp2005.csv","meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
   mintempfiles<-c("meteoTE05_mintemp2005.csv","meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
-  temp <- NA
+  temp <- c()
   for (i in 1:length(maxtempfiles)){
     file <- file.path(path, paste(maxtempfiles[i]))
     maxtemp1 <- read.csv(file, skip=1,header=TRUE)
@@ -560,13 +560,23 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
     colnames(mintemp.long)[2]<-"month"
     allairtemp <- merge(maxtemp.long,mintemp.long)
-    temp<=rbind(temp,allairtemp)
+    allairtemp$year<-substr(maxtempfiles[i],18,21)
+    allairtemp$doy<-strftime(strptime(paste(allairtemp$year,allairtemp$month,allairtemp$date,sep="-"), format = "%Y-%b-%d"),format = "%j") 
+    temp<-rbind(temp,allairtemp)
   }
   soilfiles<-c("TDR2002.csv","TDR2003.csv","TDR2004.csv","TDR2005.csv")
   for (i in 1:length(soilfiles)){
-    file <- file.path(path, paste(maxtempfiles[i]))
-    soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
-    
+    file <- file.path(path, soilfiles[i])
+    if(i=1){
+      soilhum<- read.csv(file, skip=6,header=TRUE)
+    }else {soilhum<- read.csv(file, header=TRUE)}
+colnames(soilhum)[,1]<-"plot"
+  }
+  chuineclim<-subset(clim2, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois"))
+  row.names(chuineclim) <- NULL
+  return(chuineclim)
+}
+
     ##Produce cleaned, raw climate data
     raw.data.dir <- "./Experiments/"
     cleanclimdata.raw <- list()
@@ -580,8 +590,8 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     cleanclimdata.raw$dunne <- clean.clim$dunne(path="./Experiments/dunne")
     cleanclimdata.raw$price <- clean.clim$price(path="./Experiments/price")
     cleanclimdata.raw$force <- clean.clim$force(path="./Experiments/force")
+    cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
     
-    #cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
     #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
@@ -601,9 +611,10 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     expphenclim$soilmois<-as.numeric(expphenclim$soilmois)
     row.names(expphenclim) <- NULL
     write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
+  
+    ##Look at the data to check for errors
     head(expphenclim)
     dim(expphenclim)
-    ##Look at the data to check for errors
     boxplot(airtemp_min~site, data=expphenclim)
     boxplot(airtemp_max~site, data=expphenclim)
     boxplot(soiltemp1_max~site, data=expphenclim)

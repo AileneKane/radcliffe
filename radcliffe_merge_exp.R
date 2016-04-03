@@ -774,11 +774,18 @@ expphendb[which(expphendb$species=="spp."),]$species<-"sp"#force
 dim(expphendb)#76844  rows,7 columns     7
 head(expphendb)
 unique(expphendb$site)#12 experiments across 9 sites
-unique(expphendb$plot)#some NA/blanks to fix...
 sort(unique(expphendb$genus))#130 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
 sort(unique(expphendb$genus.species))#209 species
 unique(expphendb$event)#10 phenological events
+
+#Do species cleaning with Miriam's new file
+for (j in 1:length(species1)){
+  clarkduke1$genus[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
+  clarkduke1$species[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
+}
+
+
 # simple plot, need to add a legend
 expsitez <- unique(expphendb$site)
 somecolors <- rainbow(length(expsitez))

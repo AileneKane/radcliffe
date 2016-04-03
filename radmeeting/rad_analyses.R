@@ -43,12 +43,15 @@ expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
 ##Now fit models to get estimate of growing degree days at phenological events in each plot/species/site
 expsites<-unique(exppheno$site)
 expsites<-expsites[-which(expsites=="cleland")]#only soil moisture data currently
+exppheno2<-exppheno[-which(exppheno$site=="cleland"),]
 expsites<-expsites[-which(expsites=="chuine")]#remove for now, as i have quesitons for isabelle
-
-exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
+exppheno3<-exppheno2[-which(exppheno2$site=="chuine"),]
+exppheno3$site<-factor(exppheno3$site)
+expsites<-factor(expsites)
+exppheno3$genus.species<-paste(exppheno3$genus,exppheno3$species,sep=".")
 allsitesgdd<-c()
 for (i in 1:length(expsites)){
-  phendat<-exppheno[exppheno$site==expsites[i],]
+  phendat<-exppheno3[exppheno3$site==expsites[i],]
   climdat<-expclim[expclim$site==expsites[i],]
   expdat<-merge(climdat,phendat)
   #preciptreat<-unique(expdat$preciptreat)
@@ -63,13 +66,14 @@ for (i in 1:length(expsites)){
       cumgdd_air<-spdat[,25+(k-1)+k]###right now, only fitting models when there is more than one plot per species per site.
       if (length(which(!is.na(cumgdd_soil)))>0 && length(unique(spdat$plot))>1){
       gdd.mod.soil<-lm(cumgdd_soil ~ -1+spdat$plot)
-      est.soil<-cbind(rep(expsites[i],times=dim(coef(summary(gdd.mod.soil)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.soil)))[1]),rep("soilgdd",times=dim(coef(summary(gdd.mod.soil)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.soil)))[1]),round(coef(summary(gdd.mod.soil))[,1:2],digits=3),rep(round(AIC(gdd.mod.soil), digits=3), times=dim(coef(summary(gdd.mod.soil)))[1]))
-      } else {est.soil<-c(expsites[i],species[j],"soilgdd",tbase[k],NA,NA,NA)}
+      est.soil<-cbind(rep(paste(expsites[i]),times=dim(coef(summary(gdd.mod.soil)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.soil)))[1]),rep("soilgdd",times=dim(coef(summary(gdd.mod.soil)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.soil)))[1]),round(coef(summary(gdd.mod.soil))[,1:2],digits=3),rep(round(AIC(gdd.mod.soil), digits=3), times=dim(coef(summary(gdd.mod.soil)))[1]))
+      } else {est.soil<-c(paste(expsites[i]),species[j],"soilgdd",tbase[k],NA,NA,NA)}
       if (length(which(!is.na(cumgdd_air)))>0 && length(which(!is.na(tapply(cumgdd_air,spdat$plot, mean,na.rm=T))))>1){
         gdd.mod.air<-lm(cumgdd_air ~ -1+spdat$plot)
-        est.air<-cbind(rep(expsites[i],times=dim(coef(summary(gdd.mod.air)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.air)))[1]),rep("airgdd",times=dim(coef(summary(gdd.mod.air)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.air)))[1]),round(coef(summary(gdd.mod.air))[,1:2],digits=3),rep(round(AIC(gdd.mod.air), digits=3), times=dim(coef(summary(gdd.mod.air)))[1]))
-      } else {est.air<-c(expsites[i],species[j],"airgdd",tbase[k],NA,NA,NA)}
+        est.air<-cbind(rep(paste(expsites[i]),times=dim(coef(summary(gdd.mod.air)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.air)))[1]),rep("airgdd",times=dim(coef(summary(gdd.mod.air)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.air)))[1]),round(coef(summary(gdd.mod.air))[,1:2],digits=3),rep(round(AIC(gdd.mod.air), digits=3), times=dim(coef(summary(gdd.mod.air)))[1]))
+      } else {est.air<-c(paste(expsites[i]),species[j],"airgdd",tbase[k],NA,NA,NA)}
       gdd.est<-rbind(gdd.est,est.soil,est.air)
+      
       }
       allsppgdd<-rbind(allsppgdd,gdd.est)
     }
@@ -81,7 +85,11 @@ for (i in 1:length(expsites)){
   rownames(allsitesgdd1)<-NULL
   allsitesgdd2<-allsitesgdd1[-which(is.na(allsitesgdd1$gdd.est)),]
   #unique(allsitesgdd1$plot)
-  write.csv(allsitesgdd2,"gddest.csv" )
+  dim(allsitesgdd2)#19120     8
+  #Add columns for temp treatment and precip treatment
+treats<-read.csv("treats.csv", header=T)
+allsitesgdd3<-merge(allsitesgdd2,treats)
+write.csv(allsitesgdd3,"gddest.csv" )
 
 ##################################################################
 ###Old code to get effect of GDD (slope)- the code below doesn't quite work!!!
