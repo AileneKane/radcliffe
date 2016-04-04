@@ -1,6 +1,7 @@
 ### Started 8 March 2016 ##
 ### By Ailene Ettinger ###
-setwd("~/GitHub/radcliffe")
+# setwd("~/GitHub/radcliffe")
+setwd("~/Desktop/Research/Radcliffe_Phenology/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
@@ -69,6 +70,7 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Experi
   row.names(marchinclim) <- NULL
   return(marchinclim)
 }
+
 ##Farnsworth from Harvard ##
 ## Data type: soil temp (celsius, at 5cm depth) and soil moisture (% volumetric moisture content) in heated plots (=h=1,6,8,12,15,16), disturbance control plots (=d=3,5,9,10,13,17), and control plots (=c=2,4,7,11,14,18)
 ##(no air temp)
@@ -507,15 +509,15 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   soiltemp1_max<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=max, na.rm=F)
   soiltemp<-cbind(soiltemp1_min,soiltemp1_max[,4])
   colnames(soiltemp)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  mois<-subset(clim,select = c("Year","Month","Day","doy","H2O_H1","H2O_W1","H2O_B1","H2O_A2","H2O_H2","H2O_W2","H2O_B2","H2O_A3","H2O_H3","H2O_W3","H2O_B3","H2O_A4","H2O_W4","H2O_B4"))
+  mois <-subset(clim,select = c("Year","Month","Day","doy","H2O_A1","H2O_H1","H2O_W1","H2O_B1","H2O_A2","H2O_H2","H2O_W2","H2O_B2","H2O_A3","H2O_H3","H2O_W3","H2O_B3","H2O_A4", "H2O_H4","H2O_W4","H2O_B4"))
   mois2<-melt(mois,id = 1:4,na.rm = FALSE)
   mois2$variable<-as.character(mois2$variable)
   mois2$plot<-substr(mois2$variable,(nchar(mois2$variable)+1)-2,nchar(mois2$variable))
   colnames(mois2)[6]<-"mois"
   mois<-aggregate(x=mois2$mois, by=list(mois2$Year,mois2$doy,mois2$plot), FUN=mean, na.rm=F)
   colnames(mois)<-c("year","doy","plot","soilmois1")
-  clim<-merge(surftemp,soiltemp)
-  clim2<-merge(clim,mois)
+  clim<-merge(surftemp,soiltemp, all=T)
+  clim2<-merge(clim,mois, all=T)
   clim2$site<-"force"
   clim2$soiltemp2_max<-NA
   clim2$soiltemp2_min<-NA
@@ -526,6 +528,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   clim2$soiltemp1_mean<-(clim2$soiltemp1_min+clim2$soiltemp1_max)/2
   colnames(clim2)[3]<-"plot2"
   clim2$plot<-NA
+  clim2[clim2$plot2=="A1",]$plot<-"1A"
   clim2[clim2$plot2=="A2",]$plot<-"2A"
   clim2[clim2$plot2=="A3",]$plot<-"3A"
   clim2[clim2$plot2=="A4",]$plot<-"4A"
@@ -536,6 +539,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   clim2[clim2$plot2=="H1",]$plot<-"1H"
   clim2[clim2$plot2=="H2",]$plot<-"2H"
   clim2[clim2$plot2=="H3",]$plot<-"3H"
+  clim2[clim2$plot2=="H4",]$plot<-"4H"
   clim2[clim2$plot2=="W1",]$plot<-"1W"
   clim2[clim2$plot2=="W2",]$plot<-"2W"
   clim2[clim2$plot2=="W3",]$plot<-"3W"
@@ -569,7 +573,7 @@ clean.clim$chuine <- function(path="./Experiments/chuine") {
     mintemp2<-subset(mintemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
     mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
     colnames(mintemp.long)[2]<-"month"
-    temp <- merge(maxtemp.long,mintemp.long)
+    temp <- merge(maxtemp.long,mintemp.long, all=T)
     temp$year<-substr(maxtempfiles[i],18,21)
     temp$doy<-strftime(strptime(paste(temp$year,temp$month,temp$date,sep="-"), format = "%Y-%b-%d"),format = "%j") 
     allairtemp<-rbind(allairtemp,temp)
@@ -653,9 +657,19 @@ for (i in 1:length(soilfiles)){
     expphenclim$soilmois1<-as.numeric(expphenclim$soilmois1)
     expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
     row.names(expphenclim) <- NULL
-    write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE)
+    write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE, eol="\r\n")
   
-    ##Look at the data to check for errors
+vars.fac <- c("site", "temptreat", "preciptreat", "plot", "alltreat")
+for(i in names(expphenclim)){
+  if(i %in% c(vars.fac)){
+    expphenclim[,i] <- as.factor(expphenclim[,i])
+  } else {
+    expphenclim[,i] <- as.numeric(expphenclim[,i])
+  }
+}
+summary(expphenclim)
+
+  ##Look at the data to check for errors
     head(expphenclim)
     dim(expphenclim)
     boxplot(airtemp_min~site, data=expphenclim)
@@ -665,7 +679,7 @@ for (i in 1:length(soilfiles)){
     boxplot(soiltemp1_max~site, data=expphenclim)
     boxplot(soiltemp2_max~site, data=expphenclim)
     boxplot(soiltemp1_mean~site, data=expphenclim)
-    boxplot(soilmois~site, data=expphenclim)
+    boxplot(soilmois1~site, data=expphenclim)
     expphenclim$alltreat<-paste(expphenclim$temptreat,expphenclim$preciptreat,sep=".")
     unique(expphenclim$alltreat)
     boxplot(airtemp_min~alltreat, data=expphenclim)
@@ -675,6 +689,6 @@ for (i in 1:length(soilfiles)){
     boxplot(soiltemp1_max~alltreat, data=expphenclim)
     boxplot(soiltemp2_max~alltreat, data=expphenclim)
     boxplot(soiltemp1_mean~alltreat, data=expphenclim)
-    boxplot(soilmois~alltreat, data=expphenclim)
+    boxplot(soilmois1~alltreat, data=expphenclim)
 
     
