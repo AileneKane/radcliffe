@@ -1,0 +1,8 @@
+How to use git
+
+cd into where you want to put the repo
+then get it on your computer:
+
+git clone git@github.com:AileneKane/radcliffe
+
+make a new file and put it in playpen
