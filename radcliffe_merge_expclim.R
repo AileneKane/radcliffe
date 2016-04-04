@@ -1,6 +1,7 @@
 ### Started 8 March 2016 ##
 ### By Ailene Ettinger ###
 setwd("~/GitHub/radcliffe")
+# setwd("~/Desktop/Research/Radcliffe_Phenology/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
@@ -507,7 +508,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   soiltemp1_max<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=max, na.rm=F)
   soiltemp<-cbind(soiltemp1_min,soiltemp1_max[,4])
   colnames(soiltemp)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  mois<-subset(clim,select = c("Year","Month","Day","doy","H2O_H1","H2O_W1","H2O_B1","H2O_A2","H2O_H2","H2O_W2","H2O_B2","H2O_A3","H2O_H3","H2O_W3","H2O_B3","H2O_A4","H2O_W4","H2O_B4"))
+  mois<-subset(clim,select = c("Year","Month","Day","doy","H2O_A1","H2O_H1","H2O_W1","H2O_B1","H2O_A2","H2O_H2","H2O_W2","H2O_B2","H2O_A3","H2O_H3","H2O_W3","H2O_B3","H2O_A4", "H2O_H4","H2O_W4","H2O_B4"))
   mois2<-melt(mois,id = 1:4,na.rm = FALSE)
   mois2$variable<-as.character(mois2$variable)
   mois2$plot<-substr(mois2$variable,(nchar(mois2$variable)+1)-2,nchar(mois2$variable))
@@ -526,6 +527,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   clim2$soiltemp1_mean<-(clim2$soiltemp1_min+clim2$soiltemp1_max)/2
   colnames(clim2)[3]<-"plot2"
   clim2$plot<-NA
+  clim2[clim2$plot2=="A1",]$plot<-"1A"
   clim2[clim2$plot2=="A2",]$plot<-"2A"
   clim2[clim2$plot2=="A3",]$plot<-"3A"
   clim2[clim2$plot2=="A4",]$plot<-"4A"
@@ -536,6 +538,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   clim2[clim2$plot2=="H1",]$plot<-"1H"
   clim2[clim2$plot2=="H2",]$plot<-"2H"
   clim2[clim2$plot2=="H3",]$plot<-"3H"
+  clim2[clim2$plot2=="H4",]$plot<-"4H"
   clim2[clim2$plot2=="W1",]$plot<-"1W"
   clim2[clim2$plot2=="W2",]$plot<-"2W"
   clim2[clim2$plot2=="W3",]$plot<-"3W"
