@@ -4,3 +4,5 @@ data<-c(1,2,3,4,)
 data<-c(1,2,3,4,5)
 #isabelle
 data<-c(1,2,3,4,5,6)
+#Yann
+data <- c(1:7)
