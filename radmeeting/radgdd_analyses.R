@@ -18,7 +18,8 @@ library(lme4)
 
 ## set working directory (to each his own)
 # setwd("~/GitHub/radcliffe/radmeeting")
-setwd("~/Documents/git/projects/meta_ep2/radcliffe")
+#setwd("~/Documents/git/projects/meta_ep2/radcliffe")
+setwd("/home/miriam/Documents/Harvard/PhenologyWorkshop_2016/radcliffe/")
 
 gdd <- read.csv("radmeeting/gddest.csv", header=TRUE)
 
@@ -106,10 +107,27 @@ plot(gdd.est~tbase, data=bace.tbase) # base 10 is selected, probably because err
 gdd2 <- subset(gdd, tbase==2)
 gdd2.warmonly <- subset(gdd2, preciptreat==0)
 
-quartz()
+#quartz()
+
+# ggplot(gdd2,
+#   aes(x=temptreat, y=gdd.est, fill=site)) + 
+#   geom_boxplot(outlier.colour="red", outlier.shape=8,
+#                 outlier.size=4)
+
+#OR: plot with temperature treatment (degC) on the x axis rather than temperature treatment (index, differs by site):
+expsiteinfo<-read.csv("/home/miriam/Documents/Harvard/PhenologyWorkshop_2016/radcliffe/Experiments/expsiteinfo.csv")
+for (i in 1:nrow(gdd2)){  
+  sit<-as.character(gdd2[i,which(names(gdd2)=="site")]) #Which site?
+  trts<-as.numeric(expsiteinfo[which(expsiteinfo$Site== sit),25:33]) #How are temperatures coded at this site?
+  if(gdd2$temptreat[i]==0){gdd2$temp[i]=0} 
+  if(gdd2$temptreat[i]=="sham"){gdd2$temp[i]="sham"}
+  if(gdd2$temptreat[i]!=0&gdd2$temptreat[i]!="sham"){gdd2$temp[i]=trts[as.numeric(as.character(gdd2$temptreat[i]))]}
+}  
+
 ggplot(gdd2,
-  aes(x=temptreat, y=gdd.est, fill=site)) + 
+       aes(x=temp, y=gdd.est, fill=site)) + scale_x_discrete(name="deg C or Watts") +
   geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
+               outlier.size=4)
 
 mod <- lmer(gdd.est~temptreat+ (1|site/species), data=gdd2.warmonly)
+
