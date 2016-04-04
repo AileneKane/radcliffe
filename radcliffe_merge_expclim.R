@@ -489,7 +489,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
 ## Notes: data shared by Christy Rollinson
 clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv",path="./Experiments/force") {
   file <- file.path(path,filename)
-  clim<- read.csv(file,skip=2,header=TRUE)
+  clim<- read.csv(file,skip=1,header=TRUE)
   clim$doy<-strftime(strptime(paste(clim$Year,clim$Month,clim$Day,sep="-"), format = "%Y-%m-%d"),format = "%j") 
   Tsurf<-subset(clim,select = c("Year","Month","Day","doy","IRR_A1","IRR_H1","IRR_W1","IRR_B1","IRR_A2","IRR_H2","IRR_W2","IRR_B2","IRR_A3","IRR_H3","IRR_W3","IRR_B3","IRR_A4","IRR_H4","IRR_W4","IRR_B4"))
   Tsurf2<-melt(Tsurf,id = 1:4,na.rm = FALSE)
@@ -638,6 +638,10 @@ for (i in 1:length(soilfiles)){
     cleanclimdata.raw$force <- clean.clim$force(path="./Experiments/force")
     cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Experiments/chuine")
     
+    ggplot(data=cleanclimdata.raw$force) +
+      facet_wrap(~plot) +
+      geom_point(aes(x=as.ordered(doy), y=airtemp_max, color=as.factor(year)), size=0.1)
+  
     #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Experiments/jasper")
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
@@ -658,16 +662,6 @@ for (i in 1:length(soilfiles)){
     expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
     row.names(expphenclim) <- NULL
     write.csv(expphenclim, "radmeeting/expclim.csv", row.names=FALSE, eol="\r\n")
-  
-vars.fac <- c("site", "temptreat", "preciptreat", "plot", "alltreat")
-for(i in names(expphenclim)){
-  if(i %in% c(vars.fac)){
-    expphenclim[,i] <- as.factor(expphenclim[,i])
-  } else {
-    expphenclim[,i] <- as.numeric(expphenclim[,i])
-  }
-}
-summary(expphenclim)
 
   ##Look at the data to check for errors
     head(expphenclim)
