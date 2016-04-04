@@ -1,13 +1,22 @@
-###Preliminary analyses of exp and obs data for radcliff
-##Started March 18, 2016
+### Preliminary analyses of exp and obs data for radcliff
+## Started March 18, 2016
+
+## housekeeping
+rm(list=ls()) 
+options(stringsAsFactors = FALSE)
+
+##Read in climate and phenology data
+setwd("~/GitHub/radcliffe/radmeeting")
+# setwd("~/Documents/git/projects/meta_ep2/radcliffe/radmeeting")
+
+## setup
 library(RColorBrewer)
 library(lme4)
 library(car)
-##Read in climate and phenology data
-setwd("~/GitHub/radcliffe/radmeeting")
-expclim<-read.csv("expclim.csv", header=T)
-exppheno<-read.csv("exppheno.csv", header=T)
-obspheno<-read.csv("obspheno.csv", header=T)
+
+expclim<-read.csv("expclim.csv", header=TRUE)
+exppheno<-read.csv("exppheno.csv", header=TRUE)
+obspheno<-read.csv("obspheno.csv", header=TRUE)
 head(expclim)
 
 #Now, some preliminary analyses:
@@ -15,7 +24,7 @@ head(expclim)
 ###Add GDD and cumulative gdd: soiltemp-tbase, cumulative GDD for that year (sum up to that date)
 expclim<-expclim[order(expclim$site,expclim$plot,expclim$year, expclim$doy),]
 
-tbase<-c(2,4,6,8,10)
+tbase<-c(0,2,4,6,8,10)
 for (i in 1:length(tbase)){
   expclim[,14+(i-1)+i]<-expclim$soiltemp1_mean-tbase[i]
   expclim[,15+(i-1)+i]<-((as.numeric(expclim$airtemp_min)+as.numeric(expclim$airtemp_max))/2)-tbase[i]
@@ -27,7 +36,7 @@ for (i in 1:length(tbase)){
   colnames(expclim)[15+(i-1)+i]<-paste("gdd_air",tbase[i],sep=".")
 }
 #check
-aggregate(expclim[, 15:24], list(expclim$site), mean, na.rm=T)
+aggregate(expclim[, 15:24], list(expclim$site), mean, na.rm=TRUE)
 #now add columns for cumulative
 cumsumnona <- function(x){cumsum(ifelse(is.na(x), 0, x)) + x*0}
 for (i in 1:length(tbase)){
@@ -49,6 +58,7 @@ exppheno3<-exppheno2[-which(exppheno2$site=="chuine"),]
 exppheno3$site<-factor(exppheno3$site)
 expsites<-factor(expsites)
 exppheno3$genus.species<-paste(exppheno3$genus,exppheno3$species,sep=".")
+
 allsitesgdd<-c()
 for (i in 1:length(expsites)){
   phendat<-exppheno3[exppheno3$site==expsites[i],]
@@ -58,38 +68,46 @@ for (i in 1:length(expsites)){
   species<-unique(expdat$genus.species)
   allsppgdd<-c()
   for (j in 1:length(species)){
-    spdat<-expdat[expdat$genus.species==species[j],]
-    spdat$plot<-factor(spdat$plot)
+    spdat.allevents <- expdat[expdat$genus.species==species[j],]
+    spdat.allevents$plot<-factor(spdat.allevents$plot)
+    events <- unique(spdat.allevents$event)
+    for (m in 1:length(events)){
+       spdat <- spdat.allevents[spdat.allevents$event==events[m],]
+       spdat$plot <- factor(spdat$plot)
     gdd.est<-c()
     for (k in 1:length(tbase)){
       cumgdd_soil<-spdat[,24+(k-1)+k]
-      cumgdd_air<-spdat[,25+(k-1)+k]###right now, only fitting models when there is more than one plot per species per site.
-      if (length(which(!is.na(cumgdd_soil)))>0 && length(unique(spdat$plot))>1){
+      cumgdd_air<-spdat[,25+(k-1)+k] ###right now, only fitting models when there is more than one plot per species per site.
+      if (length(which(!is.na(cumgdd_soil)))>0 && length(which(!is.na(tapply(cumgdd_soil,spdat$plot, mean,na.rm=TRUE))))>1){
       gdd.mod.soil<-lm(cumgdd_soil ~ -1+spdat$plot)
-      est.soil<-cbind(rep(paste(expsites[i]),times=dim(coef(summary(gdd.mod.soil)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.soil)))[1]),rep("soilgdd",times=dim(coef(summary(gdd.mod.soil)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.soil)))[1]),round(coef(summary(gdd.mod.soil))[,1:2],digits=3),rep(round(AIC(gdd.mod.soil), digits=3), times=dim(coef(summary(gdd.mod.soil)))[1]))
-      } else {est.soil<-c(paste(expsites[i]),species[j],"soilgdd",tbase[k],NA,NA,NA)}
-      if (length(which(!is.na(cumgdd_air)))>0 && length(which(!is.na(tapply(cumgdd_air,spdat$plot, mean,na.rm=T))))>1){
+      est.soil <- cbind(rep(paste(expsites[i]),times=dim(coef(summary(gdd.mod.soil)))[1]),rep(species[j],                                  times=dim(coef(summary(gdd.mod.soil)))[1]), rep(events[m],times=dim(coef(summary(gdd.mod.soil)))[1]), rep("soilgdd",times=dim(coef(summary(gdd.mod.soil)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.soil)))[1]),round(coef(summary(gdd.mod.soil))[,1:2],digits=3),rep(round(AIC(gdd.mod.soil), digits=3), times=dim(coef(summary(gdd.mod.soil)))[1]))
+  }
+      else {est.soil<-c(paste(expsites[i]),species[j],"soilgdd",tbase[k],NA, NA, NA, NA)}
+      if (length(which(!is.na(cumgdd_air)))>0 && length(which(!is.na(tapply(cumgdd_air,spdat$plot, mean,na.rm=TRUE))))>1){
         gdd.mod.air<-lm(cumgdd_air ~ -1+spdat$plot)
-        est.air<-cbind(rep(paste(expsites[i]),times=dim(coef(summary(gdd.mod.air)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.air)))[1]),rep("airgdd",times=dim(coef(summary(gdd.mod.air)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.air)))[1]),round(coef(summary(gdd.mod.air))[,1:2],digits=3),rep(round(AIC(gdd.mod.air), digits=3), times=dim(coef(summary(gdd.mod.air)))[1]))
-      } else {est.air<-c(paste(expsites[i]),species[j],"airgdd",tbase[k],NA,NA,NA)}
-      gdd.est<-rbind(gdd.est,est.soil,est.air)
+        est.air<-cbind(rep(paste(expsites[i]),times=dim(coef(summary(gdd.mod.air)))[1]),rep(species[j],times=dim(coef(summary(gdd.mod.air)))[1]),rep(events[m],times=dim(coef(summary(gdd.mod.air)))[1]), rep("airgdd",times=dim(coef(summary(gdd.mod.air)))[1]),rep(tbase[k],times=dim(coef(summary(gdd.mod.air)))[1]),round(coef(summary(gdd.mod.air))[,1:2],digits=3),rep(round(AIC(gdd.mod.air), digits=3), times=dim(coef(summary(gdd.mod.air)))[1]))
+      }
       
+      else {est.air<-c(paste(expsites[i]),species[j],"airgdd",tbase[k],NA,NA,NA, NA)}
+      gdd.est<-rbind(gdd.est,est.soil,est.air)
+  }
       }
       allsppgdd<-rbind(allsppgdd,gdd.est)
     }
     allsitesgdd<-rbind(allsitesgdd,allsppgdd)
   }
-  colnames(allsitesgdd)<-c("site","species","temptype","tbase","gdd.est","gdd.est.se","modaic")
-  allsitesgdd1<-as.data.frame(allsitesgdd)
+
+colnames(allsitesgdd)<-c("site","species","event","temptype","tbase","gdd.est","gdd.est.se","modaic")
+allsitesgdd1<-as.data.frame(allsitesgdd)
   allsitesgdd1$plot<-substr(rownames(allsitesgdd1),11,13)
   rownames(allsitesgdd1)<-NULL
   allsitesgdd2<-allsitesgdd1[-which(is.na(allsitesgdd1$gdd.est)),]
   #unique(allsitesgdd1$plot)
   dim(allsitesgdd2)#19120     8
   #Add columns for temp treatment and precip treatment
-treats<-read.csv("treats.csv", header=T)
+treats<-read.csv("treats.csv", header=TRUE)
 allsitesgdd3<-merge(allsitesgdd2,treats)
-write.csv(allsitesgdd3,"gddest.csv" )
+write.csv(allsitesgdd3,"gddest.csv", row.names=FALSE)
 head(allsitesgdd3)
 allsitesgdd3$gdd.est<-as.numeric(allsitesgdd3$gdd.est)
 boxplot(as.numeric(allsitesgdd3$gdd.est)~as.factor(allsitesgdd3$temptreat))
