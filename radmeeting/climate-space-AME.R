@@ -58,7 +58,7 @@ ggplot(allclim.2, aes(x=airtemp_min, y=airtemp_max, color=temptreat) ) +
 #2. bagplots
 ######do this with bagplots to get distributions of data:
 #######https://gist.github.com/benmarwick/00772ccea2dd0b0f1745
-#3. separate out matching data (for identical sites; precip data)
+#3. separate out matching data (for identical sites; with precip data)
 #4. plot by season 90-day segments
 #5, 
 
