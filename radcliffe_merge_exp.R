@@ -780,26 +780,13 @@ sort(unique(expphendb$genus.species))#209 species
 unique(expphendb$event)#10 phenological events
 
 #Do species cleaning with Miriam's new file
+sites<-unique(expphendb$site)
+for(i in 1:length(sites)){
 for (j in 1:length(species1)){
   clarkduke1$genus[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
   clarkduke1$species[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
 }
-
-
-# simple plot, need to add a legend
-expsitez <- unique(expphendb$site)
-somecolors <- rainbow(length(expsitez))
-expagg<-aggregate(x=expphendb$doy, by=list(expphendb$year,expphendb$site), FUN=mean,na.rm=F)
-colnames(expagg)<-c("year","site","mndoy")
-plot(mndoy~year, data=expagg, type="n")
-for (i in seq_along(expsitez)){
-  subby <- subset(expagg, site==expsitez[i])
-  lines(mndoy~year, data=subby, col=somecolors[i])
 }
-expphendb<-expphendb[,-8]
-write.csv(expphendb, "radmeeting/exppheno.csv", row.names=FALSE)
-tapply(expphendb$doy,list(expphendb$site,expphendb$event),length)
-expphendb[which(expphendb$doy==min(expphendb$doy)),]
 
 specieslist<-sort(unique(paste(expphendb$genus,expphendb$species, sep=".")))
 write.csv(specieslist,"exp_splist.csv")
