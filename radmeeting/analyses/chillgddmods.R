@@ -1,5 +1,6 @@
 ###Preliminary analyses of exp and obs data for radcliff
 ##Started March 18, 2016
+options(stringsAsFactors=FALSE)
 library(RColorBrewer)
 library(lme4)
 library(car)
@@ -15,7 +16,7 @@ head(expclim)
 ###Add GDD and cumulative gdd: soiltemp-tbase, cumulative GDD for that year (sum up to that date)
 expclim<-expclim[order(expclim$site,expclim$plot,expclim$year, expclim$doy),]
 
-tbase<-c(2,4,6,8,10)
+tbase<-c(0,2,4,6,8,10)
 for (i in 1:length(tbase)){
   expclim[,14+(i-1)+i]<-expclim$soiltemp1_mean-tbase[i]
   expclim[,15+(i-1)+i]<-((as.numeric(expclim$airtemp_min)+as.numeric(expclim$airtemp_max))/2)-tbase[i]
@@ -44,4 +45,13 @@ expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
 tchill<-5
 expclim[which(expclim$soiltemp1_mean<tchill),]$chday<-1
 expclim[which(expclim$soiltemp1_mean>=tchill),]$chday<-0
-
+expclim$chillyear<-expclim$year
+expclim[which(expclim$year>min(expclim$year)),]
+expclim[expclim$doy >= as.numeric(strftime(strptime(paste(expclim$year,9,1,sep="-"), 
+  format = "%Y-%m-%d"),format = "%j")),]$chillyear<-expclim[expclim$doy >= 
+  as.numeric(strftime(strptime(paste(expclim$year,9,1,sep="-"), 
+  format = "%Y-%m-%d"),format = "%j")),]$year+1
+#if 
+#For all sites/years/plots that we have data from previous year to sept 1, calculate chilling days
+#First select out rows for which we have data from the previous year to sept 1
+expclim[which()]
