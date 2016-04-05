@@ -52,6 +52,7 @@ early<-subset(expclim,expclim$doy<244)
 early$chyr= early$year
 expclim_new<-rbind(late, early)
 expclim_new$chday<-NA
+##The below code is really slow!
 for (i in 1:dim(expclim_new)[1]){
   if(!is.na(expclim_new$soiltemp1_mean[i])){
     if(expclim_new$soiltemp1_mean[i]<tchill){expclim_new$chday[i]<-1}
