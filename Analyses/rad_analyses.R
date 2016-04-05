@@ -19,9 +19,9 @@ exppheno<-read.csv("exppheno.csv", header=TRUE)
 obspheno<-read.csv("obspheno.csv", header=TRUE)
 head(expclim)
 
-#Now, some preliminary analyses:
-#first, add gdd to expclim file:
-###Add GDD and cumulative gdd: soiltemp-tbase, cumulative GDD for that year (sum up to that date)
+### Now, some preliminary analyses:
+# first, add gdd to expclim file:
+### Add GDD and cumulative gdd: soiltemp-tbase, cumulative GDD for that year (sum up to that date)
 expclim<-expclim[order(expclim$site,expclim$plot,expclim$year, expclim$doy),]
 
 tbase<-c(0,2,4,6,8,10)
@@ -49,7 +49,8 @@ for (i in 1:length(tbase)){
 }
 expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
 
-##Now fit models to get estimate of growing degree days at phenological events in each plot/species/site
+## Now fit models to get estimate of growing degree days at phenological events
+## in each plot/species/site
 expsites<-unique(exppheno$site)
 expsites<-expsites[-which(expsites=="cleland")]#only soil moisture data currently
 exppheno2<-exppheno[-which(exppheno$site=="cleland"),]
@@ -59,6 +60,11 @@ exppheno3$site<-factor(exppheno3$site)
 expsites<-factor(expsites)
 exppheno3$genus.species<-paste(exppheno3$genus,exppheno3$species,sep=".")
 
+##
+## the below goes through and takes averages over plots (e.g.,
+# if you have three years of data for one species in one plot
+# you get one value
+##
 allsitesgdd<-c()
 for (i in 1:length(expsites)){
   phendat<-exppheno3[exppheno3$site==expsites[i],]
