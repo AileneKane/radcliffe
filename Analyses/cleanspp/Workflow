@@ -1,0 +1,75 @@
+Cleaning species lists: Preparing for the phenology workshop 4-6 April 2016
+Miriam Johnston (mjohnston@g.harvard.edu), 23 March 2016
+
+=========================================================================
+
+INPUTS:
+
+(1) csv of observational species in the following format:
+Site	|	Genus.Species
+(2) csv of experimental species in the following format:
+Site	|	Genus.Species
+(3) R code snippets DataProcessing.R
+-------------------------------------------------------------------------
+
+OUTPUTS (cleaned):
+
+(1) csv of observational species in the following format:
+site	|	orig.Genus	|	orig.Species	|	clean.Genus	|	clean.Species
+(2) csv of experimental species in the following format:
+site	|	orig.Genus	|	orig.Species	|	clean.Genus	|	clean.Species
+-------------------------------------------------------------------------
+
+GOALS & GUIDELINES:
+
+(1) Make sure there are no spelling mistakes in genus/species names
+(2) Update genus/species names to the most recent taxonomy to identify and avoid repetition 
+(3) If there's a variety listed (var.) --> delete
+(4) If 'NA' in species column --> keep
+(5) If 'spp' in species column --> change to NA
+(6) If a single site has >1 of the same clean.Genus and clean.Species, collapse
+-------------------------------------------------------------------------
+
+SOURCE OF INFORMATION:
+
+www.itis.gov
+-------------------------------------------------------------------------
+
+WORKFLOW (follow separately for the 2 input csvs):
+
+(1) Put data in correct format for the ITIS database: Run chunks 1 & 2 in DataProcessing.R
+(2) Create the (uncorrected) file in the format we eventually want (this will be edited by hand): Run chunk 3 in DataProcessing.R
+(3) Put data into ITIS database
+	(a) Go to http://www.itis.gov/taxmatch.html
+	(b) Import data from step 1 ("_format")
+	(c) Choose "Plantae" and then "Taxon Compare"; leave all other options as default
+(4) Hand-correct misspellings
+	(a) Scroll down on the webpage to look at the "Non-matches between ITIS and input file" section
+	(b) Find the listed names on the file created in step 2 ("_toclean"), correct in the clean.Genus and clean.Species columns; leave other columns alone
+		Note: we have already changed spp and spp --> NA in the species column, so just deal with the misspellings.
+	(c) Double-check all entries with only genus names, since database will not identify these as misspellings
+(5) Hand-update names with most taxonomically correct - this will ensure there are no repeats that are synonyms.
+	(a) Use the "Matches" section of the ITIS output
+	(b) Double-check that the non acceptance is not just a database artifact by searching the genus name at www.itis.gov
+	(c) Hand-update clean.Species and clean.Genus fields to reflect the "Accepted Name" column in ITIS, assuming not a database artifact
+		Note: ignore any variations or subspecies ('var.' or 'ssp.'). (Ex): if Accepted name = Acer saccharum var. saccharum, put
+				clean.Genus	|	clean.Species
+				Acer		|	saccharum
+		Note: if there is an 'X' in the "Accepted Name" column, put it in the cean.Species column. (Ex): if Accepted name = Circaea X intermedia, put
+				clean.Genus	|	clean.Species
+				Circaea		|	X intermedia
+	(d) In the case of the observations, where several species had 2 accepted synonyms: do a search in "_clean" and make sure that only one is present
+	(e) save spreadsheet ("_toclean")
+(6) Double-check the corrections in ITIS database (note that some of the spelling mistakes might not be preferred names, etc.)
+	(a) Run chunk 5 in DataProcessing.R
+	(b) Check the file that is produced ("_check") in the ITIS database
+(7) Hand-correct again; iterate until ITIS shows no "not accepted" in the Name Usage column (or these are all database artifacts) and all the unmatched names have NA instead of spp.
+	(a) Continue to run chunk 5 in DataProcessing.R & then import the new file ("_check") into ITIS. No filename changes necessary
+(8) Ensure that there are no repeats of site/clean.Genus/clean.Species entries, or repeats are labeled
+	(a) Run chunk 6 in DataProcessing.R
+		Note: see comments in DataProcessing.R to determine treatment of repeat entries
+(9) Produce Final cleaned file of species names
+	(a) Run chunk 7 in DataProcessing.R
+
+
+
