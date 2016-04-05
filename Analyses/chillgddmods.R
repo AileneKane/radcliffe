@@ -41,15 +41,18 @@ for (i in 1:length(tbase)){
 }
 expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
 
-##Now calculate chilling days. 
+##Now calculate chilling days. First, use a base of 5 (<5 degrees C=chilling day)
 #For all sites/years/plots that we have data from previous year to sept 1, calculate chilling days
 #First select out rows for which we have data from the previous year to sept 1
+expclim<-expclim[order(expclim$site,expclim$plot,expclim$year, expclim$doy),]
 tchill<-5
-
-late<-subset(expclim,expclim$doy>=244)
-late$chyr=late$year+1
-early<-subset(expclim,expclim$doy<244)
+late<-subset(expclim,expclim$doy>=as.numeric(strftime(strptime(paste(expclim$year,9,1,sep="-"),format = "%Y-%m-%d"),format = "%j")))
+late$chyr<-late$year+1
+late$chdoy<-late$doy-as.numeric(strftime(strptime(paste(late$year,9,1,sep="-"),format = "%Y-%m-%d"),format = "%j"))+1
+early<-subset(expclim,expclim$doy<as.numeric(strftime(strptime(paste(expclim$year,9,1,sep="-"),format = "%Y-%m-%d"),format = "%j")))
 early$chyr= early$year
+early$chdoy<-early$doy-as.numeric(strftime(strptime(paste(early$year,9,1,sep="-"),format = "%Y-%m-%d"),format = "%j"))-1
+
 expclim_new<-rbind(late, early)
 expclim_new$chday<-NA
 ##The below code is really slow!
