@@ -122,7 +122,7 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
 }
 
 ##Clark et al from Harvard ##
-## Data type: hourly air temp, soil temp (celsius, at 5cm depth) and soil moisture (Estimated ratio of volumetric water content, scaled from 0 to 1) in heated plots, "ambient" plots = like disturbance control plots, and control plots with mesh walls, no heating infrastructure
+## Data type: hourly air temp, soil temp (celsius, at 5cm depth) and soil moisture (Estimated ratio of volumetric water content, scaled from 0 to 1) in heated plots, "ambient" plots = like disturbance control plots, and control plots with mesh walls, no heating infrastructure (their control= our ambient)
 ## Notes: Public data, 
 clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Data/Experiments/clark") {
   file <- file.path(path, filename)
