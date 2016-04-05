@@ -57,8 +57,8 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   colnames(temp_min2)[1:2]<-c("year_doy","plot")
   year_doy <- strsplit(temp_min2$year_doy,'-') 
   year_doy<-do.call(rbind, year_doy)
-  temptreat<-rep("outside",times=dim(year_doy)[1])
-  preciptreat<-rep("outside",times=dim(year_doy)[1])
+  temptreat<-rep("ambient",times=dim(year_doy)[1])
+  preciptreat<-rep("ambient",times=dim(year_doy)[1])
   oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max))
   oallclim$soilmois1<-NA
   oallclim$soilmois2<-NA
@@ -245,15 +245,13 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
 ##updated April 5, 2016 with more years of soil data, and adding air data
 clean.clim$bace <- function(path="./Data/Experiments/bace") {
   bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
-  #bacesoilmoisfiles<-
+  bacesoilmoisfiles<-
   allsoiltemp<-c()
   for (i in 1:length(bacesoiltempfiles)){
     file <- file.path(path, paste(bacesoiltempfiles[i]))
     soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
     colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
     colnames(soiltemp) [9:12]<-c("soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
-    soiltemp<-soiltemp[,1:12]
-    if(i==4){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
     soiltemp$preciptreat<-NA
     soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
     soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
@@ -349,7 +347,7 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
 
 ##Climate data for Sherry Oklahoma data
 ##treatments were only applied in 2003; probably should use only these data!
-
+##moisture=VWC
 clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", path="./Data/Experiments/sherry") {
   file <- file.path(path, filename)
   soilmois<- read.csv(file, skip=2,na.strings = "-99999",header=TRUE)
@@ -657,9 +655,9 @@ for (i in 1:length(soilfiles)){
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#327657    15
+    dim(expphenclim1)#328984    15
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#327632      15
+    dim(expphenclim)#328959      15
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -683,7 +681,7 @@ for (i in 1:length(soilfiles)){
     boxplot(soiltemp2_min~site, data=expphenclim)
     boxplot(soiltemp1_max~site, data=expphenclim)
     boxplot(soiltemp2_max~site, data=expphenclim)
-    boxplot(soiltemp1_mean~site, data=expphenclim)
+    boxplot(soiltemp1_mean~temptreat, data=expphenclim)
     boxplot(soilmois1~site, data=expphenclim)
     expphenclim$alltreat<-paste(expphenclim$temptreat,expphenclim$preciptreat,sep=".")
     unique(expphenclim$alltreat)
