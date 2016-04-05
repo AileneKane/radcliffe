@@ -1,0 +1,858 @@
+Received: from BY2PR0701MB2087.namprd07.prod.outlook.com (10.163.156.152) by
+ CY1PR0701MB2090.namprd07.prod.outlook.com (10.163.142.152) with Microsoft
+ SMTP Server (TLS) id 15.1.427.16 via Mailbox Transport; Thu, 3 Mar 2016
+ 20:15:50 +0000
+Received: from BN1PR07CA0044.namprd07.prod.outlook.com (10.255.193.19) by
+ BY2PR0701MB2087.namprd07.prod.outlook.com (10.163.156.152) with Microsoft
+ SMTP Server (TLS) id 15.1.415.20; Thu, 3 Mar 2016 20:15:49 +0000
+Received: from BN1BFFO11FD012.protection.gbl (2a01:111:f400:7c10::1:108) by
+ BN1PR07CA0044.outlook.office365.com (2a01:111:e400:45::19) with Microsoft
+ SMTP Server (TLS) id 15.1.427.16 via Frontend Transport; Thu, 3 Mar 2016
+ 20:15:49 +0000
+Authentication-Results: spf=neutral (sender IP is 67.231.156.27)
+ smtp.mailfrom=uwm.edu; fas.harvard.edu; dkim=fail (body hash did not verify)
+ header.d=panthers.onmicrosoft.com;fas.harvard.edu; dmarc=none action=none
+ header.from=uwm.edu;
+Received-SPF: Neutral (protection.outlook.com: 67.231.156.27 is neither
+ permitted nor denied by domain of uwm.edu)
+Received: from mx0b-00171101.pphosted.com (67.231.156.27) by
+ BN1BFFO11FD012.mail.protection.outlook.com (10.58.144.75) with Microsoft SMTP
+ Server (TLS) id 15.1.427.7 via Frontend Transport; Thu, 3 Mar 2016 20:15:49
+ +0000
+Received: from pps.filterd (m0044908.ppops.net [127.0.0.1])
+	by mx0b-00171101.pphosted.com (8.15.0.59/8.15.0.59) with SMTP id u23K83Qi028721
+	for <aettinger@fas.harvard.edu>; Thu, 3 Mar 2016 15:15:49 -0500
+Received: from na01-bn1-obe.outbound.protection.outlook.com (mail-bn1on0113.outbound.protection.outlook.com [157.56.110.113])
+	by mx0b-00171101.pphosted.com with ESMTP id 21e1xbuf5u-1
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Thu, 03 Mar 2016 15:15:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=panthers.onmicrosoft.com; s=selector1-uwm-edu;
+ h=From:To:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=R8lqhTIIDXeCLX4W5u6+wTGZx/oVkO3Rf19tQ0n+Lr8=;
+ b=babo01W8KQbGf+LAHA/2a40qmRZe+nibgNdzfRm2cs5p7gbo4od2KScB7NNYT/b01zjxDjMP8L78RdHHiP9+Jzd9CsRfIPUN6gi3st0RzUMzkdBMEzdrjtU9OlWkoxTRaLCc23w9SHOqYKf9jrtOgIdcS0s7PjbLUE+cQw/y4zg=
+Received: from BLUPR04MB452.namprd04.prod.outlook.com (10.141.28.22) by
+ BLUPR04MB449.namprd04.prod.outlook.com (10.141.28.11) with Microsoft SMTP
+ Server (TLS) id 15.1.415.20; Thu, 3 Mar 2016 20:15:44 +0000
+Received: from BLUPR04MB452.namprd04.prod.outlook.com ([169.254.3.69]) by
+ BLUPR04MB452.namprd04.prod.outlook.com ([169.254.3.69]) with mapi id
+ 15.01.0415.024; Thu, 3 Mar 2016 20:15:44 +0000
+From: Mark D Schwartz <mds@uwm.edu>
+To: "Ettinger, Ailene" <aettinger@fas.harvard.edu>
+CC: "Elizabeth Wolkovich (wolkovich@fas.harvard.edu)"
+	<wolkovich@fas.harvard.edu>
+Subject: RE: share data again?
+Thread-Topic: share data again?
+Thread-Index: AQHRJyybud2zaEJkGUSwjjFLYG4lAZ6s8u2rgAhKdoCAABJ2sIABI4qAgAAXnYCAkiGcAIAAFdMA
+Date: Thu, 3 Mar 2016 20:15:44 +0000
+Message-ID: <BLUPR04MB4521500E52F5A6E93FD750CB5BD0@BLUPR04MB452.namprd04.prod.outlook.com>
+References: <049069AC-1841-4A92-8EA9-32FB29E7E29D@fas.harvard.edu>
+ <BLUPR04MB452471F67CDF0847ECC7C39B5050@BLUPR04MB452.namprd04.prod.outlook.com>
+ <565CDA05.7060608@oeb.harvard.edu>
+ <BLUPR04MB4521B1414CE82BF342D553AB50F0@BLUPR04MB452.namprd04.prod.outlook.com>
+ <27AFDBC9-EAAA-4E96-95D4-A9661CDAEC99@fas.harvard.edu>
+ <BLUPR04MB452D11EAC387116AE80236BB50F0@BLUPR04MB452.namprd04.prod.outlook.com>
+ <23443880-4A98-4353-B360-87A5BB592D8F@fas.harvard.edu>
+In-Reply-To: <23443880-4A98-4353-B360-87A5BB592D8F@fas.harvard.edu>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: fas.harvard.edu; dkim=none (message not signed)
+ header.d=none;fas.harvard.edu; dmarc=none action=none header.from=uwm.edu;
+x-originating-ip: [129.89.201.40]
+X-Microsoft-Exchange-Diagnostics-untrusted: 1;BLUPR04MB449;5:HlOzLLQjFWB5zdiIOSlZif8VKUiMzFyy5htSxIUFTvx9BEGKwKpty+lF+uOjWK8m0vheSFj9QsDByeZgsFUEvam2OWXzDSAb+3r8W4VbLXt4ZBinLxVJvlduVSuE2U/1jvVFiaX6HVx8iBdlLcUDiw==;24:7C4eh6gmwj2hdAMOD+oSpGR9nEZpk4iRAPawXPggOhuqbzXrCAs8kVt03wGjF8BsaR1aJYFca1NIUOz3lgCbDwSenMExzEPbLhbcR1QHikA=
+X-Microsoft-Antispam-Untrusted: UriScan:;BCL:0;PCL:0;RULEID:;SRVR:BLUPR04MB449;
+X-MS-Office365-Filtering-Correlation-Id: 1b5a80d2-5736-4048-a426-08d343a09d15
+x-microsoft-antispam-prvs: <BLUPR04MB4492089D32AC5C40B229A03B5BD0@BLUPR04MB449.namprd04.prod.outlook.com>
+x-exchange-antispam-report-test: UriScan:(227069602630282);UriScan:(227069602630282);
+x-exchange-antispam-report-cfa-test: BCL:0;PCL:0;RULEID:(601004)(2401047)(5005006)(8121501046)(3002001)(10201501046);SRVR:BLUPR04MB449;BCL:0;PCL:0;RULEID:;SRVR:BLUPR04MB449;BCL:6;PCL:0;RULEID:(601004)(2401047)(13013025)(13023025)(13024025)(8121501046)(13020025)(3002001)(10201501046);SRVR:BY2PR0701MB2087;BCL:6;PCL:0;RULEID:;SRVR:BY2PR0701MB2087;
+x-forefront-prvs: 0870212862
+X-Forefront-Antispam-Report-Untrusted: SFV:NSPM;SFS:(10019020)(15594002)(66654002)(24454002)(13464003)(377454003)(479174004)(252514010)(551544002)(16236675004)(106116001)(16119065003)(15395725005)(11100500001)(33656002)(88552002)(3480700003)(2171001)(99286002)(75432002)(19580395003)(110136002)(189998001)(5008740100001)(19580405001)(92566002)(87936001)(1860700003)(3846002)(1096002)(6116002)(102836003)(81166005)(450100001)(586003)(74316001)(3280700002)(3660700001)(1220700001)(4326007)(19625215002)(19300405004)(5003600100002)(90282001)(5002640100001)(10400500002)(50986999)(76176999)(54356999)(122556002)(93886004)(2906002)(40100003)(575784001)(19617315012)(2950100001)(66066001)(15975445007)(76576001)(2900100001)(89122001)(86362001)(5004730100002);DIR:OUT;SFP:1102;SCL:1;SRVR:BLUPR04MB449;H:BLUPR04MB452.namprd04.prod.outlook.com;FPR:;SPF:None;MLV:sfv;LANG:en;
+spamdiagnosticoutput: 1:23
+spamdiagnosticmetadata: NSPM
+Content-Type: multipart/alternative;
+	boundary="_000_BLUPR04MB4521500E52F5A6E93FD750CB5BD0BLUPR04MB452namprd_"
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLUPR04MB449
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:,, definitions=2016-03-03_15:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.0.1-1601100000
+ definitions=main-1603030365
+Return-Path: mds@uwm.edu
+X-MS-Exchange-Organization-Network-Message-Id: 1b5a80d2-5736-4048-a426-08d343a09d15
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 6ffa22f4-4568-4105-ad43-2e3ad4726957:0
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: BN1BFFO11FD012.protection.gbl
+X-Forefront-Antispam-Report: CIP:67.231.156.27;IPV:CAL;SCL:-1;CTRY:US;EFV:NLI;SFV:SKN;SFS:;DIR:INB;SFP:;SCL:-1;SRVR:BY2PR0701MB2087;H:mx0b-00171101.pphosted.com;FPR:;SPF:None;LANG:en;
+X-MS-Exchange-Organization-SCL: -1
+X-Microsoft-Exchange-Diagnostics: 1;BN1BFFO11FD012;1:ybw7wtVbslphQRM4D7HVc0nNkyNXbZ/3bJGQSFnG/xsykKsKuS9cRJUFmqWP7oA3S9kQcV8TADQovv9zY/HFSPFa7H8FdoThp9NxOtWWsMwnC+D2esLLevTFMrDBG0G0b6dynJiMjB+G1/LXjpQ+FlgL/02pYi+R0MXqvCAB6bclMbSAwx8K4VDg96Hbpx42dyZjirNsQ2nHKkQyn6NHf2z8W/KrbMUAb43U7F1zCC7B3PbdX/ES9SQNKgSTmFmtktfgjSCEIgQwEnieVEN94vAmsylGdECMA+O8dN5mMKzDGuV6kghA17JkTvX010os2yFVyHB2tKKOR1+L/l+I/V742ixPkPt+R7HUY2bkOfWB31NvghkVBCEEjz+S8TYi26a1ueAX9OpH76fF5ui9uvHp1nbxr/jiywzWvkkheqOCa1NUf4ggS0jPz+Iatww3T6HW7tQJbN/tBFgj1VlzHyFSoo3umlxhakN8DwZA3vpWXnhnwAIMtQCEeLYiTbKQtdW3rw28kI/ec3jt10u+uA==
+X-Microsoft-Exchange-Diagnostics: 1;BY2PR0701MB2087;2:2qQrkSMQWN5RhmsERL52fRNpAG2Ag5G2kckdMZUl37MEedxGVbnN3iEnAcfLT53JGd3yu/HW2LPOpyWPh5R35PeXWuykvsf1oXu/0NSCH99LdJoEhs7fwF9k7fBDOaz7fzLKuKiMTttMDSc+dAZNPQ==;3:5aiSizDkolxt5CLMbLtyMv9Cj14JG8ZmyKMxcmfpp7ECJqYZXK7qkJpHBKByNFIwqnVFg/quM/dEhhX3DSJTdF87OJnV1aq08AbxIC+xt2ODpslrI+4/gIAYlPhjRljUJxfa924H43dc+GUphNlR6OTnQi7RW8RG0vvXhifo26TBcmpCdAWLU8qvuIeGTeYgvuqtYtyTpu+E25ObO+LLH3YqicmMMEEATYINqjgb9gX8seD0i+oSgKmxMp1rf6nIjlJb0iDnFmo4HZ37U7SSOJCjyMs8ZbciyCzF6sigir6nnMM004wTiNFgJMFvGzfc;25:G6D2IGyavsoPiN+Pam7NGAxOiGI5XHzTTUaeWy2Z9OLQ+MIo0nYNv1ZI2+FLlTVlw/RimEphjFOdCIlhEkr7Jp3BLGCI6t+88irpxLIVNqETfmc6MjaycWm2f/3xseYhQ0wW0Rf5kM1NUVkJhwhN1KM/it7xTdb4RVA85LdHLxFnOzsYxb9yMyBbQBf+pgCIcCxNzl5IF50woj9GMBJ/2kMA7RqhUPlQj8t/e5O3z+sy78/KVGeOHUyobgtZN28YJFgOKoykCu5l4d0dmyAAzUd9K8VSVaA63Bf1tPG0M7LyF5zxoYeK8BUlwfUy0iQctY4WJmeYsR3Th/JLW8Uv3g==
+X-DkimResult-Test: Failed
+X-Microsoft-Antispam: UriScan:;BCL:6;PCL:0;RULEID:(3002015)(81001)(71701003)(71702001);SRVR:BY2PR0701MB2087;
+X-MS-Exchange-Organization-AVStamp-Service: 1.0
+X-Microsoft-Exchange-Diagnostics: 1;BY2PR0701MB2087;20:FkUX+Y1LF5ECxNf2pJeBC0wTS+BjaLpl7K6jiaaL9k5HV5ilfoZfWucRtH0jQJmYbRgtP9D/2Sl3d3jo9xT2EIi35nHCSN2zXHyWQmOJMVcofkGWgAmqZlbAUBK8xwcEWDy2T2t/v9pCuIrCqHUXOSZZuvQjUcX4nNIHNmqv0KW7hSnpL1Wl4rbdfwuWTJyNkKVRcPSF6D2e1iuUJ24STOHwTFZ0EuPjEIDAj6Q1cHsbe/6B1M+xEa9O0qOpVQaHPyqT8xZyEd7YNTcmlh+oRXjmbXrqvSDUPe2dsrA1H2D/sTcU+S59YERlEK0iGMh9OCVrNYb7o/ufzgTQ+kJDI8kb4ssD6F7BO6RbYioW/ToiZx+8X+7PLOdobHwwjXV3JMKtJy4fiu5RN8TXVJ6BF9UCrUMr2nYAb+aOwnwcPh1LnrBRc6w03D2Yky+tdG6HaGWd8VDRYwojw+PukQcCHlCDPKiHWYwNBFMaycwlPkYCNYwof0fYp94jarUsbO8nsX7NiSi/jFHCG7wwzsLTdqbTE9bEJWPBGFeRqn2i4ZHk7UCJaFPDc0zkQDO+0yTClr8X1RBi/pQUA/niSe6UAOenvspkOOP8+rYm8baoWCA=
+X-Microsoft-Exchange-Diagnostics: 1;BY2PR0701MB2087;4:F9FwgSD/k8tc3rPpDigjLAx609iEbnTjhNn4dRsONoZJnEQj0oMg9WL9dQxBQ+YAVsPblcr5MMiTajKDRWcM5eEcD3roFXxMeZzgLIn4/LcAq1M4Rirfl0xrDS+xsMow27n9ffxUky3ZAAoDDRrO9F2QBMbOPXDeWr49i2GAFTeDgKAgpnqs/n4MqxScbzz3V0Tl4j96td7+BFeT+tQZUi/P6bvh1HKvieaQzGnxfuX9rEAukXmpNuxWp3/WsfZ27smtJct4Dp+DbkH9pxjJuCyyNVvtGopWb4vLp+6mC6JloIdq239S4ycJoVLMLqJtL+RreR55RG86XHNrdn3NzNQH2+OEclJkSq6P4Zc9MCbeqNVo4zMn9XBwzUilmj/xUoOB2sv57b58G5ZWyHNIT0c3U90IbOsloqY31qjjtONUEvp1QwRzrFAUB6tl26nGBGqa/ueg9dxuaY4Xuonwy8DNoQF0aJrJnyypUQ4DCTQ=;23:zPF6OOIZjM/NkOGrcVd1qQGz83eX2dJd9IyC3tix2LMv2Q0jXJ8N7RXo5Q2YQCeRm14wkczLuoK1Jm6woX+a2+X8pB8AJHUeyBhX98SLBwub18wZNU6UsdFVkTKfizzSHgNPctV5WsmMtZ9wDZ1dtmDNZmFLIjAexwGaitikF5dbILk3BJ1yc+ZVNjWnaqPxUvSFIROW/sKAxRgx5ajaMQ==;5:5VXS9AOboOFCUf1Xd73kqj4IxQhXR3I3jFZYDG7uItjpAVzAvaEeudaKFDtupT0eueUWYGMG7Ps0rZhxCgBiDgOTX7SHK4Lvq47Sw+BfaB7n17N0jXREWPIWXgs74c3tF/d6nvVRtNh4emCVqErm6w==
+X-Microsoft-Exchange-Diagnostics: 1;BY2PR0701MB2087;24:YU2DnHBojk9syFcjuTvsbOeNtPiUukoAlcvevvthrkSv0I/5aKtQXmxVvaL17uB7QVwt+O1fUDidreTMGY8mpZmWJ2hmavNGJ4tNKJQuQ8c=
+SpamDiagnosticOutput: 1:2
+SpamDiagnosticMetadata: 7460966b2fd248469deae02cb8f82730
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2016 20:15:49.7237
+ (UTC)
+X-MS-Exchange-CrossTenant-Id: 6ffa22f4-4568-4105-ad43-2e3ad4726957
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY2PR0701MB2087
+X-MS-Exchange-Organization-AuthSource: BN1BFFO11FD012.protection.gbl
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.2669934
+MIME-Version: 1.0
+
+--_000_BLUPR04MB4521500E52F5A6E93FD750CB5BD0BLUPR04MB452namprd_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+RGVhciBBaWxlbmU6DQoNClRoZXkgdXNlIHRoZSBIYXJ2YXJkIEZvcmVzdCBwcm90b2NvbCBmb3Ig
+c3ByaW5nIHBoZW5vbG9neSBvYnNlcnZhdGlvbnMsIGRldmVsb3BlZCBieSBKb2huIE/igJlLZWZm
+ZS4gIEkgd2FzIHRyeWluZyB0byBnZXQgYWNjZXNzIHRvIHRoZSBIYXJ2YXJkIEZvcmVzdCBzaXRl
+DQpodHRwOi8vaGFydmFyZGZvcmVzdC5mYXMuaGFydmFyZC5lZHUvICB0byBnaXZlIHlvdSB0aGUg
+ZGlyZWN0IGxpbmssIGJ1dCBpdCBpcyBub3QgY3VycmVudGx5IHdvcmtpbmcgZm9yIHNvbWUgcmVh
+c29uLiAgWW91IHNob3VsZCBiZSBhYmxlIHRvIGFjY2VzcyBpdCBkaXJlY3RseSBhdCBzb21lIHBv
+aW50Lg0KDQrigJxiYm01MGRveeKAnSBpcyB0aGUgbWVhbiBkYXkgb2YgeWVhciAoYW1vbmcgdGhl
+IGluZGl2aWR1YWxzIG9ic2VydmVkIG9mIHRoZSBzYW1lIHNwZWNpZXMpIHdoZW4gNTAlIG9mIHRo
+ZSBidWRzIGFyZSBvcGVuLg0K4oCcTDc1bWRveeKAnSBpcyB0aGUgbWVhbiBkYXkgb2YgeWVhciAo
+YW1vbmcgdGhlIGluZGl2aWR1YWxzIG9ic2VydmVkIG9mIHRoZSBzYW1lIHNwZWNpZXMpIHdoZW4g
+NzUlIG9mIHRoZSBsZWF2ZXMgaGF2ZSByZWFjaGVkIDc1JSBvZiB0aGVpciBmaW5hbCBzaXplLg0K
+4oCcTDk1bWRveeKAnSBpcyB0aGUgbWVhbiBkYXkgb2YgeWVhciAoYW1vbmcgdGhlIGluZGl2aWR1
+YWxzIG9ic2VydmVkIG9mIHRoZSBzYW1lIHNwZWNpZXMpIHdoZW4gOTUlIG9mIHRoZSBsZWF2ZXMg
+aGF2ZSByZWFjaGVkIDk1JSBvZiB0aGVpciBmaW5hbCBzaXplLg0KDQpCZXN0LA0KDQpNYXJrDQoN
+CkRpc3QuIFByb2YuIE1hcmsgRC4gU2Nod2FydHoNClByZXNpZGVudCwgSW50ZXJuYXRpb25hbCBT
+b2NpZXR5IG9mIEJpb21ldGVvcm9sb2d5DQpFbWFpbDogIG1kc0B1d20uZWR1DQpQaG9uZTogICg0
+MTQpIDIyOS0zNzQwIG9yIDQ4NjYNCkhQYWdlOiAgaHR0cDovL3Blb3BsZS51d20uZWR1L21kcw0K
+RGVwYXJ0bWVudCBvZiBHZW9ncmFwaHksIEJvbHRvbiBIYWxsIFJvb20gNDEwDQpQLk8uIEJveCA0
+MTMNClVuaXZlcnNpdHkgb2YgV2lzY29uc2luLU1pbHdhdWtlZQ0KTWlsd2F1a2VlLCBXSSAgNTMy
+MDEtMDQxMw0KDQpGcm9tOiBFdHRpbmdlciwgQWlsZW5lIFttYWlsdG86YWV0dGluZ2VyQGZhcy5o
+YXJ2YXJkLmVkdV0NClNlbnQ6IFRodXJzZGF5LCBNYXJjaCAwMywgMjAxNiAxMjo1MCBQTQ0KVG86
+IE1hcmsgRCBTY2h3YXJ0eg0KU3ViamVjdDogUmU6IHNoYXJlIGRhdGEgYWdhaW4/DQoNCkhlbGxv
+IE1hcmshDQpIb3BlIHlvdSBhcmUgd2VsbCEgSeKAmXZlIGJlZW4gY29tcGlsaW5nIGRhdGEgYW5k
+IHdhcyB3b25kZXJpbmcgaWYgeW91IGNvdWxkIGRlZmluZSB0aGUgdGhyZWUgcGhlbm9waGFzZXMg
+aW5jbHVkZWQgaW4geW91ciBkYXRhc2V0cyAoImJibTUwZG95IiAiTDc1bWRveSIgIOKAnEw5NW1k
+b3nigJ0pLg0KVGhhbmsgeW91IHNvIG11Y2ggYWdhaW4gZm9yIHNoYXJpbmcgdGhlc2UgZGF0YSB3
+aXRoIHVzIQ0KLUFpbGVuZQ0KDQpBaWxlbmUgRXR0aW5nZXINClBvc3Rkb2N0b3JhbCBSZXNlYXJj
+aGVyDQpBcm5vbGQgQXJib3JldHVtIG9mIEhhcnZhcmQgVW5pdmVyc2l0eQ0KMTMwMCBDZW50cmUg
+U3RyZWV0DQpCb3N0b24sIE1BIDAyMTMxDQpGYXg6IDYxNy41MjQuMTQxOA0KDQpQaG9uZTogNzgx
+LjI5Ni40ODIxDQpXZWJzaXRlOiB0aW55dXJsLmNvbS9haWxlbmVldHRpbmdlcjxodHRwOi8vdGlu
+eXVybC5jb20vYWlsZW5lZXR0aW5nZXI+DQpFbWFpbDogYWV0dGluZ2VyQGZhcy5oYXJ2YXJkLmVk
+dTxtYWlsdG86YWV0dGluZ2VyQGZhcy5oYXJ2YXJkLmVkdT4NCg0KT24gRGVjIDEsIDIwMTUsIGF0
+IDI6MTYgUE0sIE1hcmsgRCBTY2h3YXJ0eiA8bWRzQHV3bS5lZHU8bWFpbHRvOm1kc0B1d20uZWR1
+Pj4gd3JvdGU6DQoNCkdyZWF0ISAgQWZ0ZXIgeW91IGhhdmUgcmV2aWV3ZWQgaXQsIGxldCBtZSBr
+bm93IGlmIHlvdSBoYXZlIGFueSBxdWVzdGlvbnMuDQoNCkRpc3QuIFByb2YuIE1hcmsgRC4gU2No
+d2FydHoNClByZXNpZGVudCwgSW50ZXJuYXRpb25hbCBTb2NpZXR5IG9mIEJpb21ldGVvcm9sb2d5
+DQpFbWFpbDogIG1kc0B1d20uZWR1PG1haWx0bzptZHNAdXdtLmVkdT4NClBob25lOiAgKDQxNCkg
+MjI5LTM3NDAgb3IgNDg2Ng0KSFBhZ2U6ICBodHRwOi8vcGVvcGxlLnV3bS5lZHUvbWRzPGh0dHBz
+Oi8vdXJsZGVmZW5zZS5wcm9vZnBvaW50LmNvbS92Mi91cmw/dT1odHRwLTNBX19wZW9wbGUudXdt
+LmVkdV9tZHMmZD1Dd01GQWcmYz1XTy1SR3ZlZmliaEhCWnEzZkw4NWhRJnI9NTU1LWJBdWZLRUFW
+eHJBRDAwcnJ2Vmprc2tacXlBUGxEbEdwSGJQX2JPZyZtPTZmODVkN3NBWkgweHExV042MDZCcmNq
+M1M3eG9lUlpIMVNwYUpYSzBsMjgmcz14QUtjQURzdDdzSlE0Z0M2QUUxUm9hSVhDZkItLUlIU1l5
+dU1EMVFoendjJmU9Pg0KRGVwYXJ0bWVudCBvZiBHZW9ncmFwaHksIEJvbHRvbiBIYWxsIFJvb20g
+NDEwDQpQLk8uIEJveCA0MTMNClVuaXZlcnNpdHkgb2YgV2lzY29uc2luLU1pbHdhdWtlZQ0KTWls
+d2F1a2VlLCBXSSAgNTMyMDEtMDQxMw0KDQpGcm9tOiBFdHRpbmdlciwgQWlsZW5lIFttYWlsdG86
+YWV0dGluZ2VyQGZhcy5oYXJ2YXJkLmVkdV0NClNlbnQ6IFR1ZXNkYXksIERlY2VtYmVyIDAxLCAy
+MDE1IDExOjUxIEFNDQpUbzogTWFyayBEIFNjaHdhcnR6DQpDYzogV29sa292aWNoLCBFbGl6YWJl
+dGggTQ0KU3ViamVjdDogUmU6IHNoYXJlIGRhdGEgYWdhaW4/DQoNCkkgZ290IHRoZSBkYXRhISBU
+aGFuayB5b3Ugc28gbXVjaCENCi1BaWxlbmUNCkFpbGVuZSBFdHRpbmdlcg0KUG9zdGRvY3RvcmFs
+IFJlc2VhcmNoZXINCkFybm9sZCBBcmJvcmV0dW0gb2YgSGFydmFyZCBVbml2ZXJzaXR5DQoxMzAw
+IENlbnRyZSBTdHJlZXQNCkJvc3RvbiwgTUEgMDIxMzENCkZheDogNjE3LjUyNC4xNDE4DQoNClBo
+b25lOiA3ODEuMjk2LjQ4MjENCldlYnNpdGU6IHRpbnl1cmwuY29tL2FpbGVuZWV0dGluZ2VyPGh0
+dHBzOi8vdXJsZGVmZW5zZS5wcm9vZnBvaW50LmNvbS92Mi91cmw/dT1odHRwLTNBX190aW55dXJs
+LmNvbV9haWxlbmVldHRpbmdlciZkPUN3TUZBZyZjPVdPLVJHdmVmaWJoSEJacTNmTDg1aFEmcj01
+NTUtYkF1ZktFQVZ4ckFEMDBycnZWamtza1pxeUFQbERsR3BIYlBfYk9nJm09NmY4NWQ3c0FaSDB4
+cTFXTjYwNkJyY2ozUzd4b2VSWkgxU3BhSlhLMGwyOCZzPXljNzRTWjNQT25TMkFGSE5XbGx6UlBp
+bFdnSmJNVnI4Zm91VW9RTzFUTlUmZT0+DQpFbWFpbDogYWV0dGluZ2VyQGZhcy5oYXJ2YXJkLmVk
+dTxtYWlsdG86YWV0dGluZ2VyQGZhcy5oYXJ2YXJkLmVkdT4NCg0KT24gTm92IDMwLCAyMDE1LCBh
+dCA3OjUzIFBNLCBNYXJrIEQgU2Nod2FydHogPG1kc0B1d20uZWR1PG1haWx0bzptZHNAdXdtLmVk
+dT4+IHdyb3RlOg0KDQpEZWFyIEFpbGVuZSBhbmQgTGl6emU6DQoNClllcywgSSB0aGluayBteSBx
+dWVzdGlvbnMgaGF2ZSBiZWVuIGFuc3dlcmVkLiAgSWYgeW91IGp1c3Qgd2FudCB0byB1c2UgdGhl
+IGRhdGEsIHRoZW4gYW4gYWNrbm93bGVkZ2VtZW50IG9mIG1lIGFuZCB0aGUgVVdNIEZpZWxkIFN0
+YXRpb24gaW4gYW55IHB1YmxpY2F0aW9ucyB3aWxsIHN1ZmZpY2UuICBJZiB5b3UgaGF2ZSBhbnkg
+aW50ZXJlc3QgaW4gbXkgZW5nYWdpbmcgZnVydGhlciwgc3VjaCB0aGF0IGNvLWF1dGhvcnNoaXAg
+d291bGQgYmUgYXBwcm9wcmlhdGUsIGxldCBtZSBrbm93IGFuZCB3ZSBjYW4gZGlzY3VzcyBhcyBh
+cHByb3ByaWF0ZS4NCg0KSGVyZSBpcyBhIGxpbmsgdG8gdGhlIDMwLW1pbnV0ZSAocmF3KSB3ZWF0
+aGVyIGRhdGEgYW5kIHJhdyBwaGVub2xvZ3kgZGF0YSBmb3IgMjAwMC0yMDE1LiAgQWxsIGFyZSBp
+biBFeGNlbCBmb3JtYXQuICBUaGUgd2VhdGhlciBkYXRhIGFyZSBjb21wbGV0ZSBpbiBmaWxlcyBv
+ZiBmaXZlIHllYXJzIGVhY2ggZm9yIDIwMDAtMjAxNCAobWlzc2luZyB2YWx1ZXMgaW5kaWNhdGVk
+IGJ5ICI5OTkiIGZvciBhbGwgdmFyaWFibGVzIGJ1dCBwcmVzc3VyZSB3aXRoIGlzICItOTk5Iiku
+ICBUaGUgd2VhdGhlciBkYXRhIHJ1biB0aHJvdWdoIHBhcnQgb2YgTm92LiAybmQgIGluIDIwMTUu
+DQpBbGwgdGVtcGVyYXR1cmVzIGFyZSBpbiBDZWxzaXVzLiAgVGhlIHNvaWwgdGVtcGVyYXR1cmVz
+IGFyZSBhdCB0aGUgNCBpbmNoL34xMCBjbSBhbmQgMTIgaW5jaC9+MzBjbSBsZXZlbHMuICBQcmVj
+aXAuIGlzIGluIG1tLg0KDQpodHRwczovL3BhbnRoZXJmaWxlLnV3bS5lZHUveHl0aG9zd2ZzL3dl
+YnVpL194eS1lNDI0MjczNjRfMS10X1lPajlDYjFYPGh0dHBzOi8vdXJsZGVmZW5zZS5wcm9vZnBv
+aW50LmNvbS92Mi91cmw/dT1odHRwcy0zQV9fcGFudGhlcmZpbGUudXdtLmVkdV94eXRob3N3ZnNf
+d2VidWlfLTVGeHktMkRlNDI0MjczNjQtNUYxLTJEdC01RllPajlDYjFYJmQ9Q3dNRkFnJmM9V08t
+Ukd2ZWZpYmhIQlpxM2ZMODVoUSZyPTU1NS1iQXVmS0VBVnhyQUQwMHJydlZqa3NrWnF5QVBsRGxH
+cEhiUF9iT2cmbT02Zjg1ZDdzQVpIMHhxMVdONjA2QnJjajNTN3hvZVJaSDFTcGFKWEswbDI4JnM9
+M0Y4S09ZRjZmeFd5bG1QV3ZDaTU4Z2dzNnNLdVpJSTEwTXJoT1hqSWpUOCZlPT4NCg0KUGFzc3dv
+cmQgaXMgIndvbGtvdml0Y0giIChjYXNlIHNlbnNpdGl2ZSBhbmQgc3BlbGxlZCB3cm9uZyBmb3Ig
+ZXh0cmEgc2VjdXJpdHkgOykNCg0KTGV0IG1lIGtub3cgd2hlbiB5b3UgaGF2ZSB0aGUgZGF0YSBh
+bmQgaWYgYW55IHF1ZXN0aW9ucy4gIEkgd29uJ3QgYmUgYXQgQUdVIHRoaXMgeWVhciwgYnV0IGFt
+IHBsYW5uaW5nIG9uIEVHVSAoVmllbm5hKSBhdCB0aGlzIHBvaW50Lg0KDQpCZXN0IHJlZ2FyZHMs
+DQoNCk1hcmsNCg0KRGlzdC4gUHJvZi4gTWFyayBELiBTY2h3YXJ0eg0KUHJlc2lkZW50LCBJbnRl
+cm5hdGlvbmFsIFNvY2lldHkgb2YgQmlvbWV0ZW9yb2xvZ3kNCkVtYWlsOiAgbWRzQHV3bS5lZHU8
+bWFpbHRvOm1kc0B1d20uZWR1Pg0KUGhvbmU6ICAoNDE0KSAyMjktMzc0MCBvciA0ODY2DQpIUGFn
+ZTogIGh0dHA6Ly9wZW9wbGUudXdtLmVkdS9tZHM8aHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9p
+bnQuY29tL3YyL3VybD91PWh0dHAtM0FfX3Blb3BsZS51d20uZWR1X21kcyZkPUN3TUZBZyZjPVdP
+LVJHdmVmaWJoSEJacTNmTDg1aFEmcj01NTUtYkF1ZktFQVZ4ckFEMDBycnZWamtza1pxeUFQbERs
+R3BIYlBfYk9nJm09NmY4NWQ3c0FaSDB4cTFXTjYwNkJyY2ozUzd4b2VSWkgxU3BhSlhLMGwyOCZz
+PXhBS2NBRHN0N3NKUTRnQzZBRTFSb2FJWENmQi0tSUhTWXl1TUQxUWh6d2MmZT0+DQpEZXBhcnRt
+ZW50IG9mIEdlb2dyYXBoeSwgQm9sdG9uIEhhbGwgUm9vbSA0MTANClAuTy4gQm94IDQxMw0KVW5p
+dmVyc2l0eSBvZiBXaXNjb25zaW4tTWlsd2F1a2VlDQpNaWx3YXVrZWUsIFdJICA1MzIwMS0wNDEz
+DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBFbGl6YWJldGggV29sa292aWNo
+IFttYWlsdG86bGl6emllQG9lYi5oYXJ2YXJkLmVkdV0NClNlbnQ6IE1vbmRheSwgTm92ZW1iZXIg
+MzAsIDIwMTUgNToyMiBQTQ0KVG86IE1hcmsgRCBTY2h3YXJ0eg0KQ2M6IEV0dGluZ2VyLCBBaWxl
+bmUNClN1YmplY3Q6IFJlOiBzaGFyZSBkYXRhIGFnYWluPw0KDQpEZWFyIE1hcmssDQoNCk1hbnkg
+dGhhbmtzIGZvciB0aGlzISBJdCBpcyB2ZXJ5IGdlbmVyb3VzIGFuZCBtdWNoIGFwcHJlY2lhdGVk
+LiBKdXN0IHRoaW5rIG9mIGhvdyBmYXIgcGhlbm9sb2d5IHJlc2VhcmNoIGNvdWxkIGdvIGlmIG1v
+cmUgcGVvcGxlIHdlcmUgbGlrZSB5b3UsIGJvdGggaW4gc2hhcmluZyBkYXRhIGFuZCBpbiBoYXZp
+bmcgaGlnaCBxdWFsaXR5IGNsaW1hdGUgZGF0YS4NCg0KSSB0aGluayBBaWxlbmUgYW5zd2VyZWQg
+eW91ciBxdWVyaWVzIC0tIGxldCB1cyBrbm93IGlmIG5vdC4gSSBiZWxpZXZlIHNoZSB3YW50cyB0
+aGUgZGF0YSBhdCB0aGUgZmluZXN0IHRlbXBvcmFsIHJlc29sdXRpb24geW91IGhhdmUgKGkuZS4s
+IDMwIG1pbnV0ZSBpbnRlcnZhbHMpLiBJcyB0aGF0IGNvcnJlY3QsIEFpbGVuZT8NCg0KSSBhbSBt
+YWtpbmcgaXQgdG8gQUdVIHRoaXMgeWVhci4gQW55IGNoYW5jZSBJIHdpbGwgc2VlIHlvdSB0aGVy
+ZT8NCg0KQWxsIHRoZSBiZXN0LA0KTGl6emllDQoNCk9uIDExLzI1LzE1IDExOjUzIEFNLCBNYXJr
+IEQgU2Nod2FydHogd3JvdGU6DQoNCg0KDQpEZWFyIEFpbGVuZSBhbmQgTGl6emllOg0KDQoNClN1
+cmUsIEkgYW0gd2lsbGluZyB0byBzaGFyZSB0aGUgcGhlbm9sb2d5IGFuZCB3ZWF0aGVyIGRhdGEu
+IFdlIHdvdWxkDQpqdXN0IHdhbnQgdGhlIHVzdWFsIGFja25vd2xlZGdtZW50IGZvciB0aGUgVVct
+TWlsd2F1a2VlIEZpZWxkIFN0YXRpb24NCmFuZCBtZS4NCg0KDQpZb3UgYXJlIGluIGx1Y2ssIGFz
+IEkganVzdCB1cGRhdGVkIHRoZSBwaGVub2xvZ3kgZGF0YSBmaWxlIChzdGFydHMgaW4NCjIwMDAp
+IHRocm91Z2ggMjAxNSBhbmQgYWxzbyBkaWQgYW4gZXh0ZW5zaXZlIGNoZWNrIGFuZCBjb21waWxh
+dGlvbiBvZg0KYWxsIG9mIG91ciB3ZWF0aGVyIGRhdGEgY29sbGVjdGVkIGF0IHRoZSBGaWVsZCBT
+dGF0aW9uIGFzIHdlbGwuICBEYXRhDQphcmUgY29sbGVjdGVkIGF0IDMwIG1pbnV0ZSBpbnRlcnZh
+bHMuICBJIGNhbiBhbHNvIHByZXBhcmUgZGFpbHkNCnN1bW1hcmllcywgZGFpbHkgbWF4LW1pbiwg
+ZGFpbHkgYXZlcmFnZXMsIGV0Yy4gIFdlIGhhdmUgYSBudW1iZXIgb2YNCm90aGVyIHZhcmlhYmxl
+cyB0aGF0IG1heSBiZSBvZiBpbnRlcmVzdCBmb3IgbW9kZWxpbmcgYmVzaWRlcyBhaXINCnRlbXBl
+cmF0dXJlLCBpbmNsdWRpbmcgc29sYXIgcmFkaWF0aW9uLDEwIGFuZCAzMCBjbSBzb2lsIHRlbXBl
+cmF0dXJlcywNCmFuZCBwcmVjaXBpdGF0aW9uLg0KDQoNClNvIGxldCBtZSBrbm93IHdoYXQgeW91
+IHdvdWxkIGxpa2UsIGFuZCBJIGNhbiBwcmVwYXJlIHRoZSBmaWxlcy4NCg0KDQpCZXN0IHJlZ2Fy
+ZHMsDQoNCg0KTWFyaw0KDQoNCkRpc3QuIFByb2YuIE1hcmsgRC4gU2Nod2FydHoNClByZXNpZGVu
+dCwgSW50ZXJuYXRpb25hbCBTb2NpZXR5IG9mIEJpb21ldGVvcm9sb2d5DQpFbWFpbDogIG1kc0B1
+d20uZWR1PG1haWx0bzptZHNAdXdtLmVkdT4NClBob25lOiAgKDQxNCkgMjI5LTM3NDAgb3IgNDg2
+Ng0KSFBhZ2U6IGh0dHA6Ly9wZW9wbGUudXdtLmVkdS9tZHM8aHR0cHM6Ly91cmxkZWZlbnNlLnBy
+b29mcG9pbnQuY29tL3YyL3VybD91PWh0dHAtM0FfX3Blb3BsZS51d20uZWR1X21kcyZkPUN3TUZB
+ZyZjPVdPLVJHdmVmaWJoSEJacTNmTDg1aFEmcj01NTUtYkF1ZktFQVZ4ckFEMDBycnZWamtza1px
+eUFQbERsR3BIYlBfYk9nJm09NmY4NWQ3c0FaSDB4cTFXTjYwNkJyY2ozUzd4b2VSWkgxU3BhSlhL
+MGwyOCZzPXhBS2NBRHN0N3NKUTRnQzZBRTFSb2FJWENmQi0tSUhTWXl1TUQxUWh6d2MmZT0+DQo8
+aHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29tL3YyL3VybD91PWh0dHAtM0FfX3Blb3Bs
+ZS51d20uZWR1X21kDQpzJmQ9Q3dNRkF3JmM9V08tUkd2ZWZpYmhIQlpxM2ZMODVoUSZyPVJaQ3pW
+ajZHSzBKM3pyQlk4UkE4WmFSaHhQbklaWURaDQplMEwyT2ZpR1ctdyZtPUxGcndqYm1rZmtvS0hD
+X0dIYV9ILUZiZU9NOE9OSzZBZ3Y1TjZjaTBqeUUmcz01SUlnT3RqdmxtDQppcy0yMUxvdFBaV3dZ
+dXRwdi1RSXJFWnhhRWNVSHd1bncmZT08aHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29t
+L3YyL3VybD91PWh0dHAtM0FfX3Blb3BsZS51d20uZWR1X21kJTBicyZkPUN3TUZBdyZjPVdPLVJH
+dmVmaWJoSEJacTNmTDg1aFEmcj1SWkN6Vmo2R0swSjN6ckJZOFJBOFphUmh4UG5JWllEWiUwYmUw
+TDJPZmlHVy13Jm09TEZyd2pibWtma29LSENfR0hhX0gtRmJlT004T05LNkFndjVONmNpMGp5RSZz
+PTVJSWdPdGp2bG0lMGJpcy0yMUxvdFBaV3dZdXRwdi1RSXJFWnhhRWNVSHd1bncmZT0+Pg0KRGVw
+YXJ0bWVudCBvZiBHZW9ncmFwaHksIEJvbHRvbiBIYWxsIFJvb20gNDEwIFAuTy4gQm94IDQxMyBV
+bml2ZXJzaXR5DQpvZiBXaXNjb25zaW4tTWlsd2F1a2VlIE1pbHdhdWtlZSwgV0kgIDUzMjAxLTA0
+MTMNCg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQotLQ0KKkZyb206KiBFdHRpbmdlciwgQWlsZW5lIDxhZXR0
+aW5nZXJAZmFzLmhhcnZhcmQuZWR1PG1haWx0bzphZXR0aW5nZXJAZmFzLmhhcnZhcmQuZWR1Pj4N
+CipTZW50OiogVHVlc2RheSwgTm92ZW1iZXIgMjQsIDIwMTUgODo1NCBQTQ0KKlRvOiogTWFyayBE
+IFNjaHdhcnR6DQoqU3ViamVjdDoqIHNoYXJlIGRhdGEgYWdhaW4/DQpIZWxsbyBEci4gU2Nod2Fy
+dHohDQpJIGhvcGUgeW91IGFyZSB3ZWxsIS4gSSBhbSB3b3JraW5nIHdpdGggTGl6emllIFdvbGtv
+dmljaCBvbiBzb21lDQpmb2xsb3ctdXAgcmVzZWFyY2ggb24gaGVyIGVhcmxpZXIgd29yayBjb21w
+YXJpbmcgcGhlbm9sb2dpY2FsDQpyZXNwb25zZXMgZnJvbSBleHBlcmltZW50cyBhbmQgb2JzZXJ2
+YXRpb25zLiBJbiAyMDEwIHlvdSB3ZXJlIGtpbmQNCmVub3VnaCB0byBzaGFyZSB5b3VyIFdpc2Nv
+bnNpbiBwaGVub2xvZ2ljYWwgZGF0YSB3aXRoIExpenppZS4gV291bGQNCnlvdSBjb25zaWRlciBz
+aGFyaW5nIGl0IGFnYWluPw0KDQpUaGUgZ29hbCBvZiB0aGUgbmV3IHN0dWR5IGlzIHRvIGNvbXBh
+cmUgcGhlbm9sb2dpY2FsIHJlc3BvbnNlcyBpbg0KZXhwZXJpbWVudGFsIGFuZCBvYnNlcnZhdGlv
+bmFsIHN0dWRpZXMgdXNpbmcgaGlnaGVyIHF1YWxpdHkgY2xpbWF0ZQ0KZGF0YSAoZXNwZWNpYWxs
+eSBmcm9tIGV4cGVyaW1lbnRzKSwgYW5kIHdlIGFyZSBhaW1pbmcgdG8gY29tYmluZSBEQUlMWQ0K
+Y2xpbWF0ZSBkYXRhIGZyb20gZXhwZXJpbWVudHMgdGhhdCBlaXRoZXIgaGF2ZSBtdWx0aXBsZSB3
+YXJtaW5nIGxldmVscw0Kb3IgcHJlY2lwIHggd2FybWluZyB0cmVhdG1lbnRzLiBUaHVzIHdlIGFy
+ZSB0cnlpbmcgdG8gY29sbGVjdCByYXcNCnBoZW5vbG9naWNhbCBhbmQgcmF3IGNsaW1hdGUgZGF0
+YSwgaWRlYWxseSBmb3IgdGVtcGVyYXR1cmUgKGFpciwgc29pbCwNCmxlYWYgb3Igd2hhdGV2ZXIg
+aXMgYXZhaWxhYmxlKSBhbmQgc29tZSBtZXRyaWMgb2YgbW9pc3R1cmUgaWYgYXZhaWxhYmxlLg0K
+DQpQbGVhc2UgbGV0IG1lIGtub3cgaWYgc2hhcmluZyB5b3VyIGRhdGEgZm9yIHRoaXMgbWlnaHQg
+YmUgcG9zc2libGUuDQoNCkkgYW0gaGFwcHkgdG8gYW5zd2VyIGFueSBxdWVzdGlvbnMgeW91IGhh
+dmUsIGFuZCBzZW5kIHlvdSBhbnkNCmFkZGl0aW9uYWwgaW5mb3JtYXRpb24geW91IG1heSBsaWtl
+IHRvIGhhdmUuDQpCZXN0IHdpc2hlcywNCkFpbGVuZQ0KDQpBaWxlbmUgRXR0aW5nZXINClBvc3Rk
+b2N0b3JhbCBSZXNlYXJjaGVyDQpBcm5vbGQgQXJib3JldHVtIG9mIEhhcnZhcmQgVW5pdmVyc2l0
+eQ0KMTMwMCBDZW50cmUgU3RyZWV0DQpCb3N0b24sIE1BIDAyMTMxDQpGYXg6IDYxNy41MjQuMTQx
+OA0KDQpQaG9uZTogNzgxLjI5Ni40ODIxDQpXZWJzaXRlOnRpbnl1cmwuY29tL2FpbGVuZWV0dGlu
+Z2VyDQo8aHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29tL3YyL3VybD91PWh0dHAtM0Ff
+X3Rpbnl1cmwuY29tX2FpbGVuDQplZXR0aW5nZXImZD1Dd01GQXcmYz1XTy1SR3ZlZmliaEhCWnEz
+Zkw4NWhRJnI9UlpDelZqNkdLMEozenJCWThSQThaYVJoDQp4UG5JWllEWmUwTDJPZmlHVy13Jm09
+TEZyd2pibWtma29LSENfR0hhX0gtRmJlT004T05LNkFndjVONmNpMGp5RSZzPXZpDQo0aGVjaEhW
+Z05KRGF2WDA0eUEyUW5CeUI5c25pRTF6blVLenkxcGo1QSZlPTxodHRwczovL3VybGRlZmVuc2Uu
+cHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9aHR0cC0zQV9fdGlueXVybC5jb21fYWlsZW4lMGJlZXR0
+aW5nZXImZD1Dd01GQXcmYz1XTy1SR3ZlZmliaEhCWnEzZkw4NWhRJnI9UlpDelZqNkdLMEozenJC
+WThSQThaYVJoJTBieFBuSVpZRFplMEwyT2ZpR1ctdyZtPUxGcndqYm1rZmtvS0hDX0dIYV9ILUZi
+ZU9NOE9OSzZBZ3Y1TjZjaTBqeUUmcz12aSUwYjRoZWNoSFZnTkpEYXZYMDR5QTJRbkJ5QjlzbmlF
+MXpuVUt6eTFwajVBJmU9Pj4NCg0KRW1haWw6IGFldHRpbmdlckBmYXMuaGFydmFyZC5lZHU8bWFp
+bHRvOmFldHRpbmdlckBmYXMuaGFydmFyZC5lZHU+IDxtYWlsdG86YWV0dGluZ2VyQGZhcy5oYXJ2
+YXJkLmVkdT4NCg0KDQotLQ0KRWxpemFiZXRoIE0gV29sa292aWNoDQpBcm5vbGQgQXJib3JldHVt
+DQoxMzAwIENlbnRyZSBTdHJlZXQNCkJvc3RvbiwgTUEgMDIxMzENClBoOiAoNjE3KSAzODQtNTQ5
+NCBvciA0OTYtMzg5MA0Kd3d3LnRlbXBvcmFsZWNvbG9neS5vcmc8aHR0cHM6Ly91cmxkZWZlbnNl
+LnByb29mcG9pbnQuY29tL3YyL3VybD91PWh0dHAtM0FfX3d3dy50ZW1wb3JhbGVjb2xvZ3kub3Jn
+JmQ9Q3dNRkFnJmM9V08tUkd2ZWZpYmhIQlpxM2ZMODVoUSZyPTU1NS1iQXVmS0VBVnhyQUQwMHJy
+dlZqa3NrWnF5QVBsRGxHcEhiUF9iT2cmbT02Zjg1ZDdzQVpIMHhxMVdONjA2QnJjajNTN3hvZVJa
+SDFTcGFKWEswbDI4JnM9cC1EVnh0b1FiZXd5cGxad1VrNFQzUkxvSlFXXzFuLVBrekdGVFIxVUdk
+QSZlPT4NCg0K
+
+--_000_BLUPR04MB4521500E52F5A6E93FD750CB5BD0BLUPR04MB452namprd_
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: Quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"></=
+head>
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:m=3D"http://schemas.microsoft.com/of=
+fice/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html40">=0D
+<head>=0D
+=0D
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">=
+=0D
+<style><!--=0D
+/* Font Definitions */=0D
+@font-face=0D
+	{font-family:"Cambria Math";=0D
+	panose-1:2 4 5 3 5 4 6 3 2 4;}=0D
+@font-face=0D
+	{font-family:Calibri;=0D
+	panose-1:2 15 5 2 2 2 4 3 2 4;}=0D
+/* Style Definitions */=0D
+p.MsoNormal, li.MsoNormal, div.MsoNormal=0D
+	{margin:0in;=0D
+	margin-bottom:.0001pt;=0D
+	font-size:12.0pt;=0D
+	font-family:"Times New Roman",serif;}=0D
+a:link, span.MsoHyperlink=0D
+	{mso-style-priority:99;=0D
+	color:blue;=0D
+	text-decoration:underline;}=0D
+a:visited, span.MsoHyperlinkFollowed=0D
+	{mso-style-priority:99;=0D
+	color:purple;=0D
+	text-decoration:underline;}=0D
+span.apple-converted-space=0D
+	{mso-style-name:apple-converted-space;}=0D
+span.EmailStyle18=0D
+	{mso-style-type:personal;=0D
+	font-family:"Arial",sans-serif;=0D
+	color:#1F497D;=0D
+	font-weight:normal;=0D
+	font-style:normal;}=0D
+span.EmailStyle19=0D
+	{mso-style-type:personal-compose;=0D
+	font-family:"Arial",sans-serif;=0D
+	color:windowtext;=0D
+	font-weight:normal;=0D
+	font-style:normal;}=0D
+.MsoChpDefault=0D
+	{mso-style-type:export-only;=0D
+	font-size:10.0pt;}=0D
+@page WordSection1=0D
+	{size:8.5in 11.0in;=0D
+	margin:1.0in 1.0in 1.0in 1.0in;}=0D
+div.WordSection1=0D
+	{page:WordSection1;}=0D
+--></style>=0D
+</head>=0D
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">=0D
+<div class=3D"WordSection1">=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">Dear Ailene:<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><o:p>&nbsp;</o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">They use the Harvard Forest protocol for spring phenolog=
+y observations, developed by John O=E2=80=99Keffe.&nbsp; I was trying to ge=
+t access to the Harvard Forest site<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><a href=3D"http://harvardforest.fas.harvard.edu/">http:/=
+/harvardforest.fas.harvard.edu/</a> &nbsp;to give you the direct link, but =
+it is not currently working for some reason.&nbsp; You should=0D
+ be able to access it directly at some point.<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><o:p>&nbsp;</o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">=E2=80=9Cbbm50doy=E2=80=9D is the mean day of year (amon=
+g the individuals observed of the same species) when 50% of the buds are op=
+en.<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">=E2=80=9CL75mdoy=E2=80=9D is the mean day of year (among=
+ the individuals observed of the same species) when 75% of the leaves have =
+reached 75% of their final size.<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">=E2=80=9CL95mdoy=E2=80=9D is the mean day of year (among=
+ the individuals observed of the same species) when 95% of the leaves have =
+reached 95% of their final size.<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><o:p>&nbsp;</o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">Best,<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><o:p>&nbsp;</o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">Mark<o:p></o:p></span></p>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><o:p>&nbsp;</o:p></span></p>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#1F497D">Dist. Prof. Mark D. Schwartz<br>=0D
+President, International Society of Biometeorology<br>=0D
+Email:&nbsp; mds@uwm.edu<br>=0D
+Phone:&nbsp; (414) 229-3740 or 4866</span><span style=3D"font-size:11.0pt;f=
+ont-family:&quot;Calibri&quot;,sans-serif;color:#1F497D"><br>=0D
+</span><span style=3D"font-size:11.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:#1F497D">HPage</span><span style=3D"font-size:11.0pt;font-family=
+:&quot;Calibri&quot;,sans-serif;color:#1F497D">: &nbsp;</span><span style=
+=3D"font-size:11.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#1F497D=
+"><a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__people.u=
+wm.edu_mds&amp;d=3DCwMGaQ&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAufKE=
+AVxrAD00rrvVjkskZqyAPlDlGpHbP_bOg&amp;m=3DMXnPQYkPdRm1IYXu9YvaGLmDVqom02Fjf=
+lo5CwbVnF8&amp;s=3D5B6QFMxZyjU-KuoarQpnUckkFAlp3oiJa_IYBwOicgc&amp;e=3D" ta=
+rget=3D"_blank">http://people.uwm.edu/mds</a></span><span style=3D"font-siz=
+e:11.0pt;font-family:&quot;Calibri&quot;,sans-serif;color:#1F497D"><br>=0D
+</span><span style=3D"font-size:11.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:#1F497D">Department of Geography, Bolton Hall Room 410<br>=0D
+P.O. Box 413<br>=0D
+University of Wisconsin-Milwaukee<br>=0D
+Milwaukee, WI&nbsp; 53201-0413</span><span style=3D"font-size:11.0pt;font-f=
+amily:&quot;Calibri&quot;,sans-serif;color:#1F497D"><o:p></o:p></span></p>=
+=0D
+</div>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D"><o:p>&nbsp;</o:p></span></p>=0D
+<div>=0D
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in =
+0in 0in">=0D
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11.0pt;font-family:&quot=
+;Calibri&quot;,sans-serif">From:</span></b><span style=3D"font-size:11.0pt;=
+font-family:&quot;Calibri&quot;,sans-serif"> Ettinger, Ailene [mailto:aetti=
+nger@fas.harvard.edu]=0D
+<br>=0D
+<b>Sent:</b> Thursday, March 03, 2016 12:50 PM<br>=0D
+<b>To:</b> Mark D Schwartz<br>=0D
+<b>Subject:</b> Re: share data again?<o:p></o:p></span></p>=0D
+</div>=0D
+</div>=0D
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>=0D
+<p class=3D"MsoNormal">Hello Mark! <o:p></o:p></p>=0D
+<div>=0D
+<p class=3D"MsoNormal">Hope you are well! I=E2=80=99ve been compiling data =
+and was wondering if you could define the three phenophases included in you=
+r datasets (&quot;bbm50doy&quot; &quot;L75mdoy&quot; &nbsp;=E2=80=9CL95mdoy=
+=E2=80=9D).&nbsp;<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal">Thank you so much again for sharing these data with =
+us!<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal">-Ailene<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>=0D
+</div>=0D
+<div>=0D
+<div>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"color:black">Ailene Ettinger<br>=0D
+Postdoctoral Researcher<br>=0D
+Arnold Arboretum of Harvard&nbsp;University<br>=0D
+1300 Centre Street<br>=0D
+Boston, MA 02131<br>=0D
+Fax: 617.524.1418<br>=0D
+<br>=0D
+Phone: 781.296.4821<br>=0D
+Website:<span class=3D"apple-converted-space">&nbsp;</span><a href=3D"https=
+://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__tinyurl.com_aileneettinger=
+&amp;d=3DCwMGaQ&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAufKEAVxrAD00rr=
+vVjkskZqyAPlDlGpHbP_bOg&amp;m=3DMXnPQYkPdRm1IYXu9YvaGLmDVqom02Fjflo5CwbVnF8=
+&amp;s=3DQAox9wxgAULzhu8b_joEmseJeO4yQYPs6Wvg7s5HS1w&amp;e=3D">tinyurl.com/=
+aileneettinger</a>&nbsp;<o:p></o:p></span></p>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"color:black">Email:&nbsp;<a href=3D"m=
+ailto:aettinger@fas.harvard.edu">aettinger@fas.harvard.edu</a>&nbsp;<o:p></=
+o:p></span></p>=0D
+</div>=0D
+</div>=0D
+</div>=0D
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>=0D
+<div>=0D
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">=0D
+<div>=0D
+<p class=3D"MsoNormal">On Dec 1, 2015, at 2:16 PM, Mark D Schwartz &lt;<a h=
+ref=3D"mailto:mds@uwm.edu">mds@uwm.edu</a>&gt; wrote:<o:p></o:p></p>=0D
+</div>=0D
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">Great!&nbsp; After you have reviewed it, let me know if =
+you have any questions.</span><o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">&nbsp;</span><o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#1F497D">Dist. Prof. Mark D. Schwartz<br>=0D
+President, International Society of Biometeorology<br>=0D
+Email:&nbsp;<span class=3D"apple-converted-space">&nbsp;</span><a href=3D"m=
+ailto:mds@uwm.edu"><span style=3D"color:purple">mds@uwm.edu</span></a><br>=
+=0D
+Phone:&nbsp; (414) 229-3740 or 4866</span><span style=3D"font-size:11.0pt;f=
+ont-family:&quot;Calibri&quot;,sans-serif;color:#1F497D"><br>=0D
+</span><span style=3D"font-size:11.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:#1F497D">HPage</span><span style=3D"font-size:11.0pt;font-family=
+:&quot;Calibri&quot;,sans-serif;color:#1F497D">: &nbsp;</span><span style=
+=3D"font-size:11.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#1F497D=
+"><a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__people.u=
+wm.edu_mds&amp;d=3DCwMFAg&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAufKE=
+AVxrAD00rrvVjkskZqyAPlDlGpHbP_bOg&amp;m=3D6f85d7sAZH0xq1WN606Brcj3S7xoeRZH1=
+SpaJXK0l28&amp;s=3DxAKcADst7sJQ4gC6AE1RoaIXCfB--IHSYyuMD1Qhzwc&amp;e=3D" ta=
+rget=3D"_blank"><span style=3D"color:purple">http://people.uwm.edu/mds</spa=
+n></a></span><span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot=
+;,sans-serif;color:#1F497D"><br>=0D
+</span><span style=3D"font-size:11.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:#1F497D">Department of Geography, Bolton Hall Room 410<br>=0D
+P.O. Box 413<br>=0D
+University of Wisconsin-Milwaukee<br>=0D
+Milwaukee, WI&nbsp; 53201-0413</span><o:p></o:p></p>=0D
+</div>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Arial&quot;,sans-se=
+rif;color:#1F497D">&nbsp;</span><o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in =
+0in 0in">=0D
+<div>=0D
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11.0pt;font-family:&quot=
+;Calibri&quot;,sans-serif">From:</span></b><span class=3D"apple-converted-s=
+pace"><span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-=
+serif">&nbsp;</span></span><span style=3D"font-size:11.0pt;font-family:&quo=
+t;Calibri&quot;,sans-serif">Ettinger,=0D
+ Ailene [<a href=3D"mailto:aettinger@fas.harvard.edu"><span style=3D"color:=
+purple">mailto:aettinger@fas.harvard.edu</span></a>]<span class=3D"apple-co=
+nverted-space">&nbsp;</span><br>=0D
+<b>Sent:</b><span class=3D"apple-converted-space">&nbsp;</span>Tuesday, Dec=
+ember 01, 2015 11:51 AM<br>=0D
+<b>To:</b><span class=3D"apple-converted-space">&nbsp;</span>Mark D Schwart=
+z<br>=0D
+<b>Cc:</b><span class=3D"apple-converted-space">&nbsp;</span>Wolkovich, Eli=
+zabeth M<br>=0D
+<b>Subject:</b><span class=3D"apple-converted-space">&nbsp;</span>Re: share=
+ data again?</span><o:p></o:p></p>=0D
+</div>=0D
+</div>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal">I got the data! Thank you so much!<span class=3D"app=
+le-converted-space">&nbsp;</span><o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal">-Ailene<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<div>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal">Ailene Ettinger<br>=0D
+Postdoctoral Researcher<br>=0D
+Arnold Arboretum of Harvard&nbsp;University<br>=0D
+1300 Centre Street<br>=0D
+Boston, MA 02131<br>=0D
+Fax: 617.524.1418<br>=0D
+<br>=0D
+Phone: 781.296.4821<br>=0D
+Website:<span class=3D"apple-converted-space">&nbsp;</span><a href=3D"https=
+://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__tinyurl.com_aileneettinger=
+&amp;d=3DCwMFAg&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAufKEAVxrAD00rr=
+vVjkskZqyAPlDlGpHbP_bOg&amp;m=3D6f85d7sAZH0xq1WN606Brcj3S7xoeRZH1SpaJXK0l28=
+&amp;s=3Dyc74SZ3POnS2AFHNWllzRPilWgJbMVr8fouUoQO1TNU&amp;e=3D"><span style=
+=3D"color:purple">tinyurl.com/aileneettinger</span></a>&nbsp;<o:p></o:p></p=
+>=0D
+</div>=0D
+</div>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal">Email:&nbsp;<a href=3D"mailto:aettinger@fas.harvard.=
+edu"><span style=3D"color:purple">aettinger@fas.harvard.edu</span></a>&nbsp=
+;<o:p></o:p></p>=0D
+</div>=0D
+</div>=0D
+</div>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal">On Nov 30, 2015, at 7:53 PM, Mark D Schwartz &lt;<a =
+href=3D"mailto:mds@uwm.edu"><span style=3D"color:purple">mds@uwm.edu</span>=
+</a>&gt; wrote:<o:p></o:p></p>=0D
+</div>=0D
+</div>=0D
+<div>=0D
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>=0D
+</div>=0D
+<div>=0D
+<div>=0D
+<p class=3D"MsoNormal">Dear Ailene and Lizze:<br>=0D
+<br>=0D
+Yes, I think my questions have been answered. &nbsp;If you just want to use=
+ the data, then an acknowledgement of me and the UWM Field Station in any p=
+ublications will suffice. &nbsp;If you have any interest in my engaging fur=
+ther, such that co-authorship would be appropriate,=0D
+ let me know and we can discuss as appropriate.<br>=0D
+<br>=0D
+Here is a link to the 30-minute (raw) weather data and raw phenology data f=
+or 2000-2015. &nbsp;All are in Excel format. &nbsp;The weather data are com=
+plete in files of five years each for 2000-2014 (missing values indicated b=
+y &quot;999&quot; for all variables but pressure with=0D
+ is &quot;-999&quot;). &nbsp;The weather data run through part of Nov. 2nd =
+&nbsp;in 2015.<br>=0D
+All temperatures are in Celsius. &nbsp;The soil temperatures are at the 4 i=
+nch/~10 cm and 12 inch/~30cm levels. &nbsp;Precip. is in mm.<br>=0D
+<br>=0D
+<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__pantherfi=
+le.uwm.edu_xythoswfs_webui_-5Fxy-2De42427364-5F1-2Dt-5FYOj9Cb1X&amp;d=3DCwM=
+FAg&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAufKEAVxrAD00rrvVjkskZqyAPl=
+DlGpHbP_bOg&amp;m=3D6f85d7sAZH0xq1WN606Brcj3S7xoeRZH1SpaJXK0l28&amp;s=3D3F8=
+KOYF6fxWylmPWvCi58ggs6sKuZII10MrhOXjIjT8&amp;e=3D"><span style=3D"color:pur=
+ple">https://pantherfile.uwm.edu/xythoswfs/webui/_xy-e42427364_1-t_YOj9Cb1X=
+</span></a><br>=0D
+<br>=0D
+Password is &quot;wolkovitcH&quot; (case sensitive and spelled wrong for ex=
+tra security ;)<br>=0D
+<br>=0D
+Let me know when you have the data and if any questions. &nbsp;I won't be a=
+t AGU this year, but am planning on EGU (Vienna) at this point.<br>=0D
+<br>=0D
+Best regards,<br>=0D
+<br>=0D
+Mark<br>=0D
+<br>=0D
+Dist. Prof. Mark D. Schwartz<br>=0D
+President, International Society of Biometeorology<br>=0D
+Email:&nbsp;<span class=3D"apple-converted-space">&nbsp;</span><a href=3D"m=
+ailto:mds@uwm.edu"><span style=3D"color:purple">mds@uwm.edu</span></a><br>=
+=0D
+Phone:&nbsp; (414) 229-3740 or 4866<br>=0D
+HPage: &nbsp;<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3=
+A__people.uwm.edu_mds&amp;d=3DCwMFAg&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=
+=3D555-bAufKEAVxrAD00rrvVjkskZqyAPlDlGpHbP_bOg&amp;m=3D6f85d7sAZH0xq1WN606B=
+rcj3S7xoeRZH1SpaJXK0l28&amp;s=3DxAKcADst7sJQ4gC6AE1RoaIXCfB--IHSYyuMD1Qhzwc=
+&amp;e=3D"><span style=3D"color:purple">http://people.uwm.edu/mds</span></a=
+><br>=0D
+Department of Geography, Bolton Hall Room 410<br>=0D
+P.O. Box 413<br>=0D
+University of Wisconsin-Milwaukee<br>=0D
+Milwaukee, WI&nbsp; 53201-0413<br>=0D
+<br>=0D
+-----Original Message-----<br>=0D
+From: Elizabeth Wolkovich [<a href=3D"mailto:lizzie@oeb.harvard.edu"><span =
+style=3D"color:purple">mailto:lizzie@oeb.harvard.edu</span></a>]<span class=
+=3D"apple-converted-space">&nbsp;</span><br>=0D
+Sent: Monday, November 30, 2015 5:22 PM<br>=0D
+To: Mark D Schwartz<br>=0D
+Cc: Ettinger, Ailene<br>=0D
+Subject: Re: share data again?<br>=0D
+<br>=0D
+Dear Mark,<br>=0D
+<br>=0D
+Many thanks for this! It is very generous and much appreciated. Just think =
+of how far phenology research could go if more people were like you, both i=
+n sharing data and in having high quality climate data.<br>=0D
+<br>=0D
+I think Ailene answered your queries -- let us know if not. I believe she w=
+ants the data at the finest temporal resolution you have (i.e., 30 minute i=
+ntervals). Is that correct, Ailene?<br>=0D
+<br>=0D
+I am making it to AGU this year. Any chance I will see you there?<br>=0D
+<br>=0D
+All the best,<br>=0D
+Lizzie<br>=0D
+<br>=0D
+On 11/25/15 11:53 AM, Mark D Schwartz wrote:<br>=0D
+<br>=0D
+<br>=0D
+<o:p></o:p></p>=0D
+</div>=0D
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">=0D
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><br>=0D
+Dear Ailene and Lizzie:<br>=0D
+<br>=0D
+<br>=0D
+Sure, I am willing to share the phenology and weather data. We would<span c=
+lass=3D"apple-converted-space">&nbsp;</span><br>=0D
+just want the usual acknowledgment for the UW-Milwaukee Field Station<span =
+class=3D"apple-converted-space">&nbsp;</span><br>=0D
+and me.<br>=0D
+<br>=0D
+<br>=0D
+You are in luck, as I just updated the phenology data file (starts in<br>=
+=0D
+2000) through 2015 and also did an extensive check and compilation of<span =
+class=3D"apple-converted-space">&nbsp;</span><br>=0D
+all of our weather data collected at the Field Station as well. &nbsp;Data<=
+span class=3D"apple-converted-space">&nbsp;</span><br>=0D
+are collected at 30 minute intervals. &nbsp;I can also prepare daily<span c=
+lass=3D"apple-converted-space">&nbsp;</span><br>=0D
+summaries, daily max-min, daily averages, etc. &nbsp;We have a number of<sp=
+an class=3D"apple-converted-space">&nbsp;</span><br>=0D
+other variables that may be of interest for modeling besides air<span class=
+=3D"apple-converted-space">&nbsp;</span><br>=0D
+temperature, including solar radiation,10 and 30 cm soil temperatures,<span=
+ class=3D"apple-converted-space">&nbsp;</span><br>=0D
+and precipitation.<br>=0D
+<br>=0D
+<br>=0D
+So let me know what you would like, and I can prepare the files.<br>=0D
+<br>=0D
+<br>=0D
+Best regards,<br>=0D
+<br>=0D
+<br>=0D
+Mark<br>=0D
+<br>=0D
+<br>=0D
+Dist. Prof. Mark D. Schwartz<br>=0D
+President, International Society of Biometeorology<br>=0D
+Email: &nbsp;<a href=3D"mailto:mds@uwm.edu"><span style=3D"color:purple">md=
+s@uwm.edu</span></a><br>=0D
+Phone: &nbsp;(414) 229-3740 or 4866<br>=0D
+HPage:<span class=3D"apple-converted-space">&nbsp;</span><a href=3D"https:/=
+/urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__people.uwm.edu_mds&amp;d=3DC=
+wMFAg&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAufKEAVxrAD00rrvVjkskZqyA=
+PlDlGpHbP_bOg&amp;m=3D6f85d7sAZH0xq1WN606Brcj3S7xoeRZH1SpaJXK0l28&amp;s=3Dx=
+AKcADst7sJQ4gC6AE1RoaIXCfB--IHSYyuMD1Qhzwc&amp;e=3D"><span style=3D"color:p=
+urple">http://people.uwm.edu/mds</span></a><br>=0D
+&lt;<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__people=
+.uwm.edu_md%0bs&amp;d=3DCwMFAw&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3DRZCzV=
+j6GK0J3zrBY8RA8ZaRhxPnIZYDZ%0be0L2OfiGW-w&amp;m=3DLFrwjbmkfkoKHC_GHa_H-FbeO=
+M8ONK6Agv5N6ci0jyE&amp;s=3D5IIgOtjvlm%0bis-21LotPZWwYutpv-QIrEZxaEcUHwunw&a=
+mp;e=3D"><span style=3D"color:purple">https://urldefense.proofpoint.com/v2/=
+url?u=3Dhttp-3A__people.uwm.edu_md<br>=0D
+s&amp;d=3DCwMFAw&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3DRZCzVj6GK0J3zrBY8RA=
+8ZaRhxPnIZYDZ<br>=0D
+e0L2OfiGW-w&amp;m=3DLFrwjbmkfkoKHC_GHa_H-FbeOM8ONK6Agv5N6ci0jyE&amp;s=3D5II=
+gOtjvlm<br>=0D
+is-21LotPZWwYutpv-QIrEZxaEcUHwunw&amp;e=3D</span></a>&gt;<br>=0D
+Department of Geography, Bolton Hall Room 410 P.O. Box 413 University<span =
+class=3D"apple-converted-space">&nbsp;</span><br>=0D
+of Wisconsin-Milwaukee Milwaukee, WI &nbsp;53201-0413<br>=0D
+<br>=0D
+<br>=0D
+----------------------------------------------------------------------<br>=
+=0D
+--<br>=0D
+*From:* Ettinger, Ailene &lt;<a href=3D"mailto:aettinger@fas.harvard.edu"><=
+span style=3D"color:purple">aettinger@fas.harvard.edu</span></a>&gt;<br>=0D
+*Sent:* Tuesday, November 24, 2015 8:54 PM<br>=0D
+*To:* Mark D Schwartz<br>=0D
+*Subject:* share data again?<br>=0D
+Hello Dr. Schwartz!<br>=0D
+I hope you are well!. I am working with Lizzie Wolkovich on some<span class=
+=3D"apple-converted-space">&nbsp;</span><br>=0D
+follow-up research on her earlier work comparing phenological<span class=3D=
+"apple-converted-space">&nbsp;</span><br>=0D
+responses from experiments and observations. In 2010 you were kind<span cla=
+ss=3D"apple-converted-space">&nbsp;</span><br>=0D
+enough to share your Wisconsin phenological data with Lizzie. Would<span cl=
+ass=3D"apple-converted-space">&nbsp;</span><br>=0D
+you consider sharing it again?<br>=0D
+<br>=0D
+The goal of the new study is to compare phenological responses in<span clas=
+s=3D"apple-converted-space">&nbsp;</span><br>=0D
+experimental and observational studies using higher quality climate<span cl=
+ass=3D"apple-converted-space">&nbsp;</span><br>=0D
+data (especially from experiments), and we are aiming to combine DAILY<span=
+ class=3D"apple-converted-space">&nbsp;</span><br>=0D
+climate data from experiments that either have multiple warming levels<span=
+ class=3D"apple-converted-space">&nbsp;</span><br>=0D
+or precip x warming treatments. Thus we are trying to collect raw<span clas=
+s=3D"apple-converted-space">&nbsp;</span><br>=0D
+phenological and raw climate data, ideally for temperature (air, soil,<span=
+ class=3D"apple-converted-space">&nbsp;</span><br>=0D
+leaf or whatever is available) and some metric of moisture if available.<br=
+>=0D
+<br>=0D
+Please let me know if sharing your data for this might be possible.<br>=0D
+<br>=0D
+I am happy to answer any questions you have, and send you any<span class=3D=
+"apple-converted-space">&nbsp;</span><br>=0D
+additional information you may like to have.<br>=0D
+Best wishes,<br>=0D
+Ailene<br>=0D
+<br>=0D
+Ailene Ettinger<br>=0D
+Postdoctoral Researcher<br>=0D
+Arnold Arboretum of Harvard University<br>=0D
+1300 Centre Street<br>=0D
+Boston, MA 02131<br>=0D
+Fax: 617.524.1418<br>=0D
+<br>=0D
+Phone: 781.296.4821<br>=0D
+Website:tinyurl.com/aileneettinger<br>=0D
+&lt;<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__tinyur=
+l.com_ailen%0beettinger&amp;d=3DCwMFAw&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=
+=3DRZCzVj6GK0J3zrBY8RA8ZaRh%0bxPnIZYDZe0L2OfiGW-w&amp;m=3DLFrwjbmkfkoKHC_GH=
+a_H-FbeOM8ONK6Agv5N6ci0jyE&amp;s=3Dvi%0b4hechHVgNJDavX04yA2QnByB9sniE1znUKz=
+y1pj5A&amp;e=3D"><span style=3D"color:purple">https://urldefense.proofpoint=
+.com/v2/url?u=3Dhttp-3A__tinyurl.com_ailen<br>=0D
+eettinger&amp;d=3DCwMFAw&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3DRZCzVj6GK0J=
+3zrBY8RA8ZaRh<br>=0D
+xPnIZYDZe0L2OfiGW-w&amp;m=3DLFrwjbmkfkoKHC_GHa_H-FbeOM8ONK6Agv5N6ci0jyE&amp=
+;s=3Dvi<br>=0D
+4hechHVgNJDavX04yA2QnByB9sniE1znUKzy1pj5A&amp;e=3D</span></a>&gt;<br>=0D
+<br>=0D
+Email:<span class=3D"apple-converted-space">&nbsp;</span><a href=3D"mailto:=
+aettinger@fas.harvard.edu"><span style=3D"color:purple">aettinger@fas.harva=
+rd.edu</span></a><span class=3D"apple-converted-space">&nbsp;</span>&lt;<a =
+href=3D"mailto:aettinger@fas.harvard.edu"><span style=3D"color:purple">mail=
+to:aettinger@fas.harvard.edu</span></a>&gt;<o:p></o:p></p>=0D
+</blockquote>=0D
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><br>=0D
+<br>=0D
+--<br>=0D
+Elizabeth M Wolkovich<br>=0D
+Arnold Arboretum<br>=0D
+1300 Centre Street<br>=0D
+Boston, MA 02131<br>=0D
+Ph: (617) 384-5494 or 496-3890<br>=0D
+<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__www.tempor=
+alecology.org&amp;d=3DCwMFAg&amp;c=3DWO-RGvefibhHBZq3fL85hQ&amp;r=3D555-bAu=
+fKEAVxrAD00rrvVjkskZqyAPlDlGpHbP_bOg&amp;m=3D6f85d7sAZH0xq1WN606Brcj3S7xoeR=
+ZH1SpaJXK0l28&amp;s=3Dp-DVxtoQbewyplZwUk4T3RLoJQW_1n-PkzGFTR1UGdA&amp;e=3D"=
+><span style=3D"color:purple">www.temporalecology.org</span></a><o:p></o:p>=
+</p>=0D
+</div>=0D
+</blockquote>=0D
+</div>=0D
+</div>=0D
+</div>=0D
+</blockquote>=0D
+</div>=0D
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>=0D
+</div>=0D
+</div>=0D
+</body>=0D
+</html>=0D
+
+--_000_BLUPR04MB4521500E52F5A6E93FD750CB5BD0BLUPR04MB452namprd_--
