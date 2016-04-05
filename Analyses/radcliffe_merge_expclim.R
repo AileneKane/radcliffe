@@ -242,15 +242,20 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
 ##Dukes et al. data from BACE ##
 ## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
 ## Notes: data shared by Jeff Dukes (jsdukes@purdue.edu)
-clean.clim$bace <- function(filename="2010SoilTempDaily.csv", path="./Data/Experiments/bace") {
-  file <- file.path(path, filename)
-  soiltemp<- read.csv(file, header=TRUE,na.strings = ".")
+##updated April 5, 2016 with more years of soil data, and adding air data
+clean.clim$bace <- function(path="./Data/Experiments/bace") {
+  bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
+  allsoiltemp<-c()
+  for (i in 1:length(bacesoiltempfiles)){
+    file <- file.path(path, paste(bacesoiltempfiles[i]))
+    soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
   colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
   colnames(soiltemp) [9:12]<-c("soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
   soiltemp$preciptreat<-NA
   soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
   soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
   soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
+  
   file2 <- file.path(path, "bace_soilmoisture2010.csv")
   soilmois<-read.csv(file2, header=T,na.strings = ".")
   colnames(soilmois)[3]<-"doy"
@@ -265,6 +270,7 @@ clean.clim$bace <- function(filename="2010SoilTempDaily.csv", path="./Data/Exper
   allclim$soiltemp1_mean<-(as.numeric(allclim$soiltemp1_min)+as.numeric(allclim$soiltemp1_max))/2
   baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois1","soilmois2"))
   row.names(baceclim) <- NULL
+  
   return(baceclim) 
 }
 ##Climate data for Ellison from Harvard Forest##
