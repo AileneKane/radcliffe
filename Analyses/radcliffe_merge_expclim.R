@@ -44,7 +44,7 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   file2<-file.path(path, "hf113-11-df-outside.csv")
   marchin2<-read.csv(file2, header=TRUE)
   marchin2$year_doy<-paste(marchin2$year,marchin2$doy, sep="-")
-  marchin2$plot<-"outside"
+  marchin2$plot<-"ambient"
   temp_min2<-aggregate(x=subset(marchin2, select=c("oAT1_Min","oAT2_Min","oAT3_Min","oSTo1_Min","oSTo2_Min","oSTo3_Min","oSTI1_Min","oSTI2_Min","oSTI3_Min")), by=list(marchin2$year_doy,marchin2$plot), FUN=min,na.rm=F)
   airtemp_min<-apply(temp_min2[,3:5],1,min,na.rm=F)
   soiltemp1_min<-apply(temp_min2[,6:8],1,min,na.rm=F)#temp at 2cm depth(organic)
@@ -111,8 +111,8 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   colnames(allclim)[4]<-"treatment2"
   allclim$temptreat<-NA
   allclim[which(allclim$treatment2=="H"),]$temptreat<-1
-  allclim[which(allclim$treatment2=="C"),]$temptreat<-0
-  allclim[which(allclim$treatment2=="DC"),]$temptreat<-"sham"
+  allclim[which(allclim$treatment2=="C"),]$temptreat<-"ambient"
+  allclim[which(allclim$treatment2=="DC"),]$temptreat<-0
   allclim$site<-"farnsworth"
   allclim$preciptreat<-NA
   allclim$soilmois2<-NA
@@ -166,10 +166,10 @@ clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Dat
   allclim2$doy<-substr(allclim2$year_doy,5,7)  
   allclim2$site<-"clarkharvard"
   allclim2$temptreat<-NA
-  allclim2[allclim2$plot=="G02"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S07",]$temptreat<-"sham"#disturbance control
+  allclim2[allclim2$plot=="G02"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S07",]$temptreat<-0#disturbance control
   allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S01"|allclim2$plot=="S04"|allclim2$plot=="S09",]$temptreat<-2
   allclim2[allclim2$plot=="G01"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S03"|allclim2$plot=="S06"|allclim2$plot=="S08",]$temptreat<-1
-  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-0
+  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-"ambient"#
   allclim2$preciptreat<-NA
   allclim2$soiltemp2_min<-NA
   allclim2$soiltemp2_max<-NA
@@ -180,7 +180,7 @@ clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Dat
   return(clarkharvardclim) 
 }
 ##Clark et al from Duke ##
-## Data type: hourly air temp, soil temp (celsius, at 5cm depth) and soil moisture (Estimated ratio of volumetric water content, scaled from 0 to 1) in heated plots, "ambient" plots = like disturbance control plots, and control plots with mesh walls, no heating infrastructure
+## Data type: hourly air temp, soil temp (celsius, at 5cm depth) and soil moisture (Estimated ratio of volumetric water content, scaled from 0 to 1) in heated plots, plots = like disturbance control plots, and control plots with mesh walls, no heating infrastructure
 ## Notes: Public data, 
 clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Experiments/clark") {
   file <- file.path(path, filename)
@@ -224,10 +224,10 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
   allclim2$doy<-substr(allclim2$year_doy,5,7)
   allclim2$site<-"clarkduke"
   allclim2$temptreat<-NA
-  allclim2[allclim2$plot=="G01"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S03"|allclim2$plot=="S04"|allclim2$plot=="S08",]$temptreat<-"sham"#disturbance control
+  allclim2[allclim2$plot=="G01"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S03"|allclim2$plot=="S04"|allclim2$plot=="S08",]$temptreat<-0#disturbance control
   allclim2[allclim2$plot=="G02"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S01"|allclim2$plot=="S06"|allclim2$plot=="S07",]$temptreat<-2
   allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S09",]$temptreat<-1
-  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-0
+  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-"ambient"
   allclim2$preciptreat<-NA
   allclim2$preciptreat<-NA
   allclim2$soiltemp2_min<-NA
@@ -245,17 +245,21 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
 ##updated April 5, 2016 with more years of soil data, and adding air data
 clean.clim$bace <- function(path="./Data/Experiments/bace") {
   bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
+  #bacesoilmoisfiles<-
   allsoiltemp<-c()
   for (i in 1:length(bacesoiltempfiles)){
     file <- file.path(path, paste(bacesoiltempfiles[i]))
     soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
-  colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
-  colnames(soiltemp) [9:12]<-c("soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
-  soiltemp$preciptreat<-NA
-  soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
-  soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
-  soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
-  
+    colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
+    colnames(soiltemp) [9:12]<-c("soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
+    soiltemp<-soiltemp[,1:12]
+    if(i==4){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
+    soiltemp$preciptreat<-NA
+    soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
+    soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
+    soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
+    allsoiltemp<-rbind(allsoiltemp,soiltemp)
+  }
   file2 <- file.path(path, "bace_soilmoisture2010.csv")
   soilmois<-read.csv(file2, header=T,na.strings = ".")
   colnames(soilmois)[3]<-"doy"
@@ -316,7 +320,7 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
   ellison2<-read.csv(file2, header=TRUE)
   ellison2<-ellison2[-which(ellison2$year==2009),]
   ellison2$year_doy<-paste(ellison2$year,ellison2$doy, sep="-")
-  ellison2$plot<-"outside"
+  ellison2$plot<-"ambient"
   temp_min2<-aggregate(x=subset(ellison2, select=c("oat1.min","oat2.min","oat3.min","osto1.min","osto2.min","osto3.min","osti1.min","osti2.min","osti3.min")), by=list(ellison2$year_doy,ellison2$plot), FUN=min,na.rm=F)
   airtemp_min<-apply(temp_min2[,3:5],1,min)
   soiltemp1_min<-apply(temp_min2[,6:8],1,min)#temp at 2cm depth(organic)
@@ -330,8 +334,8 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
   colnames(temp_min2)[1:2]<-c("year_doy","plot")
   year_doy <- strsplit(temp_min2$year_doy,'-') 
   year_doy<-do.call(rbind, year_doy)
-  temptreat<-rep("outside",times=dim(year_doy)[1])
-  preciptreat<-rep("outside",times=dim(year_doy)[1])
+  temptreat<-rep("ambient",times=dim(year_doy)[1])
+  preciptreat<-rep("ambient",times=dim(year_doy)[1])
   oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois1))
   colnames(oallclim)[3:5]<-c("plot","year","doy")
   allclim2<-rbind(allclim1,oallclim)
@@ -411,8 +415,8 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   return(sherryclim)
 }
 ##Climate data for RMBL (Price & Wasser & Dunne) from RMBL
-## Data type: soil temp and moisture, measured every 2 hours
-##Notes: for Dunne: 1995-1998
+## Data type: soil temp and moisture (%), measured every 2 hours; no sham/disturbance control (only ambient)
+##Notes: for Dunne: 1995-1998;
 ###1 - 10 = Plot (ODD = control, EVEN = Heated); A - C = Zone (A = lower, B = middle, C = upper in terms of local topography); 1 - 3 = Depth (1 = 5cm, 2 = 12cm, 3 = 25cm)  
 ###average across zones,and just use plot numbers to climate data
 ###for 1991: only soil depth 2 (12 cm) in cleaned file
@@ -437,7 +441,7 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   colnames(allclim)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
   allclim1<-rbind(allclim1991,allclim)
   allclim1$site<-"dunne"
-  allclim1$temptreat<-0
+  allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
   allclim1$preciptreat<-NA
   allclim1$airtemp_min<-NA
@@ -474,7 +478,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   colnames(allclim)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
   allclim1<-rbind(allclim1991,allclim)
   allclim1$site<-"price"
-  allclim1$temptreat<-0
+  allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
   allclim1$preciptreat<-NA
   allclim1$airtemp_min<-NA
@@ -609,10 +613,10 @@ for (i in 1:length(soilfiles)){
     colnames(soilhum)[1:4]<-c("plot","block","hum","temp")
     allsoilhum<-rbind(allsoilhum,soilhum)
 }
-  allsoilhum$temptreat<-0
+  allsoilhum$temptreat<-"ambient"
   allsoilhum[allsoilhum$temp=="T+",]$temptreat<-1
   allsoilhum[allsoilhum$temp=="T++",]$temptreat<-2
-  allsoilhum$preciptreat<-0
+  allsoilhum$preciptreat<-"ambient"
   allsoilhum[allsoilhum$hum=="S",]$preciptreat<-"-1"
   allsoilhum$soilmois2<-allsoilhum$X30.cm/100
   allsoilhum$soilmois1<-allsoilhum$X15.cm/100
