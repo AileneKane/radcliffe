@@ -106,6 +106,9 @@ plot(gdd.est~tbase, data=bace.tbase) # base 10 is selected, probably because err
 
 gdd2 <- subset(gdd, tbase==2)
 gdd2.warmonly <- subset(gdd2, preciptreat==0)
+gdd0 <-subset(gdd,tbase==0)
+
+mod <- lmer(gdd.est~temptreat+ (1|site/species), data=gdd2.warmonly)
 
 #quartz()
 
@@ -116,18 +119,34 @@ gdd2.warmonly <- subset(gdd2, preciptreat==0)
 
 #OR: plot with temperature treatment (degC) on the x axis rather than temperature treatment (index, differs by site):
 expsiteinfo<-read.csv("/home/miriam/Documents/Harvard/PhenologyWorkshop_2016/radcliffe/Experiments/expsiteinfo.csv")
-for (i in 1:nrow(gdd2)){  
-  sit<-as.character(gdd2[i,which(names(gdd2)=="site")]) #Which site?
+for (i in 1:nrow(gdd0)){  
+  sit<-as.character(gdd0[i,which(names(gdd0)=="site")]) #Which site?
   trts<-as.numeric(expsiteinfo[which(expsiteinfo$Site== sit),25:33]) #How are temperatures coded at this site?
-  if(gdd2$temptreat[i]==0){gdd2$temp[i]=0} 
-  if(gdd2$temptreat[i]=="sham"){gdd2$temp[i]="sham"}
-  if(gdd2$temptreat[i]!=0&gdd2$temptreat[i]!="sham"){gdd2$temp[i]=trts[as.numeric(as.character(gdd2$temptreat[i]))]}
+  if(gdd0$temptreat[i]==0){gdd0$temp[i]=0} 
+  if(gdd0$temptreat[i]=="sham"){gdd0$temp[i]="sham"}
+  if(gdd0$temptreat[i]!=0&gdd0$temptreat[i]!="sham"){gdd0$temp[i]=trts[as.numeric(as.character(gdd0$temptreat[i]))]}
 }  
 
-ggplot(gdd2,
+ggplot(gdd0,
        aes(x=temp, y=gdd.est, fill=site)) + scale_x_discrete(name="deg C or Watts") +
   geom_boxplot(outlier.colour="red", outlier.shape=8,
                outlier.size=4)
 
-mod <- lmer(gdd.est~temptreat+ (1|site/species), data=gdd2.warmonly)
+#Plots by phenophase:
+# Separate boxplots for each phenological event (using gdd0)
+ggplot(gdd0,
+       aes(x=temp, y=gdd.est, fill=site)) + 
+        scale_x_discrete(name="deg C or Watts") + scale_y_continuous(name="gdd.est; tbase=0")+
+        facet_wrap(~event, nrow=2)+ 
+      geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)
+
+# Scatterplots for each phenological event, omit sham & NA & Watts observations (using gdd0)
+gdd0$tempnum<-as.numeric(gdd0$temp) #turn all non-numbers into NA
+gdd0_b<-subset(gdd0,gdd0$tempnum<10) #get rid of records with watts
+ggplot(gdd0_b,
+       aes(x=tempnum, y=gdd.est, col=site))+
+      scale_x_continuous(name="deg C") + scale_y_continuous(name = "gdd.est; tbase=0")+
+      facet_wrap(~event, nrow=2)+
+      geom_point()
+
 
