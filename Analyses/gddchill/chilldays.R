@@ -1,3 +1,4 @@
+
 #Code to estimate chilling days 
 options(stringsAsFactors=FALSE)
 library(RColorBrewer)
@@ -5,7 +6,7 @@ library(lme4)
 library(car)
 ##Read in climate and phenology data
 setwd("~/GitHub/radcliffe")
-expclim<-read.csv("Analyses/expclim.csv", header=T)
+expclim<-read.csv("Analyses/gddchill/expclim.wgdd.csv", header=T)
 
 ##Now calculate chilling days. First, use a base of 5 (<5 degrees C=chilling day)
 #For all sites/years/plots that we have data from previous year to sept 1, calculate chilling days
@@ -40,7 +41,7 @@ for (i in 1:dim(expclim_new)[1]){
 #now sum everything up!
 expclim_new<-expclim_new[order(expclim_new$site,expclim_new$plot,expclim_new$chyr, expclim_new$chdoy),]
 cumsumnona <- function(x){cumsum(ifelse(is.na(x), 0, x)) + x*0}
-countcumna <- function(x){ cumsum (is.na(x))}
+countcumna <- function(x){ cumsum(is.na(x))}
 
 expclim_new$cumchill_soil<-ave(expclim_new$chday_soil,list(expclim_new$site,
       expclim_new$plot,expclim_new$chyr), FUN=cumsumnona)
