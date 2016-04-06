@@ -1,5 +1,4 @@
-###Preliminary analyses of exp and obs data for radcliff
-##Started March 18, 2016
+#Code to estimate chilling days 
 options(stringsAsFactors=FALSE)
 library(RColorBrewer)
 library(lme4)
@@ -8,7 +7,6 @@ library(car)
 setwd("~/GitHub/radcliffe/analyses")
 expclim<-read.csv("expclim.csv", header=T)
 exppheno<-read.csv("exppheno.csv", header=T)
-obspheno<-read.csv("obspheno.csv", header=T)
 head(expclim)
 
 #Now, some preliminary analyses:

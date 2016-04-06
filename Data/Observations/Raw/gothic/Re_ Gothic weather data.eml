@@ -1,0 +1,340 @@
+Received: from smtpin-prod-04.uit.tufts.edu (10.246.136.18) by
+ tabvmexcashub01.tufts.ad.tufts.edu (10.246.136.81) with Microsoft SMTP Server
+ (TLS) id 14.3.210.2; Sun, 14 Feb 2016 16:10:29 -0500
+Received: from tab-dc-ndc-lb-active.net.tufts.edu ([10.246.108.11]:52090
+ helo=ppagent-prod-02.uit.tufts.edu)	by smtpin-prod-04.uit.tufts.edu with
+ esmtp (Exim 4.76)	(envelope-from <barr.billy@gmail.com>)	id 1aV3w4-0003if-9Y
+	for Ailene.Ettinger@tufts.edu; Sun, 14 Feb 2016 16:10:28 -0500
+Received: from pps.filterd (ppagent-prod-02.uit.tufts.edu [127.0.0.1])	by
+ ppagent-prod-02.uit.tufts.edu (8.15.0.59/8.15.0.59) with SMTP id
+ u1EL6TZi031012	for <Ailene.Ettinger@tufts.edu>; Sun, 14 Feb 2016 16:10:28
+ -0500
+Received: from mail-io0-f169.google.com (mail-io0-f169.google.com
+ [209.85.223.169])	by ppagent-prod-02.uit.tufts.edu with ESMTP id 2121ggbe6e-1
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <Ailene.Ettinger@tufts.edu>; Sun, 14 Feb 2016 16:10:28 -0500
+Received: by mail-io0-f169.google.com with SMTP id 9so141413720iom.1
+        for <Ailene.Ettinger@tufts.edu>; Sun, 14 Feb 2016 13:10:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=iu36est7kQ2RHZQZcYDlTn2sFDbIV12sM5ch0nSS5HA=;
+        b=x9IYjyTBJwv01OFgxn4PCtpD90q8mrAs2eluxq5p5qGurwed3+q+w3A020JtWfN9O+
+         BWkW0r3VxubHpVXtppc2fBHQXPhhl6q7zr+9RjndGwi70dcBhWBUjgG+cBVn7U1eJCkY
+         1jEA27oAHjZjxCRegkZNllvl8h1twT3YlXF3mneF2CfU5BbPgYheqfmc64mbOa2QEWXs
+         V8ctB8m8+gGNySsNy9B/Nito3UbsWlYYmBmxOIzeiibQz6wvi3Jqe5is5lg3GeTSXH2F
+         +kOzsOTQhm45QpjwP1vrsGhvXa0D+j+ZvSivmYKeUL2SWq7Mo+4KuqBYZ3idAMmHOtGj
+         8K3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:content-type;
+        bh=iu36est7kQ2RHZQZcYDlTn2sFDbIV12sM5ch0nSS5HA=;
+        b=JoLSfJC6PytKA/OR3rvqf7y4+O+BiameQKYSzJvv9DscgTudodLe2T7P/kfjzEWmLh
+         C/3HN+Rq6OkN9d0pgNherFAEBcQdt13VJqB06ERl+zLmjcrGsqy7W+E9zEnOkR57fbO+
+         C5GHWsgfNnzQbmQnpMUIImoQ4D0tD33eAVo7oTNXtDU8kB8SiSGT9633sv2JgQaBkIh5
+         dgdVXDA2ZL6MGKCROFyvlD0nxA2wKR+QUliW7SXR5C3EivG4CqvDeoSIRDPvArbkpxT9
+         Dtg8g9OkLk6RrUiC0HYE4FfV1/8plWb4Jb2suFb0PvyArzNWjqfnoZs8aUUicfrMVFOH
+         CU3g==
+X-Gm-Message-State: AG10YOQzSYWQNBJz2poCvC5w/4zABsK9qrhQhjtmNX2K39FByTKZ+hh30dignwu/nnPPW10zEzVsvFSHCEHz9w==
+X-Received: by 10.107.165.14 with SMTP id o14mr13108628ioe.49.1455484227723;
+ Sun, 14 Feb 2016 13:10:27 -0800 (PST)
+Received: by 10.107.19.28 with HTTP; Sun, 14 Feb 2016 13:10:27 -0800 (PST)
+In-Reply-To: <B6B24586-4745-4BA8-BAE3-DA7E9596B440@hsd1.dc.comcast.net>
+References: <CAOjZxo7eSaeewMTXToECaUst=S4h+U2N7N4Gf7dT6GmBBKrokA@mail.gmail.com>
+	<5B0324B9-8601-43A6-A077-D75FA5FD2D43@hsd1.dc.comcast.net>
+	<CAOjZxo4Q=ju64nbtiWOkK2w6fcNHFz+fa0eqa+mJ6=PKkOGcnQ@mail.gmail.com>
+	<B6B24586-4745-4BA8-BAE3-DA7E9596B440@hsd1.dc.comcast.net>
+Date: Sun, 14 Feb 2016 14:10:27 -0700
+Message-ID: <CAOjZxo6wqx2mOWRurpLrjqz2+mGdwawAXC6FMjtvHvLYo+Mk+Q@mail.gmail.com>
+Subject: Re: Gothic weather data
+From: billy barr <barr.billy@gmail.com>
+To: "Ettinger, Ailene Kane" <Ailene.Ettinger@tufts.edu>
+Content-Type: multipart/alternative; boundary="001a1141f0c65eacec052bc15462"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:,, definitions=2016-02-14_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.0.1-1601100000
+ definitions=main-1602140392
+X-Proofpoint-Spam-Bar:
+X-Proofpoint-Spam-Score: 0
+Return-Path: barr.billy@gmail.com
+X-MS-Exchange-Organization-AuthSource: tabvmexcashub01.tufts.ad.tufts.edu
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Organization-AVStamp-Mailbox: SMEXw]nP;1234100;0;This mail has
+ been scanned by Trend Micro ScanMail for Microsoft Exchange;
+X-MS-Exchange-Organization-SCL: 0
+MIME-Version: 1.0
+
+--001a1141f0c65eacec052bc15462
+Content-Type: text/plain; charset="UTF-8"
+
+Not that i can think of.  It is just that i have put a lot of effort into
+this and so want to know what is being done with it, which is why i do not
+want it used (outside of what is on-line, and i am adding to that daily)
+without knowing about it.  So really, just use it for your needs but
+nothing else (useless you pick, for example,  3 years high temperatures and
+play the lottery with those numbers and win- then i get half).  billy
+
+On Sun, Feb 14, 2016 at 2:03 PM, Ettinger, Ailene Kane <
+Ailene.Ettinger@tufts.edu> wrote:
+
+> Thank you so much! We will certainly acknowledge you in any publications
+> that may arise from our work. Do you have any other data use policies of
+> which we should be aware?
+> Best wishes,
+> Ailene
+>
+> Ailene Ettinger, PhD
+> Postdoctoral Researcher
+> Tufts University
+> Department of Biology
+> 163 Packard Ave.
+> Medford, MA 02155
+>
+> Phone: 781.296.4821
+> Website: tinyurl.com/aileneettinger
+> Email: Ailene.Ettinger@tufts.edu
+>
+>
+> On Feb 12, 2016, at 7:53 PM, billy barr <barr.billy@gmail.com> wrote:
+>
+> Hi,
+>
+> I have included snow pack as well as that will effect flowering times.
+> Note the early year has data gaps, and year round starts in 2000.
+>
+> This is done on a snow year, with A= Sept., B=October and so on up to
+> L=August.  the year is a snow year as well so covers parts of 2 calendar
+> years with the first part of the date Sept. through Dec. and the 2nd part
+> Jan. through August.  So 199293 c 10  is Nov. 10, 1992.  While 1992 F 10 is
+> Feb. 10, 1993.  And 200405 K 10 is July 10 2005.  If you have any questions
+> on that let me know.  It was a way to sort months in order of a snow year.
+> Note that snow and snow depth and total snowfall for the winter is in cm
+> while water content is in inches (it was easier in reporting water to US
+> agencies and i left it that way- easy enough to convert).
+>
+> I hope this help.  billy
+>
+> On Fri, Feb 12, 2016 at 9:16 AM, Ettinger, Ailene Kane <
+> Ailene.Ettinger@tufts.edu> wrote:
+>
+>> Hello billy!
+>> Thank you for getting in touch! We would like to get daily climate data
+>> (temperature, precipitation) to go with the phenology data that are
+>> available. The phenology data go back to 1973, so it would be great to have
+>> your temperature and snow/precip data going back to then as well! If that
+>> seems like too much, then the data starting in 2000, when it is year-round,
+>> would be fabulous.
+>> I am attaching a description of the questions we plan to address in a
+>> meta-analysis, in which these data would be used. The analysis will be done
+>> with a small group of researchers, and I will make sure that it is clear
+>> that the data are to be used for these purposes only and not to be shared.
+>>
+>> Thank you!
+>> Best wishes,
+>> Ailene
+>> Ailene Ettinger, PhD
+>> Postdoctoral Researcher
+>> Tufts University
+>> Department of Biology
+>> 163 Packard Ave.
+>> Medford, MA 02155
+>>
+>> Phone: 781.296.4821
+>> Website: tinyurl.com/aileneettinger
+>> Email: Ailene.Ettinger@tufts.edu
+>>
+>>
+>> On Feb 12, 2016, at 10:41 AM, billy barr <barr.billy@gmail.com> wrote:
+>>
+>> Dear Ailene,
+>>
+>> David mentioned that you need some of the data that i have collected.
+>> Let me know specifically what you will need.  You can try the
+>> gothicwx.org web site if you want summaries, otherwise let me know and i
+>> can send it.  Mostly what i have is temperatures from Nov. 01 through May
+>> 31 from 1974- current, and year round starting in 2000.  I have all snow
+>> totals and water content of snow, but rain only from 2000 as well (i did
+>> not keep summer data until then).
+>>
+>> You are welcome to use the data as you see fit but do not give it out to
+>> others other than in using it for you work.  billy
+>>
+>>
+>>
+> <aawxtufts.xlsx>
+>
+>
+>
+
+--001a1141f0c65eacec052bc15462
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"><d=
+iv dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:georgia,se=
+rif">Not that i can think of.&nbsp; It is just that i have put a lot of eff=
+ort into this and so want to know what is being done with it, which is why =
+i do not want it used (outside of what is on-line, and i am adding to that =
+daily) without knowing about it.&nbsp; So really, just use it for your need=
+s but nothing else (useless you pick, for example,&nbsp; 3 years high tempe=
+ratures and play the lottery with those numbers and win- then i get half).&=
+nbsp; billy<br></div></div><div class=3D"gmail_extra"><br><div class=3D"gma=
+il_quote">On Sun, Feb 14, 2016 at 2:03 PM, Ettinger, Ailene Kane <span dir=
+=3D"ltr">&lt;<a href=3D"mailto:Ailene.Ettinger@tufts.edu" target=3D"_blank"=
+>Ailene.Ettinger@tufts.edu</a>&gt;</span> wrote:<br><blockquote class=3D"gm=
+ail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-le=
+ft:1ex">
+
+
+
+<div style=3D"word-wrap:break-word">
+Thank you so much! We will certainly acknowledge you in any publications th=
+at may arise from our work. Do you have any other data use policies of whic=
+h we should be aware?
+<div>Best wishes,</div>
+<div>Ailene</div>
+<div><br>
+<div>Ailene Ettinger, PhD<br>
+Postdoctoral Researcher<br>
+Tufts University<br>
+Department of Biology<br>
+163 Packard Ave.<br>
+Medford, MA 02155<br>
+<br>
+Phone: <a href=3D"tel:781.296.4821" value=3D"&#43;17812964821" target=3D"_b=
+lank">781.296.4821</a><br>
+Website: <a href=3D"http://tinyurl.com/aileneettinger" target=3D"_blank">ti=
+nyurl.com/aileneettinger</a><br>
+Email: <a href=3D"mailto:Ailene.Ettinger@tufts.edu" target=3D"_blank">Ailen=
+e.Ettinger@tufts.edu</a><br>
+<br>
+</div>
+<br>
+<div>
+<blockquote type=3D"cite">
+<div>On Feb 12, 2016, at 7:53 PM, billy barr &lt;<a href=3D"mailto:barr.bil=
+ly@gmail.com" target=3D"_blank">barr.billy@gmail.com</a>&gt; wrote:</div>
+<br>
+<div>
+<div dir=3D"ltr">
+<div class=3D"gmail_default" style=3D"font-family:georgia,serif">Hi,<br>
+<br>
+</div>
+<div class=3D"gmail_default" style=3D"font-family:georgia,serif">I have inc=
+luded snow pack as well as that will effect flowering times.&nbsp; Note the=
+ early year has data gaps, and year round starts in 2000.<br>
+<br>
+</div>
+<div class=3D"gmail_default" style=3D"font-family:georgia,serif">This is do=
+ne on a snow year, with A=3D Sept., B=3DOctober and so on up to L=3DAugust.=
+&nbsp; the year is a snow year as well so covers parts of 2 calendar years =
+with the first part of the date Sept. through Dec.
+ and the 2nd part Jan. through August.&nbsp; So 199293 c 10&nbsp; is Nov. 1=
+0, 1992.&nbsp; While 1992 F 10 is Feb. 10, 1993.&nbsp; And 200405 K 10 is J=
+uly 10 2005.&nbsp; If you have any questions on that let me know.&nbsp; It =
+was a way to sort months in order of a snow year.&nbsp; Note that snow
+ and snow depth and total snowfall for the winter is in cm while water cont=
+ent is in inches (it was easier in reporting water to US agencies and i lef=
+t it that way- easy enough to convert).<br>
+<br>
+</div>
+<div class=3D"gmail_default" style=3D"font-family:georgia,serif">I hope thi=
+s help.&nbsp; billy<br>
+</div>
+</div>
+<div class=3D"gmail_extra"><br>
+<div class=3D"gmail_quote">On Fri, Feb 12, 2016 at 9:16 AM, Ettinger, Ailen=
+e Kane <span dir=3D"ltr">
+&lt;<a href=3D"mailto:Ailene.Ettinger@tufts.edu" target=3D"_blank">Ailene.E=
+ttinger@tufts.edu</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">
+<div>
+<div style=3D"word-wrap:break-word">Hello billy!
+<div>Thank you for getting in touch! We would like to get daily climate dat=
+a (temperature, precipitation) to go with the phenology data that are avail=
+able. The phenology data go back to 1973, so it would be great to have your=
+ temperature and snow/precip
+ data going back to then as well! If that seems like too much, then the dat=
+a starting in 2000, when it is year-round, would be fabulous.</div>
+<div>I am attaching a description of the questions we plan to address in a =
+meta-analysis, in which these data would be used. The analysis will be done=
+ with a small group of researchers, and I will make sure that it is clear t=
+hat the data are to be
+ used for these purposes only and not to be shared.</div>
+<div><br>
+</div>
+<div>Thank you!</div>
+<div>Best wishes,</div>
+<div>Ailene</div>
+<div></div>
+</div>
+<div style=3D"word-wrap:break-word">
+<div></div>
+<div>
+<div>Ailene Ettinger, PhD<br>
+Postdoctoral Researcher<br>
+Tufts University<br>
+Department of Biology<br>
+163 Packard Ave.<br>
+Medford, MA 02155<br>
+<br>
+Phone: <a href=3D"tel:781.296.4821" value=3D"&#43;17812964821" target=3D"_b=
+lank">781.296.4821</a><br>
+Website: <a href=3D"http://tinyurl.com/aileneettinger" target=3D"_blank">ti=
+nyurl.com/aileneettinger</a><br>
+Email: <a href=3D"mailto:Ailene.Ettinger@tufts.edu" target=3D"_blank">Ailen=
+e.Ettinger@tufts.edu</a><br>
+<br>
+</div>
+<br>
+<div>
+<blockquote type=3D"cite">
+<div>On Feb 12, 2016, at 10:41 AM, billy barr &lt;<a href=3D"mailto:barr.bi=
+lly@gmail.com" target=3D"_blank">barr.billy@gmail.com</a>&gt; wrote:</div>
+<br>
+<div>
+<div dir=3D"ltr">
+<div style=3D"font-family:georgia,serif">Dear Ailene,<br>
+<br>
+</div>
+<div style=3D"font-family:georgia,serif">David mentioned that you need some=
+ of the data that i have collected.&nbsp; Let me know specifically what you=
+ will need.&nbsp; You can try the
+<a href=3D"http://gothicwx.org/" target=3D"_blank">gothicwx.org</a> web sit=
+e if you want summaries, otherwise let me know and i can send it.&nbsp; Mos=
+tly what i have is temperatures from Nov. 01 through May 31 from 1974- curr=
+ent, and year round starting in
+ 2000.&nbsp; I have all snow totals and water content of snow, but rain onl=
+y from 2000 as well (i did not keep summer data until then).&nbsp;
+<br>
+<br>
+You are welcome to use the data as you see fit but do not give it out to ot=
+hers other than in using it for you work.&nbsp; billy<br>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+<br>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+<br>
+</div>
+<span>&lt;aawxtufts.xlsx&gt;</span></div>
+</blockquote>
+</div>
+<br>
+</div>
+</div>
+
+</blockquote></div><br></div>
+
+--001a1141f0c65eacec052bc15462--
