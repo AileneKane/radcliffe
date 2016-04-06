@@ -1,10 +1,10 @@
+# Comparing the effect of warming (& precip) on temperature & moisture 
+# C. Rollinson, J. Dukes, A. Ettinger, M. Johnston
+
 # Reading in the experimental Climate data 
 library(ggplot2)
 
-treats <- read.csv("treats.csv")
-summary(treats)
-
-vars.fac <- c("site", "temptreat", "preciptreat", "plot")
+# Read in the raw data
 expclim <- read.csv("expclim.csv")
 expclim$temptreat2 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "sham"), "ambient", "warming"))
 expclim$temptreat3 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "sham"), "0", paste(expclim$temptreat)))
@@ -14,6 +14,7 @@ expclim <- expclim[!is.na(expclim$doy),]
 expclim$year.frac <- expclim$year + expclim$doy/366
 summary(expclim)
 
+# Some handy day indices to help line up months & doy
 dpm   <- c(31,28,31,30,31,30,31,31,30,31,30,31) #days per month
 # dpm.l <- c(31,29,31,30,31,30,31,31,30,31,30,31) #leap year days per month
 doy.start <- vector(length=12)
@@ -23,6 +24,11 @@ for(i in 2:length(dpm)){
 }
 doy.start
  
+
+
+
+
+
 # --------------------
 # Expoloratory graphing by season
 # --------------------
@@ -71,6 +77,12 @@ ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   stat_smooth(aes(x=airtemp_max, y=soiltemp1_max, color=site, fill=site), method="lm")
 dev.off()
 
+ggplot(data=expclim[!expclim$preciptreat2=="- precip" & !is.na(expclim$airtemp_max),]) +
+  facet_wrap( ~ site) +
+  #   geom_point(aes(x=airtemp_max, y=soiltemp1_max, color=site), size=0.05, alpha=0.25)
+  stat_smooth(aes(x=airtemp_max, y=soiltemp1_max, color=temptreat, fill=temptreat), method="lm")
+
+
 png("analyses/figures/Exploratory_Scatter_Tsoilmax_SoilMoist.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   facet_grid(temptreat2 ~ preciptreat2) +
@@ -97,10 +109,10 @@ vars.clim <- c("airtemp_min", "airtemp_max",
 
 expclim.agg <- aggregate(expclim[,vars.clim], 
                          by=expclim[,c("site", "temptreat3", "year", "doy", "year.frac")], 
-                         FUN=mean)
+                         FUN=mean, na.rm=T)
 expclim.agg[,paste0(vars.clim, ".sd")] <- aggregate(expclim[,vars.clim], 
                                                     by=expclim[,c("site", "temptreat3", "year", "doy", "year.frac")], 
-                                                    FUN=sd)[,vars.clim]
+                                                    FUN=sd, na.rm=T)[,vars.clim]
 
 summary(expclim.agg)
 
@@ -108,24 +120,37 @@ expclim.agg <- expclim.agg[order(expclim.agg$site, expclim.agg$temptreat3, expcl
 
 ggplot(data=expclim.agg[,]) +
   facet_wrap(~site, scales="free_x") +
-  geom_ribbon(aes(x=year.frac, ymin=soilmois1-soilmois1.sd, ymax=soilmois1+soilmois1.sd, fill=temptreat3), alpha=0.5) +
+#   geom_ribbon(aes(x=year.frac, ymin=soilmois1-soilmois1.sd, ymax=soilmois1+soilmois1.sd, fill=temptreat3), alpha=0.5) +
   geom_line(aes(x=year.frac, y=soilmois1, color=temptreat3), size=0.5) +
+#   scale_y_continuous(limits=c(0,1)) +
   ggtitle("Soil Moisture by Treatment Through Time")
   
 
 ggplot(data=expclim.agg[,]) +
   facet_wrap(~site, scales="free_x") +
-  geom_ribbon(aes(x=year.frac, ymin=soiltemp1_max-soiltemp1_max.sd, ymax=soiltemp1_max+soiltemp1_max.sd, fill=temptreat3), alpha=0.5) +
+#   geom_ribbon(aes(x=year.frac, ymin=soiltemp1_max-soiltemp1_max.sd, ymax=soiltemp1_max+soiltemp1_max.sd, fill=temptreat3), alpha=0.5) +
   geom_line(aes(x=year.frac, y=soiltemp1_max, color=temptreat3), size=0.5) +
   ggtitle("Soil Temperature by Treatment Through Time")
 
 
 ggplot(data=expclim.agg[,]) +
   facet_wrap(~site, scales="free_x") +
-  geom_ribbon(aes(x=year.frac, ymin=airtemp_max-airtemp_max.sd, ymax=airtemp_max+airtemp_max.sd, fill=temptreat3), alpha=0.5) +
+#   geom_ribbon(aes(x=year.frac, ymin=airtemp_max-airtemp_max.sd, ymax=airtemp_max+airtemp_max.sd, fill=temptreat3), alpha=0.5) +
   geom_line(aes(x=year.frac, y=airtemp_max, color=temptreat3), size=0.5) +
   ggtitle("Air Temperature by Treatment Through Time")
 
+
+ggplot(data=expclim.agg[expclim.agg$site=="ellison",]) +
+  facet_wrap(~temptreat3, scales="free_x") +
+  #   geom_ribbon(aes(x=year.frac, ymin=airtemp_max-airtemp_max.sd, ymax=airtemp_max+airtemp_max.sd, fill=temptreat3), alpha=0.5) +
+  geom_line(aes(x=year.frac, y=airtemp_max, color=temptreat3), size=0.5) +
+  ggtitle("Air Temperature by Treatment Through Time")
+
+ggplot(data=expclim.agg[expclim.agg$site=="sherry",]) +
+  facet_wrap(~temptreat3, scales="free_x") +
+  #   geom_ribbon(aes(x=year.frac, ymin=airtemp_max-airtemp_max.sd, ymax=airtemp_max+airtemp_max.sd, fill=temptreat3), alpha=0.5) +
+  geom_line(aes(x=year.frac, y=airtemp_max, color=temptreat3), size=0.5) +
+  ggtitle("Air Temperature by Treatment Through Time")
 
 expclim.agg2a <- aggregate(expclim[,vars.clim], 
                          by=expclim[,c("site", "temptreat3", "plot", "doy")], 
