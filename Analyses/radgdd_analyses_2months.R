@@ -1,10 +1,5 @@
-### Started 3 April 2016 ###
-### By Lizzie (for now ###
+### Started 5 April 2016 ###
 
-### Looking at the GDD crit ### 
-
-## choose 2 or 4 base, do air and soil separate
-## look at phen by event type
 
 ## housekeeping
 rm(list=ls()) 
@@ -21,24 +16,15 @@ library(lme4)
 #setwd("~/Documents/git/projects/meta_ep2/radcliffe")
 setwd("/Users/Yann1/Documents/Postdoc Davos/Colloques/2016/Harward April 2016/radmeeting/github/radcliffe/Analyses")
 
-gdd <- read.csv("gddest.csv", header=TRUE)
-head(gdd)
-
 #read the data
 expclim<-read.csv("expclim.csv", header=T)
 exppheno<-read.csv("exppheno.csv", header=T)
 obspheno<-read.csv("obspheno.csv", header=T)
 obsclim<-read.csv("obsclim.csv", header=T)
 
-head(obsclim)
+head(expclim)
 
-#Now, some preliminary analyses:
-#first, add gdd to expclim file:
-###Add GDD and cumulative gdd: soiltemp-tbase, cumulative GDD for that year (sum up to that date)
-
-names(obsclim)
-
-#obsclim<-data.frame(airtemp_max=1:30)
+#Different base temperature
 tbase<-c(0,2,4,6,8, 10)
 
 #loop for making Tmax or Tmin - Tbase
@@ -69,6 +55,9 @@ for(i in 6:17){
   i+1
   }
 
+obsclim$date <- paste(obsclim$year, obsclim$doy, sep="-")
+obsclim$date <- as.POSIXct(strptime(obsclim$date, "%Y-%j"))
+
 mindate <- min(obspheno$date)
 obspheno$Juliandate <- obspheno$date - mindate
 
@@ -79,24 +68,28 @@ head(obspheno)
 #fichier climat on crée une colonne Julian date
 head(obsclim)
 head(obspheno)
-obsclim$date <- paste(obsclim$year, obsclim$doy, sep="-")
-obsclim$date <- as.POSIXct(strptime(obsclim$date, "%Y-%j"))
+
+
 
 #obsclim$date <-as.Date(obsclim$date, format="%Y-%j")
 #obsclim$date <- as.POSIXct(strptime(obspheno$date, "%Y-%j"))
 
 obsclim$Juliandate <- difftime(obsclim$date, mindate, units="days")
 
+#Make a column species
 obspheno$species <- paste(obspheno$genus, obspheno$species,sep="_")
 head(obspheno)
 head(obsclim)
 names(obspheno)
-temppheno <- obspheno[,c(1,4,8,10)]
+
+#create a temp file with the interesting variables
+temppheno <- obspheno[,c(1,3,4,5,8,10)]
 head(temppheno)
 
+############make the loop for the calculation of the different GDD for OBSERVATIONS
 sit<-as.character(unique(temppheno$site))
 #store<-list(list())
-df<-data.frame(matrix(NA,ncol=16))
+df<-data.frame(matrix(NA,ncol=18))
 names(df)<-c(names(temppheno),names(obsclim[6:17]))
 for(k in 1:length(sit)){
   subclim<-subset(obsclim,obsclim$site==sit[k]) #just one site
@@ -113,147 +106,111 @@ for(k in 1:length(sit)){
   }
   print(k)
 }
-final<-df[-1,] #removes NAs in first row -- sorry, messy coding.
+finalGDD_OBS<-df[-1,] #removes NAs in first row -- sorry, messy coding.
 
-head(final)
+#plot(meanbase0~year, data=final)subset(final, site=="fitter" & species=="Acer_campestre"))
 
+write.table(finalGDD_OBS, "/Users/Yann1/Documents/Postdoc Davos/Colloques/2016/Harward April 2016/radmeeting/github/radcliffe/Analyses/GDD2monthsOBS.txt", sep=";", col.names=TRUE, row.names=FALSE, dec=".")
 
+########################## Same GDD calculations using Exp data ##################
+expclim<-read.csv("expclim.csv", header=T)
+exppheno<-read.csv("exppheno.csv", header=T)
 
-write.table(final, "/Users/Yann1/Documents/Postdoc Davos/Colloques/2016/Harward April 2016/radmeeting/github/radcliffe/Analyses/GDD2months.txt", sep=";", col.names=TRUE, row.names=FALSE, dec=".")
-
-
-
-
-
-
-
-
-
-
-
-head(obspheno)
-$Juliandate)
-
-?cumsum
-
-obsclim$year1 <- obsclim$year + 1
-
-names(obsclim)
-obsclimpreviousyear <- subset(obsclim[,c(1:5, 16)], doy>243)
-obsclimcurrentyear <- subset(obsclim, doy<244)
-head(obsclimcurrentyear)
-
-merge(obsclimcurrentyear, obsclimpreviousyear, by)    
-
-max(c(2,4,6))
-for (i in 1:length(tbase)){
-  colnames(expclim)[14+(i-1)+i]<-paste("gdd_soil",tbase[i],sep=".")
-  colnames(expclim)[15+(i-1)+i]<-paste("gdd_air",tbase[i],sep=".")
+head(expclim)
+tbase
+#loop for making Tmax or Tmin - Tbase AIR TEMPERATURE
+names(expclim)
+for(i in tbase){
+  col<-rep(NA,nrow(expclim))
+  expclim<-data.frame(expclim,col)
+  expclim[,ncol(expclim)]<-((expclim$airtemp_max+expclim$airtemp_min)/2)-i
 }
-#check
-aggregate(expclim[, 15:24], list(expclim$site), mean, na.rm=T)
-#now add columns for cumulative
-cumsumnona <- function(x){cumsum(ifelse(is.na(x), 0, x)) + x*0}
-for (i in 1:length(tbase)){
-  expclim[,24+(i-1)+i]<-ave(expclim[,14+(i-1)+i],list(expclim$site,expclim$plot,expclim$year), FUN=cumsumnona)
-  expclim[,25+(i-1)+i]<-ave(expclim[,15+(i-1)+i],list(expclim$site,expclim$plot,expclim$year), FUN=cumsumnona)
+
+for(i in tbase){
+  col<-rep(NA,nrow(expclim))
+  expclim<-data.frame(expclim,col)
+  expclim[,ncol(expclim)]<-expclim$airtemp_max-i
 }
-for (i in 1:length(tbase)){
-  colnames(expclim)[24+(i-1)+i]<-paste("cumgdd_soil",tbase[i],sep=".")
-  colnames(expclim)[25+(i-1)+i]<-paste("cumgdd_air",tbase[i],sep=".")
+
+names(expclim)
+names(expclim)[16:21] <- paste(rep('meanairbase',6),tbase, sep="")
+names(expclim)[22:27] <- paste(rep('maxairbase',6),tbase, sep="")
+
+#loop for making Tmax or Tmin - Tbase SOIL TEMPERATURE
+names(expclim)
+for(i in tbase){
+  col<-rep(NA,nrow(expclim))
+  expclim<-data.frame(expclim,col)
+  expclim[,ncol(expclim)]<-expclim$soiltemp1_mean-i
 }
-expclim$alltreat<-paste(expclim$temptreat,expclim$preciptreat,sep=".")
+
+for(i in tbase){
+  col<-rep(NA,nrow(expclim))
+  expclim<-data.frame(expclim,col)
+  expclim[,ncol(expclim)]<-expclim$soiltemp1_max-i
+}
+
+names(expclim)
+names(expclim)[28:33] <- paste(rep('meansoilbase',6),tbase, sep="")
+names(expclim)[34:39] <- paste(rep('maxsoilbase',6),tbase, sep="")
+
+#we remove the negative values (ie. when temp was below Tbase)
+for(i in 16:39){
+  expclim[,i][expclim[,i]<0] <- 0
+  i+1
+}
+
+#display the Julian date
+names(exppheno)
+
+exppheno$date <- paste(exppheno$year, exppheno$doy, sep="-")
+exppheno$date <- as.POSIXct(strptime(exppheno$date, "%Y-%j"))
 
 
+mindate <- min(exppheno$date)
+exppheno$Juliandate <- exppheno$date - mindate
 
-## let's start small and look at one site
-## bace, sherry and force have multiple levels of precip
-## only bace has multiple temp and precip treatments
+#difftime(obspheno$date, mindate, units="days")
+exppheno$Juliandatepheno <- round(as.numeric(exppheno$Juliandate, units = "days"), 0)
+head(exppheno)
 
-##
-## bace
-##
+#fichier climat on crée une colonne Julian date
+head(exppheno)
+head(expclim)
 
-bace <- subset(gdd, site=="bace")
-plot(gdd.est~tbase, data=bace) # perhaps not suprisingly there is a fundamental relationship between GDD and tbase (lower tbase, higher GDD)
+expclim$Juliandate <- difftime(expclim$date, mindate, units="days")
 
-# we'll look quickly at base 2 and base 10 to see if they change what you see
-unique(bace$species)
-ggplot(subset(bace, tbase==2), aes(x=temptreat, y=gdd.est, fill=species)) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-quartz()
-ggplot(subset(bace, species=="Acer.rubrum" & tbase==2),
-  aes(x=temptreat, y=gdd.est, fill=as.factor(preciptreat))) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
+#Make a column species
+exppheno$species <- paste(exppheno$genus, exppheno$species,sep="_")
 
-ggplot(subset(bace, tbase==10), aes(x=temptreat, y=gdd.est, fill=species)) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-quartz()
-ggplot(subset(bace, species=="Acer.rubrum" & tbase==10),
-  aes(x=temptreat, y=gdd.est, fill=as.factor(preciptreat))) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
+#create a temp file with the interesting variables
+names(exppheno)
+#unique(exppheno$plot[exppheno$site=="chuine"])
+temppheno <- exppheno[,c(1,2,3,4,6,7,8,10)]
+head(temppheno)
 
-# under base 10 you get more variability in some treatments and the droughts are more similar for temp=0|1 than in base 2, but then less similar in  temp=2|3 ... also, note how very small the GDDs are
+############make the loop for the calculation of the different GDD FOR EXPERIMENTS
+sit<-as.character(unique(temppheno$site))
+#store<-list(list())
+df<-data.frame(matrix(NA,ncol=20))
+names(df)<-c(names(temppheno),names(expclim[6:17]))
+for(k in 1:length(sit)){
+  subclim<-subset(obsclim,obsclim$site==sit[k]) #just one site
+  subpheno<-subset(temppheno,temppheno$site==sit[k])
+  for (i in 1:nrow(subpheno)){ #need to do this for every phenological phase
+    clim<-subclim[which(subclim$Juliandate>=subpheno$Juliandatepheno[i]-60&
+                          subclim$Juliandate<subpheno$Juliandatepheno[i]),]
+    sumclim<-colSums(clim[,6:17])
+    orig<-subpheno[i,]
+    tot<-cbind(orig,t(as.data.frame(sumclim)))
+    df<-rbind(df,tot)
+    #store[[k]][[i]]<-sumclim
+    if(i%%1000==0){print(i)}
+  }
+  print(k)
+}
+finalGDD_EXP<-df[-1,] #removes NAs in first row -- sorry, messy coding.
 
+#plot(meanbase0~year, data=final)subset(final, site=="fitter" & species=="Acer_campestre"))
 
-##
-## sherry
-##
-
-sher <- subset(gdd, site=="sherry")
-plot(gdd.est~tbase, data=sher) # ditto what I said above
-
-# we'll look quickly at base 2 and base 10 to see if they change what you see
-unique(sher$species)
-ggplot(subset(sher, tbase==2), aes(x=temptreat, y=gdd.est, fill=species)) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-quartz()
-ggplot(subset(sher, species=="Ambrosia.psilostchya" & tbase==2),
-  aes(x=temptreat, y=gdd.est, fill=as.factor(preciptreat))) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-
-quartz()
-ggplot(subset(sher, species=="Schizachyrium.scoparium" & tbase==2),
-  aes(x=temptreat, y=gdd.est, fill=as.factor(preciptreat))) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-
-quartz()
-ggplot(subset(sher, species=="Panicum.virgatum" & tbase==2),
-  aes(x=temptreat, y=gdd.est, fill=as.factor(preciptreat))) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-
-##
-## looking at tbase more
-## need to model-select best tbase FIRST
-##
-findbetterway <- ddply(bace, c("plot", "species"), summarise,
-       modaic=min(modaic))
-
-bace.tbase <- merge(findbetterway, bace, all.x=TRUE)
-
-plot(gdd.est~tbase, data=bace.tbase) # base 10 is selected, probably because errors look small when data are not standardized .....
-
-
-##
-## let's catapult ahead!
-## and try some big models
-##
-
-gdd2 <- subset(gdd, tbase==2)
-gdd2.warmonly <- subset(gdd2, preciptreat==0)
-
-quartz()
-ggplot(gdd2,
-  aes(x=temptreat, y=gdd.est, fill=site)) + 
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)
-
-mod <- lmer(gdd.est~temptreat+ (1|site/species), data=gdd2.warmonly)
+write.table(finalGDD_EXP, "/Users/Yann1/Documents/Postdoc Davos/Colloques/2016/Harward April 2016/radmeeting/github/radcliffe/Analyses/GDD2monthsEXP.txt", sep=";", col.names=TRUE, row.names=FALSE, dec=".")
