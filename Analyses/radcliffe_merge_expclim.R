@@ -474,9 +474,9 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   file <- file.path(path, filename)
   soiltemp<- read.csv(file,header=TRUE)
   soiltemp2<-melt(soiltemp,id = 1:4) 
-  soiltemp2$plot<-substr(soiltemp2$variable,2,2)
-  soiltemp2$zone<-substr(soiltemp2$variable,3,3)
-  soiltemp2$depth<-substr(soiltemp2$variable,4,4)
+  soiltemp2$plot<-substr(soiltemp2$variable,2,nchar(as.character(soiltemp2$variable))-2)
+  soiltemp2$zone<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable))-2,nchar(as.character(soiltemp2$variable))-1)
+  soiltemp2$depth<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable)),nchar(as.character(soiltemp2$variable)))
   soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","plot"))
   soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","plot"))
   soiltemp_min<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$plot),FUN=min,na.rm=F)
@@ -660,11 +660,7 @@ for (i in 1:length(soilfiles)){
     cleanclimdata.raw$force <- clean.clim$force(path="./Data/Experiments/force")
     cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Data/Experiments/chuine")
     
-    ggplot(data=cleanclimdata.raw$force) +
-      facet_wrap(~plot) +
-      geom_point(aes(x=as.ordered(doy), y=airtemp_max, color=as.factor(year)), size=0.1)
-  
-    #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Data/Experiments/jasper")
+   #cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Data/Experiments/jasper")
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
