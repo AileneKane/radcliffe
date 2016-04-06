@@ -244,51 +244,50 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
 ## Notes: data shared by Jeff Dukes (jsdukes@purdue.edu)
 ##updated April 5, 2016 with more years of soil data, and adding air data
 clean.clim$bace <- function(path="./Data/Experiments/bace") {
-  bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
-  bacesoilmoisfiles<-c("2009_0_30cmTDR12_29_09CEG.csv","bace_soilmoisture2010.csv","bace_soilmoisture2011.csv",
+bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
+bacesoilmoisfiles<-c("2009_0_30cmTDR12_29_09CEG.csv","bace_soilmoisture2010.csv","bace_soilmoisture2011.csv",
     "2012_0_30cmTDR_1_23_13_CEG.csv","2013_30cmTDR3_7_15SWW.csv","2014_30cmTDR3_7_15SWW.csv")
-  bacecantempfiles<-c("2009PlotTempHourly12_01_11CEG.csv","2010PlotTempHourly05_27_11_CEG.csv",
-   "2011PlotTempHourly1_6_12_CEG.csv","2012PlotTempHourly2_1_13_CEG.csv")
-  allsoiltemp<-c()
-  for (i in 1:length(bacesoiltempfiles)){
-    file <- file.path(path, paste(bacesoiltempfiles[i]))
-    soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
-    colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
-    colnames(soiltemp) [9:12]<-c("soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
-    soiltemp<-soiltemp[,1:12]
-    if(i==4){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
-    soiltemp$preciptreat<-NA
-    soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
-    soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
-    soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
-    allsoiltemp<-rbind(allsoiltemp,soiltemp)
+bacecantempfiles<-c("2009PlotTempHourly12_01_11CEG.csv","2010PlotTempHourly05_27_11_CEG.csv",
+"2011PlotTempHourly1_6_12_CEG.csv","2012PlotTempHourly2_1_13_CEG.csv")
+allsoiltemp<-c()
+for (i in 1:length(bacesoiltempfiles)){
+  file <- file.path(path, paste(bacesoiltempfiles[i]))
+  soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
+  colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
+  colnames(soiltemp) [9:12]<-c("soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
+  soiltemp<-soiltemp[,1:12]
+  if(i==4){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
+  soiltemp$preciptreat<-NA
+  soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
+  soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
+  soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
+  allsoiltemp<-rbind(allsoiltemp,soiltemp)
   }
-  #allcantemp<-c()
-  #for (i in 1:length(bacecantempfiles)){
-   # file <- file.path(path, paste(bacecantempfiles[i]))
-    #soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
-  allsoilmois<-c()
-  for (i in 1:length(bacesoilmoisfiles)){
-  file2 <- file.path(path, paste(bacesoilmoisfiles[i]))
-  soilmois<-read.csv(file2, header=T,na.strings = ".")
-  colnames(soilmois)[3]<-"doy"
-  soilmois<-soilmois[,1:7]
-  allsoilmois<-rbind(allsoilmois,soilmois)
+#allcantemp<-c()
+#for (i in 1:length(bacecantempfiles)){
+# file <- file.path(path, paste(bacecantempfiles[i]))
+ #cantemp <- read.csv(file, header=TRUE,na.strings = ".")
+allsoilmois<-c()
+for (i in 1:length(bacesoilmoisfiles)){
+file2 <- file.path(path, paste(bacesoilmoisfiles[i]))
+soilmois<-read.csv(file2, header=T,na.strings = ".")
+colnames(soilmois)[3]<-"doy"
+soilmois<-soilmois[,1:7]
+allsoilmois<-rbind(allsoilmois,soilmois)
 }
-  allclim<-merge(allsoiltemp,allsoilmois,by=c("year","doy","plot"),all=TRUE) 
-  colnames(allclim)[17]<-"soilmois1"
-  
-  allclim[which(allclim$soilmois1==209),]$soilmois1<-NA#remove weird values for soil moisture, which should be between 0 and 1 (209, 1.87)
-  allclim[which(allclim$soilmois1==1.87),]$soilmois1<-NA
-  allclim$soilmois2<-NA
-  allclim$airtemp_min<-NA
-  allclim$airtemp_max<-NA
-  allclim$site<-"bace"
-  allclim$soiltemp1_mean<-(as.numeric(allclim$soiltemp1_min)+as.numeric(allclim$soiltemp1_max))/2
-  baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois1","soilmois2"))
-  row.names(baceclim) <- NULL
-  return(baceclim) 
-}
+allclim<-merge(allsoiltemp,allsoilmois,by=c("year","doy","plot"),all=TRUE) 
+colnames(allclim)[17]<-"soilmois1"
+allclim[which(allclim$soilmois1==209),]$soilmois1<-NA#remove weird values for soil moisture, which should be between 0 and 1 (209, 1.87)
+allclim[which(allclim$soilmois1==1.87),]$soilmois1<-NA
+allclim$soilmois2<-NA
+allclim$airtemp_min<-NA
+allclim$airtemp_max<-NA
+allclim$site<-"bace"
+allclim$soiltemp1_mean<-(as.numeric(allclim$soiltemp1_min)+as.numeric(allclim$soiltemp1_max))/2
+ baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soilmois1","soilmois2"))
+row.names(baceclim) <- NULL
+return(baceclim) 
+ }
 ##Climate data for Ellison from Harvard Forest##
 ## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
 ## Notes: http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf113; i had to subset this datafile before pushing it to github as it was too large. i selected out the columns that we wanted and removed 2009 (not included in phenology data), but otherwise left data untouched
@@ -669,9 +668,9 @@ for (i in 1:length(soilfiles)){
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#368080    15
+    dim(expphenclim1)#328984    15
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#368055      15
+    dim(expphenclim)#328959      15
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
