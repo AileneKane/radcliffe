@@ -9,9 +9,11 @@ library(ggplot2)
 expsiteinfo<-read.csv("/home/miriam/Documents/Harvard/PhenologyWorkshop_2016/radcliffe/Analyses/expsiteinfo.csv")
 expclim<-read.csv("/home/miriam/Documents/Harvard/PhenologyWorkshop_2016/radcliffe/Analyses/expclim.csv")
 
-#####CHUNK 1: Looking at soil moisture and temperature by depth
-#Fix this now that I have better numbers (pull from GitHub)
+#####CHUNK 1: Looking at soil moisture & temperature by depth
+#Fix this now that I have better numbers (i.e. different depths for soil moisture and temperature)
+
 #Look at difference in soil moisture by depth - just use depth 1 and 2 for now
+#Only one site (Chuine) had 2-depth soil moisture
 mois_both<-expclim[which(!is.na(expclim$soilmois1)),]
 mois_both<-mois_both[which(!is.na(mois_both$soilmois2)),] #Where we have moisture at both depths
 
@@ -22,6 +24,47 @@ ggplot(mois_both,aes(x=soilmois1,y=soilmois2,col=site))+
 #Look at difference in soil temperature by depth - just use depth 1 and 2 for now
 stemp_both_min<-expclim[which(!is.na(expclim$soiltemp1_min)),]
 stemp_both_min<-stemp_both_min[which(!is.na(stemp_both_min$soiltemp2_min)),]
+tempcols<-c(which(substr(names(expsiteinfo),1,9)=="temptreat"))
+tempcols<-tempcols[-length(tempcols)] #because the last one is "units," not a treatment
+sites<-as.character(unique(expclim$site))
+
+#Put in the actual temperatures - doesn't work yet
+for (i in 1:length(sites)){
+  sub<-subset(expclim,expclim$site==sites[i])
+  trts<-as.numeric(expsiteinfo[which(expsiteinfo$Site== sit),tempcols])
+  sub$temp[which(sub$temptreat=="ambient")]<-"ambient" 
+  sub$temp[which(sub$temptreat=="sham")]<-"sham"
+  sub$temp[which(sub$temptreat!="ambient"&sub$temptreat!="sham")]<-trts[as.numeric(as.character(sub$temptreat))]
+  }
+
+#Possible faster way: - doesn't work yet
+fin<-data.frame(matrix(,ncol=ncol(expclim)))
+names(fin)<-names(expclim)
+sites<-as.character(unique(expclim$site))
+tempcols<-c(which(substr(names(expsiteinfo),1,9)=="temptreat"))
+tempcols<-tempcols[-length(tempcols)] 
+for (i in 1:length(sites)){
+  sub<-subset(expclim,expclim$site==sites[i])
+  trts<-as.numeric(expsiteinfo[which(expsiteinfo$Site==sites[i]),tempcols])
+  for(k in 1:length(unique(sub$temptreat))){
+    sub2<-subset(sub,sub$temptreat==unique(sub$temptreat)[k])
+    sub2$temp<-trts[k]
+    fin<-merge(fin,sub2)
+    
+  }
+  print(i)}
+
+#Slow: - does this work??
+for (i in 1:nrow(stemp_both_min)){   
+  sit<-as.character(stemp_both_min[i,which(names(stemp_both_min)=="site")]) #Which site?
+  trts<-as.numeric(expsiteinfo[which(expsiteinfo$Site== sit),tempcols]) #How are temperatures coded at this site?
+  if(stemp_both_min$temptreat[i]=="ambient"){stemp_both_min$temp[i]="ambient"} 
+  if(stemp_both_min$temptreat[i]=="sham"){stemp_both_min$temp[i]="sham"}
+  if(stemp_both_min$temptreat[i]!="ambient"&stemp_both_min$temptreat[i]!="sham"){stemp_both_min$temp[i]=trts[as.numeric(as.character(stemp_both_min$temptreat[i]))]}
+  if(i%%1000==0){print(paste((i/nrow(stemp_both_min))*100,"% done"))}
+  }   
+
+
 stemp_both_max<-expclim[which(!is.na(expclim$soiltemp1_max)),]
 stemp_both_max<-stemp_both_max[which(!is.na(stemp_both_max$soiltemp2_max)),]
 
