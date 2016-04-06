@@ -315,5 +315,69 @@ ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$airtemp_min.dev),]) +
   scale_y_continuous(expand=c(0,0), name="diff from non-warmed (degrees C)") +
   ggtitle("Daily Min Air Temperature Difference")
 dev.off()
+# --------------------
+
 
 # --------------------
+# Comparing soil moisture and (air) temperature
+# --------------------
+
+expclim<-read.csv("/home/miriam/Documents/Harvard/PhenologyWorkshop_2016/radcliffe/Analyses/expclim.csv")
+
+#Figure out what doy is the start of the month (i.e. Jan 1, Feb 1, etc.)
+dpm   <- c(31,28,31,30,31,30,31,31,30,31,30,31) #days per month
+# dpm.l <- c(31,29,31,30,31,30,31,31,30,31,30,31) #leap year days per month
+doy.start <- vector(length=12)
+doy.start[1] <- 0
+for(i in 2:length(dpm)){
+  doy.start[i] <- doy.start[i-1] + dpm[i]
+}
+
+#Add a factor column to expclim designating spring, summer, or NA
+expclim[which(expclim$doy>=doy.start[3] & expclim$doy<doy.start[6]),"season"] <- "spring" 
+expclim[which(expclim$doy>=doy.start[6] & expclim$doy<doy.start[9]),"season"] <- "summer"
+expclim$season <- as.factor(expclim$season)
+
+#Add columns useful for designating temp/precip treatments & doy
+expclim$temptreat2 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "sham"), "ambient", "warming"))
+expclim$temptreat3 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "sham"), "0", paste(expclim$temptreat)))
+expclim$preciptreat2 <- as.factor(ifelse(expclim$preciptreat=="1", "+ precip", ifelse(expclim$preciptreat=="-1", "- precip", "ambient")))
+expclim$preciptreat2 <- as.factor(ifelse(is.na(expclim$preciptreat2), "ambient", paste(expclim$preciptreat2)))
+expclim <- expclim[!is.na(expclim$doy),] #remove NAs
+expclim$year.frac <- expclim$year + expclim$doy/366
+
+#Figure out climate variable values for control/sham/outside plots for each site, year, doy
+vars.clim <- c("airtemp_min", "airtemp_max", 
+               "soiltemp1_min", "soiltemp2_min", 
+               "soiltemp1_max", "soiltemp2_max", 
+               "soilmois1", "soilmois2")
+
+expclim.control <- aggregate(expclim[expclim$temptreat3=="0",vars.clim], 
+                             by=expclim[expclim$temptreat3=="0",c("site", "year", "doy")], 
+                             FUN=mean, na.rm=T)
+names(expclim.control)[which(names(expclim.control) %in% vars.clim)] <- paste0(vars.clim, ".control")
+
+#Put the control data and the original expclim data together
+expclim2 <- merge(expclim, expclim.control, all.x=T)
+
+#Add columns for difference between control and warmed
+expclim2$soiltempdiff_min<-expclim2$soiltemp1_min-expclim2$soiltemp1_min.control
+expclim2$soiltempdiff_max<-expclim2$soiltemp1_max-expclim2$soiltemp1_max.control
+
+#(A) Soil moisture by temperature treatment (discrete)
+expclim3<-subset(expclim2, !is.na(expclim2$soilmois1) & !is.na(expclim2$temptreat))
+ggplot(expclim3[which(expclim3$soilmois1<5),],aes(x=temptreat,y=soilmois1,fill=site))+
+  scale_x_discrete(name="Temperature treatment")+ scale_y_continuous(name="Soil Moisture (depth 1)")+
+  facet_wrap(season~site, scales="free")+
+  geom_boxplot()
+
+#(B) Soil moisture by temperature difference from control (continuous)
+#Get warming on the x axis:
+####Christy code:
+expclim3<-subset(expclim2, !is.na(expclim2$soilmois1) & !is.na(expclim2$soiltempdiff_min)) #could change to max
+
+ggplot(expclim3[which(expclim3$soilmois1<5),],aes(x=soiltempdiff_min,y=soilmois1,col=temptreat3))+ #could change to max
+  scale_x_continuous(name="Plot temp - mean(ctrl temp for same site, year, DOY)")+ scale_y_continuous(name="Soil Moisture (depth 1)")+
+  facet_wrap(season~site, scales="free")+
+  geom_point()
+
