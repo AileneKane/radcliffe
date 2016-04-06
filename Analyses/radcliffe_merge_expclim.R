@@ -436,9 +436,9 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   soiltemp<- read.csv(file,header=TRUE)
   #soiltemp$Year<-as.factor(soiltemp$Year)
   soiltemp2<-melt(soiltemp,id = 1:4) 
-  soiltemp2$plot<-substr(soiltemp2$variable,2,2)
-  soiltemp2$zone<-substr(soiltemp2$variable,3,3)
-  soiltemp2$depth<-substr(soiltemp2$variable,4,4)
+  soiltemp2$plot<-substr(soiltemp2$variable,2,nchar(as.character(soiltemp2$variable))-2)
+  soiltemp2$zone<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable))-2,nchar(as.character(soiltemp2$variable))-1)
+  soiltemp2$depth<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable)),nchar(as.character(soiltemp2$variable)))
   soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","plot"))
   soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","plot"))
   # soiltemp3<-rbind(soiltemp3_1991,soiltemp3)#doesn't seem to fix the problem
@@ -576,7 +576,6 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
 ## Data type: sporadic measurements of soil temp and humidity? plus airtemp measurements frmo local climate station- isabelle says its best to use these plus the treatment differences rather than their measured airtemp data as the sensors drifted
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr), she said to leave out 2005 data
 clean.clim$chuine <- function(path="./Data/Experiments/chuine") {
-  ###unused code:
   ##air temp files from chuine (not on plot level, so not useful?)
   maxtempfiles<-c("meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
   mintempfiles<-c("meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
@@ -599,7 +598,7 @@ clean.clim$chuine <- function(path="./Data/Experiments/chuine") {
     temp$doy<-strftime(strptime(paste(temp$year,temp$month,temp$date,sep="-"), format = "%Y-%b-%d"),format = "%j") 
     allairtemp<-rbind(allairtemp,temp)
   }
-  allairtemp<-allairtemp[,-3]
+  allairtemp<-allairtemp[,-which(colnames(allairtemp)=="id")]
   colnames(allairtemp)[3:4]<-c("airtemp_max","airtemp_min")
   #add plots and treatment info
   allairtemp_contr<-allairtemp
@@ -664,9 +663,9 @@ for (i in 1:length(soilfiles)){
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#328984    15
+    dim(expphenclim1)#370077    15
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#328959      15
+    dim(expphenclim)#370052      15
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)

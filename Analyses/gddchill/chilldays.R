@@ -1,5 +1,7 @@
 
-#Code to estimate chilling days 
+##Code to estimate chilling days
+##by Ailene
+##April 6, 2016
 options(stringsAsFactors=FALSE)
 library(RColorBrewer)
 library(lme4)
@@ -8,8 +10,8 @@ library(car)
 setwd("~/GitHub/radcliffe")
 expclim<-read.csv("Analyses/gddchill/expclim.wgdd.csv", header=T)
 
-##Now calculate chilling days. First, use a base of 5 (<5 degrees C=chilling day)
-#For all sites/years/plots that we have data from previous year to sept 1, calculate chilling days
+##Now calculate chilling days. We want to use a base of 5 (<5 degrees C=chilling day)
+#For all sites/years/plots that we have data from previous year to sept 1, calculate chilling days through December 31 of that year
 #First select out rows for which we have data from the previous year to sept 1
 expclim<-expclim[order(expclim$site,expclim$plot,expclim$year, expclim$doy),]
 tchill<-5
@@ -42,7 +44,7 @@ for (i in 1:dim(expclim_new)[1]){
 #now sum everything up!
 expclim_new<-expclim_new[order(expclim_new$site,expclim_new$plot,expclim_new$chyr, expclim_new$chdoy),]
 cumsumnona <- function(x){cumsum(ifelse(is.na(x), 0, x)) + x*0}
-countcumna <- function(x){ cumsum(is.na(x))}
+countcumna <- function(x){cumsum(is.na(x))}
 
 expclim_new$cumchill_soil<-ave(expclim_new$chday_soil,list(expclim_new$site,
       expclim_new$plot,expclim_new$chyr), FUN=cumsumnona)
@@ -54,4 +56,4 @@ expclim_new$cumchill_air<-ave(expclim_new$chday_air,list(expclim_new$site,
 expclim_new$numnas_air<-ave(expclim_new$chday_air,list(expclim_new$site,
         expclim_new$plot,expclim_new$chyr), FUN=countcumna)
 
-write.csv(expclim_new,"expchill.csv", row.names=FALSE)
+write.csv(expclim_new,"Analyses/gddchill/expclim.wgddch.csv", row.names=FALSE)
