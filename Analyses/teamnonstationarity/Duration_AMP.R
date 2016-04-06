@@ -1,6 +1,10 @@
 #Main question: How does temperature sensitivity change over time in experiments and in observational studies?
 #For this analysis, we are focusing only on Gothic Datasets
 
+#required libraries (added by AME)
+library(data.table)
+source("Analyses/source/gddme.R")
+
 #importing data
 obsdata <- read.csv("Analyses/obspheno.csv", header=TRUE)
 obsclim<-read.csv("Analyses/obsclim.csv", header=TRUE)
@@ -14,7 +18,7 @@ gdd<-read.csv("Analyses/gddchill/expclim.wgdd.csv", header=TRUE)
 ###Adding a column to edata and eclim that has the start year of the experiment/observations
 #getting start years
 expinfo.start<-expinfo[,c("Site","exp_startyear")]
-expinfo.start<-setnames(expinfo.start, "Site", "site")
+expinfo.start<-setnames(expinfo.start, "Site", "site") 
 
 #merging duration with data files
 expdata<-merge(expdata, expinfo.start, all=TRUE)
@@ -55,14 +59,18 @@ eclim<-subset(eclim, year!="1999") #there is no phenology data from 1999; we can
 eclim<-droplevels(eclim)
 
 #currently there is no plot 10 climate data from either site- this needs to be fixed
+snow$plot <- as.factor(snow$plot) #AME merge only works if class(plot) matches in eclim & snow
 eclim<-merge(eclim, snow, all=TRUE)
-eclim<-subset(eclim2, plot!=10) #remove this row of code once Ailene fixes climate data
+eclim<-subset(eclim, plot!="10") #remove this row of code once Ailene fixes climate data
+eclim <- droplevels(eclim) #AME useful because plot is a factor
 
 write.csv(eclim, "Analyses/teamnonstationarity/eclim.csv", row.names=FALSE)
 
+eclim <- read.csv("Analyses/teamnonstationarity/eclim.csv") #AME so I can back out easily and reset eclim
+
 #####using eclim to generate GDD for each doy and DSM (days since snowmelt)
 ###Lizzie's code
-source("Analyses/source/gddme.R")
+
 ## setup
 eclim<-setnames(eclim, "soiltemp1_mean", "meansoil1temp")
 
@@ -70,9 +78,26 @@ eclim<-setnames(eclim, "soiltemp1_mean", "meansoil1temp")
 thresh <- 5 # set the base temp as 5
 eclim$gddthreshmeansoil <- makethreshold.data(eclim, "meansoil1temp", thresh)
 
+#AME: and, if doy < meltdate, then gddthreshmeansoil = 0
+
+eclim$gddthreshmeansoil[eclim$doy < eclim$meltdate] <- 0
+
+#create new variable gddusethresh which zeros out gddthreshmeansoil
+eclim$gddusethresh<-eclim$gddthreshmeansoil
+eclim$gddusethresh[is.na(eclim$gddusethresh)]<-0
+
+#########################Maybe a better GDD calculator for gothic data?###############
+####Uncomment next line and run
+
+##eclim.soil.gdd <- aggregate(gddusethresh~plot+year+site+doy, data=eclim, cumsum)
+
+####
+#######################################################################################
+
+
 # Okay, need to calculate GDD for soil mean temps
 # for each plot x site x year
-eclim$giantcol <- paste(eclim$site, eclim$plot, eclim$temptreat, eclim$preciptreat, eclim$year)
+eclim$giantcol <- paste(eclim$site, eclim$plot, eclim$temptreat, eclim$year)
 eclim <- subset(eclim, is.na(doy)==FALSE) 
 uniquethings <- unique(eclim$giantcol)
 length(uniquethings) # super
@@ -90,18 +115,18 @@ for (j in 1:length(uniquethings)){
   print(j)
   subby <- subset(eclim, giantcol==uniquethings[j])
   subby <- subby[order(as.numeric(subby$doy)),]
-  subby$gddmeansoil <- makegdd.data.skipNA(subby, "gddthreshmeansoil", "doy", 1, 30)
-  subby$gddmeansoilNA <- countNA.pergdd(subby, "gddthreshmeansoil", "doy", 1, 30)
+  subby$gddmeansoil <- makegdd.data.skipNA(subby, "gddthreshmeansoil", "doy", 1, 5)
+  subby$gddmeansoilNA <- countNA.pergdd(subby, "gddthreshmeansoil", "doy", 1, 5)
   eclim.wgdd <- rbind(eclim.wgdd, subby)
 }
 
 #trying this for using meltdate as a start date
-for (j in 1:length(uniquethings)){
+for (j in 1:length(uniquethings))
   print(j)
   subby <- subset(eclim, giantcol==uniquethings[j])
   subby <- subby[order(as.numeric(subby$doy)),]
-  subby$gddmeansoil <- makegdd.data.skipNA(subby, "gddthreshmeansoil", "doy", 1, "meltdate")
-  subby$gddmeansoilNA <- countNA.pergdd(subby, "gddthreshmeansoil", "doy", 1, "meltdate")
+  subby$gddmeansoil <- makegdd.data.skipNA(subby, "gddthreshmeansoil", "doy", 1, 365)
+  subby$gddmeansoilNA <- countNA.pergdd(subby, "gddthreshmeansoil", "doy", 1, 365)
   eclim.wgdd <- rbind(eclim.wgdd, subby)
 }
 write.csv(eclim.wgdd, "Analyses/teamnonstationarity/eclim.wgdd_gothic.csv", row.names=FALSE)
