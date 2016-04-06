@@ -368,7 +368,7 @@ expclim2$soiltempdiff_max<-expclim2$soiltemp1_max-expclim2$soiltemp1_max.control
 expclim3<-subset(expclim2, !is.na(expclim2$soilmois1) & !is.na(expclim2$temptreat))
 ggplot(expclim3[which(expclim3$soilmois1<5),],aes(x=temptreat,y=soilmois1,fill=site))+
   scale_x_discrete(name="Temperature treatment")+ scale_y_continuous(name="Soil Moisture (depth 1)")+
-  facet_wrap(season~site, scales="free")+
+  facet_grid(season~site, scales="free")+
   geom_boxplot()
 
 #(B) Soil moisture by temperature difference from control (continuous)
@@ -377,7 +377,16 @@ ggplot(expclim3[which(expclim3$soilmois1<5),],aes(x=temptreat,y=soilmois1,fill=s
 expclim3<-subset(expclim2, !is.na(expclim2$soilmois1) & !is.na(expclim2$soiltempdiff_min)) #could change to max
 
 ggplot(expclim3[which(expclim3$soilmois1<5),],aes(x=soiltempdiff_min,y=soilmois1,col=temptreat3))+ #could change to max
-  scale_x_continuous(name="Plot temp - mean(ctrl temp for same site, year, DOY)")+ scale_y_continuous(name="Soil Moisture (depth 1)")+
-  facet_wrap(season~site, scales="free")+
+  scale_x_continuous(name="Plot temp - mean(ctrl temp for same site, year, DOY)")+ 
+  scale_y_continuous(name="Soil Moisture (depth 1)")+
+  facet_grid(season~site, scales="free")+
   geom_point()
+
+#(C) Add in precipitation treatments
+
+#(D) Can I put a line on graph from B for average fbb?
+
+#(E) Model
+
+#(F) Split up model by... phenology? precip?
 
