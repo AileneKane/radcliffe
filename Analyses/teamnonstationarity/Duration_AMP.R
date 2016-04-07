@@ -2,11 +2,13 @@
 #For this analysis, we are focusing only on Gothic Datasets
 rm(list=ls()) 
 ls()
+
 #required libraries (added by AME)
 library(data.table)
 library(ggplot2)
 source("Analyses/source/gddme.R")
 
+#used for ggplot2
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
   
@@ -42,9 +44,9 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   
   return(datac)
 }
-
-colors_Treatment<-c("Warmed"="#d7191c", "Control"="#2c7bb6")
-linetype_Treatment<-c("Warmed"="#d7191c", "Control"="#2c7bb6")
+#colors for ggplot2
+colors_treatment<-c("Warmed"="#d7191c", "Control"="#2c7bb6")
+linetype_treatment<-c("Warmed"="#d7191c", "Control"="#2c7bb6")
 
 #importing data
 obsdata <- read.csv("Analyses/obspheno.csv", header=TRUE)
@@ -80,6 +82,7 @@ edata<-droplevels(edata)
 
 #dropping rows with missing plot information
 edata<-subset(edata, plot %in% c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
+edata$plot<-as.factor(edata$plot)
 edata<-droplevels(edata)
 rownames(edata)<-NULL
 
@@ -87,6 +90,7 @@ eclim<-subset(expclim, site %in% c("price", "dunne")) #17979/327632 (5% of all e
 eclim<-droplevels(eclim)
 eclim<-eclim[,c("site", "temptreat", "plot", "year", "doy", "soiltemp1_min", "soiltemp1_max", "soiltemp1_mean" )]
 rownames(eclim)<-NULL
+levels(eclim$plot)
 
 #adding start data column to observational data (for gothic only)
 oclim$obs_startyear<-1973
@@ -109,10 +113,6 @@ edata<-edata[edata$year!=1990,]
 #dropping years from climate data that we don't have phenology from
 eclim<-subset(eclim, year!="1999") #there is no phenology data from 1999; we can remove this line once the expclim.csv has been updated
 eclim<-droplevels(eclim)
-#currently there is no plot 10 climate data from either site (this needs to be fixed)- remove below lines of  code once Ailene fixes data
-snow$plot <- as.factor(snow$plot) 
-snow<-subset(snow, plot!="10") 
-snow<- droplevels(snow) #AME useful because plot is a factor
 
 #merging snowmelt date with climate data
 eclim<-merge(eclim, snow, all=TRUE)
@@ -121,8 +121,9 @@ write.csv(eclim, "Analyses/teamnonstationarity/eclim.csv", row.names=FALSE)
 write.csv(edata, "Analyses/teamnonstationarity/edata.csv", row.names=FALSE)
 
 ##### Calculating temperature sensitivity #################
-#I can't get GGD to work right now so our measure of sensitivity will be PMD (post-melt date)
-#see further down to work on GDD
+#I can't get GGD to work right now so our measure of sensitivity will be PMD (post-melt date; the # of days
+# the event occured after snowmelt).  After this section, I try to work on GDD
+
 edata<-read.csv("Analyses/teamnonstationarity/edata.csv")
 
 eclim$PMD<-eclim$doy-eclim$meltdate #PMD= postmelt days, my measure of GDD
@@ -132,14 +133,20 @@ edata$PMD<-edata$doy-edata$meltdate
 eclim$treatment<-ifelse(eclim$plot=="1"|eclim$plot=="3"| eclim$plot=="5"|eclim$plot=="7"|eclim$plot=="9", "Control", "Warmed")
 edata$treatment<-ifelse(edata$plot=="1"|edata$plot=="3"| edata$plot=="5"|edata$plot=="7"|edata$plot=="9", "Control", "Warmed")
 
-edata_summary<-summarySE(edata, measurevar="PMD", groupvars=c("treatment", "plot","year.num"))
+#Looking at temperature sensitivity by event type
+# First Flower Date 
+edata_ffd<-subset(edata, event=="ffd")
+edata_ffd<-droplevels(edata_ffd)
 
-G1<-ggplot(edata_summary, aes(x=year.num, y=PMD, ymax=max(PMD)*1.05, color=colors_Treatment)) +
-  geom_errorbar(aes(ymin=PMD-se, ymax=PMD+se), size=1, width=.2) +
-  geom_line(aes(group=treatment),size=2) +
+edata_summaryffd<-summarySE(edata_ffd, measurevar="PMD", groupvars=c("treatment", "year.num"))
+edata_summaryffd$treatment<-as.factor(edata_summaryffd$treatment)
+
+ffd<-ggplot(edata_summaryffd, aes(x=year.num, y=PMD, color=treatment)) +
+  geom_errorbar(aes(ymin=PMD-ci, ymax=PMD+ci), size=1, width=.2) +
   geom_point(size=7)+
-  scale_color_manual(values=colors_Treatment) +
-  scale_linetype_manual(values=linetype_Treatment)+
+  geom_line(aes(group=treatment),size=2) +
+  scale_color_manual(values=colors_treatment) +
+  scale_linetype_manual(values=linetype_treatment)+
   theme(axis.text.x=element_text(size=18, color="black"),
         axis.text.y=element_text(size=18),
         axis.title.x=element_text(size=20, hjust=.5, vjust=0),
@@ -149,10 +156,102 @@ G1<-ggplot(edata_summary, aes(x=year.num, y=PMD, ymax=max(PMD)*1.05, color=color
         plot.title=element_text(size=24, vjust=1),
         panel.background=element_rect(),
         panel.border=element_rect(fill=NA, color="black", size=1))+
-  ylab("Postmelt Date")+
+  ylab("Post-melt Flowering Date")+
   xlab("Duration")
-G1
+ffd
 
+# First Fruit Date
+edata_ffrd<-subset(edata, event=="ffrd")
+edata_ffrd<-droplevels(edata_ffrd)
+
+edata_summaryffrd<-summarySE(edata_ffrd, measurevar="PMD", groupvars=c("treatment", "year.num"))
+edata_summaryffrd$treatment<-as.factor(edata_summaryffrd$treatment)
+
+ffrd<-ggplot(edata_summaryffrd, aes(x=year.num, y=PMD, color=treatment)) +
+  geom_errorbar(aes(ymin=PMD-ci, ymax=PMD+ci), size=1, width=.2) +
+  geom_point(size=7)+
+  geom_line(aes(group=treatment),size=2) +
+  scale_color_manual(values=colors_treatment) +
+  scale_linetype_manual(values=linetype_treatment)+
+  theme(axis.text.x=element_text(size=18, color="black"),
+        axis.text.y=element_text(size=18),
+        axis.title.x=element_text(size=20, hjust=.5, vjust=0),
+        axis.title.y=element_text(size=20, hjust=.5, vjust=1),
+        legend.text=element_text(size=16, hjust=1, vjust=0),
+        legend.title=element_text(size=16),
+        plot.title=element_text(size=24, vjust=1),
+        panel.background=element_rect(),
+        panel.border=element_rect(fill=NA, color="black", size=1))+
+  ylab("Post-melt Fruit Date")+
+  xlab("Duration")
+ffrd
+
+# First Seed Date
+edata_sd<-subset(edata, event=="sd")
+edata_sd<-droplevels(edata_sd)
+
+edata_summarysd<-summarySE(edata_sd, measurevar="PMD", groupvars=c("treatment", "year.num"))
+edata_summarysd$treatment<-as.factor(edata_summarysd$treatment)
+
+sd<-ggplot(edata_summarysd, aes(x=year.num, y=PMD, color=treatment)) +
+  geom_errorbar(aes(ymin=PMD-ci, ymax=PMD+ci), size=1, width=.2) +
+  geom_point(size=7)+
+  geom_line(aes(group=treatment),size=2) +
+  scale_color_manual(values=colors_treatment) +
+  scale_linetype_manual(values=linetype_treatment)+
+  theme(axis.text.x=element_text(size=18, color="black"),
+        axis.text.y=element_text(size=18),
+        axis.title.x=element_text(size=20, hjust=.5, vjust=0),
+        axis.title.y=element_text(size=20, hjust=.5, vjust=1),
+        legend.text=element_text(size=16, hjust=1, vjust=0),
+        legend.title=element_text(size=16),
+        plot.title=element_text(size=24, vjust=1),
+        panel.background=element_rect(),
+        panel.border=element_rect(fill=NA, color="black", size=1))+
+  ylab("Post-melt Seed Date")+
+  xlab("Duration")
+sd
+
+#Summary of these trends:
+# There is a 4 year lag in experimental warming induced temperature sensitivity change (relative to control plots)  
+# Beginning in year 2 (which was 1993, temperature sensitivities increase in both warmed and observational (control) plots.
+# This trend supports the hypothesis that warming decreases temperature sensitivity of phenology.
+# We now want to see if we find the same trend David Inouye's observational study.
+# For David's data, we can't look temparature sensitivity using plot-level PMD; we don't have meltdate data
+## We really need GDD data for this.
+# For now, let's make a big assumtion that snowmelt date in David's plots is the same as the average meltdate of warming meadow plots.
+
+#calculating average control plot meltdate per year (1991-1998)
+meltC<-subset(snow, plot %in% c("1", "3", "5", "7", "9"))
+meltC_mean<-as.data.frame(ddply(meltC, .(year), plyr::summarize, meltdate=mean(meltdate), .drop=FALSE))
+
+#attaching yearly meltdates to David's data
+odata_short<-subset(odata, year>="1991"& year<="1998")
+odata_short<-merge(odata, meltC_mean)
+
+#Calculating PMD
+odata_short$PMD<-odata_short$doy-odata_short$meltdate
+
+#Looking at temperature sensitivity 
+# First Flower Date 
+odata_summaryffd<-summarySE(odata_short, measurevar="PMD", groupvars=c("year.num"))
+
+ffd<-ggplot(odata_summaryffd, aes(x=year.num, y=PMD)) +
+  geom_errorbar(aes(ymin=PMD-ci, ymax=PMD+ci), size=1, width=.2) +
+  geom_point(size=7)+
+  geom_line(size=2) +
+  theme(axis.text.x=element_text(size=18, color="black"),
+        axis.text.y=element_text(size=18),
+        axis.title.x=element_text(size=20, hjust=.5, vjust=0),
+        axis.title.y=element_text(size=20, hjust=.5, vjust=1),
+        legend.text=element_text(size=16, hjust=1, vjust=0),
+        legend.title=element_text(size=16),
+        plot.title=element_text(size=24, vjust=1),
+        panel.background=element_rect(),
+        panel.border=element_rect(fill=NA, color="black", size=1))+
+  ylab("Post-melt Flowering Date")+
+  xlab("Duration")
+ffd
 ###Beginning here, Anne Marie has trouble and could use help!
 #####using eclim to generate GDD for each doy and DSM (days since snowmelt)
 ###Lizzie's code
