@@ -154,7 +154,7 @@ for(s in unique(fill.airtmax$site)){
       geom_point(data=fill.airtmax[fill.airtmax$site==s & is.na(fill.airtmax$airtemp_min),], aes(x=year.frac, y=met.filled), size=0.5, color="red") +
       ggtitle(s) +
       scale_x_continuous(name="Year") +
-      scale_y_continuous(name="Minimum Daily Air Temperature (degrees C)")
+      scale_y_continuous(name="Maximum Daily Air Temperature (degrees C)")
   )
 }
 dev.off()
