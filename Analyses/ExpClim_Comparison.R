@@ -8,8 +8,8 @@ library(ggplot2)
 expclim <- read.csv("expclim.csv")
 expclim$temptreat2 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "sham"), "ambient", "warming"))
 expclim$temptreat3 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "sham"), "0", paste(expclim$temptreat)))
-expclim$preciptreat2 <- as.factor(ifelse(expclim$preciptreat=="1", "+ precip", ifelse(expclim$preciptreat=="-1", "- precip", "ambient")))
-expclim$preciptreat2 <- as.factor(ifelse(is.na(expclim$preciptreat2), "ambient", paste(expclim$preciptreat2)))
+expclim$preciptreat2 <- as.factor(ifelse(expclim$preciptreat=="1", "+ precip", ifelse(expclim$preciptreat=="-1", "- precip", "0")))
+expclim$preciptreat2 <- as.factor(ifelse(is.na(expclim$preciptreat2), "0", paste(expclim$preciptreat2)))
 expclim <- expclim[!is.na(expclim$doy),]
 expclim$year.frac <- expclim$year + expclim$doy/366
 summary(expclim)
