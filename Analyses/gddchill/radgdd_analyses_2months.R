@@ -108,6 +108,7 @@ for(k in 1:length(sit)){
 }
 finalGDD_OBS<-df[-1,] #removes NAs in first row -- sorry, messy coding.
 
+
 #plot(meanbase0~year, data=final)subset(final, site=="fitter" & species=="Acer_campestre"))
 
 write.table(finalGDD_OBS, "/Users/Yann1/Documents/Postdoc Davos/Colloques/2016/Harward April 2016/radmeeting/github/radcliffe/Analyses/GDD2monthsOBS.txt", sep=";", col.names=TRUE, row.names=FALSE, dec=".")
@@ -214,3 +215,59 @@ finalGDD_EXP<-df[-1,] #removes NAs in first row -- sorry, messy coding.
 #plot(meanbase0~year, data=final)subset(final, site=="fitter" & species=="Acer_campestre"))
 
 write.table(finalGDD_EXP, "/Users/Yann1/Documents/Postdoc Davos/Colloques/2016/Harward April 2016/radmeeting/github/radcliffe/Analyses/GDD2monthsEXP.txt", sep=";", col.names=TRUE, row.names=FALSE, dec=".")
+
+
+############----------- CHILLING----------#########
+
+
+chillmin <- 0
+chillmax <- 10
+obsclim$Chillunit <-0
+
+names(obsclim)
+head(obsclim)
+
+is.na(obsclim$airtemp_max[i] )
+
+for (i in 1:nrow(obsclim)){ 
+  if (is.na(obsclim$airtemp_max[i]) | is.na(obsclim$airtemp_min[i]) )
+    {obsclim$Chillunit[i] <- NA } else { if (( obsclim$airtemp_max[i]<chillmax & obsclim$airtemp_max[i]>chillmin ) | 
+  (obsclim$airtemp_min[i]<chillmax & obsclim$airtemp_min[i]>chillmin ))
+      { obsclim$Chillunit[i] <- 1   }
+      }
+  
+    if(i%%1000==0){print(i)}
+}
+
+
+############make the loop for the calculation of the different CHILLING FOR OBSERVATIONS
+names(temppheno)
+head(temppheno)
+head(obsclim)
+names(subclim)
+names(obsclim)
+
+temppheno <- obspheno[,c(1,3,4,5,8,10)]
+head(temppheno)
+
+sit<-as.character(unique(temppheno$site))
+
+#store<-list(list())
+df<-data.frame(matrix(NA,ncol=7))
+names(df)<-c(names(temppheno),names(obsclim[20]))
+for(k in 1:length(sit)){
+  subclim<-subset(obsclim,obsclim$site==sit[k]) #just one site
+  subpheno<-subset(temppheno,temppheno$site==sit[k])
+  for (i in 1:nrow(subpheno)){ #need to do this for every phenological phase
+    clim<-subclim[which(subclim$Juliandate<subpheno$Juliandatepheno[i]-60),]
+    clim2<-clim[which(clim$Juliandate>=clim$Juliandate[clim$doy==244]),]
+    sumclim<-sum(clim[,20])
+    orig<-subpheno[i,]
+    tot<-cbind(orig,t(as.data.frame(sumclim)))
+    df<-rbind(df,tot)
+    #store[[k]][[i]]<-sumclim
+    if(i%%1000==0){print(i)}
+  }
+}
+?cbind
+names(clim)
