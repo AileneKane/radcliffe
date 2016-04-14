@@ -2,6 +2,7 @@
 #For this analysis, we are focusing only on Gothic Datasets
 rm(list=ls()) 
 ls()
+#AMP: setwd("~/Desktop/Radcliffe/radcliffe")
 
 #required libraries (added by AME)
 library(data.table)
@@ -44,6 +45,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   
   return(datac)
 }
+
 #colors for ggplot2
 colors_treatment<-c("Warmed"="#d7191c", "Control"="#2c7bb6")
 linetype_treatment<-c("Warmed"="#d7191c", "Control"="#2c7bb6")
@@ -76,7 +78,6 @@ odata<-subset(obsdata, site %in% c("gothic")) #counts 162352 / 211952 (77% of al
 odata<-droplevels(odata)
 oclim<-subset(obsclim, site %in% c("gothic")) #49044/980880 (5% of all obs climate data)
 oclim<-droplevels(oclim)
-
 edata<-subset(expdata, site %in% c("price", "dunne")) #12,252/76,359 (16% of all experimental pheno data)
 edata<-droplevels(edata)
 
@@ -110,7 +111,7 @@ edata<-merge(edata, snow, all=TRUE)
 #dropping 1990 data because we don't have snowmelt
 edata<-edata[edata$year!=1990,]
 
-#dropping years from climate data that we don't have phenology from
+#dropping years from climate data that we don't have phenology data
 eclim<-subset(eclim, year!="1999") #there is no phenology data from 1999; we can remove this line once the expclim.csv has been updated
 eclim<-droplevels(eclim)
 
@@ -157,7 +158,7 @@ ffd<-ggplot(edata_summaryffd, aes(x=year.num, y=PMD, color=treatment)) +
         panel.background=element_rect(),
         panel.border=element_rect(fill=NA, color="black", size=1))+
   ylab("Post-melt Flowering Date")+
-  xlab("Duration")
+  xlab("Experiment Duration")
 ffd
 
 # First Fruit Date
@@ -183,7 +184,7 @@ ffrd<-ggplot(edata_summaryffrd, aes(x=year.num, y=PMD, color=treatment)) +
         panel.background=element_rect(),
         panel.border=element_rect(fill=NA, color="black", size=1))+
   ylab("Post-melt Fruit Date")+
-  xlab("Duration")
+  xlab("Experiment Duration")
 ffrd
 
 # First Seed Date
@@ -209,7 +210,7 @@ sd<-ggplot(edata_summarysd, aes(x=year.num, y=PMD, color=treatment)) +
         panel.background=element_rect(),
         panel.border=element_rect(fill=NA, color="black", size=1))+
   ylab("Post-melt Seed Date")+
-  xlab("Duration")
+  xlab("Experiment Duration")
 sd
 
 #Summary of these trends:
@@ -250,17 +251,21 @@ ffd<-ggplot(odata_summaryffd, aes(x=year.num, y=PMD)) +
         panel.background=element_rect(),
         panel.border=element_rect(fill=NA, color="black", size=1))+
   ylab("Post-melt Flowering Date")+
-  xlab("Duration")
+  xlab("Observatinal Duration")
 ffd
+
+
 ###Beginning here, Anne Marie has trouble and could use help!
-#####using eclim to generate GDD for each doy and DSM (days since snowmelt)
-###Lizzie's code
+#####Calculating GDD for each doy (and ideally each DSM- Days Since Snowmelt)
+
+#reading in warming meadow experimental climate data
 eclim <- read.csv("Analyses/teamnonstationarity/eclim.csv") #AME so I can back out easily and reset eclim
 ## setup
 eclim<-setnames(eclim, "soiltemp1_mean", "meansoil1temp") #changing column name to match Lizzie's code
 
+###Lizzie's code
 ## now make the threshold data
-thresh <- 5 # set the base temp as 5
+thresh <- 5 # set the base temp as 5, AMP: we may want to make this 1C
 eclim$gddthreshmeansoil <- makethreshold.data(eclim, "meansoil1temp", thresh)
 
 #AME: and, if doy < meltdate, then gddthreshmeansoil = 0
@@ -273,9 +278,9 @@ eclim$gddusethresh[is.na(eclim$gddusethresh)]<-0
 
 
 #########################Maybe a better GDD calculator for gothic data?###############
-#AME-Uncomment next line and run
-#AMP- Right now I don't know how to convert a list (which is formed for ggdusethresh below using aggregate) into a numeric column
-#Also, we only want to sum soil temperature when it is > 5C; I don't think the code below does this.
+#AME-Uncomment below line and run
+#AMP- Right now I don't know how to convert a list (which is formed for ggdusethresh below using aggregate ()) into a numeric column
+#AMP-Also, we only want to sum soil temperature when it is greater than our threshold (5C) ; I don't think the code below does this.
 
 #ggdusethresh=soiltemperature 
 
