@@ -55,7 +55,8 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Data/Expe
   marchin3$species[marchin3$genusspecies=="THTH"] <- "thalictroides"
   marchin3$genus[marchin3$genusspecies=="TIDI"] <- "Tipularia"
   marchin3$species[marchin3$genusspecies=="TIDI"] <- "discolor"
-  marchin<-subset(marchin3, select=c("site","plot","event","year","genus","species", "doy"))
+  marchin3$block<-NA
+  marchin<-subset(marchin3, select=c("site","block","plot","event","year","genus","species", "doy"))
   #marchin$variety <- NA
   #marchin$cult <- NA
   return(marchin)
@@ -111,7 +112,17 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace3$species[bace3$genusspecies=="Q. rubra  "] <- "rubra"
   bace3$genus[bace3$genusspecies=="Q. rubra   "] <- "Quercus"
   bace3$species[bace3$genusspecies=="Q. rubra   "] <- "rubra"
-  bace<-subset(bace3, select=c("site","plot","event","year","genus","species", "doy"))
+  bace3[bace3$plot<5,]$block<-1
+  bace3[bace3$plot<9 & bace3$plot>4,]$block<-2
+  bace3[bace3$plot<13 & bace3$plot>8,]$block<-3
+  bace3[bace3$plot<17 & bace3$plot>12,]$block<-4
+  bace3[bace3$plot<21 & bace3$plot>16,]$block<-5
+  bace3[bace3$plot<25 & bace3$plot>20,]$block<-6
+  bace3[bace3$plot<29 & bace3$plot>24,]$block<-7
+  bace3[bace3$plot<33 & bace3$plot>28,]$block<-8
+  bace3[bace3$plot<37 & bace3$plot>32,]$block<-9
+  
+  bace<-subset(bace3, select=c("site","block","plot","event","year","genus","species", "doy"))
   #bace$variety <- NA
   #bace$cult <- NA
   bace<-bace[!is.na(bace$genus),]
@@ -264,12 +275,21 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Dat
   farnsworth7a$event <- "col"
   #pull out all drop rows
   farnsworth8<-farnsworth1[which(farnsworth1$drop>0),]
+  
   farnsworth8a<-subset(farnsworth7, select=c("site","plot","event","year","genus","species1","drop"))
   colnames(farnsworth8a)[6]<-"species"
   colnames(farnsworth8a)[7]<-"doy"
   farnsworth8a$event <- "drop"
-  farnsworth<- rbind(farnsworth2a,farnsworth3a,farnsworth3a,farnsworth4a,farnsworth5a,farnsworth6a,farnsworth7a,farnsworth8a)
-  return(farnsworth)
+  allclim<- rbind(farnsworth2a,farnsworth3a,farnsworth3a,farnsworth4a,farnsworth5a,farnsworth6a,farnsworth7a,farnsworth8a)
+  allclim$block<-NA
+  allclim[allclim$plot<4,]$block=1
+  allclim[allclim$plot==4|allclim$plot==5|allclim$plot==6,]$block=2
+  allclim[allclim$plot==7|allclim$plot==8|allclim$plot==9,]$block=3
+  allclim[allclim$plot==10|allclim$plot==11|allclim$plot==12,]$block=4
+  allclim[allclim$plot==13|allclim$plot==14|allclim$plot==15,]$block=5
+  allclim[allclim$plot==16|allclim$plot==17|allclim$plot==18,]$block=6
+  farnsworth<-subset(allclim, select=c("site","block","plot","event","year","genus","species1","doy"))
+return(farnsworth)
 }
 ###Cleland et al Jasper Ridge data
 ###FFD

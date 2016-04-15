@@ -32,7 +32,7 @@ for (i in 1:dim(expclim_new)[1]){
     if(expclim_new$soiltemp1_mean[i]>=tchill){expclim_new$chday_soil[i]<-0}
   }
 }
-##The below code is really slow!Then get chill days based on mean airtmep
+##The below code is really slow! Then get chill days based on mean airtmep
 expclim_new$airtemp_mean<-(expclim_new$airtemp_min+expclim_new$airtemp_max)/2
 expclim_new$chday_air<-NA
 for (i in 1:dim(expclim_new)[1]){
