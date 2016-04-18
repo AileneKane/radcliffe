@@ -32,10 +32,10 @@ sort(expspp[which(expspp %in% obspp)]) # yay 145
 
 # subset the observational data down to overlappings spp
 obsexpspp <- obs[which(obs$latbi %in% expspp),]
-expobsspp <- exp[which(exp$latbi %in% expspp),]
+expobsspp <- exp[which(exp$latbi %in% obspp),]
 
 length(unique(expobsspp$site)) # all 12 sites
-length(unique(obs$site)) # only 9 of 15 sites
+length(unique(obsexpspp$site)) # only 11 of the 15 sites
 
 # table(expobsspp$site, expobsspp$latbi)
 # which experiments have usable air temp: 7 sites have some form of usable air temp now
