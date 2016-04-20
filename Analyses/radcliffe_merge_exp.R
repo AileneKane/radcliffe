@@ -377,10 +377,10 @@ clarkduke4<-reshape(clarkduke3,varying = list(names(clarkduke3)[6:8]), direction
 clarkduke4$event<-c(rep("bbd", times=dim(clarkduke3)[1]),rep("lud", times=dim(clarkduke3)[1]),rep("lod", times=dim(clarkduke3)[1]))
 #clarkduke4$variety <- NA
 #clarkduke4$cult <- NA
+clarkduke4$block<-NA
 clarkduke5<-subset(clarkduke4, select=c("site","plot","event","year","genus","species","doy"))
 clarkduke<-rbind(clarkduke,clarkduke5)
 }
-clarkduke<-clarkduke[-1,]
 clarkduke<-clarkduke[!is.na(clarkduke$doy),]
 clarkduke<-clarkduke[-which(clarkduke$genus=="Ob"),]#unknown genus at clarkduke
 clarkduke[which(clarkduke$genus=="Carya "),]$genus<-"Carya"
@@ -392,7 +392,7 @@ return(clarkduke)
 ## Notes: Contact: Public data ##
 clean.raw$clarkharvard <- function(filename, path="./Data/Experiments/clark") {
     clarkharvardplots<-c("HF_G01_3.csv","HF_G02_A.csv","HF_G03_5.csv","HF_G04_A.csv","HF_G05_5.csv","HF_G06_3.csv","HF_G07_A.csv","HF_G08_3.csv","HF_G09_5.csv","HF_G10_C.csv","HF_G11_C.csv","HF_G12_C.csv","HF_S01_5.csv","HF_S02_A.csv","HF_S03_3.csv","HF_S04_5.csv","HF_S05_A.csv","HF_S06_3.csv","HF_S07_A.csv","HF_S08_3.csv","HF_S09_5.csv","HF_S10_C.csv","HF_S11_C.csv","HF_S12_C.csv")
-    clarkharvard <- NA
+    clarkharvard <- c()
     spfile <- file.path(path, "speciesList_clark.csv")
     specieslist<-read.csv(spfile, header=TRUE)
     for (i in 1:length(clarkharvardplots)){
@@ -438,11 +438,10 @@ clean.raw$clarkharvard <- function(filename, path="./Data/Experiments/clark") {
       clarkharvard4$event<-c(rep("bbd", times=dim(clarkharvard3)[1]),rep("lud", times=dim(clarkharvard3)[1]),rep("lod", times=dim(clarkharvard3)[1]))
       #clarkharvard4$variety <- NA
       #clarkharvard4$cult <- NA
-      
-      clarkharvard5<-subset(clarkharvard4, select=c("site","plot","event","year","genus","species","doy"))
+      clarkharvard4$block<-NA
+      clarkharvard5<-subset(clarkharvard4, select=c("site","block","plot","event","year","genus","species","doy"))
       clarkharvard<-rbind(clarkharvard,clarkharvard5)
     }
-    clarkharvard<-clarkharvard[-1,]
     clarkharvard<-clarkharvard[!is.na(clarkharvard$doy),]
     return(clarkharvard)
   }
@@ -480,7 +479,8 @@ clean.raw$sherry <- function(filename, path) {
   sherry4$event<-c(rep("ffd", times=dim(sherry)[1]),rep("ffrd", times=dim(sherry)[1]))
   sherry4$year<-2003
   sherry4$site<-"sherry"
-  sherryok<-subset(sherry4, select=c("site","plot","event","year","genus","species", "doy"))
+  sherry4$block<-NA
+  sherryok<-subset(sherry4, select=c("site","block","plot","event","year","genus","species", "doy"))
   #sherryok$variety <- NA
   #sherryok$cult <- NA
   #file2 <- file.path(path, "SherryPhenology2003_First6spp.csv")#need to add these in- they're just a little different than others in formattin
