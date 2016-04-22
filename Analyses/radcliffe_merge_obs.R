@@ -4,13 +4,6 @@ setwd("~/GitHub/radcliffe") # setwd("~/Documents/git/projects/meta_ep2/radcliffe
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
-library(zoo)
-##Want to get several files:
-#1. Phenology data: site, plot, event (phen event),year, doy,genus,species,Temp_treat, Precip_treat, onetempchange, precipchange, precipchangetyp
-#2. Species names: site,genus,species,scrub,genus.prescrub,species.prescrub,ipni
-#3. Study info: DatasetID  Year  medium	Temp_treat	onetempchange	Precip_treat	precipchange	precipchangetyp
-#4. Temperature data
-#5. Precipitation/moisture data
 
 ###Below code is from Lizzi'es NECTAR database 
 # Species binomials etc. extractions #
@@ -91,8 +84,7 @@ taxoscrub <- function(dat, sitename) {
 clean.rawobs<- list()
 
 clean.rawobs$fitter <- function(filename, path) 
-  {#file="Fitter_data.csv",path="Observations/Raw/"
-
+  {
     ## Fitter ##
     ## Data type: FFD ##
     ## Notes: Contact: Public data ##
@@ -562,6 +554,28 @@ clean.rawobs$rousifl <- function(filename="rousi_betula_flowering.csv", path=raw
   rousiflrb <- subset(rousifl, select=common.cols.raw)
   return(rousiflrb)
 }
+
+###Bock et al data on flowering of hundreds of species on the island of guernsey; these data begin when the first date of budburst occurred. 
+clean.rawobs$bock <- function(filename="Guernsey_data_for_Ailene.csv", path=raw.data.dir) {
+  bock <- read.csv(file.path(path, filename),header=T)
+  bock$date <- as.Date(paste(bock$Month, bock$Day,bock$Year, sep="-"),format="%m-%d-%Y")            
+  bock$doy <- format(bock$date, "%j")
+  ffd<-aggregate(x=bock$doy, by=list(bock$Plant,bock$Year), FUN=min,na.rm=F)
+  colnames(ffd)<-c("genus.sp","year","doy")
+  ffd$site<-"bock"
+  ffd$event<-"ffd"
+  ffd$plot<- NA
+  gensp <- strsplit(as.character(ffd$genus.sp),' ') 
+  gensp<-do.call(rbind, gensp)
+  bock<-cbind(ffd,gensp[,1:4])
+  colnames(bock)[11]<-"genus"
+  colnames(bock)[12]<-"species"
+  
+  bock[which(bock$Day==52),]$Day<-22#fix typo in day column
+  bock<- taxoscrub(bock, "bock")
+  bock<- subset(bock, select=common.cols.raw)
+  return(bock)
+}
 # Produce cleaned raw data
 #
 # make list to store all the derived dataset cleaning functions
@@ -583,13 +597,14 @@ cleandata.rawobs$gothic<-clean.rawobs$gothic(path=raw.data.dir)
 cleandata.rawobs$uwm<-clean.rawobs$uwm(path=raw.data.dir)
 cleandata.rawobs$rousi<-clean.rawobs$rousi(path=raw.data.dir)
 cleandata.rawobs$rousifl<-clean.rawobs$rousifl(path=raw.data.dir)
+cleandata.rawobs$bock<-clean.rawobs$bock(path=raw.data.dir)
 
 obsphendb <- do.call("rbind", cleandata.rawobs)
 row.names(obsphendb) <- NULL
 obsphendb<-obsphendb[!obsphendb$genus=="na",]#look at these- some rows from konza and washdc have doys...why na?
 obsphendb<-obsphendb[!is.na(obsphendb$site),]#look at these-why NA?
 dim(obsphendb)
-#211952  rows
+#244682  rows
 ##check some other things...
 unique(obsphendb$site)
 sort(unique(obsphendb$year))

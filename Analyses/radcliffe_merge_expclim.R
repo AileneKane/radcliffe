@@ -5,7 +5,6 @@ setwd("~/GitHub/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
-#library(zoo)
 ##Daily temp  data and whatever soil moisture data are available
 clean.clim <- list()
 
@@ -87,16 +86,7 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   temp<- read.csv(file, header=TRUE)
   temp.long<-reshape(temp,varying = list(colnames(temp)[6:23]), direction = "long", v.names = c("soiltemp1_mean"), times = c(colnames(temp)[6:23]))
   colnames(temp.long)[10]<-"plotfull"
-  temp.long$plot<-substr(temp.long$plotfull,5,6)
-  temp.long[temp.long$plotfull=="plot1h",]$plot=1
-  temp.long[temp.long$plotfull=="plot6h",]$plot=6
-  temp.long[temp.long$plotfull=="plot8h",]$plot=8
-  temp.long[temp.long$plotfull=="plot3d",]$plot=3
-  temp.long[temp.long$plotfull=="plot5d",]$plot=5
-  temp.long[temp.long$plotfull=="plot9d",]$plot=9
-  temp.long[temp.long$plotfull=="plot2c",]$plot=2
-  temp.long[temp.long$plotfull=="plot4c",]$plot=4
-  temp.long[temp.long$plotfull=="plot7c",]$plot=7
+  temp.long$plot<-substr(temp.long$plotfull,5,nchar(temp.long$plotfull)-1)
   temp.long$treatment2<- substr(temp.long$plotfull,(nchar(temp.long$plotfull)+1)-1,nchar(temp.long$plotfull))
   temp.long$treatment<-NA
   temp.long[which(temp.long$treatment2=="h"),]$treatment<-"H"
@@ -106,8 +96,10 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   file2<-file.path(path, "hf005-05-soil-respiration.csv")
   mois<-read.csv(file2,  header=TRUE)
   mois$doy<-strftime(strptime(paste(mois$year,mois$month,mois$day,sep="-"), format = "%Y-%m-%d"),format = "%j") 
-  mois2<-subset(mois,select=c("year","doy","plot","treatment","moisture","temp.4cm"))
-  allclim<-merge(temp.long2,mois2,by.x=c("year","doy","plot","treatment"),by.y=c("year","doy","plot","treatment"),all=TRUE)
+  #take mean of soil moisture across whole day
+  mois_mean<-aggregate(mois$moisture, by=list(mois$year,mois$doy,mois$plot,mois$treatment), FUN=mean,na.rm=F)
+  colnames(mois_mean)<-c("year","doy","plot","treatment","moisture")
+  allclim<-merge(temp.long2,mois_mean,by.x=c("year","doy","plot","treatment"),by.y=c("year","doy","plot","treatment"),all=TRUE)
   allclim$airtemp_min<-NA 
   allclim$airtemp_max<-NA 
   allclim$soiltemp1_min<-NA
@@ -136,8 +128,10 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   allclim[allclim$plot==13|allclim$plot==14|allclim$plot==15,]$block=5
   allclim[allclim$plot==16|allclim$plot==17|allclim$plot==18,]$block=6
   farnsworthclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(farnsworthclim) <- NULL
-  return(farnsworthclim) 
+  ##select out only 1993, since that's the only year for which we have phenology data
+  farnsworthclim_1993<-farnsworthclim[farnsworthclim$year==1993,]
+  row.names(farnsworthclim_1993) <- NULL
+  return(farnsworthclim_1993) 
 }
 
 ##Clark et al from Harvard ##
@@ -600,7 +594,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim<-cbind(soiltemp_min,soiltemp_max$x)
   colnames(allclim)<-c("year","doy","block","plot","soiltemp1_min","soiltemp1_max")
   allclim1<-rbind(allclim1991,allclim)
-  allclim1$site<-"dunne"
+  allclim1$site<-"price"
   allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
   allclim1$preciptreat<-NA
@@ -825,9 +819,9 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#419861     21
+    dim(expphenclim1)#282702     21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#419837      21
+    dim(expphenclim)#282678      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -837,7 +831,7 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     expphenclim$soiltemp2_max<-as.numeric(expphenclim$soiltemp2_max)
     expphenclim$soiltemp1_max<-as.numeric(expphenclim$soiltemp1_max)
     expphenclim$soiltemp1_mean<-as.numeric(expphenclim$soiltemp1_mean)
-    expphenclim$soiltemp2_mean<-as.numeric(expphenclim$soiltemp1_mean)
+    expphenclim$soiltemp2_mean<-as.numeric(expphenclim$soiltemp2_mean)
     expphenclim$soilmois1<-as.numeric(expphenclim$soilmois1)
     expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
     row.names(expphenclim) <- NULL
@@ -851,9 +845,9 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     boxplot(airtemp_max~site, data=expphenclim)
     boxplot(soiltemp1_max~site, data=expphenclim)
     boxplot(soiltemp2_min~site, data=expphenclim)
-    boxplot(soiltemp1_max~site, data=expphenclim)
+    boxplot(soiltemp1_mean~site, data=expphenclim)
     boxplot(soiltemp2_max~site, data=expphenclim)
-    boxplot(soiltemp2_mean~temptreat, data=expphenclim)
+    boxplot(soiltemp1_mean~temptreat, data=expphenclim)
     boxplot(soilmois2~site, data=expphenclim)
     
     expphenclim$alltreat<-paste(expphenclim$temptreat,expphenclim$preciptreat,sep=".")
@@ -867,4 +861,3 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     boxplot(soiltemp1_mean~alltreat, data=expphenclim)
     boxplot(soilmois1~alltreat, data=expphenclim)
 
-    
