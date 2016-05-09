@@ -102,8 +102,4 @@ expclim3[expclim3$mindoy>15,]$cumgdd_soil<-NA
 expclim3[expclim3$site==noblocksites[1]|expclim3$site==noblocksites[2]|expclim3$site==noblocksites[3]|expclim3$site==noblocksites[4]|expclim3$site==noblocksites[5]|expclim3$site==noblocksites[6],]$block<-NA
 
 write.csv(expclim3,"Analyses/gddchill/expclim.wchillgdd.csv", row.names=FALSE)
-#Check some things
-max(expclim3$numnas_soilgdd, na.rm=T)
-
-head(expclim2)
 

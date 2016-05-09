@@ -296,15 +296,10 @@ for (i in 1:length(bacesoiltempfiles)){
   soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
   soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
   soiltemp$block<-NA
-  soiltemp[soiltemp$plot<5,]$block<-1
-  soiltemp[soiltemp$plot<9 & soiltemp$plot>4,]$block<-2
-  soiltemp[soiltemp$plot<13 & soiltemp$plot>8,]$block<-3
-  soiltemp[soiltemp$plot<17 & soiltemp$plot>12,]$block<-4
-  soiltemp[soiltemp$plot<21 & soiltemp$plot>16,]$block<-5
-  soiltemp[soiltemp$plot<25 & soiltemp$plot>20,]$block<-6
-  soiltemp[soiltemp$plot<29 & soiltemp$plot>24,]$block<-7
-  soiltemp[soiltemp$plot<33 & soiltemp$plot>28,]$block<-8
-  soiltemp[soiltemp$plot<37 & soiltemp$plot>32,]$block<-9
+  soiltemp[soiltemp$plot<13,]$block<-1
+  soiltemp[soiltemp$plot<25 & soiltemp$plot>12,]$block<-2
+  soiltemp[soiltemp$plot<37 & soiltemp$plot>24,]$block<-3
+  soiltemp[soiltemp$plot>36,]$block<-0
   soiltemp<-soiltemp[order(soiltemp$temptreat,soiltemp$preciptreat,soiltemp$year,soiltemp$doy),]
   soiltemp$soilmaxreftemp<-c(soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)])
   soiltemp$soilmaxdelta<- soiltemp$soiltemp1_max-soiltemp$soilmaxreftemp
