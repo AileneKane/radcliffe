@@ -525,7 +525,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
 ## Data type: soil temp and moisture (%), measured every 2 hours; no sham/disturbance control (only ambient)
 ##Notes: for Dunne: 1995-1998;
 ###1 - 10 = Plot (ODD = control, EVEN = Heated); A - C = Zone (A = lower, B = middle, C = upper in terms of local topography); 1 - 3 = Depth (1 = 5cm, 2 = 12cm, 3 = 25cm)  
-###average across zones,and just use plot numbers to climate data
+###average across zones,and use plot numbers
 ###for 1991: only soil depth 2 (12 cm) in cleaned file
 clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Data/Experiments/dunne") {
   file <- file.path(path,filename)
@@ -533,19 +533,22 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   #soiltemp$Year<-as.factor(soiltemp$Year)
   soiltemp2<-melt(soiltemp,id = 1:4) 
   soiltemp2$plot<-substr(soiltemp2$variable,2,nchar(as.character(soiltemp2$variable))-2)
-  soiltemp2$block<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable))-1,nchar(as.character(soiltemp2$variable))-1)#zone
   soiltemp2$depth<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable)),nchar(as.character(soiltemp2$variable)))
-  soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","block","plot"))
-  soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","block","plot"))
-  soiltemp_min<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$block,soiltemp3$plot),FUN=min,na.rm=F)
-  soiltemp_max<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$block,soiltemp3$plot),FUN=max,na.rm=F)
-  soiltemp_min1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$block,soiltemp3_1991$plot),FUN=min,na.rm=F)
-  soiltemp_max1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$block,soiltemp3_1991$plot),FUN=max,na.rm=F)
-  allclim1991<-cbind(soiltemp_min1991,soiltemp_max1991$x)
-  colnames(allclim1991)<-c("year","doy","block","plot","soiltemp1_min","soiltemp1_max")
-  allclim<-cbind(soiltemp_min,soiltemp_max$x)
-  colnames(allclim)<-c("year","doy","block","plot","soiltemp1_min","soiltemp1_max")
-  allclim1<-rbind(allclim1991,allclim)
+  #First get average across zones, within each hour, doy, plot, and depth
+  soiltemp3<-subset(soiltemp2,select=c("Year","DOY","Hour","value","plot"))
+  soiltemp3a<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$Hour,soiltemp3$plot),FUN=mean,na.rm=F)
+  #soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","plot"))
+  #soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","plot"))
+  colnames(soiltemp3a)<-c("Year","DOY","Hour","plot","value")
+  soiltemp_min<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=min,na.rm=F)
+  soiltemp_max<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=max,na.rm=F)
+  #soiltemp_min1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=min,na.rm=F)
+  #soiltemp_max1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=max,na.rm=F)
+  #allclim1991<-cbind(soiltemp_min1991,soiltemp_max1991$x)
+  #colnames(allclim1991)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
+  allclim1<-cbind(soiltemp_min,soiltemp_max$x)
+  colnames(allclim1)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
+  #allclim1<-rbind(allclim1991,allclim)
   allclim1$site<-"dunne"
   allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
@@ -563,6 +566,7 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim2$cantemp_max<-NA
   allclim2$surftemp_min<-NA
   allclim2$surftemp_max<-NA
+  allclim2$block<-NA
   dunneclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(dunneclim) <- NULL
   return(dunneclim)
@@ -570,25 +574,28 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
 ##Climate data for RMBL (Price & Wasser & Dunne) from RMBL
 ## Data type: soil temp and moisture, measured every 2 hours
 ## Notes: for Price & Wasser, 1990-1994 (climate data doesn't start until 1991)
-clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Data/Experiments/price") {
+clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Data/Experiments/dunne") {
   file <- file.path(path,filename)
   soiltemp<- read.csv(file,header=TRUE)
   #soiltemp$Year<-as.factor(soiltemp$Year)
   soiltemp2<-melt(soiltemp,id = 1:4) 
   soiltemp2$plot<-substr(soiltemp2$variable,2,nchar(as.character(soiltemp2$variable))-2)
-  soiltemp2$block<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable))-1,nchar(as.character(soiltemp2$variable))-1)#zone
   soiltemp2$depth<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable)),nchar(as.character(soiltemp2$variable)))
-  soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","block","plot"))
-  soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","block","plot"))
-  soiltemp_min<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$block,soiltemp3$plot),FUN=min,na.rm=F)
-  soiltemp_max<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$block,soiltemp3$plot),FUN=max,na.rm=F)
-  soiltemp_min1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$block,soiltemp3_1991$plot),FUN=min,na.rm=F)
-  soiltemp_max1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$block,soiltemp3_1991$plot),FUN=max,na.rm=F)
-  allclim1991<-cbind(soiltemp_min1991,soiltemp_max1991$x)
-  colnames(allclim1991)<-c("year","doy","block","plot","soiltemp1_min","soiltemp1_max")
-  allclim<-cbind(soiltemp_min,soiltemp_max$x)
-  colnames(allclim)<-c("year","doy","block","plot","soiltemp1_min","soiltemp1_max")
-  allclim1<-rbind(allclim1991,allclim)
+  #First get average across zones, within each hour, doy, plot, and depth
+  soiltemp3<-subset(soiltemp2,select=c("Year","DOY","Hour","value","plot"))
+  soiltemp3a<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$Hour,soiltemp3$plot),FUN=mean,na.rm=F)
+  #soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","plot"))
+  #soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","plot"))
+  colnames(soiltemp3a)<-c("Year","DOY","Hour","plot","value")
+  soiltemp_min<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=min,na.rm=F)
+  soiltemp_max<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=max,na.rm=F)
+  #soiltemp_min1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=min,na.rm=F)
+  #soiltemp_max1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=max,na.rm=F)
+  #allclim1991<-cbind(soiltemp_min1991,soiltemp_max1991$x)
+  #colnames(allclim1991)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
+  allclim1<-cbind(soiltemp_min,soiltemp_max$x)
+  colnames(allclim1)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
+  #allclim1<-rbind(allclim1991,allclim)
   allclim1$site<-"price"
   allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
@@ -606,7 +613,8 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim2$cantemp_max<-NA
   allclim2$surftemp_min<-NA
   allclim2$surftemp_max<-NA
-  priceclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  allclim2$block<-NA
+  dunneclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(priceclim) <- NULL
   return(priceclim)
 }
@@ -814,9 +822,9 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#282702     21
+    dim(expphenclim1)#212506     21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#282678      21
+    dim(expphenclim)#212482      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
