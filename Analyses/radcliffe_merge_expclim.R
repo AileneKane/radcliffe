@@ -614,7 +614,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim2$surftemp_min<-NA
   allclim2$surftemp_max<-NA
   allclim2$block<-NA
-  dunneclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  priceclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(priceclim) <- NULL
   return(priceclim)
 }
@@ -822,7 +822,7 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#212506     21
+    dim(expphenclim1)#188456     21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
     dim(expphenclim)#212482      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
