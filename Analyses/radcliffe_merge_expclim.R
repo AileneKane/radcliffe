@@ -299,7 +299,7 @@ for (i in 1:length(bacesoiltempfiles)){
   soiltemp[soiltemp$plot<13,]$block<-1
   soiltemp[soiltemp$plot<25 & soiltemp$plot>12,]$block<-2
   soiltemp[soiltemp$plot<37 & soiltemp$plot>24,]$block<-3
-  soiltemp[soiltemp$plot>36,]$block<-0
+  if(length(unique(soiltemp$plot))>36){soiltemp[soiltemp$plot>36,]$block<-0}
   soiltemp<-soiltemp[order(soiltemp$temptreat,soiltemp$preciptreat,soiltemp$year,soiltemp$doy),]
   soiltemp$soilmaxreftemp<-c(soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)])
   soiltemp$soilmaxdelta<- soiltemp$soiltemp1_max-soiltemp$soilmaxreftemp
@@ -319,15 +319,10 @@ for (j in 1:length(bacecantempfiles)){
   cantemp[cantemp$precip.treatment==0,]$preciptreat<--1#50% precip
   cantemp[cantemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
   cantemp$block<-NA
-  cantemp[cantemp$plot<5,]$block<-1
-  cantemp[cantemp$plot<9 & cantemp$plot>4,]$block<-2
-  cantemp[cantemp$plot<13 & cantemp$plot>8,]$block<-3
-  cantemp[cantemp$plot<17 & cantemp$plot>12,]$block<-4
-  cantemp[cantemp$plot<21 & cantemp$plot>16,]$block<-5
-  cantemp[cantemp$plot<25 & cantemp$plot>20,]$block<-6
-  cantemp[cantemp$plot<29 & cantemp$plot>24,]$block<-7
-  cantemp[cantemp$plot<33 & cantemp$plot>28,]$block<-8
-  cantemp[cantemp$plot<37 & cantemp$plot>32,]$block<-9
+  cantemp[cantemp$plot<13,]$block<-1
+  cantemp[cantemp$plot<25 & cantemp$plot>12,]$block<-2
+  cantemp[cantemp$plot<37 & cantemp$plot>24,]$block<-3
+  if(length(unique(cantemp$plot))>36){cantemp[cantemp$plot>36,]$block<-0}
   #measured canopy temps (for control (0) and high warming treatment (3)):
   cantemp<-cantemp[order(cantemp$temptreat,cantemp$preciptreat,cantemp$year,cantemp$doy),]
   cantemp$canmaxreftemp<-c(cantemp$cantemp_max[1:(dim(cantemp)[1]/2)],cantemp$cantemp_max[1:(dim(cantemp)[1]/2)])
@@ -822,9 +817,9 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#188456     21
+    dim(expphenclim1)#241052      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#212482      21
+    dim(expphenclim)#241028      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
