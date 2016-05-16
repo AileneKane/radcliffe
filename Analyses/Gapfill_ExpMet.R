@@ -60,7 +60,8 @@ for(s in unique(expclim$site)){
   expclim <- merge(expclim, site.dates, all.x=T, all.y=T)
 }
 
-
+# Note: BACE canopy temps (modeled) extremely high, so I'm excluding the ones that are flat out impossible (>100 C = above boiling)
+expclim[!is.na(expclim$cantemp_max) & expclim$cantemp_max>100,"cantemp_max"] <- NA
 
 # lump non-warmed & non-precip manipulations together
 expclim$temptreat2 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "ambient"), "ambient", "warming"))
@@ -72,6 +73,22 @@ expclim$preciptreat2 <- as.factor(ifelse(is.na(expclim$preciptreat2), "ambient",
 expclim$site.year <- as.factor(paste(expclim$site, expclim$year, sep="."))
 expclim$plot <- as.ordered(expclim$plot)
 
+# For aboveground temperature, make a single variable that uses air, 
+#    In case there's more than one measurement (I don't think there is),
+#    we'll use the min reported temp since IRRs tend to over-estimate temp
+
+expclim[,"temp_max"] <- apply(expclim[,c("airtemp_max", "cantemp_max", "surftemp_max")], 1, min, na.rm=T)
+expclim[expclim$temp_max==Inf,"temp_max"] <- NA
+
+expclim[,"temp_min"] <- apply(expclim[,c("airtemp_min", "cantemp_min", "surftemp_min")], 1, min, na.rm=T)
+expclim[expclim$temp_min==Inf,"temp_min"] <- NA
+summary(expclim)
+
+# Add a flag just to make it clear which kind of temperature I'm using
+expclim[which(!is.na(expclim$surftemp_max)), "type.temp"] <- "surface"
+expclim[which(!is.na(expclim$cantemp_max)), "type.temp"] <- "canopy"
+expclim[which(!is.na(expclim$airtemp_max)), "type.temp"] <- "air"
+expclim$type.temp <- as.factor(expclim$type.temp)
 summary(expclim)
 
 # ------------------------------------------
@@ -118,30 +135,28 @@ source("gapfill_doy.R")
 #   )
 # }
 
-
-ggplot(data=data.temp) +
-  facet_wrap(~plot) +
-  geom_line(aes(x=year.frac, y=metvar), color="black", size=0.5) +
-  geom_point(data=data.temp[is.na(data.temp$airtemp_max),], aes(x=year.frac, y=met.filled), color="red", size=0.5) 
-
 # ---------------------------------
 # Airtemp_max 
 # ---------------------------------
 # 1. Figure out which sites have at least some air data
 airmax.orig <- expclim
 for(s in unique(expclim$site)){
-  if(!max(expclim[expclim$site==s,"airtemp_max"], na.rm=T)>0){ 
+  print(paste0(" ----- ",s, " ----- "))
+  if(!max(expclim[expclim$site==s,"temp_max"], na.rm=T)>0){ 
+    print(paste0("   no Tmax"))
     airmax.orig <- airmax.orig[!airmax.orig$site==s, ] 
   } else {
-    time.min <- min(airmax.orig[airmax.orig$site==s & !is.na(airmax.orig$airtemp_max), "year.frac"])
-    time.max <- max(airmax.orig[airmax.orig$site==s & !is.na(airmax.orig$airtemp_max), "year.frac"])
+    time.min <- min(airmax.orig[airmax.orig$site==s & !is.na(airmax.orig$temp_max), "year.frac"])
+    time.max <- max(airmax.orig[airmax.orig$site==s & !is.na(airmax.orig$temp_max), "year.frac"])
     airmax.orig <- airmax.orig[!airmax.orig$site==s | (airmax.orig$site==s & airmax.orig$year.frac>=time.min & airmax.orig$year.frac<=time.max),]
   }
 }
 airmax.orig$site.treat <- as.factor(paste(airmax.orig$site, airmax.orig$temptreat3, sep="."))
 summary(airmax.orig)
 
-fill.airtmax <- gapfill.doy(gap.data=airmax.orig, fillvar="airtemp_max", treatvar="temptreat3", doy.by="site.year", data.by="site")
+airmax.orig$plot2 <- as.factor(ifelse(is.na(airmax.orig$plot), airmax.orig$temptreat, airmax.orig$plot))
+
+fill.airtmax <- gapfill.doy(gap.data=airmax.orig, fillvar="temp_max", treatvar="plot2", doy.by="site.year", data.by="site")
 fill.airtmax$plot <- as.ordered(fill.airtmax$plot)
 summary(fill.airtmax)
 
