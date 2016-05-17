@@ -27,7 +27,6 @@ expclim <- read.csv("expclim.csv")
 expclim <- expclim[!is.na(expclim$doy),] # get rid of data that has no day of year (bc it's unusable)
 expclim$year.frac <- expclim$year + expclim$doy/366 # Add a continuous time variable that is fractional years
 
-
 # Making sure we don't have missing rows in between the max and min for each site-year
 doy.frac <- (1:366)/366
 for(s in unique(expclim$site)){
@@ -90,7 +89,6 @@ expclim[which(!is.na(expclim$cantemp_max)), "type.temp"] <- "canopy"
 expclim[which(!is.na(expclim$airtemp_max)), "type.temp"] <- "air"
 expclim$type.temp <- as.factor(expclim$type.temp)
 summary(expclim)
-
 # ------------------------------------------
 
 
@@ -154,10 +152,45 @@ for(s in unique(expclim$site)){
 airmax.orig$site.treat <- as.factor(paste(airmax.orig$site, airmax.orig$temptreat3, sep="."))
 summary(airmax.orig)
 
-airmax.orig$plot2 <- as.factor(ifelse(is.na(airmax.orig$plot), airmax.orig$temptreat, airmax.orig$plot))
+# Recode no plot code to "other
+airmax.orig[,"plot"] <- as.factor(ifelse(is.na(airmax.orig$plot), "other", airmax.orig$plot))
 
-fill.airtmax <- gapfill.doy(gap.data=airmax.orig, fillvar="temp_max", treatvar="plot2", doy.by="site.year", data.by="site")
-fill.airtmax$plot <- as.ordered(fill.airtmax$plot)
+# code plots approrpiately 
+for(s in unique(airmax.orig$site)){
+  for(p in unique(airmax.orig[airmax.orig$site==s, "plot"])){
+    if(!length(airmax.orig[!is.na(airmax.orig$temp_max) & airmax.orig$site==s & airmax.orig$plot==p, "temp_max"])>0){
+      airmax.orig[airmax.orig$site==s & airmax.orig$plot==p,"plot2"] <- NA
+    } else {
+      airmax.orig[airmax.orig$site==s & airmax.orig$plot==p & !is.na(airmax.orig$plot==p),"plot2"] <- p
+    }
+  }
+}
+# Dealing with plots that don't have any data 
+#  -- for these, try to find an appropriate pair based on temp & precip treatment
+#  -- for simplicity's sake, we're going to match with the first plot of those matches
+for(s in unique(airmax.orig[is.na(airmax.orig$plot2),"site"])){
+  plots.bad <- unique(airmax.orig[is.na(airmax.orig$plot2) & airmax.orig$site==s,"plot"])
+  for(p in plots.bad){
+    t.treat <- unique(airmax.orig[airmax.orig$plot==p & airmax.orig$site==s, "temptreat"])
+    p.treat <- unique(airmax.orig[airmax.orig$plot==p & airmax.orig$site==s, "preciptreat"])
+    plot.match <- unique(airmax.orig[airmax.orig$site==s & airmax.orig$temptreat==t.treat & airmax.orig$preciptreat==p.treat & !airmax.orig$plot %in% plots.bad, "plot"])
+    if(length(plot.match)==0){ # if no matches, do temperature treatment, even if it means getting rid of plots
+#       next
+      t.treat <- unique(airmax.orig[airmax.orig$site==s & airmax.orig$plot==p, "temptreat3"]  )
+      if(length(t.treat) == 0){print(paste("**WARNING**  site: ", s, "; plot: ", p, " -- NO MATCHES")); next}
+      airmax.orig[airmax.orig$site==s & airmax.orig$temptreat3==t.treat, "plot2"] <- t.treat
+    } else { # if there is one or more matches, use the first one
+      airmax.orig[airmax.orig$site==s & airmax.orig$plot==p, "plot2"] <- plot.match[1]
+    }
+    
+  }
+}
+summary(airmax.orig)
+
+# Making a variable to do adjustments by that's plot (or treatment) by plot
+airmax.orig$treatvar <- as.factor(paste(airmax.orig$site, airmax.orig$plot2, sep="."))
+
+fill.airtmax <- gapfill.doy(gap.data=airmax.orig, fillvar="temp_max", treatvar="treatvar", doy.by="site.year", data.by="site")
 summary(fill.airtmax)
 
 pdf("figures/Gapfill_airtemp_max.pdf", height=8.5, width=11.5)
@@ -165,8 +198,8 @@ for(s in unique(fill.airtmax$site)){
   print(
     ggplot(data=fill.airtmax[fill.airtmax$site==s,]) +
       facet_wrap(~plot) +
-      geom_line(aes(x=year.frac, y=airtemp_max), size=0.5, color="black") +
-      geom_point(data=fill.airtmax[fill.airtmax$site==s & is.na(fill.airtmax$airtemp_min),], aes(x=year.frac, y=met.filled), size=0.5, color="red") +
+      geom_line(aes(x=year.frac, y=temp_max), size=0.5, color="black") +
+      geom_point(data=fill.airtmax[fill.airtmax$site==s & is.na(fill.airtmax$temp_max),], aes(x=year.frac, y=met.filled), size=0.5, color="red") +
       ggtitle(s) +
       scale_x_continuous(name="Year") +
       scale_y_continuous(name="Maximum Daily Air Temperature (degrees C)")
@@ -180,18 +213,57 @@ dev.off()
 # ---------------------------------
 airmin.orig <- expclim
 for(s in unique(expclim$site)){
-  if(!max(expclim[expclim$site==s,"airtemp_min"], na.rm=T)>0){ 
+  if(!max(expclim[expclim$site==s,"temp_min"], na.rm=T)>0){ 
     airmin.orig <- airmin.orig[!airmin.orig$site==s, ] 
   } else {
-    time.min <- min(airmin.orig[airmin.orig$site==s & !is.na(airmin.orig$airtemp_min), "year.frac"])
-    time.max <- max(airmin.orig[airmin.orig$site==s & !is.na(airmin.orig$airtemp_min), "year.frac"])
+    time.min <- min(airmin.orig[airmin.orig$site==s & !is.na(airmin.orig$temp_min), "year.frac"])
+    time.max <- max(airmin.orig[airmin.orig$site==s & !is.na(airmin.orig$temp_min), "year.frac"])
     airmin.orig <- airmin.orig[!airmin.orig$site==s | (airmin.orig$site==s & airmin.orig$year.frac>=time.min & airmin.orig$year.frac<=time.max),]
   }
 }
 airmin.orig$site.treat <- as.factor(paste(airmin.orig$site, airmin.orig$temptreat3, sep="."))
 summary(airmin.orig)
 
-fill.airtmin <- gapfill.doy(gap.data=airmin.orig, fillvar="airtemp_min", treatvar="temptreat3", doy.by="site.year", data.by="site")
+
+# Recode no plot code to "other
+airmin.orig[,"plot"] <- as.factor(ifelse(is.na(airmin.orig$plot), "other", airmin.orig$plot))
+
+# code plots approrpiately 
+for(s in unique(airmin.orig$site)){
+  for(p in unique(airmin.orig[airmin.orig$site==s, "plot"])){
+    if(!length(airmin.orig[!is.na(airmin.orig$temp_min) & airmin.orig$site==s & airmin.orig$plot==p, "temp_min"])>0){
+      airmin.orig[airmin.orig$site==s & airmin.orig$plot==p,"plot2"] <- NA
+    } else {
+      airmin.orig[airmin.orig$site==s & airmin.orig$plot==p & !is.na(airmin.orig$plot==p),"plot2"] <- p
+    }
+  }
+}
+# Dealing with plots that don't have any data 
+#  -- for these, try to find an appropriate pair based on temp & precip treatment
+#  -- for simplicity's sake, we're going to match with the first plot of those matches
+for(s in unique(airmin.orig[is.na(airmin.orig$plot2),"site"])){
+  plots.bad <- unique(airmin.orig[is.na(airmin.orig$plot2) & airmin.orig$site==s,"plot"])
+  for(p in plots.bad){
+    t.treat <- unique(airmin.orig[airmin.orig$plot==p & airmin.orig$site==s, "temptreat"])
+    p.treat <- unique(airmin.orig[airmin.orig$plot==p & airmin.orig$site==s, "preciptreat"])
+    plot.match <- unique(airmin.orig[airmin.orig$site==s & airmin.orig$temptreat==t.treat & airmin.orig$preciptreat==p.treat & !airmin.orig$plot %in% plots.bad, "plot"])
+    if(length(plot.match)==0){ # if no matches, do temperature treatment, even if it means getting rid of plots
+      #       next
+      t.treat <- unique(airmin.orig[airmin.orig$site==s & airmin.orig$plot==p, "temptreat3"]  )
+      if(length(t.treat) == 0){print(paste("**WARNING**  site: ", s, "; plot: ", p, " -- NO MATCHES")); next}
+      airmin.orig[airmin.orig$site==s & airmin.orig$temptreat3==t.treat, "plot2"] <- t.treat
+    } else { # if there is one or more matches, use the first one
+      airmin.orig[airmin.orig$site==s & airmin.orig$plot==p, "plot2"] <- plot.match[1]
+    }
+    
+  }
+}
+summary(airmin.orig)
+
+# Making a variable to do adjustments by that's plot (or treatment) by plot
+airmin.orig$treatvar <- as.factor(paste(airmin.orig$site, airmin.orig$plot2, sep="."))
+
+fill.airtmin <- gapfill.doy(gap.data=airmin.orig, fillvar="temp_min", treatvar="treatvar", doy.by="site.year", data.by="site")
 fill.airtmin$plot <- as.ordered(fill.airtmin$plot)
 summary(fill.airtmin)
 
@@ -226,8 +298,48 @@ for(s in unique(expclim$site)){
 soilmax.orig$site.treat <- as.factor(paste(soilmax.orig$site, soilmax.orig$temptreat3, sep="."))
 summary(soilmax.orig)
 
-fill.soiltmax <- gapfill.doy(gap.data=soilmax.orig, fillvar="soiltemp1_max", treatvar="temptreat3", doy.by="site.year", data.by="site")
-fill.soiltmax$plot <- as.ordered(fill.soiltmax$plot)
+
+# Recode no plot code to "other
+soilmax.orig[,"plot"] <- as.factor(ifelse(is.na(soilmax.orig$plot), "other", soilmax.orig$plot))
+
+# code plots approrpiately 
+for(s in unique(soilmax.orig$site)){
+  for(p in unique(soilmax.orig[soilmax.orig$site==s, "plot"])){
+    if(!length(soilmax.orig[!is.na(soilmax.orig$soiltemp1_max) & soilmax.orig$site==s & soilmax.orig$plot==p, "soiltemp1_max"])>0){
+      soilmax.orig[soilmax.orig$site==s & soilmax.orig$plot==p,"plot2"] <- NA
+    } else {
+      soilmax.orig[soilmax.orig$site==s & soilmax.orig$plot==p & !is.na(soilmax.orig$plot==p),"plot2"] <- p
+    }
+  }
+}
+# Dealing with plots that don't have any data 
+#  -- for these, try to find an appropriate pair based on temp & precip treatment
+#  -- for simplicity's sake, we're going to match with the first plot of those matches
+for(s in unique(soilmax.orig[is.na(soilmax.orig$plot2),"site"])){
+  plots.bad <- unique(soilmax.orig[is.na(soilmax.orig$plot2) & soilmax.orig$site==s,"plot"])
+  for(p in plots.bad){
+    t.treat <- unique(soilmax.orig[soilmax.orig$plot==p & soilmax.orig$site==s, "temptreat"])
+    p.treat <- unique(soilmax.orig[soilmax.orig$plot==p & soilmax.orig$site==s, "preciptreat"])
+    plot.match <- unique(soilmax.orig[soilmax.orig$site==s & soilmax.orig$temptreat==t.treat & soilmax.orig$preciptreat==p.treat & !soilmax.orig$plot %in% plots.bad, "plot"])
+    if(length(plot.match)==0){ # if no matches, do temperature treatment, even if it means getting rid of plots
+      #       next
+      t.treat <- unique(soilmax.orig[soilmax.orig$site==s & soilmax.orig$plot==p, "temptreat3"]  )
+      if(length(t.treat) == 0){print(paste("**WARNING**  site: ", s, "; plot: ", p, " -- NO MATCHES")); next}
+      soilmax.orig[soilmax.orig$site==s & soilmax.orig$temptreat3==t.treat, "plot2"] <- t.treat
+    } else { # if there is one or more matches, use the first one
+      soilmax.orig[soilmax.orig$site==s & soilmax.orig$plot==p, "plot2"] <- plot.match[1]
+    }
+    
+  }
+}
+summary(soilmax.orig)
+
+# Making a variable to do adjustments by that's plot (or treatment) by plot
+soilmax.orig$treatvar <- as.factor(paste(soilmax.orig$site, soilmax.orig$plot2, sep="."))
+
+
+fill.soiltmax <- gapfill.doy(gap.data=soilmax.orig, fillvar="soiltemp1_max", treatvar="treatvar", doy.by="site", data.by="site")
+# fill.soiltmax$plot <- as.ordered(fill.soiltmax$plot)
 summary(fill.soiltmax)
 
 pdf("figures/Gapfill_soiltemp1_max.pdf", height=8.5, width=11.5)
@@ -262,8 +374,47 @@ for(s in unique(expclim$site)){
 soilmin.orig$site.treat <- as.factor(paste(soilmin.orig$site, soilmin.orig$temptreat3, sep="."))
 summary(soilmin.orig)
 
-fill.soiltmin <- gapfill.doy(gap.data=soilmin.orig, fillvar="soiltemp1_min", treatvar="temptreat3", doy.by="site.year", data.by="site")
-fill.soiltmin$plot <- as.ordered(fill.soiltmin$plot)
+# Recode no plot code to "other
+soilmin.orig[,"plot"] <- as.factor(ifelse(is.na(soilmin.orig$plot), "other", soilmin.orig$plot))
+
+# code plots approrpiately 
+for(s in unique(soilmin.orig$site)){
+  for(p in unique(soilmin.orig[soilmin.orig$site==s, "plot"])){
+    if(!length(soilmin.orig[!is.na(soilmin.orig$soiltemp1_min) & soilmin.orig$site==s & soilmin.orig$plot==p, "soiltemp1_min"])>0){
+      soilmin.orig[soilmin.orig$site==s & soilmin.orig$plot==p,"plot2"] <- NA
+    } else {
+      soilmin.orig[soilmin.orig$site==s & soilmin.orig$plot==p & !is.na(soilmin.orig$plot==p),"plot2"] <- p
+    }
+  }
+}
+# Dealing with plots that don't have any data 
+#  -- for these, try to find an appropriate pair based on temp & precip treatment
+#  -- for simplicity's sake, we're going to match with the first plot of those matches
+for(s in unique(soilmin.orig[is.na(soilmin.orig$plot2),"site"])){
+  plots.bad <- unique(soilmin.orig[is.na(soilmin.orig$plot2) & soilmin.orig$site==s,"plot"])
+  for(p in plots.bad){
+    t.treat <- unique(soilmin.orig[soilmin.orig$plot==p & soilmin.orig$site==s, "temptreat"])
+    p.treat <- unique(soilmin.orig[soilmin.orig$plot==p & soilmin.orig$site==s, "preciptreat"])
+    plot.match <- unique(soilmin.orig[soilmin.orig$site==s & soilmin.orig$temptreat==t.treat & soilmin.orig$preciptreat==p.treat & !soilmin.orig$plot %in% plots.bad, "plot"])
+    if(length(plot.match)==0){ # if no matches, do temperature treatment, even if it means getting rid of plots
+      #       next
+      t.treat <- unique(soilmin.orig[soilmin.orig$site==s & soilmin.orig$plot==p, "temptreat3"]  )
+      if(length(t.treat) == 0){print(paste("**WARNING**  site: ", s, "; plot: ", p, " -- NO MATCHES")); next}
+      soilmin.orig[soilmin.orig$site==s & soilmin.orig$temptreat3==t.treat, "plot2"] <- t.treat
+    } else { # if there is one or more matches, use the first one
+      soilmin.orig[soilmin.orig$site==s & soilmin.orig$plot==p, "plot2"] <- plot.match[1]
+    }
+    
+  }
+}
+summary(soilmin.orig)
+
+# Making a variable to do adjustments by that's plot (or treatment) by plot
+soilmin.orig$treatvar <- as.factor(paste(soilmin.orig$site, soilmin.orig$plot2, sep="."))
+
+
+fill.soiltmin <- gapfill.doy(gap.data=soilmin.orig, fillvar="soiltemp1_min", treatvar="treatvar", doy.by="site", data.by="site")
+# fill.soiltmin$plot <- as.ordered(fill.soiltmin$plot)
 summary(fill.soiltmin)
 
 pdf("figures/Gapfill_soiltemp1_min.pdf", height=8.5, width=11.5)
@@ -286,18 +437,29 @@ dev.off()
 # --------------------------------------------------------------
 # Merge the gapfilled climates in with 
 # --------------------------------------------------------------
-names(fill.airtmin)[names(fill.airtmin) %in% c("met.filled", "met.flag")] <- c("fill.airtemp_min", "flag.airtemp_min")
-names(fill.airtmax)[names(fill.airtmax) %in% c("met.filled", "met.flag")] <- c("fill.airtemp_max", "flag.airtemp_max")
-names(fill.soiltmin)[names(fill.soiltmin) %in% c("met.filled", "met.flag")] <- c("fill.soiltemp1_min", "flag.soiltemp1_min")
-names(fill.soiltmax)[names(fill.soiltmax) %in% c("met.filled", "met.flag")] <- c("fill.soiltemp1_max", "flag.soiltemp1_max")
+ag.type <- data.frame(site=unique(fill.airtmax$site))
+for(s in unique(ag.type$site)){
+  ag.type[ag.type$site==s, "AG.type"] <- unique(fill.airtmax[fill.airtmax$site==s & !is.na(fill.airtmax$type.temp),"type.temp"])[1]
+}
+summary(ag.type)
+ag.type
+
+
+names(fill.airtmin)[names(fill.airtmin) %in% c("met.filled", "met.flag")] <- c("fill.AGtemp_min", "flag.AGtemp_min")
+names(fill.airtmax)[names(fill.airtmax) %in% c("met.filled", "met.flag")] <- c("fill.AGtemp_max", "flag.AGtemp_max")
+names(fill.soiltmin)[names(fill.soiltmin) %in% c("met.filled", "met.flag")] <- c("fill.soiltemp_min", "flag.soiltemp_min")
+names(fill.soiltmax)[names(fill.soiltmax) %in% c("met.filled", "met.flag")] <- c("fill.soiltemp_max", "flag.soiltemp_max")
 
 cols.keep <- c("year", "doy", "temptreat", "preciptreat", "plot", "site")
-fill.tair  <- merge(fill.airtmin[,c(cols.keep, "fill.airtemp_min", "flag.airtemp_min")], fill.airtmax[,c(cols.keep, "fill.airtemp_max", "flag.airtemp_max")], all.x=T, all.y=T)
+fill.tair  <- merge(fill.airtmin[,c(cols.keep, "fill.AGtemp_min", "flag.AGtemp_min")], fill.airtmax[,c(cols.keep, "fill.AGtemp_max", "flag.AGtemp_max")], all.x=T, all.y=T)
 fill.tsoil <- merge(fill.soiltmin[,c(cols.keep, "fill.soiltemp_min", "flag.soiltemp_min")], fill.soiltmax[,c(cols.keep, "fill.soiltemp_max", "flag.soiltemp_max")], all.x=T, all.y=T)
 
 exp.gapfill <- merge(fill.tair, fill.tsoil, all.x=T, all.y=T)
 summary(exp.gapfill)
 dim(exp.gapfill); dim(fill.tsoil)
+
+exp.gapfill <- merge(exp.gapfill, ag.type, all.x=T)
+summary(exp.gapfill)
 
 write.csv(exp.gapfill, "expclim_gapfill.csv", row.names=F, eol="\r\n")
 # --------------------------------------------------------------

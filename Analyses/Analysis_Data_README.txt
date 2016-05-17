@@ -29,14 +29,15 @@ expclim_gapfill.csv
     4. preciptreat         category      experimental precipitation treatment
     5. plot                category      experiment plot number
     6. site                category      name of experiment/site
-    7. fill.airtemp_min    degrees C     gap-filled daily min air temperature
-    8. flag.airtemp_min    category      raw or gap fill type (see above)
-    9. fill.airtemp_max    degrees C     gap-filled daily max air temperature
-   10. flag.airtemp_max    category      raw or gap fill type (see above)
+    7. fill.AGtemp_min     degrees C     gap-filled daily min aboveground
+    8. flag.AGtemp_min     category      raw or gap fill type (see above)
+    9. fill.AGtemp_max     degrees C     gap-filled daily max air temperature
+   10. flag.AGtemp_max     category      raw or gap fill type (see above)
    11. fill.soiltemp1_min  degrees C     gap-filled daily min soil temperature
    12. flag.soiltemp1_min  category      raw or gap fill type (see above)
    11. fill.soiltemp1_max  degrees C     gap-filled daily max soil temperature
    12. flag.soiltemp1_max  category      raw or gap fill type (see above)
+   13. AG.type             category      type of aboveground temperature data provided
 
 # ---------------------------------------
 

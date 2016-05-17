@@ -54,15 +54,18 @@ gapfill.doy <- function(gap.data, fillvar, treatvar, doy.by, data.by){
   #         1. if we have a treatement-level anomaly, use that (fewer levels of modeling)
   #         2. if treatment has no anomaly, estimate the treatment anomaly from the site-level mean
   resid.treat$resid.use <- ifelse(!is.na(resid.treat$resid.raw), resid.treat$resid.raw, resid.treat$resid2)
+
+  # 2.b.5 Figure out a treatvar adjustment for the doy cycle
+  data.temp$doy.use <- data.temp$met.doy + predict(treat.effect, newdata=data.temp) 
   
   # 3. Gapfill the data!!
   data.temp <- merge(data.temp, resid.treat[,c("doy.by", "data.by", "year", "doy", "treatvar", "resid.use")])
   
   data.temp$met.filled <- ifelse(!is.na(data.temp$metvar), data.temp$metvar, 
-                                 ifelse(is.na(data.temp$resid.use), data.temp$met.doy,
+                                 ifelse(is.na(data.temp$resid.use), data.temp$doy.use,
                                         data.temp$met.doy + data.temp$resid.use))
   data.temp$met.flag <- as.factor(ifelse(!is.na(data.temp$metvar), "observed", 
-                                         ifelse(is.na(data.temp$resid.use), "doy.mean",
+                                         ifelse(is.na(data.temp$resid.use), "doy.adj",
                                                 "doy.resid")))
   
   return(data.temp) 
