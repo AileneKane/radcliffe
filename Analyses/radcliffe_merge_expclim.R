@@ -332,6 +332,7 @@ for (j in 1:length(bacecantempfiles)){
   allcantemp<-rbind(allcantemp,cantemp)
 }#j
   soilcantemp<-merge(allsoiltemp,allcantemp,by=c("year","doy","month","block","plot","temptreat","preciptreat","precip.treatment"),all=TRUE)
+  soilcantemp<-soilcantemp[order(soilcantemp$temptreat,soilcantemp$preciptreat,soilcantemp$year,soilcantemp$doy),]
   Cmin<-soilcantemp[soilcantemp$temptreat==0,]$canminreftemp
   Cmax<-soilcantemp[soilcantemp$temptreat==0,]$canmaxreftemp
   DImin<-mean(soilcantemp[soilcantemp$temptreat==3,]$canmindelta, na.rm=T)

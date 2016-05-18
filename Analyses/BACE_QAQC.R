@@ -38,5 +38,7 @@ ggplot(data=expclim[expclim$site=="bace" & expclim$cantemp_max<100 & !is.na(expc
 #   geom_text(data=bace.plots, aes(x=10, y=50, label=temptreat))
 dev.off()
 
-
-
+plot(expclim[expclim$site=="bace" & expclim$plot==10 & expclim$year==2012,"cantemp_max"])
+length(expclim[expclim$site=="bace" & expclim$plot==10 & expclim$year==2012,"cantemp_max"])
+plot(expclim[expclim$site=="bace" & expclim$plot==1  & expclim$year==2012,"cantemp_max"])
+length(expclim[expclim$site=="bace" & expclim$plot==1  & expclim$year==2012,"cantemp_max"])
