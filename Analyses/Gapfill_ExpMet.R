@@ -153,7 +153,7 @@ airmax.orig$site.treat <- as.factor(paste(airmax.orig$site, airmax.orig$temptrea
 summary(airmax.orig)
 
 # Recode no plot code to "other
-airmax.orig[,"plot"] <- as.factor(ifelse(is.na(airmax.orig$plot), "other", airmax.orig$plot))
+airmax.orig[,"plot"] <- as.factor(ifelse(is.na(airmax.orig$plot), "other", paste(airmax.orig$plot)))
 
 # code plots approrpiately 
 for(s in unique(airmax.orig$site)){
@@ -198,6 +198,7 @@ for(s in unique(fill.airtmax$site)){
   print(
     ggplot(data=fill.airtmax[fill.airtmax$site==s,]) +
       facet_wrap(~plot) +
+      # geom_point(aes(x=year.frac, y=met.filled, color=met.flag), size=0.5) +
       geom_line(aes(x=year.frac, y=temp_max), size=0.5, color="black") +
       geom_point(data=fill.airtmax[fill.airtmax$site==s & is.na(fill.airtmax$temp_max),], aes(x=year.frac, y=met.filled), size=0.5, color="red") +
       ggtitle(s) +
@@ -226,7 +227,7 @@ summary(airmin.orig)
 
 
 # Recode no plot code to "other
-airmin.orig[,"plot"] <- as.factor(ifelse(is.na(airmin.orig$plot), "other", airmin.orig$plot))
+airmin.orig[,"plot"] <- as.factor(ifelse(is.na(airmin.orig$plot), "other", paste(airmin.orig$plot)))
 
 # code plots approrpiately 
 for(s in unique(airmin.orig$site)){
@@ -272,8 +273,8 @@ for(s in unique(fill.airtmin$site)){
   print(
     ggplot(data=fill.airtmin[fill.airtmin$site==s,]) +
       facet_wrap(~plot) +
-      geom_line(aes(x=year.frac, y=airtemp_min), size=0.5, color="black") +
-      geom_point(data=fill.airtmin[fill.airtmin$site==s & is.na(fill.airtmin$airtemp_min),], aes(x=year.frac, y=met.filled), size=0.5, color="red") +
+      geom_line(aes(x=year.frac, y=temp_min), size=0.5, color="black") +
+      geom_point(data=fill.airtmin[fill.airtmin$site==s & is.na(fill.airtmin$temp_min),], aes(x=year.frac, y=met.filled), size=0.5, color="red") +
       ggtitle(s) +
       scale_x_continuous(name="Year") +
       scale_y_continuous(name="Minimum Daily Air Temperature (degrees C)")
@@ -300,7 +301,7 @@ summary(soilmax.orig)
 
 
 # Recode no plot code to "other
-soilmax.orig[,"plot"] <- as.factor(ifelse(is.na(soilmax.orig$plot), "other", soilmax.orig$plot))
+soilmax.orig[,"plot"] <- as.factor(ifelse(is.na(soilmax.orig$plot), "other", paste(soilmax.orig$plot)))
 
 # code plots approrpiately 
 for(s in unique(soilmax.orig$site)){
@@ -375,7 +376,7 @@ soilmin.orig$site.treat <- as.factor(paste(soilmin.orig$site, soilmin.orig$tempt
 summary(soilmin.orig)
 
 # Recode no plot code to "other
-soilmin.orig[,"plot"] <- as.factor(ifelse(is.na(soilmin.orig$plot), "other", soilmin.orig$plot))
+soilmin.orig[,"plot"] <- as.factor(ifelse(is.na(soilmin.orig$plot), "other", paste(soilmin.orig$plot)))
 
 # code plots approrpiately 
 for(s in unique(soilmin.orig$site)){
@@ -461,7 +462,7 @@ dim(exp.gapfill); dim(fill.tsoil)
 exp.gapfill <- merge(exp.gapfill, ag.type, all.x=T)
 summary(exp.gapfill)
 
-write.csv(exp.gapfill, "expclim_gapfill.csv", row.names=F, eol="\r\n")
+write.csv(exp.gapfill, "expclim_gapfill.csv", row.names=F, eol="\n")
 # --------------------------------------------------------------
 
 
