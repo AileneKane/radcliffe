@@ -1,7 +1,6 @@
 ### Started 8 March 2016 ##
 ### By Ailene Ettinger ###
 setwd("~/GitHub/radcliffe")
-#setwd("~/Desktop/Research/Radcliffe_Phenology/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)

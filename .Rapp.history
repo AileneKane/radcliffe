@@ -1,0 +1,6 @@
+setwd("~/GitHub/radcliffe")
+options(stringsAsFactors=FALSE)
+options(stringsAsFactors=FALSE)
+options(stringsAsFactors=FALSE)
+library(reshape)
+clean.clim <- list()
