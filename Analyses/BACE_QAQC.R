@@ -17,16 +17,26 @@ for(i in 1:nrow(bace.plots)){
   bace.plots[i,"preciptreat"] <- unique(expclim[expclim$site=="bace" & expclim$plot==bace.plots[i,"plot"], "preciptreat"])
 }
 
-png("Figures/BACE_plots_by_year_label_temptreat.png")
+png("Figures/BACE_CanTmax_plots_by_year_label_temptreat.png")
 ggplot(data=expclim[expclim$site=="bace" & expclim$cantemp_max<100 & !is.na(expclim$cantemp_max),]) +
   facet_wrap(~plot) +
   geom_line(aes(x=doy, y=cantemp_max, color=as.factor(year))) +
   geom_text(data=bace.plots, aes(x=10, y=50, label=temptreat))
 dev.off()
 
-png("Figures/BACE_plots_doy.png")
+png("Figures/BACE_Soil1Tmax_plots_by_year_label_temptreat.png")
+ggplot(data=expclim[expclim$site=="bace" & expclim$cantemp_max<100 & !is.na(expclim$cantemp_max),]) +
+  facet_wrap(~plot) +
+  geom_line(aes(x=doy, y=soiltemp1_max, color=as.factor(year))) +
+  geom_text(data=bace.plots, aes(x=10, y=50, label=temptreat))
+dev.off()
+
+png("Figures/BACE_CanTmax_plots_doy.png")
 ggplot(data=expclim[expclim$site=="bace" & expclim$cantemp_max<100 & !is.na(expclim$cantemp_max),]) +
   facet_wrap(~plot) +
   geom_line(aes(x=year.frac, y=cantemp_max, color=as.factor(temptreat)))# +
 #   geom_text(data=bace.plots, aes(x=10, y=50, label=temptreat))
 dev.off()
+
+
+
