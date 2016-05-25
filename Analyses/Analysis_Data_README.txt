@@ -20,15 +20,17 @@ expclim_gapfill.csv
                 1. Observed  = raw value from expclim.csv
                 2. doy.mean  = interpolated pattern only (doy smoother)
                 3. doy.resid = interpolated pattern + estimated day/treatment deviation
+                4. forced_min= a forced temperature to deal with troubled winter values at the dunne site
+
  - Script to Generate: Gapfill_ExpMet.R
  - Columns
     #  Name                units         Description
-    1. year                year          year of met observations/fill
-    2. doy                 julian day    day of year of observation; Jan 1 = 1
-    3. temptreat           category      experimental temperature treatment
-    4. preciptreat         category      experimental precipitation treatment
-    5. plot                category      experiment plot number
-    6. site                category      name of experiment/site
+    1. site                category      name of experiment/site
+    2. year                year          year of met observations/fill
+    3. doy                 julian day    day of year of observation; Jan 1 = 1
+    4. temptreat           category      experimental temperature treatment
+    5. preciptreat         category      experimental precipitation treatment
+    6. plot                category      experiment plot number
     7. fill.AGtemp_min     degrees C     gap-filled daily min aboveground
     8. flag.AGtemp_min     category      raw or gap fill type (see above)
     9. fill.AGtemp_max     degrees C     gap-filled daily max air temperature

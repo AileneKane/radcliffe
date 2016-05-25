@@ -183,6 +183,7 @@ summary(airmax.orig)
 # Making a variable to do adjustments by that's plot (or treatment) by plot
 airmax.orig$treatvar <- as.factor(paste(airmax.orig$site, airmax.orig$plot2, sep="."))
 
+# Run the gapfilling model!
 fill.airtmax <- gapfill.doy(gap.data=airmax.orig, fillvar="temp_max", treatvar="treatvar", doy.by="site.year", data.by="site")
 summary(fill.airtmax)
 
@@ -257,8 +258,8 @@ summary(airmin.orig)
 # Making a variable to do adjustments by that's plot (or treatment) by plot
 airmin.orig$treatvar <- as.factor(paste(airmin.orig$site, airmin.orig$plot2, sep="."))
 
+# Run the gapfilling model!
 fill.airtmin <- gapfill.doy(gap.data=airmin.orig, fillvar="temp_min", treatvar="treatvar", doy.by="site.year", data.by="site")
-fill.airtmin$plot <- as.ordered(fill.airtmin$plot)
 summary(fill.airtmin)
 
 pdf("figures/Gapfill_airtemp_min.pdf", height=8.5, width=11.5)
@@ -340,8 +341,8 @@ soilmax.orig$site.year <- as.factor(paste(soilmax.orig$site, soilmax.orig$year, 
 # Making a variable to do adjustments by that's plot (or treatment) by plot
 soilmax.orig$treatvar <- as.factor(paste(soilmax.orig$site, soilmax.orig$plot2, sep="."))
 
+# Run the gapfilling model!
 fill.soiltmax <- gapfill.doy(gap.data=soilmax.orig, fillvar="soiltemp1_max", treatvar="treatvar", doy.by="site.year", data.by="site")
-# fill.soiltmax$plot <- as.ordered(fill.soiltmax$plot)
 summary(fill.soiltmax)
 
 # Putting things back to how they should be
@@ -353,9 +354,8 @@ fill.soiltmax$site.year <- as.factor(paste(fill.soiltmax$site, fill.soiltmax$yea
 # Dunne has a problem with missing winter data, so we're going to say that when the temp 
 # drops below the minimum observed, just call it the minimum
 dunne.min <- quantile(fill.soiltmax[fill.soiltmax$site=="dunne","soiltemp1_max"], 0.005, na.rm=T) # fill with a very low value (but not the min, because it might be an outlier)
+fill.soiltmax[,"met.flag"] <- as.factor(ifelse(!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min, "forced_min", paste(fill.soiltmax$met.flag)))
 fill.soiltmax[!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min,"met.filled"] <- dunne.min
-fill.soiltmax[!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min,"met.flag"] <- "forced_min"
-
 
 pdf("figures/Gapfill_soiltemp1_max.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmax$site)){
@@ -435,8 +435,8 @@ soilmin.orig[soilmin.orig$site %in% c("price", "dunne"), "year"] <- 9999 # Dummy
 
 soilmin.orig$site.year <- as.factor(paste(soilmin.orig$site, soilmin.orig$year, sep="."))
 
+# Run the gapfilling model!
 fill.soiltmin <- gapfill.doy(gap.data=soilmin.orig, fillvar="soiltemp1_min", treatvar="treatvar", doy.by="site.year", data.by="site")
-# fill.soiltmin$plot <- as.ordered(fill.soiltmin$plot)
 summary(fill.soiltmin)
 
 # Putting the original doy & year in place
@@ -445,10 +445,8 @@ fill.soiltmin$year <- fill.soiltmin$year.orig
 
 # Need to do something about dunne because it has no winter temps & does weird things
 min.dunne <- quantile(fill.soiltmin[fill.soiltmin$site=="dunne","soiltemp1_min"], 0.005, na.rm=T) # fill with a very low value (but not the min, because it might be an outlier)
+fill.soiltmin[,"met.flag"] <- as.factor(ifelse(!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)), "forced_min", paste(fill.soiltmin$met.flag)))
 fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)),"met.filled"] <- min.dunne
-fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)),"met.flag"] <- "forced_min"
-
-# fill.soiltmin[fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<30)),"met.filled"] <- min.dunne
 
 pdf("figures/Gapfill_soiltemp1_min.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmin$site)){
