@@ -27,6 +27,11 @@ expclim <- read.csv("expclim.csv")
 expclim <- expclim[!is.na(expclim$doy),] # get rid of data that has no day of year (bc it's unusable)
 expclim$year.frac <- expclim$year + expclim$doy/366 # Add a continuous time variable that is fractional years
 
+# changing NA to a factor of "none" to make the gapfilling work (will change it back to it's original state after we add missing days)
+expclim$temptreat   <- as.factor(ifelse(is.na(expclim$temptreat), "none", paste(expclim$temptreat)))
+expclim$preciptreat <- as.factor(ifelse(is.na(expclim$preciptreat), "none", paste(expclim$preciptreat)))
+expclim$plot        <- as.factor(ifelse(is.na(expclim$plot), "none", paste(expclim$plot)))
+
 # Making sure we don't have missing rows in between the max and min for each site-year
 doy.frac <- (1:366)/366
 for(s in unique(expclim$site)){
@@ -35,7 +40,7 @@ for(s in unique(expclim$site)){
   # Getting the unique treatment & plot info for each site to help the merge work
   site.info <- aggregate(expclim[expclim$site==s,"year.frac"], 
                          by=expclim[expclim$site==s,c("site", "temptreat", "preciptreat", "plot")],
-                         FUN=min, na.rm=T)
+                         FUN=min, na.rm=F)
   site.info <- site.info[,1:(ncol(site.info)-1)]
   site.info
   
@@ -58,6 +63,12 @@ for(s in unique(expclim$site)){
   site.dates <- merge(site.info, site.dates, all.x=T, all.y=T)
   expclim <- merge(expclim, site.dates, all.x=T, all.y=T)
 }
+
+# Putting our NAs back where appropriate
+expclim[expclim$temptreat  =="none", "temptreat"  ] <- NA
+expclim[expclim$preciptreat=="none", "preciptreat"] <- NA
+expclim[expclim$plot       =="none", "plot"       ] <- NA
+summary(expclim)
 
 # Note: BACE canopy temps (modeled) extremely high, so I'm excluding the ones that are flat out impossible (>100 C = above boiling)
 expclim[!is.na(expclim$cantemp_max) & expclim$cantemp_max>100,"cantemp_max"] <- NA
@@ -113,25 +124,7 @@ summary(expclim)
 #       - Anomaly ~ Plot|Treatment # maybe do average plot bais, at very least treatment
 # ------------------------------------------
 
-# ----------------------
-# Prototyping workflow with a single site/plot
-# ----------------------
 source("gapfill_doy.R")
-
-# ggplot(data=expclim[,]) +
-#   facet_wrap(~site, scale="free_x") +
-#   geom_line(aes(x=year.frac, y=airtemp_max, color=temptreat)) 
-
-# # Seeing the breakdown of plot data at each site
-# for(s in unique(expclim$site)){
-#   if(!max(expclim[expclim$site==s,"airtemp_max"], na.rm=T)>0) next
-#   print(
-#     ggplot(data=expclim[expclim$site==s,]) +
-#       facet_wrap(~plot) +
-#       geom_line(aes(x=year.frac, y=airtemp_max, color=plot)) +
-#       ggtitle(s)
-#   )
-# }
 
 # ---------------------------------
 # Airtemp_max 
@@ -335,13 +328,34 @@ for(s in unique(soilmax.orig[is.na(soilmax.orig$plot2),"site"])){
 }
 summary(soilmax.orig)
 
+# Problem: The DOY cycle for Dunne & Price is tricky because they're missing most winter data
+# Solution: Create a dummy doy and single year that runs April to April so the tails are in a place of almost linear change
+soilmax.orig$year.orig <- soilmax.orig$year
+soilmax.orig$doy.orig  <- soilmax.orig$doy
+soilmax.orig[soilmax.orig$site %in% c("price", "dunne"), "year"] <- 9999 # Dummy year that clearly isn't real
+
+# Rewriting the site.year with the dummy year
+soilmax.orig$site.year <- as.factor(paste(soilmax.orig$site, soilmax.orig$year, sep="."))
+
 # Making a variable to do adjustments by that's plot (or treatment) by plot
 soilmax.orig$treatvar <- as.factor(paste(soilmax.orig$site, soilmax.orig$plot2, sep="."))
 
-
-fill.soiltmax <- gapfill.doy(gap.data=soilmax.orig, fillvar="soiltemp1_max", treatvar="treatvar", doy.by="site", data.by="site")
+fill.soiltmax <- gapfill.doy(gap.data=soilmax.orig, fillvar="soiltemp1_max", treatvar="treatvar", doy.by="site.year", data.by="site")
 # fill.soiltmax$plot <- as.ordered(fill.soiltmax$plot)
 summary(fill.soiltmax)
+
+# Putting things back to how they should be
+fill.soiltmax$year <- soilmax.orig$year.orig
+fill.soiltmax$doy  <- soilmax.orig$doy.orig
+fill.soiltmax$site.year <- as.factor(paste(fill.soiltmax$site, fill.soiltmax$year, sep="."))
+
+
+# Dunne has a problem with missing winter data, so we're going to say that when the temp 
+# drops below the minimum observed, just call it the minimum
+dunne.min <- quantile(fill.soiltmax[fill.soiltmax$site=="dunne","soiltemp1_max"], 0.005, na.rm=T) # fill with a very low value (but not the min, because it might be an outlier)
+fill.soiltmax[!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min,"met.filled"] <- dunne.min
+fill.soiltmax[!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min,"met.flag"] <- "forced_min"
+
 
 pdf("figures/Gapfill_soiltemp1_max.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmax$site)){
@@ -413,10 +427,28 @@ summary(soilmin.orig)
 # Making a variable to do adjustments by that's plot (or treatment) by plot
 soilmin.orig$treatvar <- as.factor(paste(soilmin.orig$site, soilmin.orig$plot2, sep="."))
 
+# Problem: The DOY cycle for Dunne & Price is tricky because they're missing most winter data
+# Solution: Create a dummy doy and single year that runs April to April so the tails are in a place of almost linear change
+soilmin.orig$year.orig <- soilmin.orig$year
+soilmin.orig$doy.orig <- soilmin.orig$doy
+soilmin.orig[soilmin.orig$site %in% c("price", "dunne"), "year"] <- 9999 # Dummy year that clearly isn't real
 
-fill.soiltmin <- gapfill.doy(gap.data=soilmin.orig, fillvar="soiltemp1_min", treatvar="treatvar", doy.by="site", data.by="site")
+soilmin.orig$site.year <- as.factor(paste(soilmin.orig$site, soilmin.orig$year, sep="."))
+
+fill.soiltmin <- gapfill.doy(gap.data=soilmin.orig, fillvar="soiltemp1_min", treatvar="treatvar", doy.by="site.year", data.by="site")
 # fill.soiltmin$plot <- as.ordered(fill.soiltmin$plot)
 summary(fill.soiltmin)
+
+# Putting the original doy & year in place
+fill.soiltmin$doy <- fill.soiltmin$doy.orig
+fill.soiltmin$year <- fill.soiltmin$year.orig
+
+# Need to do something about dunne because it has no winter temps & does weird things
+min.dunne <- quantile(fill.soiltmin[fill.soiltmin$site=="dunne","soiltemp1_min"], 0.005, na.rm=T) # fill with a very low value (but not the min, because it might be an outlier)
+fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)),"met.filled"] <- min.dunne
+fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)),"met.flag"] <- "forced_min"
+
+# fill.soiltmin[fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<30)),"met.filled"] <- min.dunne
 
 pdf("figures/Gapfill_soiltemp1_min.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmin$site)){
