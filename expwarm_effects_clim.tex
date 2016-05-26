@@ -53,12 +53,16 @@
 %\tableofcontents      %add a table of contents
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Here are a series of basic graphs and analyses, with my initial interpretation, of how experimental active warming affects climate. We start by comparing sham (temtreat="0" in "expclim.csv") and  ambient plots (temtreat="ambient" in "expclim.csv") to get a sense of how simply having the warming structures in place affects microclimate. 
+Here are a series of basic graphs and analyses, with my initial interpretation, of how experimental active warming affects climate. We start by comparing sham (temptreat="0" in "expclim.csv") and  ambient plots (temptreat="ambient" in "expclim.csv") to get a sense of how simply having the warming structures in place affects microclimate. 
 First, some simple plots and models of how air temperature and soil temperature differs across these treatments at different sites:
+
+
 \section {Air temperature}
-Air temperature is HIGHER in the shams, compared with the ambient air. Below, mean daily air temperature is shown, for all sites for which these data are available, but the pattern was consistent for minumum and maximum daily air temperature as well. Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 12.34 (SE:1.65); sham: 12.71 (SE: 1.64).
+Air temperature is HIGHER in the shams, compared with the ambient air. Below, mean daily air temperature is shown, for all sites for which these data are available (5). The pattern was consistent for minumum and maximum daily air temperature as well (also shown). Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 12.34 (SE:1.65); sham: 12.71 (SE: 1.64).
 
 \includegraphics{Analyses/output/shamvambient_airtemp.pdf}
+\includegraphics{Analyses/output/shamvambient_airtempmin.pdf}
+\includegraphics{Analyses/output/shamvambient_airtempmax.pdf}
 
 \section {Soil temperature}
 Soil temperature is LOWER in the shams, compared with the ambient air. Below, mean daily soil temperature (for the shallowest depth) is shown, for all sites for which these data are available, but the pattern was consistent for minumum and maximum daily soil temperatures as well. Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 11.73 (SE:1.36); sham: 11.31 (SE:1.37).

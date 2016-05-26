@@ -53,7 +53,7 @@
 %\tableofcontents      %add a table of contents
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Here are a series of basic graphs and analyses, with my initial interpretation, of how experimental active warming affects climate. We start by comparing sham (temtreat="0" in "expclim.csv") and  ambient plots (temtreat="ambient" in "expclim.csv") to get a sense of how simply having the warming structures in place affects microclimate. 
+Here are a series of basic graphs and analyses, with my initial interpretation, of how experimental active warming affects climate. We start by comparing sham (temptreat="0" in "expclim.csv") and  ambient plots (temptreat="ambient" in "expclim.csv") to get a sense of how simply having the warming structures in place affects microclimate. 
 <<echo=FALSE, label=getdata>>=
 setwd("~/GitHub/radcliffe")
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=T)
@@ -71,10 +71,24 @@ expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
 expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
 expclim_cont$site<-as.factor(expclim_cont$site)
 @
+
+\section {Summary}
+Air temperature is HIGHER in the shams, and soil temperature is LOWER in the shams, compared with ambient plots. Below is a summary of these differences for mean, min, and max temperatures. So far, this effect seems to be consistent across the two types of warming for which these data are available (soil warming and forced air). There are greater effects at Duke than at Harvard (there are only 2 sites where these data are available, with both warming types occurring at each of these two sites).
+
+<< echo=FALSE>>=
+soiltemp<-c(-0.425,-0.572,-0.346)
+airtemp<-c(0.373,0.388,0.358)
+tempdifs<-as.table(rbind(soiltemp,airtemp))
+colnames(tempdifs)<-c("mean","min","max")
+table(tempdifs)
+@
+
 \section {Air temperature}
-Air temperature is HIGHER in the shams, compared with the ambient air. Below, mean daily air temperature is shown, for all sites for which these data are available, but the pattern was consistent for minumum and maximum daily air temperature as well. Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 12.34 (SE:1.65); sham: 12.71 (SE: 1.64).
+Air temperature is HIGHER in the shams, compared with the ambient air. Below, mean daily air temperature is shown, for all sites for which these data are available (5). The pattern was consistent for minumum and maximum daily air temperature as well (also shown). Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 12.34 (SE:1.65); sham: 12.71 (SE: 1.64).
 
 \includegraphics{Analyses/output/shamvambient_airtemp.pdf}
+\includegraphics{Analyses/output/shamvambient_airtempmin.pdf}
+\includegraphics{Analyses/output/shamvambient_airtempmax.pdf}
 
 <<echo=FALSE, label=models>>=
 #expclim_cont$site<-factor(expclim_cont$site)

@@ -1,0 +1,197 @@
+library(rjags)#
+library(jagsUI)#
+library(lattice)#
+library(coda)#
+library(boot)
+setwd("~/GitHub/radcliffe/Analyses")#
+expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)#
+head(expclim)#
+unique(expclim$temptreat)#
+##want to plot "0" compared to "ambient" in each site#
+##select out just these two treatments for now#
+expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]#
+unique(expclim_controls$site)#
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))#
+colnames(sitesums)<-c("sham.control","ambient")#
+sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]#
+sites_con<-sites_con[-which(sites_con=="chuine")]#
+expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]#
+#make figures of sham controls vs. ambient conditions:#
+#mean soil temp:#
+quartz(height=4, width=8)#
+par(mfrow=c(1,5))#
+for (i in 1:length(sites_con)){#
+  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
+  if(length(unique(dat$soiltemp1_mean))==1){next}#
+  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")#
+}
+dat<-expclim_cont[expclim_cont$site==sites_con[i],]
+if(length(unique(dat$soiltemp1_mean))==1){next}
+boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")
+i
+dat
+sites_con
+expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
+unique(expclim_controls$site)
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
+sitesums
+head(expclim)
+unique(expclim$temptreat)
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
+sitesums
+expclim$temptreat<-as.factor(expclim$temptreat)
+expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
+sitesums
+expclim$temptreat<-factor(expclim$temptreat)
+expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
+expclim_controls$temptreat<-factor(expclim_controls$temptreat)
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
+sitesums
+colnames(sitesums)<-c("sham.control","ambient")
+sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
+sites_con<-sites_con[-which(sites_con=="chuine")]
+expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
+quartz(height=4, width=8)
+for (i in 1:length(sites_con)){#
+  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
+  if(length(unique(dat$soiltemp1_mean))==1){next}#
+  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")#
+}
+expclim_cont
+sites_con
+sitesums
+expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
+unique(expclim_con$site)
+expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
+unique(expclim_cont$site)
+head(expclim_cont)
+quartz(height=4, width=8)#
+par(mfrow=c(1,5))#
+for (i in 1:length(sites_con)){#
+  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
+  if(length(unique(dat$soiltemp1_mean))==1){next}#
+  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")#
+}
+mod2<-lmer(soiltemp1_mean~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs2<-data.frame(coef(summary(mod2)))
+library(lme4)
+mod2<-lmer(soiltemp1_mean~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs2<-data.frame(coef(summary(mod2)))
+coefs2
+quartz(height=4, width=8)#
+par(mfrow=c(1,5))#
+for (i in 1:length(sites_con)){#
+  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
+  if(length(unique(dat$soiltemp1_min))==1){next}#
+  boxplot(dat$soiltemp1_minn~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")#
+}#
+mod3<-lmer(soiltemp1_min~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)#
+coefs3<-data.frame(coef(summary(mod3)))
+quartz(height=4, width=8)#
+par(mfrow=c(1,5))#
+for (i in 1:length(sites_con)){#
+  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
+  if(length(unique(dat$soiltemp1_min))==1){next}#
+  boxplot(dat$soiltemp1_min~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")#
+}#
+mod3<-lmer(soiltemp1_min~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)#
+coefs3<-data.frame(coef(summary(mod3)))
+coefs3
+quartz(height=4, width=8)#
+par(mfrow=c(1,5))#
+for (i in 1:length(sites_con)){#
+  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
+  if(length(unique(dat$soiltemp1_max))==1){next}#
+  boxplot(dat$soiltemp1_max~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")#
+}#
+mod4<-lmer(soiltemp1_max~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)#
+coefs4<-data.frame(coef(summary(mod4)))
+coefs4
+dim(coefs4)
+soil_difs<-c(coefs2[2,1]-coefs2[1,1],coefs4[2,1]-coefs4[1,1],coefs3[2,1]-coefs3[1,1])
+soildifs
+soil_difs
+colnames(soildifs<-c("mean","min","max"))
+colnames(soildifs)<-c("mean","min","max"))
+colnames(soildifs)<-c("mean","min","max")
+names(soildifs)<-c("mean","min","max")
+soil_difs
+mod_max<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_max<-data.frame(coef(summary(mod_max)))
+mod_min<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_min<-data.frame(coef(summary(mod_min)))
+coefs_max
+mod_max<-lmer(airtemp_max~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_max<-data.frame(coef(summary(mod_max)))
+mod_min<-lmer(airtemp_min~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_min<-data.frame(coef(summary(mod_min)))
+coefs_max
+coefs_min
+air_difs<-c(coefs_air2[2,1]-coefs_air[1,1], coefs_min[2,1]-coefs_min[1,1], coefs_max[2,1]-coefs_max[1,1])
+air_difs<-c(coefs_air[2,1]-coefs_air[1,1], coefs_min[2,1]-coefs_min[1,1], coefs_max[2,1]-coefs_max[1,1])
+coefs_air<-data.frame(coef(summary(mod_air)))
+mod_air<-lmer(airtemp_mean~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_air<-data.frame(coef(summary(mod_air)))
+mod_max<-lmer(airtemp_max~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
+air_difs<-c(coefs_air[2,1]-coefs_air[1,1], coefs_min[2,1]-coefs_min[1,1], coefs_max[2,1]-coefs_max[1,1])
+air_difs
+amb_shamdifs<-rbind(soildifs,airdifs)
+amb_shamdifs<-rbind(soil_difs,air_difs)
+amb_shamdifs
+colnames(amb_shamdifs)<-c("mean","min","max")
+colnames(amb_shamdifs)<-c("mean","min","max")
+amb_shamdifs
+amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
+amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
+colnames(amb_shamdifs)<-c("mean","min","max")
+amb_shamdifs
+rownames(amb_shamdifs)<-c("soil","air")
+amb_shamdifs
+rownames(amb_shamdifs)<-c("soiltemp","airtemp")
+amb_shamdifs
+ranef(mod)
+ranef(mod2)
+fixef(mod2)
+coef(mod2)
+mod2a<-lmer(soiltemp1_mean~-1+temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
+summary(mod2a)
+coef(mod2a)
+expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
+mod2a<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
+summary(mod2a)
+coef(mod2a)
+expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
+mod_air<-lmer(airtemp_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
+coefs_air<-data.frame(coef(summary(mod_air)))
+summary(mod_air)
+coef(mod_Air)
+coef(mod_air)
+coefs_air
+mod4<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs4<-data.frame(coef(summary(mod4)))
+soil_difs<-c(coefs2[2,1],coefs4[2,1],coefs3[2,1])
+mod2<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)#
+coefs2<-data.frame(coef(summary(mod2)))
+mod3<-lmer(soiltemp1_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)#
+coefs3<-data.frame(coef(summary(mod3)))
+mod4<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)#
+coefs4<-data.frame(coef(summary(mod4)))
+soil_difs<-c(coefs2[2,1],coefs4[2,1],coefs3[2,1])
+mod_air<-lmer(airtemp_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_air<-data.frame(coef(summary(mod_air)))
+mod_min<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_min<-data.frame(coef(summary(mod_min)))
+mod_max<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+coefs_max<-data.frame(coef(summary(mod_max)))
+air_difs<-c(coefs_air[2,1], coefs_min[2,1], coefs_max[2,1])
+amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
+colnames(amb_shamdifs)<-c("mean","min","max")
+rownames(amb_shamdifs)<-c("soiltemp","airtemp")
+amb_shamdifs
+mod2a<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
+summary(mod2a)
+coef(mod2a)
+mod_air<-lmer(airtemp_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
+coefs_air<-data.frame(coef(summary(mod_air)))
+coef(mod_air)
