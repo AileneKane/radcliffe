@@ -252,3 +252,27 @@ mtext("Month",side=1, line=2, adj=.5)
 write.csv(monthsums_allyear,"shamVSambient_meandifs.csv",row.names=FALSE)
 write.csv(monthsums_allyear_max,"shamVSambient_maxdifs.csv",row.names=FALSE)
 write.csv(monthsums_allyear_min,"shamVSambient_mindifs.csv",row.names=FALSE)
+####Look at soil moisture now:
+monthsums_allyear_mois<-c()
+for (i in 1:length(months)){
+  monthdat<-expclim_cont[expclim_cont$month==months[i],]
+  monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
+  moismod<-lmer(soilmois1~temptreat + (temptreat|site), data= monthdat, REML=FALSE)
+  monthsums_soil<-rbind(fixef(moismod),coef(moismod)$site)
+  rownames(monthsums_soil)[1]<-"mois_fixed"
+  SE<-c(data.frame(coef(summary(moismod)))$Std[2],rep(NA, times=dim(monthsums_soil)[1]-1))
+  t<-c(data.frame(coef(summary(moismod)))$t.value[2],rep(NA, times=dim(monthsums_soil)[1]-1))
+  numsites<-dim(ranef(moismod)$site)[1]
+  nsites<-c(numsites,rep(NA, times=dim(monthsums_soil)[1]-1))
+  type<-c(rep("soil",times=dim(monthsums_soil)[1]))
+  month<-rep(months[i], times=dim(monthsums_soil)[1])
+  monthsums_soil<-cbind(month,type,monthsums_soil,SE,t,nsites)
+  monthsums_allyear_mois<-rbind(monthsums_allyear_mois,monthsums_soil)
+  }
+###Plot model results:
+mois_monthsums<-monthsums_allyear_mois[substring(rownames(monthsums_allyear_mois),1,10)=="mois_fixed",]
+#air
+plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="Month", ylab="Difference between sham and ambient", ylim=c(min(mois_monthsums$temptreat0)-(max(mois_monthsums$SE)),max(mois_monthsums$temptreat0)+(max(mois_monthsums$SE))),bty="l", main="Soil Moisture")
+for (i in 1:12){
+  arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0.05,angle=90,code=3)}
+points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="blue")
