@@ -101,4 +101,44 @@ obspheno.csv
 7. genus			genus of plant observed	
 8. species			species of plant observed
 
-#
+# ---------------------------------------
+
+EffectiveWarming_Plot.csv
+ - Description: Treatment effects on above- and below-ground temperature calculated as the plot-deviation from the mean control
+ - Script to Generate: EffectiveWarming_Simple.R
+ - Columns
+    #  Name                units         Description
+    1. site                category      name of experiment/site
+    4. temptreat           category      experimental temperature treatment
+    5. preciptreat         category      experimental precipitation treatment
+    6. plot                category      experiment plot number
+    7. block               category      experiment block number
+    8. AG.type             category      type of aboveground temperature data provided
+    9. AGtemp_max_dev      deg C         mean temperature effect on aboveground daily maximum temperature 
+   10. AGtemp_min_dev      deg C         mean temperature effect on aboveground minimum temperature
+   11. AGtemp_mean_dev     deg C         mean temperature effect on aboveground mean temperature
+   12. BGtemp_max_dev      deg C         mean temperature effect on belowground (1st layer) daily maximum temperature
+   13. BGtemp_min_dev      deg C         mean temperature effect on belowground (1st layer) daily minimum temperature
+   14. BGtemp_mean_dev     deg C         mean temperature effect on belowground (1st layer) daily mean temperature
+
+# ---------------------------------------
+
+EffectiveWarming_Treatment.csv
+ - Description: Treatment effects on above- and below-ground temperature calculated as the treatment-level deviation from the mean control
+                NOTE: this was calculated directly from the raw daily data.  if you would like to go through the plot level first to remove
+                      potential bias of plot representation, use the aggregate function on EffectiveWarming_Plot.csv
+ - Script to Generate: EffectiveWarming_Simple.R
+ - Columns
+    #  Name                units         Description
+    1. site                category      name of experiment/site
+    2. temptreat           category      experimental temperature treatment
+    3. preciptreat         category      experimental precipitation treatment
+    4. AG.type             category      type of aboveground temperature data provided
+    5. AGtemp_max_dev      deg C         mean temperature effect on aboveground daily maximum temperature 
+    6. AGtemp_min_dev      deg C         mean temperature effect on aboveground minimum temperature
+    7. AGtemp_mean_dev     deg C         mean temperature effect on aboveground mean temperature
+    8. BGtemp_max_dev      deg C         mean temperature effect on belowground (1st layer) daily maximum temperature
+    9. BGtemp_min_dev      deg C         mean temperature effect on belowground (1st layer) daily minimum temperature
+   10. BGtemp_mean_dev     deg C         mean temperature effect on belowground (1st layer) daily mean temperature
+
+# ---------------------------------------
