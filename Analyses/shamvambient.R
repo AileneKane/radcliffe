@@ -271,8 +271,8 @@ for (i in 1:length(months)){
   }
 ###Plot model results:
 mois_monthsums<-monthsums_allyear_mois[substring(rownames(monthsums_allyear_mois),1,10)=="mois_fixed",]
-#air
-plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="Month", ylab="Difference between sham and ambient", ylim=c(min(mois_monthsums$temptreat0)-(max(mois_monthsums$SE)),max(mois_monthsums$temptreat0)+(max(mois_monthsums$SE))),bty="l", main="Soil Moisture")
+quartz(height=5,width=6)
+plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="green", xlab="Month", ylab="Difference between sham and ambient", ylim=c(min(mois_monthsums$temptreat0)-(max(mois_monthsums$SE)),max(mois_monthsums$temptreat0)+(max(mois_monthsums$SE))),bty="l", main="Soil Moisture")
 for (i in 1:12){
   arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0.05,angle=90,code=3)}
-points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="blue")
+points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="green")

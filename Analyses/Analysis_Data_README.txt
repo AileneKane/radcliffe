@@ -87,6 +87,36 @@ China:
 
 # ---------------------------------------
 
+expsiteinfo.csv
+
+- Description: daily climate data measured* from experiments that manipulated temperature via active warming treatments  (and in some cases precipitation as well) and monitored phenology. 
+ - Script to Generate:radcliffe_merge_expclim.R
+ - Column Descriptions               
+#  Name       		units  Description
+1. Site				study/site name
+2. Location  		
+3. FirstAuthor		
+4. Pubyear		
+5. Publication_name   
+6. Volume	   	
+7. startpage 	   	
+8. warming_type		
+9. warming_type_detail		
+10. no_spp		#	number of species whose phenology were tracked
+11. habitat			
+12. Lat			decdeg decimal degrees of latitude for experiment location
+13. Long		decdeg decimal degrees of longitude for experiment location
+14. Elev_m		m	elevation of experiment location 
+15. data_startyear	year	first year of phenology data collection
+16. data_endyear	year	last year of phenology data collection 	
+17. exp_startyear	year	first year of experiment
+18. obsfreq_days	days	frequency of phenology data collection
+19. airtemp_freq_hours	hours	frequency of air temperature data collection
+20. soiltemp_freq_hr	hours	frequency of soil temperature data collection21. soilmois_freq_hr	hours	frequency of soil moisture data collection22. soiltemp_freq_hr	hours	frequency of air temperature data collection23. Tsoildepth1_cm	cm	shallowest depth at which soil temp was measured24. Tsoildepth2_cm	cm	second shallowest depth at which soil temp was measured25. Msoildepth1_cm	cm	shallowest depth at which soil moisture was measured26. Msoildepth1_cm	cm	second shallowest depth at which soil moisture was measured27-36. temptreat_1:
+	temptreat_9		target warming treatment levels37. temptreat_units		units for temp treatment (usually degC)38. preciptreat_1		precip added treatment amount39. preciptreat_-1		precip removed treatment amount40. preciptreat_units		units for precipitation treatment41-49. temptreat_1_reported:	temptreat_9_reported		reported warming average treatment levels (if crossed treatments, these are given for the warming only treatment)
+
+# ---------------------------------------
+
 obspheno.csv 
  - Description: 
  - Script to Generate: radcliffe_merge_obs.R
