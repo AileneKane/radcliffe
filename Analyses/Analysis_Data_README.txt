@@ -18,7 +18,7 @@ expclim_gapfill.csv
  - Description: Gapfilled soil & air temperatures based off of expclim.csv
                 codes for data type flags are as follows:
                 1. Observed  = raw value from expclim.csv
-                2. doy.mean  = interpolated pattern only (doy smoother)
+                2. doy.adj   = interpolated pattern only (doy smoother), adjusted by plot/treatment
                 3. doy.resid = interpolated pattern + estimated day/treatment deviation
                 4. forced_min= a forced temperature to deal with troubled winter values at the dunne site
 
