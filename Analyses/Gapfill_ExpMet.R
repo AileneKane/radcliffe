@@ -15,7 +15,7 @@
 # ** PLEASE look at the pdf files in the figures directory before 
 #    using these data!! ***
 # ------------------------------------------
-
+rm(list=ls())
 # ------------------------------------------
 # Load Libraries & Datasets
 # ------------------------------------------
@@ -27,66 +27,20 @@ expclim <- read.csv("expclim.csv")
 expclim <- expclim[!is.na(expclim$doy),] # get rid of data that has no day of year (bc it's unusable)
 expclim$year.frac <- expclim$year + expclim$doy/366 # Add a continuous time variable that is fractional years
 
+summary(expclim)
+
+# Saving the raw for now
+expclim.orig <- expclim
+
 # changing NA to a factor of "none" to make the gapfilling work (will change it back to it's original state after we add missing days)
 expclim$temptreat   <- as.factor(ifelse(is.na(expclim$temptreat), "none", paste(expclim$temptreat)))
 expclim$preciptreat <- as.factor(ifelse(is.na(expclim$preciptreat), "none", paste(expclim$preciptreat)))
 expclim$plot        <- as.factor(ifelse(is.na(expclim$plot), "none", paste(expclim$plot)))
-
-# Making sure we don't have missing rows in between the max and min for each site-year
-doy.frac <- (1:366)/366
-for(s in unique(expclim$site)){
-  print(paste0("processing site: ", s))
-  
-  # Getting the unique treatment & plot info for each site to help the merge work
-  site.info <- aggregate(expclim[expclim$site==s,"year.frac"], 
-                         by=expclim[expclim$site==s,c("site", "temptreat", "preciptreat", "plot")],
-                         FUN=min, na.rm=F)
-  site.info <- site.info[,1:(ncol(site.info)-1)]
-  site.info
-  
-  # Finding the start and end for each site
-  yf.min <- min(expclim[expclim$site==s, "year.frac"])
-  yf.max <- max(expclim[expclim$site==s, "year.frac"])
-  
-  yrs <- data.frame(year=min(expclim[expclim$site==s, "year"]):max(expclim[expclim$site==s, "year"]))
-  site.dates <- merge(yrs, data.frame(doy=doy.frac))
-  site.dates$year.frac <- site.dates$year + site.dates$doy
-  site.dates$doy <- site.dates$doy*366
-
-  site.dates <- site.dates[site.dates$year.frac>=yf.min & site.dates$year.frac<=yf.max,]
-
-  # Creating a time vector for all days that should be in the record
-  yf.site  <- seq(yf.min, yf.max, by=1/366)
-  yr.site  <- as.numeric(substr(yf.site, 1, 4))
-  doy.site <- as.numeric(substr(yf.site, 5, nchar(yf.site)))*366
-  
-  site.dates <- merge(site.info, site.dates, all.x=T, all.y=T)
-  expclim <- merge(expclim, site.dates, all.x=T, all.y=T)
-}
-
-# Putting our NAs back where appropriate
-expclim[expclim$temptreat  =="none", "temptreat"  ] <- NA
-expclim[expclim$preciptreat=="none", "preciptreat"] <- NA
-expclim[expclim$plot       =="none", "plot"       ] <- NA
-summary(expclim)
-
-# Note: BACE canopy temps (modeled) extremely high, so I'm excluding the ones that are flat out impossible (>100 C = above boiling)
-expclim[!is.na(expclim$cantemp_max) & expclim$cantemp_max>100,"cantemp_max"] <- NA
-
-# lump non-warmed & non-precip manipulations together
-expclim$temptreat2 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "ambient"), "ambient", "warming"))
-expclim$temptreat3 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "ambient"), "0", paste(expclim$temptreat)))
-expclim$preciptreat2 <- as.factor(ifelse(expclim$preciptreat=="1", "+ precip", ifelse(expclim$preciptreat=="-1", "- precip", "ambient")))
-expclim$preciptreat2 <- as.factor(ifelse(is.na(expclim$preciptreat2), "ambient", paste(expclim$preciptreat2)))
-
-# Making some useful indicies
-expclim$site.year <- as.factor(paste(expclim$site, expclim$year, sep="."))
-expclim$plot <- as.ordered(expclim$plot)
+expclim$block       <- as.factor(ifelse(is.na(expclim$block), "none", paste(expclim$block)))
 
 # For aboveground temperature, make a single variable that uses air, 
 #    In case there's more than one measurement (I don't think there is),
 #    we'll use the min reported temp since IRRs tend to over-estimate temp
-
 expclim[,"temp_max"] <- apply(expclim[,c("airtemp_max", "cantemp_max", "surftemp_max")], 1, min, na.rm=T)
 expclim[expclim$temp_max==Inf,"temp_max"] <- NA
 
@@ -98,8 +52,76 @@ summary(expclim)
 expclim[which(!is.na(expclim$surftemp_max)), "type.temp"] <- "surface"
 expclim[which(!is.na(expclim$cantemp_max)), "type.temp"] <- "canopy"
 expclim[which(!is.na(expclim$airtemp_max)), "type.temp"] <- "air"
+expclim[which(is.na(expclim$temp_max)), "type.temp"] <- "none"
 expclim$type.temp <- as.factor(expclim$type.temp)
 summary(expclim)
+
+
+# # Something's going very odd in our raw data, so we're going to do a quick aggregate to make sure we don't have duplicate days
+expclim <- aggregate(expclim[,c("temp_max", "temp_min", "soiltemp1_max", "soiltemp1_min")],
+                     by=expclim[,c("site", "temptreat", "preciptreat", "plot", "block", "year", "doy", "year.frac", "type.temp")],
+                     FUN=mean, na.rm=T)
+summary(expclim)
+
+
+# Making sure we don't have missing rows in between the max and min for each site-year
+doy <- 1:365
+expclim$year.doy <- as.factor(paste(expclim$year, expclim$doy, sep="."))
+for(s in unique(expclim$site)){
+  print(paste0("processing site: ", s))
+  yr.doy <- unique(expclim[expclim$site==s,"year.doy"])
+  # Getting the unique treatment & plot info for each site to help the merge work
+  site.info <- aggregate(expclim[expclim$site==s,"year.frac"], 
+                         by=expclim[expclim$site==s,c("site", "temptreat", "preciptreat", "plot", "block")],
+                         FUN=min, na.rm=F)
+  site.info <- site.info[,1:(ncol(site.info)-1)]
+#   site.info
+  
+  # Finding the start and end for each site
+  yf.min <- min(expclim[expclim$site==s, "year.frac"])
+  yf.max <- max(expclim[expclim$site==s, "year.frac"])
+  
+  yrs <- data.frame(year=min(expclim[expclim$site==s, "year"]):max(expclim[expclim$site==s, "year"]))
+  site.dates <- merge(yrs, data.frame(doy=doy))
+
+  site.dates$year.frac <- site.dates$year + site.dates$doy/365
+  site.dates$year.doy <- as.factor(paste(site.dates$year, site.dates$doy, sep="."))
+
+  site.dates <- site.dates[site.dates$year.frac>=yf.min & site.dates$year.frac<=yf.max,]
+  
+  site.dates <- merge(site.info, site.dates[,], all.x=T, all.y=T)
+  expclim <- merge(expclim, site.dates[,c("site","plot", "year", "doy", "temptreat", "preciptreat", "block")], all.x=T, all.y=T)
+}
+
+
+cols.keep <- c("plot", "year", "doy", "year.frac")
+# test1 <- expclim[expclim$site=="force" & expclim$plot=="1A" & expclim$year==2009,]
+test1 <- expclim[expclim$site=="chuine" & expclim$plot=="a1" & expclim$year==2003,]
+test1$doy <- as.factor(test1$doy)
+summary(test1$doy)
+test1[test1$doy=="5",]
+# 
+# test1b <- expclim.orig[expclim.orig$site=="force" & expclim.orig$plot=="1A" & expclim.orig$year==2009,]
+# test1b$doy <- as.factor(test1b$doy)
+# test1b[test1b$doy=="5",]
+# summary(test1b$doy)
+
+# Redo year.frac
+expclim$year.frac <- expclim$year + expclim$doy/366 # Add a continuous time variable that is fractional years
+
+# Note: BACE canopy temps (modeled) extremely high, so I'm excluding the ones that are flat out impossible (>100 C = above boiling)
+expclim[!is.na(expclim$temp_max) & expclim$temp_max>100,"temp_max"] <- NA
+
+# Putting our NAs back where appropriate
+# expclim[expclim$temptreat  =="none", "temptreat"  ] <- NA
+# expclim[expclim$preciptreat=="none", "preciptreat"] <- NA
+# expclim[expclim$plot       =="none", "plot"       ] <- NA
+# summary(expclim)
+
+# Making some useful indicies
+expclim$site.year <- as.factor(paste(expclim$site, expclim$year, sep="."))
+expclim$plot <- as.ordered(expclim$plot)
+expclim$temptreat3 <- as.factor(ifelse(expclim$temptreat %in% c("0", "outside", "ambient"), "0", paste(expclim$temptreat)))
 # ------------------------------------------
 
 
@@ -135,7 +157,7 @@ for(s in unique(expclim$site)){
   print(paste0(" ----- ",s, " ----- "))
   if(!max(expclim[expclim$site==s,"temp_max"], na.rm=T)>0){ 
     print(paste0("   no Tmax"))
-    airmax.orig <- airmax.orig[!airmax.orig$site==s, ] 
+    airmax.orig <- airmax.orig[!airmax.orig$site==s &!is.na(airmax.orig$site), ] 
   } else {
     time.min <- min(airmax.orig[airmax.orig$site==s & !is.na(airmax.orig$temp_max), "year.frac"])
     time.max <- max(airmax.orig[airmax.orig$site==s & !is.na(airmax.orig$temp_max), "year.frac"])
@@ -446,7 +468,7 @@ fill.soiltmin$year <- fill.soiltmin$year.orig
 # Need to do something about dunne because it has no winter temps & does weird things
 min.dunne <- quantile(fill.soiltmin[fill.soiltmin$site=="dunne","soiltemp1_min"], 0.005, na.rm=T) # fill with a very low value (but not the min, because it might be an outlier)
 fill.soiltmin[,"met.flag"] <- as.factor(ifelse(!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)), "forced_min", paste(fill.soiltmin$met.flag)))
-fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)),"met.filled"] <- min.dunne
+fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | fill.soiltmin$met.flag=="forced_min"),"met.filled"] <- min.dunne
 
 pdf("figures/Gapfill_soiltemp1_min.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmin$site)){
@@ -462,15 +484,14 @@ for(s in unique(fill.soiltmin$site)){
 }
 dev.off()
 # ---------------------------------
-
 # --------------------------------------------------------------
 
 # --------------------------------------------------------------
 # Merge the gapfilled climates in with 
 # --------------------------------------------------------------
-ag.type <- data.frame(site=unique(fill.airtmax$site))
+ag.type <- data.frame(site=unique(expclim[,"site"]))
 for(s in unique(ag.type$site)){
-  ag.type[ag.type$site==s, "AG.type"] <- unique(fill.airtmax[fill.airtmax$site==s & !is.na(fill.airtmax$type.temp),"type.temp"])[1]
+  ag.type[ag.type$site==s, "AG.type"] <- unique(expclim[expclim$site==s ,"type.temp"])[1]
 }
 summary(ag.type)
 ag.type
@@ -481,16 +502,29 @@ names(fill.airtmax)[names(fill.airtmax) %in% c("met.filled", "met.flag")] <- c("
 names(fill.soiltmin)[names(fill.soiltmin) %in% c("met.filled", "met.flag")] <- c("fill.soiltemp_min", "flag.soiltemp_min")
 names(fill.soiltmax)[names(fill.soiltmax) %in% c("met.filled", "met.flag")] <- c("fill.soiltemp_max", "flag.soiltemp_max")
 
-cols.keep <- c("year", "doy", "temptreat", "preciptreat", "plot", "site")
-fill.tair  <- merge(fill.airtmin[,c(cols.keep, "fill.AGtemp_min", "flag.AGtemp_min")], fill.airtmax[,c(cols.keep, "fill.AGtemp_max", "flag.AGtemp_max")], all.x=T, all.y=T)
-fill.tsoil <- merge(fill.soiltmin[,c(cols.keep, "fill.soiltemp_min", "flag.soiltemp_min")], fill.soiltmax[,c(cols.keep, "fill.soiltemp_max", "flag.soiltemp_max")], all.x=T, all.y=T)
+# Merging datasets together
+cols.keep <- c("site", "plot", "year", "doy", "temptreat", "preciptreat", "block")
+fill.tair  <- merge(fill.airtmin[,c(cols.keep, "temp_min", "fill.AGtemp_min", "flag.AGtemp_min")], fill.airtmax[,c(cols.keep, "temp_max", "fill.AGtemp_max", "flag.AGtemp_max")], all.x=T, all.y=T)
+fill.tsoil <- merge(fill.soiltmin[,c(cols.keep, "soiltemp1_min", "fill.soiltemp_min", "flag.soiltemp_min")], fill.soiltmax[,c(cols.keep, "soiltemp1_max", "fill.soiltemp_max", "flag.soiltemp_max")], all.x=T, all.y=T)
 
 exp.gapfill <- merge(fill.tair, fill.tsoil, all.x=T, all.y=T)
 summary(exp.gapfill)
-dim(exp.gapfill); dim(fill.tsoil)
 
-exp.gapfill <- merge(exp.gapfill, ag.type, all.x=T)
+exp.gapfill <- merge(exp.gapfill, ag.type, all.x=T, all.y=F)
 summary(exp.gapfill)
+
+# Aggregate to get rid of duplicate days
+exp.gapfill <- aggregate(exp.gapfill[,c("temp_min", "fill.AGtemp_min", "temp_max", "fill.AGtemp_max", "soiltemp1_min", "fill.soiltemp_min", "soiltemp1_max", "fill.soiltemp_max")],
+                         by=exp.gapfill[,c(cols.keep, "flag.AGtemp_min", "flag.AGtemp_max", "flag.soiltemp_min", "flag.soiltemp_max")],
+                         FUN=mean, na.rm=T)
+dim(exp.gapfill)
+
+
+# Put the original NAs back in
+exp.gapfill[exp.gapfill$temptreat  =="none", "temptreat"  ] <- NA
+exp.gapfill[exp.gapfill$preciptreat=="none", "preciptreat"] <- NA
+exp.gapfill[exp.gapfill$plot       =="none", "plot"       ] <- NA
+exp.gapfill[exp.gapfill$block      =="none", "block"      ] <- NA
 
 write.csv(exp.gapfill, "expclim_gapfill.csv", row.names=F, eol="\n")
 # --------------------------------------------------------------
