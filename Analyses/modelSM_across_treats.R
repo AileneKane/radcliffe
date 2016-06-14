@@ -243,30 +243,36 @@ ggplot(aes(x=as.factor(Pval),y=soilmois2),data=df)+facet_wrap(~site,scales="free
     #For now, bace gets its own separate model and is omitted from the total model. But perhaps we should convert the watts to degreesC
   #Should I include non-linear effects? Check to see if the independent variables are linear with soil moisture:
     #If not, I may need to transform....
-        plot(moddat$soilmois1,moddat$airtemp_min) #not non-linear, but basically just a cloud
-        plot(moddat$soilmois1,moddat$airtemp_max) #not non-linear, but basically just a cloud
-        plot(moddat$soilmois1,moddat$soiltemp1_min) #something funky going on here - measurement error, 
+        plot(dat$soilmois1,dat$airtemp_min) #not non-linear, but basically just a cloud
+        plot(dat$soilmois1,dat$airtemp_max) #not non-linear, but basically just a cloud
+        plot(dat$soilmois1,dat$soiltemp1_min) #something funky going on here - measurement error? 
           #many points seem bounded by 0... do I need to deal with this?
           #does not meet homoskedasticity assumption
-          summary(moddat[which(moddat$soiltemp1_min<0),]) #6 out of 9 sites have temps that go below 0
-       plot(moddat$soilmois1,moddat$soiltemp1_max) #does not meet homoskedasticity assumption at all
-       plot(moddat$soilmois1,moddat$Pval) #meh, sure
+          summary(dat[which(dat$soiltemp1_min<0),]) #6 out of 9 sites have temps that go below 0
+       plot(dat$soilmois1,dat$soiltemp1_max) #does not meet homoskedasticity assumption at all
+       plot(dat$soilmois1,dat$Pval) #meh, sure
       #So my main issue is heteroskadasticity in soiltemp variables. Note that this doesn't bias coefficient
         #estimates, but it does make the SEs incorrect. See if a simple transformation will do the trick:
-        plot(moddat$soilmois1,log(moddat$soiltemp1_min)) #terrible! Plus there are some negatives so this isn't really legit
-        plot(moddat$soilmois1,log(moddat$soiltemp1_max)) #terrible again! Plus there are some negatives
+        plot(dat$soilmois1,log(dat$soiltemp1_min)) #terrible! Plus there are some negatives so this isn't really legit
+        plot(dat$soilmois1,log(dat$soiltemp1_max)) #terrible again! Plus there are some negatives
      #If the heteroscedasticity is a result of underlying groups (sites?), maybe it's okay because I use site as a RE
         par(mfrow=c(2,3))
-        for(i in 1:length(unique(moddat$site))){
-        sub<-moddat[which(moddat$site==unique(moddat$site)[i]),]
-          plot(sub$soilmois1,sub$soiltemp1_min,main=as.character(unique(moddat$site)[i]))
-           } #error is because chuine, farnsworth, jasper have no soil temp data
+        sit<-unique(dat$site)
+        sit<-sit[-c(8:10)] #remove because these have no soiltemp data
+        for(i in 1:length(sit)){
+          Sys.sleep(0.1)
+          sub<-dat[which(dat$site==sit[i]),]
+          plot(sub$soilmois1,sub$soiltemp1_min,main=as.character(sit[i]))
+          Sys.sleep(0)
+           } #Added the Sys.sleep lines because otherwise only one plot is made - RStudio bug
        #These actually look pretty okay in terms of heteroscadasticity, except for ellison.
         #I think this is fine.
-        for(i in 1:length(unique(moddat$site))){
-         sub<-moddat[which(moddat$site==unique(moddat$site)[i]),]
-          plot(sub$soilmois1,sub$soiltemp1_max,main=as.character(unique(moddat$site)[i]))
-        } #again except for ellison, looks pretty okay.
+        for(i in 1:length(sit)){
+          Sys.sleep(0.1)
+         sub<-dat[which(dat$site==sit[i]),]
+          plot(sub$soilmois1,sub$soiltemp1_max,main=as.character(sit[i]))
+          Sys.sleep(0)
+        } #again except for ellison, looks pretty okay - more dealing with ellison data later.
     
 #---BLOCKED DATA FIRST---# aka modeling discovery, because I ultimately don't want to just use the sites with blocks.
 dfB<-df[which(!is.na(df$block)),] #only blocked data
@@ -395,7 +401,7 @@ moddat<-dat[,which(colnames(dat) %in% c("site","year","doy","airtemp_min","airte
 #Note: These models are fit with different datasets because of missing information! 
   #Does this make them incomparable? Because the data seem to be missing at random with relation to
   #soilmois, I'm going to add a section at the end fitting all the models with the same dataset (must be the 
-  #one that includes the lest missing data) for comparison purposes, choose a model structure based on that 
+  #one that includes the least missing data) for comparison purposes, choose a model structure based on that 
   #comparison, and then the final model will include all possible data given the chosen fixed effects.
 
 ##(I): air temp solo
@@ -555,7 +561,7 @@ for(i in 1:100){
   print(i)
 } #This takes a really long time - but 100 isn't that many iterations
   #Computation of p-value
-mean(lrstatf>2*(logLik(mod7.c)-logLik(mod8.b,REML=TRUE))) #0
+mean(lrstatf > 2*(logLik(mod7.c)-logLik(mod8.b,REML=TRUE))) #0
   #Conclusion: random effect is super significant (?). Regardless, I would want to keep it anyway
     #because there are so many differences between the sites (where/when vars were measured, env conditions...)
 
