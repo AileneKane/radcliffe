@@ -9,10 +9,14 @@
 # Bates, D.M. 2010. lme4: Mixed Effects Modeling with R. Springer.
 # Bolker, B. 2013. Comment on Stack Exchange: 
     #http://stats.stackexchange.com/questions/79360/mixed-effects-model-with-nesting
+#Zuur et al. 2009. Mixed Effects Models and Extensions in Ecology with R. Springer.
+#McGill, B. 2015. Dynamic Ecology blogpost: 
+    #https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/
 
 ###What are the treatments? 
     #temperature treatment, precip treatment, combinations of temp & precip, ambient/ambient
     #Note: for all these analysis, I am considering control, sham, and ambient to be the same
+      #...until the "updated modeling sections (Sections I-K)
 #######################################################################################################
 
 ### (0) R environment prep & data import -------------------------------------------------- 
@@ -248,11 +252,11 @@ ggplot(aes(x=as.factor(Pval),y=soilmois2),data=df)+facet_wrap(~site,scales="free
         plot(dat$soilmois1,dat$soiltemp1_min) #something funky going on here - measurement error? 
           #many points seem bounded by 0... do I need to deal with this?
           #does not meet homoskedasticity assumption
-          summary(dat[which(dat$soiltemp1_min<0),]) #6 out of 9 sites have temps that go below 0
+          summary(dat[which(dat$soiltemp1_min<0),]) #6 have temps that go below **check this (see below)
        plot(dat$soilmois1,dat$soiltemp1_max) #does not meet homoskedasticity assumption at all
        plot(dat$soilmois1,dat$Pval) #meh, sure
       #So my main issue is heteroskadasticity in soiltemp variables. Note that this doesn't bias coefficient
-        #estimates, but it does make the SEs incorrect. See if a simple transformation will do the trick:
+        #estimates (I think), but it does make the SEs incorrect. See if a simple transformation will do the trick:
         plot(dat$soilmois1,log(dat$soiltemp1_min)) #terrible! Plus there are some negatives so this isn't really legit
         plot(dat$soilmois1,log(dat$soiltemp1_max)) #terrible again! Plus there are some negatives
      #If the heteroscedasticity is a result of underlying groups (sites?), maybe it's okay because I use site as a RE
@@ -272,8 +276,56 @@ ggplot(aes(x=as.factor(Pval),y=soilmois2),data=df)+facet_wrap(~site,scales="free
          sub<-dat[which(dat$site==sit[i]),]
           plot(sub$soilmois1,sub$soiltemp1_max,main=as.character(sit[i]))
           Sys.sleep(0)
-        } #again except for ellison, looks pretty okay - more dealing with ellison data later.
-    
+        } #again except for ellison, looks pretty okay - more dealing with ellison data later
+        
+#UPDATE: the soilmoisture x soil temperature plots that look so strange here look much better when plotting using 
+  #the selection of data that Ailene suggested during out meeting on 14 June 2016 and, specificially, 
+  #without the ellison soil moisture outliers.
+  #Here's a quick-and-dirty preview:
+    par(mfrow=c(3,4))
+        plot(dat$soilmois1,dat$soiltemp1_max, main="No subsetting") #non-subsetted
+        plot(dat$soilmois1,dat$soiltemp1_min,main="No subsetting") #non-subsetted
+    #Minus chuine data:
+    dat.AEsub1<-dat[-which(dat$site=="chuine"),] #"AE" for Ailene Ettinger
+        plot(dat.AEsub1$soilmois1,dat.AEsub1$soiltemp1_max,main="No chuine data") 
+        plot(dat.AEsub1$soilmois1,dat.AEsub1$soiltemp1_min,main="No chuine data") 
+    #Minus temp ambient:
+    dat.AEsub2<-dat[-which(dat$temptreat=="ambient"),] 
+        plot(dat.AEsub2$soilmois1,dat.AEsub2$soiltemp1_max,main="No ambient temp") 
+        plot(dat.AEsub2$soilmois1,dat.AEsub2$soiltemp1_min,main="No ambient temp") 
+    #Minus precip treatment
+      dat.AEsub3<-dat[which(dat$Pval=="0"),] 
+        plot(dat.AEsub3$soilmois1,dat.AEsub3$soiltemp1_max, main="No precip treatment") 
+        plot(dat.AEsub3$soilmois1,dat.AEsub3$soiltemp1_min, main="No precip treatment")
+    #Minus the ellison soilsmois outliers:
+      el<-dat[which(dat$site=="ellison"),]
+      m<-mean(el$soilmois1)
+      s<-sd(el$soilmois1,na.rm=TRUE)
+      dat.AEsub4<-dat[-which(dat$site=="ellison" & dat$soilmois1>(m+(6*s))),]
+        plot(dat.AEsub4$soilmois1,dat.AEsub4$soiltemp1_max, main = "No ellison SM outliers") 
+        plot(dat.AEsub4$soilmois1,dat.AEsub4$soiltemp1_min, main = "No ellison SM outliers")
+    #Minus rows without the fixed effects:
+      dat.AEsub5<-dat[which(!is.na(dat$soiltemp1_max) & !is.na(dat$airtemp_max)),] 
+        plot(dat.AEsub5$soilmois1,dat.AEsub5$soiltemp1_max, main = "Has measured air & soil temp") 
+        plot(dat.AEsub5$soilmois1,dat.AEsub5$soiltemp1_min,main = "Has measured air & soil temp")
+    #Minus all of it: chuine, temp ambient, precip treatment, ellison outliers, missing fixed effects
+      dat.interim<-dat.AEsub4[which(dat.AEsub4$temptreat!="ambient"),] #get rid of ambient temp & ellison outliers
+      dat.interim<-dat.interim[which(dat.interim$site!="chuine"),] 
+      dat.interim<-dat.interim[which(dat$Pval=="0"),] 
+      dat.AEsubALL<-dat.interim[which(!is.na(dat.interim$soiltemp1_max) & !is.na(dat.interim$airtemp_max)),]
+        plot(dat.AEsubALL$soilmois1,dat.AEsubALL$soiltemp1_max, main="Quick-and-dirty complete subset") 
+        plot(dat.AEsubALL$soilmois1,dat.AEsubALL$soiltemp1_min, main="Quick-and-dirty complete subset")
+  #Put fewer plots together for the purposes of Ailene's email:
+        par(mfrow=c(2,4))
+        plot(dat$soilmois1,dat$soiltemp1_min,main="No subsetting")
+        plot(dat.AEsub1$soilmois1,dat.AEsub1$soiltemp1_min,main="No chuine data")
+        plot(dat.AEsub2$soilmois1,dat.AEsub2$soiltemp1_min,main="No ambient temp")
+        plot(dat.AEsub3$soilmois1,dat.AEsub3$soiltemp1_min, main="No precip treatment")
+        plot(dat.AEsub3$soilmois1,dat.AEsub3$soiltemp1_min, main="No precip treatment")
+        plot(dat.AEsub4$soilmois1,dat.AEsub4$soiltemp1_min, main = "No ellison SM outliers")
+        plot(dat.AEsub5$soilmois1,dat.AEsub5$soiltemp1_min,main = "Has measured air & soil temp")
+        plot(dat.AEsubALL$soilmois1,dat.AEsubALL$soiltemp1_min, main="Quick-and-dirty complete subset")
+        
 #---BLOCKED DATA FIRST---# aka modeling discovery, because I ultimately don't want to just use the sites with blocks.
 dfB<-df[which(!is.na(df$block)),] #only blocked data
 dfB2<-dfB[which(dfB$site!="bace"),] #remove bace because its temperture is in watts
@@ -355,6 +407,7 @@ plot(mod1) #meh.
 mod2<-lmer(soilmois1~soiltemp1_min+soiltemp1_max+airtemp_min+airtemp_max+as.factor(Pval)+ #fixed effects
              as.factor(season)+doy+as.factor(year)+ #controlling for temporal variation
              (1|site)+(1|plot), data=moddat_complete)  #random effects
+                #note: multiple studies could have a plot 1 that's not the same plot 1!
 summary(mod2)
 plot(mod2)
    #same as mod 2, but nest plot in site -- is there a difference?
@@ -368,6 +421,7 @@ anova(mod1,mod2,mod3)
 #So: I may have to do SEPARATE models testing the effects of temperature and the effects of precipitation.
 #Re. nested random effects (site & plot, if I were to use plot as a RE):
   #Bates [http://lme4.r-forge.r-project.org/lMMwR/lrgprt.pdf] suggests I can treat these the same as non-nested, 
+    #AE: As long as they have a unique name! Which here they DON'T. So I'd have to use the Bolker code (below).
   #Ben Bolker says code as (1|larger/smaller) -
   #it does make a little bit of difference (see mod2 and mod 3, above, but I sorta think I'll trust Ben Bolker.
   #But hopefully it's irrelevant because I've decided not to use plot as a random effect
@@ -385,7 +439,7 @@ anova(mod1,mod2,mod3)
 #-including interaction effects
   #Tried (failed), below
 
-### (F) Modeling soil moisture differences across treatments --------------------------------------------
+### (F) Modeling soil moisture differences across treatments--------------------------------------------
 
 dfAll<-df[which(!is.na(df$soilmois1)),] #must have the dependent variable
 dfbace<-dfAll[which(dfAll$site=="bace"),] #Bace modeling separately - use cantemp min/max, soiltemp1 AND soiltemp2, Pval as a factor
@@ -396,8 +450,8 @@ moddat<-dat[,which(colnames(dat) %in% c("site","year","doy","airtemp_min","airte
                                         "Pval"))] #nrow=150157
 
 #Note: if do REML=FALSE, get the AIC, BIC. Otherwise REML criterion is the only fit statistic
-  #For model comparison purposes, fit with ML (see Bates p.8, Faraway p.156)
-  #Later, once chosen a model, refit with REML (?) - I want to check Zuur on this one.
+  #For model comparison purposes (when fixed effects are changing), fit with ML (see Bates p.8, Faraway p.156)
+  #Later, once chosen a model, refit with REML - see Zuur p. 137.
 #Note: These models are fit with different datasets because of missing information! 
   #Does this make them incomparable? Because the data seem to be missing at random with relation to
   #soilmois, I'm going to add a section at the end fitting all the models with the same dataset (must be the 
@@ -540,7 +594,7 @@ mod8.b<-lm(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max+as.fac
    #I want to keep the random effect and the temporal variation stuff regardless, just to be conservative
     #What effect does keeping extraneous stuff in the model (i.e. a random effect, if it's not needed) have?
   #-Should I refit with REML after model comparison? I think yes...
-  #-Separate model for bace (who also uses canopy temperature)? - Ask Aileen whether she wants this.
+  #-Separate model for bace (who also uses canopy temperature)? - Ask Aileen whether she wants this (AK: not right now).
 
 ### (G) Model Comparison & assessment--------------------------------------------------------------------
 
@@ -575,7 +629,7 @@ anova(mod7.b,mod4.b) #larger model preferred
 anova(mod7.b,mod5.b) #larger model preferred
 anova(mod7.b,mod6.b) #larger model preferred
 
-#Double-checking that all the fixd effects in mod7.b are significant:
+#Double-checking that all the fixed effects in mod7.b are significant:
 anova(mod7.b) #probably yes, given ridiculously high F values, though P values are not printed
 
 #Diagnostic plots with the analog of the chosen model
@@ -643,7 +697,7 @@ plot(dat[which(dat$site==sites[i]),which(names(dat)=="year.frac")],
  }}
 #The ellison outliers are the highest soil moisture measurement at any site, except force.
   #The force data don't screw up the model because there is no airtemp data, so it gets omitted.
-#Decision: remove soil moisture outliers from ellison -- anything>5 SD from the mean seems reasonable:
+#Decision: remove soil moisture outliers from ellison -- anything>6 SD from the mean seems reasonable:
 par(mfrow=c(1,1))
 el<-dat[which(dat$site=="ellison"),]
 plot(el$year.frac,el$soilmois1)
@@ -662,7 +716,7 @@ d7_outomit<-d7[-(which(d7$site=="ellison" & d7$soilmois1>el6SD)),]
 mod7_outomit<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max+as.factor(Pval)+ #fixed effects
                as.factor(season)+doy+as.factor(year)+ #controlling for temporal variation
                (1|site), data=d7_outomit)  #random effects
-###^^^^^^^THIS IS MY FINAL MODEL RIGHT NOW.^^^^^^^^^^^^^^^
+###^^^^^^^THIS WAS MY FINAL MODEL UNTIL MEETING WITH AILENE.^^^^^^^^^^^^^^^
 
   #Graphical model assessment:
 par(mfrow=c(1,2))
@@ -808,24 +862,336 @@ ggplot(dfplot[which(substr(dfplot$year.frac,1,4)==2011),],
 ggplot(dfplot[seq(1,nrow(dfplot),1000),],
        aes(x=year.frac,y=soilmois,col=as.factor(prediction)))+geom_line()+ggtitle("Variables at mean\n1000th points")
 
-### (I) Not used: A bit of previous code--------------------------------------------------------------------
+### (I) Meeting with Ailene on 14 June 2016: Notes & data subsetting ------------------------------------------------------------------
 
-#Figure out climate variable values for control/sham/outside plots for each site, year, doy 
-vars.clim <- c("airtemp_min", "airtemp_max", 
-               "soiltemp1_min", "soiltemp2_min", 
-               "soiltemp1_max", "soiltemp2_max", 
-               "soilmois1", "soilmois2")
+#-I'm going to subset the data I'm working with: 
+  #Eliminate "ambient" treatments, use only control or "0" treatments (which should be the same)
+  #Eliminate chuine data, since there was no raw temperature measurement in the plots
+  #Eliminate any data with a precipitation treatment, to get at warming effects on moisture rather than treatment effects on moisture
+    #(which is more where the paper is going at this point)
+#-Other things to look into, in order:
+  #year: as a random effect, as a continuous fixed effect, or removed (already did as a factor, above)
+  #Choose min, max, or mean for soil and air temp because of correlations
+  #[Not part of the modeling]: what is driving the cut-off in soil temperature in some places at 0?
+#-Note: Ailene also said something about possible non-normal distrubutions with these data
+  #If this is the case, I could use a generalized linear mixed model (Faraway p.200)
 
-expclim.control <- aggregate(expclim[expclim$temptreat3=="0",vars.clim], 
-                             by=expclim[expclim$temptreat3=="0",c("site", "year", "doy")], 
-                             FUN=mean, na.rm=T)
-names(expclim.control)[which(names(expclim.control) %in% vars.clim)] <- paste0(vars.clim, ".control")
+#Run the Sections 0, A & B, above, to get the dataframe "df"
+#Subsetting:
+  #Remove "ambient" temperature
+df.b<-df[which(df$temptreat!="ambient"),] #nrow=201247 (from original 240152)
+  #Remove chuine
+df.c<-df.b[which(df.b$site!="chuine"),] #196633 rows
+  #Remove any data with a precipitation treatment
+df.d<-df.c[which(df.c$Pval=="0"),] #144391 rows -- still a lot.
+  #Must have data for the fixed effects 
+df.e<-df.d[which(!is.na(df.d$soiltemp1_max) & !is.na(df.d$airtemp_max)),] #92101 rows (d7=109349 rows)
+  #Remove bace
+df.f<-df.e[which(df.e$site!="bace"),] #92101 - didn't change because bace doesn't have air temp.
+  #Must have data for the dependent variable
+df.g<-df.f[which(!is.na(df.f$soilmois1)),] #90355
+  #Remove the ellison soil moisture outliers (>6 SD from the ellison soil moisture mean)
+el<-df.g[which(df.g$site=="ellison"),]
+m<-mean(el$soilmois1)
+s<-sd(el$soilmois1)
+df.h<-df.g[-which(df.g$site=="ellison" & df.g$soilmois1>(m+(6*s))),] #90319
+  #Double-checking
+summary(df.h) #looks good
+el<-df.h[which(df.h$site=="ellison"),]
+plot(el$soilmois1) #good outliers are gone
+dat<-df.h #for ease of coding later if I need to change things, above.
 
-#Put the control data and the original expclim data together
-expclim2 <- merge(expclim, expclim.control, all.x=T)
+### (J) Updated modeling - how should we consider "year": factor, continuous, or random?------------------------------
 
-#Add columns for difference between control and warmed
-expclim2$soiltempdiff_min<-expclim2$soiltemp1_min-expclim2$soiltemp1_min.control
-expclim2$soiltempdiff_max<-expclim2$soiltemp1_max-expclim2$soiltemp1_max.control
+#Year as a random effect, as a factor fixed effect, as a continuous fixed effect, or remove?
+  #Note: I also don't have Pval in here anymore, since I subsetted the data to omit precip treatments
+
+#Year as a factor or as numeric?
+  mod9.a<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max + #fixed effects
+                     as.factor(season)+doy+as.factor(year)+ #controlling for temporal variation
+                     (1|site), data=dat,REML=FALSE)  #random effects
+  qqnorm(resid(mod9.a))
+  plot(fitted(mod9.a),resid(mod9.a),xlab="Fitted",ylab="Resid");abline(0,0)
+  mod9.b<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max + #fixed effects
+                 as.factor(season)+doy+as.numeric(year)+ #controlling for temporal variation
+                 (1|site), data=dat,REML=FALSE)  #random effects
+  qqnorm(resid(mod9.b))
+  plot(fitted(mod9.b),resid(mod9.b),xlab="Fitted",ylab="Resid");abline(0,0)
+  #I can't use anova/log-likelihood (but see https://mailman.ucsd.edu/pipermail/ling-r-lang-l/2014-March/000632.html)
+  #because these are non-nested models. Instead, use AIC:
+  summary(mod9.a)$AIC
+  summary(mod9.b)$AIC #mod9.a, with year as factor, is preferred over year as numeric.
+
+#Year as factor or absent?
+  mod9.c<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max + #fixed effects
+                 as.factor(season)+doy+ #controlling for temporal variation
+                 (1|site), data=dat,REML=FALSE)  #random effects
+  qqnorm(resid(mod9.c))
+  plot(fitted(mod9.c),resid(mod9.c),xlab="Fitted",ylab="Resid");abline(0,0)
+  #Now these models are nested:
+  anova(mod9.a, mod9.c) #mod9.a, with year as factor, is preferred over omission of year.
+
+#Year as factor or as a random effect?
+  #I'm not sure how to appropriately compare model y~x+s vs. y~x+(1|s). (AIC? loglikelihood test? parametric bootstrap...?)
+    #So I'm going to rely on how we want to interpret these data to tell me whether
+    #year should be a fixed factor or a random effect (above model comparison tells me it definitely shouldn't be
+    #either absent or continuous). Check out this Dynamic Ecology post:
+    #https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/
+    #With year, I'm much more interested in the variance attributable to year than I am whether a given year
+    #had above or below average soil mositure; years aren't of interest in themselves, these years are a potentially
+    #arbitrary sample of all possible years. Using year as a random effect also allows me to do variance partitioning
+    #(with some additional caluclations) -- I may want to do this later (?). So: let's use year as random effect
+    #rather than as a fixed factor.
+  
+  mod9.d<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max + #fixed effects
+                 as.factor(season)+doy+ #controlling for temporal variation
+                 (1|site)+(1|year), data=dat)  #random effects
+  qqnorm(resid(mod9.d))
+  plot(fitted(mod9.d),resid(mod9.d),xlab="Fitted",ylab="Resid");abline(0,0)
+  
+  
+### (K) Updated modeling - addressing collinearity in the predictors-----------------------------------------------
+  #random effects and terms controlling for temporal variation have been decided; we are
+    #now dealing with the fixed effects.
+    #options for fixed effect variables:
+      #-airtemp_min
+      #-airtemp_max
+      #-airtemp_mean (doesn't yet exist, but would be easy to calc. with min and max)
+      #-soiltemp1_min
+      #-soiltemp1_max
+      #-soiltemp1_mean
+#Add an airtemp_mean variable
+  dat$airtemp_mean<-(dat$airtemp_min+dat$airtemp_max)/2
+
+#Correlations
+  dat.cor<-dat[,which(names(dat) %in% c("airtemp_min","airtemp_max","airtemp_mean",
+                                       "soiltemp1_min","soiltemp1_max","soiltemp1_mean"))] 
+  cor(dat.cor) #Lots of correlations. Just do a bunch of comparisons using AIC (penalizes for additional
+    #parameters) to see what's justified to include. Note: never include mean with min or max.
+
+#Testing that there is a linear relationship between soilmois and the predictors within a site 
+  #(and within a year, but this would be so many plots... assume okay if there is a linear
+  #relationship within a site):
+sit<-unique(dat$site)
+par(mfrow=c(2,3))
+  for(i in 1:length(sit)){
+    Sys.sleep(0.1)
+    sub<-dat[which(dat$site==sit[i]),]
+    plot(sub$airtemp_min,sub$soilmois1,main=as.character(sit[i]))
+    Sys.sleep(0)
+  }
+par(mfrow=c(2,3)) #so that I can get 5 plots on the same page for each variable
+  for(i in 1:length(sit)){
+    Sys.sleep(0.1)
+    sub<-dat[which(dat$site==sit[i]),]
+    plot(sub$airtemp_max,sub$soilmois1,main=as.character(sit[i]))
+    Sys.sleep(0)
+  }
+par(mfrow=c(2,3))
+  for(i in 1:length(sit)){
+    Sys.sleep(0.1)
+    sub<-dat[which(dat$site==sit[i]),]
+    plot(sub$airtemp_mean,sub$soilmois1,main=as.character(sit[i]))
+    Sys.sleep(0)
+  }
+par(mfrow=c(2,3))
+  for(i in 1:length(sit)){
+    Sys.sleep(0.1)
+    sub<-dat[which(dat$site==sit[i]),]
+    plot(sub$soiltemp1_min,sub$soilmois1,main=as.character(sit[i]))
+    Sys.sleep(0)
+  } 
+par(mfrow=c(2,3))
+  for(i in 1:length(sit)){
+    Sys.sleep(0.1)
+    sub<-dat[which(dat$site==sit[i]),]
+    plot(sub$soiltemp1_max,sub$soilmois1,main=as.character(sit[i]))
+    Sys.sleep(0)
+  } 
+par(mfrow=c(2,3))
+  for(i in 1:length(sit)){
+    Sys.sleep(0.1)
+    sub<-dat[which(dat$site==sit[i]),]
+    plot(sub$soiltemp1_mean,sub$soilmois1,main=as.character(sit[i]))
+    Sys.sleep(0)
+  }
+#These mostly look alright. clarkharvard & ellison have some outliers (though ellison not nearly as bad as
+#they were before I removed soilmois > mean+6SD), and they both have little sections that look like tails
+#(particularly in the soiltemp variables). Overall, though, reasonable.
+  
+#Models
+
+#All combinations of models that don't have mean with min/max:
+#Single vars:
+  #airtemp min
+mod10.a<-lmer(soilmois1~airtemp_min+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp max
+mod10.b<-lmer(soilmois1~airtemp_max+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp mean
+mod10.c<-lmer(soilmois1~airtemp_mean +
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #soiltemp min
+mod10.d<-lmer(soilmois1~soiltemp1_min+ 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #soiltemp max
+mod10.e<-lmer(soilmois1~soiltemp1_max + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #soiltemp mean
+mod10.f<-lmer(soilmois1~soiltemp1_mean + #fixed effects
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+#2 vars:
+  #airtemp min/max
+mod10.g<-lmer(soilmois1~airtemp_min+airtemp_max+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp min, soiltemp min
+mod10.h<-lmer(soilmois1~airtemp_min+soiltemp1_min+ 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp min, soiltemp max
+mod10.i<-lmer(soilmois1~airtemp_min+ soiltemp1_max +
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp min, soiltemp mean
+mod10.j<-lmer(soilmois1~airtemp_min+soiltemp1_mean+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp max, soiltemp min
+mod10.k<-lmer(soilmois1~airtemp_max+soiltemp1_min+ 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp max, soiltemp max
+mod10.l<-lmer(soilmois1~airtemp_max+soiltemp1_max + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp max, soiltemp mean
+mod10.m<-lmer(soilmois1~airtemp_max+soiltemp1_mean+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #soiltemp min/max
+mod10.n<-lmer(soilmois1~soiltemp1_min+ soiltemp1_max + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #soiltemp min airtemp mean
+mod10.o<-lmer(soilmois1~airtemp_mean+soiltemp1_min + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #soiltemp max, airtemp mean
+mod10.p<-lmer(soilmois1~airtemp_mean+ soiltemp1_max +
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp mean soiltemp mean
+mod10.q<-lmer(soilmois1~airtemp_mean+ soiltemp1_mean +
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+#3 vars:
+  #airtemp min/max soiltem min
+mod10.r<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp min/max soiltemp max
+mod10.s<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_max+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp min/max soiltemp mean
+mod10.t<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_mean+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp min soil min/max
+mod10.u<-lmer(soilmois1~airtemp_min+soiltemp1_min+ soiltemp1_max + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp max soil min/max
+mod10.v<-lmer(soilmois1~airtemp_max+soiltemp1_min+ soiltemp1_max + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+  #airtemp mean soil min/max
+mod10.w<-lmer(soilmois1~airtemp_mean+soiltemp1_min+ soiltemp1_max + 
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+#4 vars:
+  #airtemp min/max soiltemp min/max
+mod10.x<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max + #fixed effects
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+#That's a lot of models! Too many? Plot AICs:
+mods<-c(mod10.a,mod10.b,mod10.c,mod10.d,mod10.e,mod10.f,mod10.g,mod10.h,mod10.i,mod10.j,mod10.k,mod10.l,
+        mod10.m,mod10.n,mod10.o,mod10.p,mod10.q,mod10.r,mod10.s,mod10.t,mod10.u,mod10.v,mod10.w,mod10.x)
+modsname<-c("mod10.a","mod10.b","mod10.c","mod10.d","mod10.e","mod10.f","mod10.g","mod10.h","mod10.i","mod10.j",
+"mod10.k","mod10.l","mod10.m","mod10.n","mod10.o","mod10.p","mod10.q","mod10.r","mod10.s","mod10.t","mod10.u",
+"mod10.v","mod10.w","mod10.x")
+
+aic<-data.frame()
+for(j in 1:length(mods)){
+  aic[j,1]<-summary(mods[[j]])$AIC[1]
+}
+aic[,2]<-modsname
+
+par(mfrow=c(1,1))
+boxplot(aic$V1~aic$V2,las=2)
+aic[which(aic[,1]==min(aic[,1])),]
+  #Winning model is mod10.u (airtemp min/max, soiltemp mean), 
+  #closely followed by mod10.x (airtemp min/max, soiltemp min/max)
+  #If we are only allowed to use one air temp variable and one soil temp variable, then I'm choosing between 
+    #mod10.a-mod10.q (1 and 2 var models), not including mod10.g or mod10.n (2 airtemp vars or 2 soiltemp vars).
+    #In this case, mod10.j (airtemp min, soiltemp mean) is the winner! 
+    #mod10.j is third-best, almost as good as mod10.u and mod10.x:
+aic[order(aic$V1),] #I say just go with mod10.j, because it's nearly as good and would have fewer collinearity
+    #issues, but I should probably get a second opinion on this.
+#mod10.j diagnostic plots:
+par(mfrow=c(1,2))
+  qqnorm(resid(mod10.j))
+  plot(fitted(mod10.j),resid(mod10.j),xlab="Fitted",ylab="Resid");abline(0,0)
+
+#Do I want to try out interactions now, even though they didn't work before? Use mod10.j as a base model:
+mod10.j<-lmer(soilmois1~airtemp_min+soiltemp1_mean+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+mod10.y<-lmer(soilmois1~airtemp_min+soiltemp1_mean+airtemp_min*soiltemp1_mean+
+                as.factor(season)+doy+ #controlling for temporal variation
+                (1|site)+(1|year), data=dat, REML=FALSE)  #random effects
+summary(mod10.y) #all t values have a largish absolute value
+anova(mod10.j,mod10.y) #mod10.y is way better!
+par(mfrow=c(2,2)) #show diagnostics of these two models side by side
+  qqnorm(resid(mod10.y))
+  plot(fitted(mod10.y),resid(mod10.y),xlab="Fitted",ylab="Resid");abline(0,0)
+  qqnorm(resid(mod10.j))
+  plot(fitted(mod10.j),resid(mod10.j),xlab="Fitted",ylab="Resid");abline(0,0)
+  #These basically look the same, so I'll go with AICs. My guess is that the
+    #few outliers are clarkharvard, but I'll leve this if Ailene thinks it's good.
+
+#In summary:
+  #-These models are with a new data frame, not including any site at which the precip was amended,
+    #not including chiune, and not including "ambient" temperature 
+    #(and requring that the site measured the variables, of course)
+  #-year is used as a random effect
+  #-I made models with every combination of fixed predictors (no interactions, all had the same random 
+    #effects structure, all had control variables for doy and season) and compared them via AIC. 
+    #best overall modelaccording to AIC: mod10.u (airtemp min/max, soiltemp mean),AIC=-294348.1;
+    #second-best: mod10.x (airtemp min/max, soiltemp min/max), AIC=-294346.7
+    #third best: mod10.j (airtemp min, soiltemp mean), AIC=-294299.5
+  #-Chose mod10.j because it was very close to the others and only included one of each type of var (airtemp, soiltemp)
+  #-Tested for interactions with mod 10.j as a base model, the airtemp_min*soiltemp1_mean interaction was sig.
+  #-Arrive at "final" model mod10.y, which is mod10.j including the interaction
+  
 
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
