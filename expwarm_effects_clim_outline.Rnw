@@ -1,0 +1,108 @@
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{Sweave}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+%Strongly recommended
+  %put your figures in one place
+ \SweaveOpts{prefix.string=figures/, eps=FALSE} 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+\setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%Here's how to do that
+ \topmargin -1.5cm        
+ \oddsidemargin -0.04cm   
+ \evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+ \textwidth 16.59cm
+ \textheight 21.94cm 
+ %\pagestyle{empty}       % Uncomment if don't want page numbers
+ \parskip 7.2pt           % sets spacing between paragraphs
+ %\renewcommand{\baselinestretch}{1.5} 	% Uncomment for 1.5 spacing between lines
+\parindent 0pt		  % sets leading space for paragraphs
+\usepackage{setspace}
+%\doublespacing
+
+%Optional: I like fancy headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[LO]{Question: How does active warming affect microclimate?}
+\fancyhead[RO]{2016}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
+%Start of the document
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+% \SweaveOpts{concordance=TRUE}
+
+\title{Title: How do climate change experiments actually change climate?} 
+\author{A. K. Ettinger,I. Chuine, B. Cook, J. Dukes, A. Ellison, M. Johnston, A. Panetta, C. Rollinson, Y. Vitasse, E. Wolkovich}
+%\date{\today}
+\maketitle  %put the fancy title on
+%\tableofcontents      %add a table of contents
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Here are a series of basic graphs and analyses, with my initial interpretation, of how experimental active warming affects climate. We start by comparing sham (temptreat="0" in "expclim.csv") and  ambient plots (temptreat="ambient" in "expclim.csv") to get a sense of how simply having the warming structures in place affects microclimate. 
+<<echo=FALSE, label=getdata>>=
+setwd("~/GitHub/radcliffe")
+expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=T)
+library(lme4)
+@
+First, some simple plots and models of how air temperature and soil temperature differs across these treatments at different sites:
+<<echo=FALSE, label=shamsvscontrols>>=
+expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
+colnames(sitesums)<-c("sham.control","ambient")
+sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
+sites_con<-sites_con[-which(sites_con=="chuine")]
+expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
+#fit models
+expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
+expclim_cont$site<-as.factor(expclim_cont$site)
+@
+
+\section {Summary}
+Air temperature is HIGHER in the shams, and soil temperature is LOWER in the shams, compared with ambient plots. Below is a summary of these differences for mean, min, and max temperatures. So far, this effect seems to be consistent across the two types of warming for which these data are available (soil warming and forced air). There are greater effects at Duke than at Harvard (there are only 2 sites where these data are available, with both warming types occurring at each of these two sites).
+
+<< echo=FALSE>>=
+soiltemp<-c(-0.425,-0.572,-0.346)
+airtemp<-c(0.373,0.388,0.358)
+tempdifs<-as.table(rbind(soiltemp,airtemp))
+colnames(tempdifs)<-c("mean","min","max")
+table(tempdifs)
+@
+
+\section {Air temperature}
+Air temperature is HIGHER in the shams, compared with the ambient air. Below, mean daily air temperature is shown, for all sites for which these data are available (5). The pattern was consistent for minumum and maximum daily air temperature as well (also shown). Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 12.34 (SE:1.65); sham: 12.71 (SE: 1.64).
+
+\includegraphics{Analyses/figures/ShamVSAmbient_mean.pdf}
+\includegraphics{Analyses/output/ShamVSAmbient_soilmois.pdf}
+
+<<echo=FALSE, label=models>>=
+#expclim_cont$site<-factor(expclim_cont$site)
+#mod<-lmer(airtemp_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+#print(data.frame(coef(summary(mod))))
+#not working for some reason- getting error bout invalid grouping factor for site
+@
+\section {Soil temperature}
+Soil temperature is LOWER in the shams, compared with the ambient air. Below, mean daily soil temperature (for the shallowest depth) is shown, for all sites for which these data are available, but the pattern was consistent for minumum and maximum daily soil temperatures as well. Estimates with standard errors from linear mixed effect model with site as a random effect: ambient: 11.73 (SE:1.36); sham: 11.31 (SE:1.37).
+
+<<echo=FALSE, label=models>>=
+
+#mod2<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+#table(data.frame(coef(summary(mod2))))
+#not working for some reason- getting error bout invalid grouping factor for site
+
+@
+\end{document}
