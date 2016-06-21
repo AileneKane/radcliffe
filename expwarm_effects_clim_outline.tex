@@ -1,71 +1,0 @@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
-\documentclass{article}
-
-%Required: You must have these
-\usepackage{Sweave}
-\usepackage{graphicx}
-\usepackage{tabularx}
-\usepackage{hyperref}
-
-%Optional: I like fancy headers
-%\usepackage{fancyhdr}
-%\pagestyle{fancy}
-%\fancyhead[LO]{Question: How do climate change experiments actually change climate?}
-%\fancyhead[RO]{2016}
- %Optional: for outlines
-% \usepackage{todonotes}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
-
-%Start of the document
-\begin{document}
-
-% \SweaveOpts{concordance=TRUE}
-
-\title{Title: How do climate change experiments actually change climate?} 
-\author{A. K. Ettinger,I. Chuine, B. Cook, J. Dukes, A. Ellison, M. Johnston, A. Panetta, C. Rollinson, Y. Vitasse, E. Wolkovich}
-%\date{\today}
-\maketitle  %put the fancy title on
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section {Summary}
-A Concept/Synthesis Paper with the main message being that climate change experiments need to report what climate variables are modified by their experiment and how, in order to maximize the benefits of these experiments, as well as our understanding of biological impacts of climate change.
-\section {Introduction}
-Experimental in situ climate manipulations offer several advantages to understanding biological impacts of climate change: (controlled, relative speed- i.e. multiple manipulations can be conducted simultaneously, can hit higher temps, can do them in places where other data collection is hard). 
-
-These advantages come at a cost, however. Experimental in situ climate manipulations are logistically challenging, and expensive. 
-Problem:People want to extrapolate warming experiments to real life to understand (and forecast) biological impacts of climate change. However, a detailed assessment of exactly how experimental warming treatments alter climate, and the extent to which these manipulations accurately model the real world, is lacking. 
-\section {Experimental climate change vs. real climate: how do they compare?}
-Experimental warming alters climate in several ways that are rarely quantified, summarized, or interpreted in studies reporting on experimental warming, despite the fact that these alterations are likely to have important biological implications.
-\subsection  {Structures}
-The experimental structures themselves alter temperature, in ways that are not generally examined or reported in experimental warming studies. Compare sham and ambient data on temperature (mixed effects models).
-\begin{itemize}
-\item Soil temperature is LOWER in the shams, compared with the ambient air. 
-%%%%%%%Add figures of sham vs ambient here
-\item Air temperature is HIGHER in the shams, compared with the ambient air. 
-Below, mean daily soil temperature (for the shallowest depth) and air temperature are shown, for all sites for which these data are available (5-6 sites). 
-
-\includegraphics{Analyses/figures/ShamVSAmbient_mean.pdf}
-%%%%%%%Add figures of sham vs ambient here
-\item The pattern was consistent for min and max air and soil temperatures, as well. See below: 
-\end{itemize}
-\includegraphics{Analyses/figures/ShamVSAmbient_minmax.pdf}
-\subsection{Space}
-There is spatial variation in warming effects. Analysis of plot vs. block level variation vs. treatment. also variation within a plot?
-\subsection{Time}
-\begin{itemize}
-\item Seasonal variations in experimental warming effects (plots over time)
-\item Daily variations in experimental warming effects (min vs max) \item Comparison to observational data: compare warmest years to coolest years. Plot and compare to experimental data\item Treatments aren't applied consistently over the year- IR heaters can?t apply consistent warming, and some studies stop warming in different times of year (e.g. Clark et al.)
-\end{itemize}
-\subsection {Secondary effects of warming}
-Temperature interacts with many other climatatic and nonclimatic factors to alter the abiotic environment. For example, there are clear effects of experimental warming on soil moisture (add Miriams analysis here) and air humidity. 
-
-\section {Biological Implications}
-We have laid out several ways in which experimental warming alters more than just the mean temperature. We argue that these unintended alterations are important for scientists to fully understand and report in their research because they are likely to have biological implications. 
-\begin{itemize}
-\item For example, plant phenology is likely to be altered in opposing ways by the increased air temperatures and decrease soil moisture/temperature. \item Other examples?\end{itemize}
-\section{Recommendations for future climate change experiments}
-The criticisms we describe are not meant to imply that experimental warming studies are not worthwhile. On the contrary, we believe that climate change experiments provide invaluable information about biological responses to warming. We also believe that investigators need to fully explore the ways in which these warming experiments are altering climate, as it is clearly not simply shifting the mean. Here we describe a few recommendations to improve implementation, interpretation, and communication of future climate change experiments.
-\begin{itemize}
-\item Include sham and ambient controls, and collect, use, and report data collected within them. \item Carefully consider and report the timing of warming treatment applied, including exact start and end dates within and across years. 
-\item Collect climate data at least twice daily, and ideally hourly; report these data, in particular, variations in daytime and nighttime and season variations in climate variables,\item Report the number and cause of missing data points for climate, especially those collected in warming treatments. For example, are data missing because the heaters went out, or because rodents at the sensors?\item Consider implementing and following community standards for reporting climate data (and phenology -Chuine et al. 2017)\item Construct regression designs to examine possible nonlinear responses to warming\end{itemize}
-\end{document}
