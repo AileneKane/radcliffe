@@ -1,6 +1,7 @@
 ###Analyses of sham ("control") vs. "ambient" microclimate data, to examine how warming chambers may alter micrclimate.
 #Look at temperature, soil moisture
 library(lme4)
+update.packages()
 setwd("~/GitHub/radcliffe/Analyses")
 expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)
 head(expclim)
@@ -11,7 +12,6 @@ expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient",
 expclim_controls$temptreat<-factor(expclim_controls$temptreat)
 
 unique(expclim_controls$site)
-
 sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
 colnames(sitesums)<-c("sham.control","ambient")
 sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
@@ -19,7 +19,6 @@ sites_con<-sites_con[-which(sites_con=="chuine")]
 expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
 unique(expclim_cont$site)
 head(expclim_cont)
-
 #make figures of sham controls vs. ambient conditions:
 #mean soil temp:
 quartz(height=4, width=8)
@@ -80,7 +79,7 @@ expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambi
 mod_air<-lmer(airtemp_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs_air<-data.frame(coef(summary(mod_air)))
 print(coef(summary(mod_air)))
-#Do we see the same patters for max and min values? OR are these altered in different ways 
+#Do we see the same patterns for max and min values? OR are these altered in different ways 
 mod_max<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs_max<-data.frame(coef(summary(mod_max)))
 mod_min<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
