@@ -20,6 +20,7 @@ setwd("~/Documents/git/projects/meta_ep2/radcliffe/Analyses")
 
 ## get the data
 # Christy says (early June 2016): I just pushed two sets of calculations: one at the plot level (EffectiveWarming_Plot.csv) and one at the treatment level (EffectiveWarming_Treatment.csv). Because not all treatments have above or below ground temperature, I went ahead and calculated the deviation from control/ambient for aboveground and belowground max, min, and mean temperature.
+
 effwarm <- read.csv("EffectiveWarming_Treatment.csv", header=TRUE)
 effwarm.plot <- read.csv("EffectiveWarming_Plot.csv", header=TRUE)
 treats <- read.csv("Treats.csv", header=TRUE)
