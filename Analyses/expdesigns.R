@@ -32,9 +32,9 @@ table(effwarm.plot$site, effwarm.plot$temptreat)
 table(effwarm.plot$site, effwarm.plot$temptreat, effwarm.plot$preciptreat)
 
 # these need to match ...
-unique(paste(effwarm.plot$site, effwarm.plot$temptreat))
-unique(paste(effwarm$site, effwarm$temptreat))
-unique(paste(treats$site, treats$temptreat))
+sort(unique(paste(effwarm.plot$site, effwarm.plot$temptreat)))
+sort(unique(paste(effwarm$site, effwarm$temptreat)))
+sort(unique(paste(treats$site, treats$temptreat)))
 
 # just looking at treatements ...
 effwarm.plot.2temp <- subset(effwarm.plot, temptreat<3)
@@ -47,7 +47,7 @@ chuine.phen <- subset(expphen, site=="chuine")
 unique(chuine.clim$plot)
 unique(chuine.phen$plot) # these don't merge!
 
-## try some merges
+## try some merges, need this to also include block!
 goo <- merge(expphen, treats, by=c("site", "plot")) # losing about 17% of the data
 goo <- merge(goo, effwarm.plot, by=c("site", "plot")) # losing 80% of resulting data
 
