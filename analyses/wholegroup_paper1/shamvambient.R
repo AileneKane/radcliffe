@@ -248,9 +248,9 @@ for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.05,angle=90,code=3)}
 points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="brown4")
 mtext("Month",side=1, line=2, adj=.5)
-write.csv(monthsums_allyear,"shamVSambient_meandifs.csv",row.names=FALSE)
-write.csv(monthsums_allyear_max,"shamVSambient_maxdifs.csv",row.names=FALSE)
-write.csv(monthsums_allyear_min,"shamVSambient_mindifs.csv",row.names=FALSE)
+write.csv(monthsums_allyear,"output/shamVSambient_meandifs.csv",row.names=FALSE)
+write.csv(monthsums_allyear_max,"output/shamVSambient_maxdifs.csv",row.names=FALSE)
+write.csv(monthsums_allyear_min,"output/shamVSambient_mindifs.csv",row.names=FALSE)
 ####Look at soil moisture now:
 monthsums_allyear_mois<-c()
 for (i in 1:length(months)){
