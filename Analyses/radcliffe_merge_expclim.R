@@ -767,7 +767,7 @@ for (i in 1:length(soilfiles)){
 ##Jasper Ridge data ##
 ## Data type:Right now, all we have is soil moisture 
 ## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr), she said to leave out 2005 data
-clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path="./Data/Experiments/jasper") {
+clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path="./Data/Experiments/cleland") {
   file <- file.path(path,filename)
   mois<- read.csv(file,header=TRUE)
   colnames(mois)[2]<-c("block")
@@ -781,7 +781,7 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
   colnames(mois)[13:14]<-c("year","doy")
   mois$soilmois1<-mois$SM030/100
   mois[which(mois$SM030>100),]$soilmois1<-NA
-  mois$site<-"jasper"
+  mois$site<-"cleland"
   mois$soiltemp2_min<-NA
   mois$soiltemp2_max<-NA
   mois$soiltemp2_mean<-NA
@@ -795,9 +795,9 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
   mois$airtemp_min<-NA
   mois$airtemp_max<-NA
   mois$soilmois2<-NA
-  jasperclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(jasperclim)<- NULL
-  return(jasperclim)
+  clelandclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  row.names(clelandclim)<- NULL
+  return(clelandclim)
 } 
 ##Produce cleaned, raw climate data
     raw.data.dir <- "./Experiments/"
@@ -813,7 +813,7 @@ clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path=
     cleanclimdata.raw$price <- clean.clim$price(path="./Data/Experiments/price")
     cleanclimdata.raw$force <- clean.clim$force(path="./Data/Experiments/force")
     cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Data/Experiments/chuine")
-    cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Data/Experiments/jasper")
+    cleanclimdata.raw$cleland <- clean.clim$cleland(path="./Data/Experiments/cleland")
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
