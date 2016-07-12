@@ -1,861 +1,898 @@
-### Started 8 March 2016 ##
+### Started 8 December 2015 ##
 ### By Ailene Ettinger ###
-setwd("~/GitHub/radcliffe")
+setwd("~/GitHub/radcliffe") # setwd("~/Documents/git/projects/meta_ep2/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
-##Daily temp  data and whatever soil moisture data are available
-clean.clim <- list()
-
-clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/Experiments/marchin") {
+#library(zoo)
+library(tidyr)
+# make list to store all the derived dataset cleaning functions
+clean.raw <- list()
+clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Data/Experiments/marchin") {
+  
   ## Marchin ##
-  ## Data type: temp (air and soil), soil moisture, in chambers (incuding 3 unheated control chambers, 9 heated chambers, and 3 outside controls that lack chambers); regression heating design
+  ## Data type: BBD,FFD ##
   ## Notes: Contact: Renee Marchin, renee.marchin@sydney.edu.au##
-  ##climate data available at: http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf113
   file <- file.path(path, filename)
   marchin1 <- read.csv(file, check.names=FALSE, header=TRUE)
-  names(marchin1)[8]<-"plot"
-  marchin1$year_doy<-paste(marchin1$year,marchin1$doy, sep="-")
-  #get min airtemp across all 3 measurements for each plot
-  temp_min<-aggregate(x=subset(marchin1, select=c("CAT1_Min","CAT2_Min","CAT3_Min","CSTo1_Min","CSTo2_Min","CSTI1_Min","CSTI2_Min")), by=list(marchin1$year_doy,marchin1$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min[,3:5],1,min,na.rm=F)
-  soiltemp1_min<-apply(temp_min[,6:7],1,min,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min[,8:9],1,min,na.rm=F)#temp at 6cm depth(inorganic)
-  temp_max<-aggregate(x=subset(marchin1, select=c("CAT1_Max","CAT2_Max","CAT3_Max","CSTo1_Max","CSTo2_Max","CSTI1_Max","CSTI2_Max")), by=list(marchin1$year_doy,marchin1$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max[,3:5],1,max,na.rm=F)
-  soiltemp1_max<-apply(temp_max[,6:7],1,max,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max[,8:9],1,max,na.rm=F)#temp at 6cm depth(inorganic)
-  soilmois<-aggregate(x=subset(marchin1, select=c("CSM_Avg")), by=list(marchin1$year_doy,marchin1$plot), FUN=mean,na.rm=F)
-  colnames(temp_min)[1:2]<-c("year_doy","plot")
-  year_doy <- strsplit(temp_min$year_doy,'-') 
-  year_doy<-do.call(rbind, year_doy)
-  allclim<-as.data.frame(cbind(year_doy,airtemp_min,airtemp_max,soiltemp1_min,soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois))
-  colnames(allclim)[9:11]<-c("year_doy","plot","soilmois1")
-  colnames(allclim)[1:2]<-c("year","doy")
-  allclim$preciptreat<-NA
-  allclim$soilmois2<-NA
-  allclim$temptreat<-1
-  allclim[allclim$plot==2,]$temptreat<-0
-  allclim[allclim$plot==5,]$temptreat<-0
-  allclim[allclim$plot==11,]$temptreat<-0
-  allclim1<-subset(allclim, select=c("temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soilmois1","soilmois2"))
-  file2<-file.path(path, "hf113-11-df-outside.csv")
-  marchin2<-read.csv(file2, header=TRUE)
-  marchin2$year_doy<-paste(marchin2$year,marchin2$doy, sep="-")
-  marchin2$plot<-"ambient"
-  temp_min2<-aggregate(x=subset(marchin2, select=c("oAT1_Min","oAT2_Min","oAT3_Min","oSTo1_Min","oSTo2_Min","oSTo3_Min","oSTI1_Min","oSTI2_Min","oSTI3_Min")), by=list(marchin2$year_doy,marchin2$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min2[,3:5],1,min,na.rm=F)
-  soiltemp1_min<-apply(temp_min2[,6:8],1,min,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min2[,9:11],1,min,na.rm=F)#temp at 6cm depth(inorganic)
-  temp_max2<-aggregate(x=subset(marchin2, select=c("oAT1_Max","oAT2_Max","oAT3_Max","oSTo1_Max","oSTo2_Max","oSTo3_Max","oSTI1_Max","oSTI2_Max","oSTI3_Max")), by=list(marchin2$year_doy,marchin2$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max2[,3:5],1,max,na.rm=F)
-  soiltemp1_max<-apply(temp_max2[,6:8],1,max,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max2[,9:11],1,max,na.rm=F)#temp at 6cm depth(inorganic)
-  #looks like no soil moisture for outside chambers?
-  colnames(temp_min2)[1:2]<-c("year_doy","plot")
-  year_doy <- strsplit(temp_min2$year_doy,'-') 
-  year_doy<-do.call(rbind, year_doy)
-  temptreat<-rep("ambient",times=dim(year_doy)[1])
-  preciptreat<-rep("ambient",times=dim(year_doy)[1])
-  oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max))
-  oallclim$soilmois1<-NA
-  oallclim$soilmois2<-NA
-  colnames(oallclim)[3:5]<-c("plot","year","doy")
-  allclim2<-rbind(allclim1,oallclim)
-  allclim2$site<-"marchin"
-  allclim2$block<-NA
-  allclim2$soilmois2<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$cantemp_min<-NA
-  allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
-  allclim2$soiltemp2_mean  <-(as.numeric(allclim2$soiltemp2_min)+as.numeric(allclim2$soiltemp2_max))/2
-  marchinclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(marchinclim) <- NULL
-  return(marchinclim)
+  names(marchin1)[2] <- "genusspecies"
+  names(marchin1)[1] <- "year"
+  names(marchin1)[3] <- "plot"
+  names(marchin1)[8] <- "doy"
+  marchin1a<- subset(marchin1, select=c("year","genusspecies","plot", "doy"))
+  marchin1a$site <- "marchin"
+  marchin1a$event <- "bbd"
+  marchin2<-read.csv("Data/Experiments/marchin/Flower_Marchin.csv", header=T)
+  names(marchin2)[2] <- "genusspecies"
+  names(marchin2)[1] <- "year"
+  names(marchin2)[3] <- "plot"
+  names(marchin2)[7] <- "doy"  
+  marchin2a<- subset(marchin2, select=c("year","genusspecies","plot", "doy"))
+  marchin2a$site <- "marchin"
+  marchin2a$event <- "ffd"
+  marchin3<-rbind(marchin1a, marchin2a)
+  marchin3$genus<-NA
+  marchin3$species<-NA
+  marchin3$genus[marchin3$genusspecies=="ACRU"] <- "Acer"
+  marchin3$species[marchin3$genusspecies=="ACRU"] <- "rubrum"
+  marchin3$genus[marchin3$genusspecies=="CATO"] <- "Carya"
+  marchin3$species[marchin3$genusspecies=="CATO"] <- "tomentosa"
+  marchin3$genus[marchin3$genusspecies=="QUAL"] <- "Quercus"
+  marchin3$species[marchin3$genusspecies=="QUAL"] <- "alba"
+  marchin3$genus[marchin3$genusspecies=="VAPA"] <- "Vaccinium"
+  marchin3$species[marchin3$genusspecies=="VAPA"] <- "pallidum"
+  marchin3$genus[marchin3$genusspecies=="VAST"] <- "Vaccinium"
+  marchin3$species[marchin3$genusspecies=="VAST"] <- "stamineum"
+  marchin3$genus[marchin3$genusspecies=="QURU"] <- "Quercus"
+  marchin3$species[marchin3$genusspecies=="QURU"] <- "rubra"
+  marchin3$genus[marchin3$genusspecies=="CHMA"] <- "Chimaphila"
+  marchin3$species[marchin3$genusspecies=="CHMA"] <- "maculata"
+  marchin3$genus[marchin3$genusspecies=="HEAR"] <- "Hexastylis"
+  marchin3$species[marchin3$genusspecies=="HEAR"] <- "arifolia"
+  marchin3$genus[marchin3$genusspecies=="HIVE"] <- "Hieracium"
+  marchin3$species[marchin3$genusspecies=="HIVE"] <- "venosum"
+  marchin3$genus[marchin3$genusspecies=="THTH"] <- "Thalictrum"
+  marchin3$species[marchin3$genusspecies=="THTH"] <- "thalictroides"
+  marchin3$genus[marchin3$genusspecies=="TIDI"] <- "Tipularia"
+  marchin3$species[marchin3$genusspecies=="TIDI"] <- "discolor"
+  marchin3$block<-NA
+  marchin<-subset(marchin3, select=c("site","block","plot","event","year","genus","species", "doy"))
+  #marchin$variety <- NA
+  #marchin$cult <- NA
+  return(marchin)
+}
+
+clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path="./Data/Experiments/bace") {  
+  ##BACE ##
+  ## Data type: BBD,LOD,LUD ##
+  ## Notes: Jeff Dukes##
+  ##Decided to follow NPN's definitios: >3 of observations of each event needed to count
+  file <- file.path(path, filename)
+  bace1 <- read.csv(file, check.names=FALSE, header=TRUE,na.strings = ".")
+  bace1<-bace1[-1,]
+  names(bace1)[5] <- "genusspecies"
+  names(bace1)[1] <- "plot"
+  names(bace1)[7] <- "doy_bb"
+  names(bace1)[9] <- "doy_lunf"
+  names(bace1)[10] <- "doy_lo"
+  bace1a<- subset(bace1, select=c("genusspecies","plot", "doy_bb"))
+  bace1a$event <- "bbd"
+  bace1a$year <- 2010
+  bace1a$site <- "bace"
+  head(bace1a)
+  names(bace1a)[3]<-"doy"
+  bace2a<- subset(bace1, select=c("genusspecies","plot", "doy_lo"))
+  bace2a$event <- "lod"
+  bace2a$year <- 2010
+  bace2a$site <- "bace"
+  names(bace2a)[3]<-"doy"
+  bace2b<- subset(bace1, select=c("genusspecies","plot", "doy_lunf"))
+  bace2b$event <- "lud"
+  bace2b$year <- 2010
+  bace2b$site <- "bace"
+  names(bace2b)[3]<-"doy"
+  file2 <- file.path(path, "BACE_pinustrobus2010_originaltrees.csv")
+  bace4 <- read.csv(file2, check.names=FALSE, header=TRUE,na.strings = ".")
+  names(bace4)[5] <- "genusspecies"
+  names(bace4)[1] <- "plot"
+  names(bace4)[6] <- "doy_bbd"
+  names(bace4)[8] <- "doy_fgn"
+  names(bace4)[10] <- "doy_fnb"
+  names(bace4)[12] <- "doy_fyn"
+  bace4a<-subset(bace4, select=c("genusspecies","plot", "doy_bbd"))
+  bace4a$event <- "bbd"
+  bace4a$year <- 2010
+  bace4a$site <- "bace"
+  names(bace4a)[3]<-"doy"
+  bace4b<- subset(bace4, select=c("genusspecies","plot", "doy_fgn"))
+  bace4b$event <- "fgn"
+  bace4b$year <- 2010
+  bace4b$site <- "bace"
+  names(bace4b)[3]<-"doy"
+  bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_fnb"))
+  bace4c$event <- "fnb"
+  bace4c$year <- 2010
+  bace4c$site <- "bace"
+  names(bace4c)[3]<-"doy"
+  bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_fnb"))
+  bace4c$event <- "fnb"
+  bace4c$year <- 2010
+  bace4c$site <- "bace"
+  names(bace4c)[3]<-"doy"
+  bace4d<- subset(bace4, select=c("genusspecies","plot", "doy_fyn"))
+  bace4d$event <- "fyn"
+  bace4d$year <- 2010
+  bace4d$site <- "bace"
+  names(bace4d)[3]<-"doy"
+  file3 <- file.path(path, "2011BACEherbaceousphenologydata11_11CEG.csv")
+  bace5 <- read.csv(file3, skip=1, header=TRUE)
+  bace5<-bace5[1:min(which(bace5$Plot=="")),]
+  names(bace5)[2] <- "genusspecies"
+  names(bace5)[1] <- "plot"
+  bace5$doy_ffd<-bace5[,6]
+  bace5[which(bace5$doy_ffd=="" & bace5$open.flowers>0),]$doy_ffd<-bace5[which(bace5$doy_ffd=="" & bace5$open.flowers>0),]$open.flowers
+  bace5a<- subset(bace5, select=c("genusspecies","plot", "doy_ffd"))
+  bace5a$event <- "ffd"
+  bace5a$year <- 2011
+  bace5a$site <- "bace"
+  names(bace5a)[3]<-"doy"
+  file4 <- file.path(path, "2013BACEherbaceousphenologydatasheet.csv")
+  bace6 <- read.csv(file4, skip=1, header=TRUE)
+  bace6<-bace6[1:min(which(bace6$Plot=="")),]
+  names(bace6)[2] <- "genusspecies"
+  names(bace6)[1] <- "plot"
+  bace6$doy_ffd<-bace6[,6]
+  bace6[which(bace6$doy_ffd=="" & bace6$open.flowers>0),]$doy_ffd<-bace6[which(bace6$doy_ffd=="" & bace6$open.flowers>0),]$open.flowers
+  bace6a<- subset(bace6, select=c("genusspecies","plot", "doy_ffd"))
+  bace6a$event <- "ffd"
+  bace6a$year <- 2013
+  bace6a$site <- "bace"
+  names(bace6a)[3]<-"doy"
+  bace3a<-rbind(bace1a,bace2a,bace2b,bace4a,bace4b,bace4c,bace4d,bace5a,bace6a)
+  bace3a<-bace3a[-which(bace3a$genusspecies==""),]
+  bace3a<-bace3a[-which(bace3a$genusspecies=="Genus sp."),]
+  bace3a<-bace3a[-which(bace3a$genusspecies=="moss"),]
+  bace3a<-bace3a[-which(bace3a$genusspecies=="Oregano"),]
+  bace3a[bace3a$genusspecies=="Giant fox tail",]$genusspecies<-"Setaria faberi"
+  bace3a[bace3a$genusspecies=="Setarir glauca",]$genusspecies<-"Setaria glauca"
+  bace3a[bace3a$genusspecies=="Setaria viridens",]$genusspecies<-"Setaria viridis"
+  bace3a[bace3a$genusspecies=="conyza canadensis",]$genusspecies<-"Conyza canadensis"
+  bace3a[bace3a$genusspecies=="linnaria vulgaris"|bace3a$genusspecies=="Linneria vulgaris",]$genusspecies<-"Linaria vulgaris"
+  bace3a[bace3a$genusspecies=="A. rubrum "|bace3a$genusspecies=="A. rubrum  "|bace3a$genusspecies=="A. rubrum (main stem)",]$genusspecies <- "Acer rubrum"
+  bace3a[bace3a$genusspecies=="B. lenta  "|bace3a$genusspecies=="B. lenta   "|bace3a$genusspecies=="B. lenta (main stem)",]$genusspecies <- "Betula lenta"
+  bace3a[bace3a$genusspecies=="Q. rubra  "|bace3a$genusspecies=="Q. rubra   ",]$genusspecies <- "Quercus rubra"
+  bace3a[bace3a$genusspecies=="P. strobus"|bace3a$genusspecies=="P. strobus ",]$genusspecies <- "Pinus strobus"
+  bace3a[bace3a$genusspecies=="Asclepias syriaca ",]$genusspecies<-"Asclepias syriaca"
+  bace3a[bace3a$genusspecies=="Capsella bursa-pastoris ",]$genusspecies<-"Capsella bursa-pastoris"
+  bace3a[bace3a$genusspecies=="Cerastium fontanum ",]$genusspecies<-"Cerastium fontanum"
+  bace3a[bace3a$genusspecies=="Dactylis glomerata ",]$genusspecies<-"Dactylis glomerata"
+  bace3a[bace3a$genusspecies=="Draba verna ",]$genusspecies<-"Draba verna"
+  bace3a[bace3a$genusspecies=="Elymus repens ",]$genusspecies<-"Elymus repens"
+  bace3a[bace3a$genusspecies=="Erigeron annuus ",]$genusspecies<-"Erigeron annuus"
+  bace3a[bace3a$genusspecies=="Festuca spp. ",]$genusspecies<-"Festuca sp."
+  bace3a[bace3a$genusspecies=="lepidium virginicum",]$genusspecies<-"Lepidium virginicum"
+  bace3a[bace3a$genusspecies=="Oxalis stricta ",]$genusspecies<-"Oxalis stricta"
+  bace3a[bace3a$genusspecies=="Rumex crispus ",]$genusspecies<-"Rumex crispus"
+  bace3a[bace3a$genusspecies=="Silene alba ",]$genusspecies<-"Silene alba"
+  bace3a[bace3a$genusspecies=="Tanacetum vulgare ",]$genusspecies<-"Tanacetum vulgare"
+  bace3a[bace3a$genusspecies=="Taraxacum officinale ",]$genusspecies<-"Taraxacum officinale"
+  bace3a[bace3a$genusspecies=="Trifolium pratense ",]$genusspecies<-"Trifolium pratense"
+  bace3a[bace3a$genusspecies=="Trifolium repens ",]$genusspecies<-"Trifolium repens"
+  bace3a[bace3a$genusspecies=="Veronica arvensis ",]$genusspecies<-"Veronica arvensis"
+  bace3<-bace3a %>% separate(genusspecies, c("genus", "species"), sep=" ", remove=F)
+  bace3$block<-NA
+  bace3[bace3$plot<13,]$block<-1
+  bace3[bace3$plot<25 & bace3$plot>12,]$block<-2
+  bace3[bace3$plot<37 & bace3$plot>24,]$block<-3
+  bace3[bace3$plot>36,]$block<-0
+  bace3[bace3$plot=="C1"|bace3$plot=="C2"|bace3$plot=="C3",]$block<-NA
+  bace<-subset(bace3, select=c("site","block","plot","event","year","genus","species", "doy"))
+  #bace$variety <- NA
+  #bace$cult <- NA
+  bace<-bace[!is.na(bace$doy),]
+  bace<-bace[-which(bace$doy==""),]
+  bace<-bace[-which(substr(bace$doy,1,1)=="<"),]
+  return(bace)
 }
 
 ##Farnsworth from Harvard ##
-## Data type: soil temp (celsius, at 5cm depth) and soil moisture (% volumetric moisture content) in heated plots (=h=1,6,8,12,15,16), disturbance control plots (=d=3,5,9,10,13,17), and control plots (=c=2,4,7,11,14,18)
-##(no air temp)
-## Notes: Contact: Public data,http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf005
-clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Data/Experiments/farnsworth/") {
+## Data type: BBD,LOD,LUD,FFD ##
+## Notes: Contact: Public data, http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf033 ##
+##Question: hf033-01-diameter-1.csv files says plot 17= intact control (Treat=1) but soil temp file says plot17=disturbance control (=d)
+clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Data/Experiments/farnsworth/",names.only=FALSE) {
   file <- file.path(path, filename)
-  temp<- read.csv(file, header=TRUE)
-  temp.long<-reshape(temp,varying = list(colnames(temp)[6:23]), direction = "long", v.names = c("soiltemp1_mean"), times = c(colnames(temp)[6:23]))
-  colnames(temp.long)[10]<-"plotfull"
-  temp.long$plot<-substr(temp.long$plotfull,5,nchar(temp.long$plotfull)-1)
-  temp.long$treatment2<- substr(temp.long$plotfull,(nchar(temp.long$plotfull)+1)-1,nchar(temp.long$plotfull))
-  temp.long$treatment<-NA
-  temp.long[which(temp.long$treatment2=="h"),]$treatment<-"H"
-  temp.long[which(temp.long$treatment2=="c"),]$treatment<-"C"
-  temp.long[which(temp.long$treatment2=="d"),]$treatment<-"DC"
-  temp.long2<-subset(temp.long,selec=c("year","doy","plot","treatment","soiltemp1_mean"))
-  file2<-file.path(path, "hf005-05-soil-respiration.csv")
-  mois<-read.csv(file2,  header=TRUE)
-  mois$doy<-strftime(strptime(paste(mois$year,mois$month,mois$day,sep="-"), format = "%Y-%m-%d"),format = "%j") 
-  #take mean of soil moisture across whole day
-  mois_mean<-aggregate(mois$moisture, by=list(mois$year,mois$doy,mois$plot,mois$treatment), FUN=mean,na.rm=F)
-  colnames(mois_mean)<-c("year","doy","plot","treatment","moisture")
-  allclim<-merge(temp.long2,mois_mean,by.x=c("year","doy","plot","treatment"),by.y=c("year","doy","plot","treatment"),all=TRUE)
-  allclim$airtemp_min<-NA 
-  allclim$airtemp_max<-NA 
-  allclim$soiltemp1_min<-NA
-  allclim$soiltemp2_min<-NA
-  allclim$soiltemp1_max<-NA
-  allclim$soiltemp2_max<-NA
-  colnames(allclim)[6]<-"soilmois1"
-  colnames(allclim)[4]<-"treatment2"
-  allclim$temptreat<-NA
-  allclim[which(allclim$treatment2=="H"),]$temptreat<-1
-  allclim[which(allclim$treatment2=="C"),]$temptreat<-"ambient"
-  allclim[which(allclim$treatment2=="DC"),]$temptreat<-0
-  allclim$site<-"farnsworth"
-  allclim$preciptreat<-NA
-  allclim$soiltemp2_mean<-NA
-  allclim$soilmois2<-NA
-  allclim$surftemp_max<-NA
-  allclim$surftemp_min<-NA
-  allclim$cantemp_max<-NA
-  allclim$cantemp_min<-NA
-  allclim$block<-NA
-  allclim[allclim$plot<4,]$block=1
-  allclim[allclim$plot==4|allclim$plot==5|allclim$plot==6,]$block=2
-  allclim[allclim$plot==7|allclim$plot==8|allclim$plot==9,]$block=3
-  allclim[allclim$plot==10|allclim$plot==11|allclim$plot==12,]$block=4
-  allclim[allclim$plot==13|allclim$plot==14|allclim$plot==15,]$block=5
-  allclim[allclim$plot==16|allclim$plot==17|allclim$plot==18,]$block=6
-  farnsworthclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  ##select out only 1993, since that's the only year for which we have phenology data
-  farnsworthclim_1993<-farnsworthclim[farnsworthclim$year==1993,]
-  row.names(farnsworthclim_1993) <- NULL
-  return(farnsworthclim_1993) 
+  farnsworth1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  #phenological stage 1.5=budburst; need to get day of year for which this occurred
+  colnames(farnsworth1)[3]<-"plot"
+  farnsworth1$bb_doy<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    bbdate<-names(inddat)[min(which(inddat==1.5))]#1.5="leaves just emerging"
+    bbdoy<-strftime(bbdate, format = "%j")
+    farnsworth1$bb_doy[i]<-bbdoy
+  }
+  #now phenological stage 2=leaves expanding; need to get day of year for which this occurred
+  farnsworth1$leafunf_doy<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    ludate<-names(inddat)[min(which(inddat==2))]
+    ludoy<-strftime(ludate, format = "%j")
+    farnsworth1$leafunf_doy[i]<-ludoy
+  }
+  #now phenological stage 3=leaves fully expanded=leafout; need to get day of year for which this occurred
+  farnsworth1$leafout_doy<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    lodate<-names(inddat)[min(which(inddat==3))]
+    lodoy<-strftime(lodate, format = "%j")
+    farnsworth1$leafout_doy[i]<-lodoy
+  }
+  #now flowering phenological stage (4.5)=mature leaves and flowers present;first flowering=day of year for which this first occurred
+  farnsworth1$ffd<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    ffdate<-names(inddat)[min(which(inddat==4.5))]
+    ffdoy<-strftime(ffdate, format = "%j")
+    farnsworth1$ffd[i]<-ffdoy
+  }
+  #now fruiting phenological stage (5)=mature leaves and fruits present=first fruiting is first date this was observed
+  farnsworth1$ffrd<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    ffrdate<-names(inddat)[min(which(inddat==5))]
+    ffrdoy<-strftime(ffrdate, format = "%j")
+    farnsworth1$ffrd[i]<-ffrdoy
+  }
+  #now leaf coloration=leaves turned color" first date this was observed
+  farnsworth1$col<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    coldate<-names(inddat)[min(which(inddat==7))]
+    coldoy<-strftime(coldate, format = "%j")
+    farnsworth1$col[i]<-coldoy
+  }
+  #now leaf drop="some or all leaves abscised" (8,9)-first date this was observed
+  farnsworth1$drop<-NA
+  for(i in 1:dim(farnsworth1)[1]){
+    inddat<-farnsworth1[i,20:31]
+    names(inddat)[1:12]<-c("1993-04-16","1993-04-23","1993-05-2","1993-05-17","1993-05-24" ,"1993-06-07","1993-07-09","1993-07-23","1993-08-11","1993-09-09","1993-09-25","1993-10-23")
+    dropdate<-names(inddat)[min(which(inddat>7))]
+    dropdoy<-strftime(dropdate, format = "%j")
+    farnsworth1$drop[i]<-dropdoy
+  }
+  farnsworth1$genus<-NA
+  farnsworth1$species1<-NA
+  farnsworth1$genus[farnsworth1$species=="aaga"] <- "Amelanchier"
+  farnsworth1$species1[farnsworth1$species=="aaga"] <- "grandifolia"
+  farnsworth1$genus[farnsworth1$species=="beech"] <- "Fagus"
+  farnsworth1$species1[farnsworth1$species=="beech"] <- "grandifolia"
+  farnsworth1$genus[farnsworth1$species=="bbhg"] <- "Vaccinium"
+  farnsworth1$species1[farnsworth1$species=="bbhg"] <- "corymbosum"
+  farnsworth1$genus[farnsworth1$species=="bbhch"] <- "Vaccinium"
+  farnsworth1$species1[farnsworth1$species=="bbhch"] <- "vacillans"
+  farnsworth1$genus[farnsworth1$species=="blach"] <- "Prunus"
+  farnsworth1$species1[farnsworth1$species=="blach"] <- "serotina"
+  farnsworth1$genus[farnsworth1$species=="crata"] <- "Acer"
+  farnsworth1$species1[farnsworth1$species=="crata"] <- "rubrum"
+  farnsworth1$genus[farnsworth1$species=="ro"] <- "Quercus"
+  farnsworth1$species1[farnsworth1$species=="ro"] <- "rubra"
+  farnsworth1$genus[farnsworth1$species=="sa"] <- "Sorbus"
+  farnsworth1$species1[farnsworth1$species=="sa"] <- "americana"
+  farnsworth1$genus[farnsworth1$species=="wo"] <- "Quercus"
+  farnsworth1$species1[farnsworth1$species=="wo"] <- "alba"
+  farnsworth1$genus[farnsworth1$species=="viac1"] <- "Viburnum"
+  farnsworth1$species1[farnsworth1$species=="viac1"] <- "acerifolium"
+  farnsworth1$genus[farnsworth1$species=="sm"] <- "Acer"
+  farnsworth1$species1[farnsworth1$species=="sm"] <- "pensylvanicum"
+  farnsworth1$genus[farnsworth1$species=="chest"] <- "Castanea"
+  farnsworth1$species1[farnsworth1$species=="chest"] <- "dentata"
+  farnsworth1$genus[farnsworth1$species=="vest"] <- "Viburnum"
+  farnsworth1$species1[farnsworth1$species=="vest"] <- "lentago"
+  farnsworth1$genus[farnsworth1$species=="rm"] <- "Acer"
+  farnsworth1$species1[farnsworth1$species=="rm"] <- "rubrum"
+  farnsworth1$site<-"farnsworth"  
+  #farnsworth1$variety <- NA
+  #farnsworth1$cult <- NA
+  farnsworth1$event <- NA
+  farnsworth1$year <- 1993
+  #pull out all budburst rows
+  farnsworth2<-farnsworth1[which(farnsworth1$bb_doy>0),]
+  farnsworth2a<-subset(farnsworth2, select=c("site","plot","event","year","genus","species1","bb_doy"))
+  colnames(farnsworth2a)[6]<-"species"
+  colnames(farnsworth2a)[7]<-"doy"
+  farnsworth2a$event <- "bbd"
+  #pull out all leafunf rows
+  farnsworth3<-farnsworth1[which(farnsworth1$leafunf_doy>0),]
+  farnsworth3a<-subset(farnsworth3, select=c("site","plot","event","year","genus","species1","leafunf_doy"))
+  colnames(farnsworth3a)[6]<-"species"
+  colnames(farnsworth3a)[7]<-"doy"
+  farnsworth3a$event <- "lud"
+  #pull out all leafout rows
+  farnsworth4<-farnsworth1[which(farnsworth1$leafout_doy>0),]
+  farnsworth4a<-subset(farnsworth4, select=c("site","plot","event","year","genus","species1","leafout_doy"))
+  colnames(farnsworth4a)[6]<-"species"
+  colnames(farnsworth4a)[7]<-"doy"
+  farnsworth4a$event <- "lod"
+  #pull out all flowering rows
+  farnsworth5<-farnsworth1[which(farnsworth1$ffd>0),]
+  farnsworth5a<-subset(farnsworth5, select=c("site","plot","event","year","genus","species1","ffd"))
+  colnames(farnsworth5a)[6]<-"species"
+  colnames(farnsworth5a)[7]<-"doy"
+  farnsworth5a$event <- "ffd"
+  #pull out all fruiting rows
+  farnsworth6<-farnsworth1[which(farnsworth1$ffrd>0),]
+  farnsworth6a<-subset(farnsworth6, select=c("site","plot","event","year","genus","species1","ffrd"))
+  colnames(farnsworth6a)[6]<-"species"
+  colnames(farnsworth6a)[7]<-"doy"
+  farnsworth6a$event <- "ffrd"
+  #pull out all coloration rows
+  farnsworth7<-farnsworth1[which(farnsworth1$col>0),]
+  farnsworth7a<-subset(farnsworth7, select=c("site","plot","event","year","genus","species1","col"))
+  colnames(farnsworth7a)[6]<-"species"
+  colnames(farnsworth7a)[7]<-"doy"
+  farnsworth7a$event <- "col"
+  #pull out all drop rows
+  farnsworth8<-farnsworth1[which(farnsworth1$drop>0),]
+  
+  farnsworth8a<-subset(farnsworth7, select=c("site","plot","event","year","genus","species1","drop"))
+  colnames(farnsworth8a)[6]<-"species"
+  colnames(farnsworth8a)[7]<-"doy"
+  farnsworth8a$event <- "drop"
+  
+  alldat<- rbind(farnsworth2a,farnsworth3a,farnsworth3a,farnsworth4a,farnsworth5a,farnsworth6a,farnsworth7a,farnsworth8a)
+  alldat$block<-NA
+  alldat[alldat$plot<4,]$block<-1
+  alldat[alldat$plot==4|alldat$plot==5|alldat$plot==6,]$block=2
+  alldat[alldat$plot==7|alldat$plot==8|alldat$plot==9,]$block=3
+  alldat[alldat$plot==10|alldat$plot==11|alldat$plot==12,]$block=4
+  alldat[alldat$plot==13|alldat$plot==14|alldat$plot==15,]$block=5
+  alldat[alldat$plot==16|alldat$plot==17|alldat$plot==18,]$block=6
+  farnsworth<-subset(alldat, select=c("site","block","plot","event","year","genus","species","doy"))
+  return(farnsworth)
+}
+###Cleland et al Jasper Ridge data
+###FFD
+clean.raw$cleland <- function(filename="JasperRidge_data.csv", path="./Data/Experiments/cleland") {
+  file <- file.path(path, filename)
+  cleland1 <- read.csv(file, check.names=FALSE, header=TRUE)  
+  colnames(cleland1)[8]<-"genus"
+  cleland1$species<-NA
+  cleland1$species[cleland1$genus=="Crepis"] <- "vessicaria"
+  cleland1$species[cleland1$genus=="Erodium"] <- "brachycarpum"
+  cleland1$species[cleland1$genus=="Geranium"] <- "dissectum"
+  cleland1$species[cleland1$genus=="Lolium"] <- "multiflorum"
+  cleland1$species[cleland1$genus=="Vicia"] <- "sativa"
+  cleland1$species[cleland1$genus=="Vulpia"] <- "myuros"
+  cleland1$species[cleland1$genus=="Bromusd"] <- "diandrus"
+  cleland1$species[cleland1$genus=="Bromush"] <- "hordeaceus"
+  cleland1$genus[cleland1$genus=="Bromusd"] <- "Bromus"
+  cleland1$genus[cleland1$genus=="Bromush"] <- "Bromus"
+  colnames(cleland1)[10]<-"doy"
+  cleland1$site<-"cleland"
+  cleland1$event<-"ffd"
+  cleland1$block<-NA
+  cleland1[cleland1$plot==1|cleland1$plot==2|cleland1$plot==3|cleland1$plot==33|cleland1$plot==34|cleland1$plot==4,]$block<-1
+  cleland1[cleland1$plot==12|cleland1$plot==7|cleland1$plot==8|cleland1$plot==9,]$block<-2
+  cleland1[cleland1$plot==10|cleland1$plot==11|cleland1$plot==5|cleland1$plot==6,]$block<-3
+  cleland1[cleland1$plot==13|cleland1$plot==14|cleland1$plot==26|cleland1$plot==32|cleland1$plot==34,]$block<-4
+  cleland1[cleland1$plot==15|cleland1$plot==16|cleland1$plot==17|cleland1$plot==18,]$block<-5
+  cleland1[cleland1$plot==19|cleland1$plot==20|cleland1$plot==21|cleland1$plot==31|cleland1$plot==35|cleland1$plot==36,]$block<-6
+  cleland1[cleland1$plot==27|cleland1$plot==28|cleland1$plot==29|cleland1$plot==30,]$block<-7
+  cleland1[cleland1$plot==22|cleland1$plot==23|cleland1$plot==24|cleland1$plot==25|cleland1$plot==36|cleland1$plot==36,]$block<-8
+  
+  cleland<-subset(cleland1, select=c("site","block","plot","event","year","genus","species", "doy"))
+  #cleland$variety <- NA
+  #cleland$cult <- NA
+  cleland<-cleland[!is.na(cleland$doy),]
+  
+  return(cleland)
+}
+
+##Clark et al from Duke ##
+## Data type: BBD,LUD, LOD ##
+## Notes: Contact: Public data ##
+clean.raw$clarkduke <- function(filename, path="./Data/Experiments/clark/") {
+  clarkdukeplots<-c("DF_G01_A.csv","DF_G02_5.csv","DF_G03_3.csv","DF_G04_A.csv","DF_G05_3.csv","DF_G06_5.csv","DF_G07_A.csv","DF_G08_5.csv","DF_G09_3.csv","DF_G10_C.csv","DF_G11_C.csv","DF_G12_C.csv","DF_S01_5.csv","DF_S02_3.csv","DF_S03_A.csv","DF_S04_A.csv","DF_S05_3.csv","DF_S06_5.csv","DF_S07_5.csv","DF_S08_A.csv","DF_S09_3.csv","DF_S10_C.csv","DF_S11_C.csv","DF_S12_C.csv")
+  clarkduke <- NA
+  spfile <- file.path(path, "speciesList_clark.csv")
+  specieslist<-read.csv(spfile, header=TRUE)
+  for (i in 1:length(clarkdukeplots)){
+    file <- file.path(path, paste(clarkdukeplots[i]))
+    clarkduke1 <- read.csv(file, check.names=FALSE, header=TRUE)
+    clarkduke1$genus<-NA
+    clarkduke1$species<-NA
+    species1<-unique(clarkduke1$Species)
+    for (j in 1:length(species1)){
+      clarkduke1$genus[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
+      clarkduke1$species[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
+    }
+    clarkduke1$site<-"clarkduke"
+    clarkduke1$plot<-substr(clarkduke1$Chamber,1,3)
+    
+    #estimate first date of budburst, leaf unfolding, and leaf out
+    get.bbd <- function(x) names(x)[min(which(x==3), na.rm=T)]#budburst
+    get.lud <- function(x) names(x)[min(which(x==4), na.rm=T)]#leaves unfolding
+    get.lod <- function(x) names(x)[min(which(x==6), na.rm=T)]#leafout
+    bbd_2010<-substr(apply(clarkduke1[,17:30],1,get.bbd),6,13)
+    bbd_2011<-substr(apply(clarkduke1[,31:55],1,get.bbd),6,13)
+    bbd_2012<-substr(apply(clarkduke1[,56:81],1,get.bbd),6,13)
+    bbd_2013<-substr(apply(clarkduke1[,82:101],1,get.bbd),6,13)
+    lud_2010<-substr(apply(clarkduke1[,17:30],1,get.lud),6,13)
+    lud_2011<-substr(apply(clarkduke1[,31:55],1,get.lud),6,13)
+    lud_2012<-substr(apply(clarkduke1[,56:81],1,get.lud),6,13)
+    lud_2013<-substr(apply(clarkduke1[,82:101],1,get.lud),6,13)
+    lod_2010<-substr(apply(clarkduke1[,17:30],1,get.lod),6,13)
+    lod_2011<-substr(apply(clarkduke1[,31:55],1,get.lod),6,13)
+    lod_2012<-substr(apply(clarkduke1[,56:81],1,get.lod),6,13)
+    lod_2013<-substr(apply(clarkduke1[,82:101],1,get.lod),6,13)
+    bbd2010_doy<-strftime(strptime(bbd_2010, format = "%m.%d.%y"),format = "%j")
+    bbd2011_doy<-strftime(strptime(bbd_2011, format = "%m.%d.%y"),format = "%j")
+    bbd2012_doy<-strftime(strptime(bbd_2012, format = "%m.%d.%y"),format = "%j")
+    bbd2013_doy<-strftime(strptime(bbd_2013, format = "%m.%d.%y"),format = "%j")
+    lud2010_doy<-strftime(strptime(lud_2010, format = "%m.%d.%y"),format = "%j")
+    lud2011_doy<-strftime(strptime(lud_2011, format = "%m.%d.%y"),format = "%j")
+    lud2012_doy<-strftime(strptime(lud_2012, format = "%m.%d.%y"),format = "%j")
+    lud2013_doy<-strftime(strptime(lud_2013, format = "%m.%d.%y"),format = "%j")
+    lod2010_doy<-strftime(strptime(lod_2010, format = "%m.%d.%y"),format = "%j")
+    lod2011_doy<-strftime(strptime(lod_2011, format = "%m.%d.%y"),format = "%j")
+    lod2012_doy<-strftime(strptime(lod_2012, format = "%m.%d.%y"),format = "%j")
+    lod2013_doy<-strftime(strptime(lod_2013, format = "%m.%d.%y"),format = "%j")
+    clarkduke2<-cbind(clarkduke1,bbd2010_doy,bbd2011_doy,bbd2012_doy,bbd2013_doy,lud2010_doy,lud2011_doy,lud2012_doy,lud2013_doy,lod2010_doy,lod2011_doy,lod2012_doy,lod2013_doy)
+    clarkduke2a<-subset(clarkduke2, select=c("site","plot","genus","species","bbd2010_doy","bbd2011_doy","bbd2012_doy","bbd2013_doy","lud2010_doy","lud2011_doy","lud2012_doy","lud2013_doy","lod2010_doy","lod2011_doy","lod2012_doy","lod2013_doy"))
+    clarkduke3<-reshape(clarkduke2a,varying = list(names(clarkduke2a)[5:8], names(clarkduke2a)[9:12],names(clarkduke2a)[13:16]), direction = "long", v.names = c("BBD","LUD", "LOD"), times = c(2010:2013))
+    clarkduke3<-clarkduke3[,-9]
+    colnames(clarkduke3)[5]<-"year"
+    clarkduke4<-reshape(clarkduke3,varying = list(names(clarkduke3)[6:8]), direction = "long", v.names = c("doy"), times = c(1:3))
+    clarkduke4$event<-c(rep("bbd", times=dim(clarkduke3)[1]),rep("lud", times=dim(clarkduke3)[1]),rep("lod", times=dim(clarkduke3)[1]))
+    #clarkduke4$variety <- NA
+    #clarkduke4$cult <- NA
+    clarkduke4$block<-NA
+    clarkduke5<-subset(clarkduke4, select=c("site","block","plot","event","year","genus","species","doy"))
+    clarkduke<-rbind(clarkduke,clarkduke5)
+  }
+  clarkduke<-clarkduke[!is.na(clarkduke$doy),]
+  clarkduke<-clarkduke[-which(clarkduke$genus=="Ob"),]#unknown genus at clarkduke
+  clarkduke[which(clarkduke$genus=="Carya "),]$genus<-"Carya"
+  return(clarkduke)
 }
 
 ##Clark et al from Harvard ##
-## Data type: hourly air temp, soil temp (celsius, at 5cm depth) and soil moisture (Estimated ratio of volumetric water content, scaled from 0 to 1) in heated plots, "ambient" plots = like disturbance control plots, and control plots with mesh walls, no heating infrastructure (their control= our ambient)
-## Notes: Public data, 
-clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Data/Experiments/clark") {
-  file <- file.path(path, filename)
-  soiltemp_hr<- read.csv(file, header=TRUE)
-  soiltemp.long<-reshape(soiltemp_hr,varying = list(colnames(soiltemp_hr)[8:31]), direction = "long", v.names = c("soiltemp"), times = c(colnames(soiltemp_hr)[8:31]))
-  soiltemp.long$plot<-substr(soiltemp.long$time,1,3)
-  soiltemp.long$doy<-strftime(strptime(paste(soiltemp.long$year,soiltemp.long$month,soiltemp.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")
-  soiltemp.long$year_doy <- paste(soiltemp.long$year,soiltemp.long$doy, sep="") 
-  soiltemp1_min<-aggregate(x=subset(soiltemp.long, select="soiltemp"), by=list(soiltemp.long$year_doy,soiltemp.long$plot), FUN=min,na.rm=F)
-  colnames(soiltemp1_min)<-c("year_doy","plot","soiltemp1_min")
-  soiltemp1_max<-aggregate(x=subset(soiltemp.long, select="soiltemp"), by=list(soiltemp.long$year_doy,soiltemp.long$plot), FUN=max,na.rm=F)
-  colnames(soiltemp1_max)<-c("year_doy","plot","soiltemp1_max")
-  soiltemp<-as.data.frame(cbind(soiltemp1_min$year_doy,soiltemp1_min$plot,soiltemp1_min$soiltemp1_min,soiltemp1_max$soiltemp1_max))
-  colnames(soiltemp)<-c("year_doy","plot","soiltemp1_min","soiltemp1_max")
-  
-  file2<-file.path(path, "data-Harvard-SM.csv")
-  mois_hr<-read.csv(file2,  header=TRUE)
-  mois.long<-reshape(mois_hr,varying = list(colnames(mois_hr)[8:31]), direction = "long", v.names = c("soilmois"), times = c(colnames(mois_hr)[8:31]))
-  mois.long$plot<-substr(mois.long$time,1,3)
-  mois.long$doy<-strftime(strptime(paste(mois.long$year,mois.long$month,mois.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")   
-  mois.long$year_doy <- paste(mois.long$year,mois.long$doy, sep="") 
-  soilmois<-aggregate(x=subset(mois.long, select="soilmois"), by=list(mois.long$year_doy,mois.long$plot), FUN=mean,na.rm=F)
-  colnames(soilmois)<-c("year_doy","plot","soilmois1")
-  
-  file3<-file.path(path, "data-Harvard-AT.csv")
-  airtemp_hr<-read.csv(file3,  header=TRUE)
-  airtemp.long<-reshape(airtemp_hr,varying = list(colnames(airtemp_hr)[8:31]), direction = "long", v.names = c("airtemp"), times = c(colnames(airtemp_hr)[8:31]))
-  airtemp.long$plot<-substr(airtemp.long$time,1,3)
-  airtemp.long$doy<-strftime(strptime(paste(airtemp.long$year,airtemp.long$month,airtemp.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")   
-  airtemp.long$year_doy <- paste(airtemp.long$year,airtemp.long$doy, sep="") 
-  airtemp_min<-aggregate(x=subset(airtemp.long, select="airtemp"), by=list(airtemp.long$year_doy,airtemp.long$plot), FUN=min,na.rm=F)
-  colnames(airtemp_min)<-c("year_doy","plot","airtemp_min")
-  airtemp_max<-aggregate(x=subset(airtemp.long, select="airtemp"), by=list(airtemp.long$year_doy,airtemp.long$plot), FUN=max,na.rm=F)
-  colnames(airtemp_max)<-c("year_doy","plot","airtemp_max")
-  airtemp<-as.data.frame(cbind(airtemp_min$year_doy,airtemp_min$plot,airtemp_min$airtemp_min,airtemp_max$airtemp_max))
-  colnames(airtemp)<-c("year_doy","plot","airtemp_min","airtemp_max")
-  
-  allclim<-merge(airtemp,soiltemp,by=c("year_doy","plot"), all=TRUE)  
-  allclim2<-merge(allclim,soilmois,by=c("year_doy","plot"), all=TRUE) 
-  allclim2$year<-substr(allclim2$year_doy,1,4)
-  allclim2$doy<-substr(allclim2$year_doy,5,7)  
-  allclim2$site<-"clarkharvard"
-  allclim2$temptreat<-NA
-  allclim2[allclim2$plot=="G02"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S07",]$temptreat<-0#disturbance control
-  allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S01"|allclim2$plot=="S04"|allclim2$plot=="S09",]$temptreat<-2
-  allclim2[allclim2$plot=="G01"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S03"|allclim2$plot=="S06"|allclim2$plot=="S08",]$temptreat<-1
-  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-"ambient"#
-  allclim2$preciptreat<-NA
-  allclim2$soiltemp2_min<-NA
-  allclim2$soiltemp2_max<-NA
-  allclim2$soilmois2<-NA
-  allclim2$block<-NA
-  allclim2$soiltemp2_mean<-NA
-  allclim2$soilmois2<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$cantemp_min<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$cantemp_min<-NA
-  allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
-  clarkharvardclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(clarkharvardclim) <- NULL
-  return(clarkharvardclim) 
-}
-##Clark et al from Duke ##
-## Data type: hourly air temp, soil temp (celsius, at 5cm depth) and soil moisture (Estimated ratio of volumetric water content, scaled from 0 to 1) in heated plots, plots = like disturbance control plots, and control plots with mesh walls, no heating infrastructure
-## Notes: Public data, 
-clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Experiments/clark") {
-  file <- file.path(path, filename)
-  soiltemp_hr<- read.csv(file, header=TRUE)
-  soiltemp.long<-reshape(soiltemp_hr,varying = list(colnames(soiltemp_hr)[8:31]), direction = "long", v.names = c("soiltemp"), times = c(colnames(soiltemp_hr)[8:31]))
-  soiltemp.long$plot<-substr(soiltemp.long$time,1,3)
-  soiltemp.long$doy<-strftime(strptime(paste(soiltemp.long$year,soiltemp.long$month,soiltemp.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")
-  soiltemp.long$year_doy <- paste(soiltemp.long$year,soiltemp.long$doy, sep="") 
-  soiltemp1_min<-aggregate(x=subset(soiltemp.long, select="soiltemp"), by=list(soiltemp.long$year_doy,soiltemp.long$plot), FUN=min,na.rm=F)
-  colnames(soiltemp1_min)<-c("year_doy","plot","soiltemp1_min")
-  soiltemp1_max<-aggregate(x=subset(soiltemp.long, select="soiltemp"), by=list(soiltemp.long$year_doy,soiltemp.long$plot), FUN=max,na.rm=F)
-  colnames(soiltemp1_max)<-c("year_doy","plot","soiltemp1_max")
-  soiltemp<-as.data.frame(cbind(soiltemp1_min$year_doy,soiltemp1_min$plot,soiltemp1_min$soiltemp1_min,soiltemp1_max$soiltemp1_max))
-  colnames(soiltemp)<-c("year_doy","plot","soiltemp1_min","soiltemp1_max")
-  
-  file2<-file.path(path, "data-Duke-SM.csv")
-  mois_hr<-read.csv(file2,  header=TRUE)
-  mois.long<-reshape(mois_hr,varying = list(colnames(mois_hr)[8:31]), direction = "long", v.names = c("soilmois"), times = c(colnames(mois_hr)[8:31]))
-  mois.long$plot<-substr(mois.long$time,1,3)
-  mois.long$doy<-strftime(strptime(paste(mois.long$year,mois.long$month,mois.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")   
-  mois.long$year_doy <- paste(mois.long$year,mois.long$doy, sep="") 
-  soilmois<-aggregate(x=subset(mois.long, select="soilmois"), by=list(soiltemp.long$year_doy,soiltemp.long$plot), FUN=mean, na.rm=F)
-  colnames(soilmois)<-c("year_doy","plot","soilmois1")
-  
-  file3<-file.path(path, "data-Duke-AT.csv")
-  airtemp_hr<-read.csv(file3,  header=TRUE)
-  airtemp.long<-reshape(airtemp_hr,varying = list(colnames(airtemp_hr)[8:31]), direction = "long", v.names = c("airtemp"), times = c(colnames(airtemp_hr)[8:31]))
-  airtemp.long$plot<-substr(airtemp.long$time,1,3)
-  airtemp.long$doy<-strftime(strptime(paste(airtemp.long$year,airtemp.long$month,airtemp.long$day,sep="-"), format = "%Y-%m-%d"),format = "%j")   
-  airtemp.long$year_doy <- paste(airtemp.long$year,airtemp.long$doy, sep="") 
-  airtemp_min<-aggregate(x=subset(airtemp.long, select="airtemp"), by=list(airtemp.long$year_doy,airtemp.long$plot), FUN=min,na.rm=F)
-  colnames(airtemp_min)<-c("year_doy","plot","airtemp_min")
-  airtemp_max<-aggregate(x=subset(airtemp.long, select="airtemp"), by=list(airtemp.long$year_doy,airtemp.long$plot), FUN=max,na.rm=F)
-  colnames(airtemp_max)<-c("year_doy","plot","airtemp_max")
-  airtemp<-as.data.frame(cbind(airtemp_min$year_doy,airtemp_min$plot,airtemp_min$airtemp_min,airtemp_max$airtemp_max))
-  colnames(airtemp)<-c("year_doy","plot","airtemp_min","airtemp_max")
-  
-  allclim<-merge(airtemp,soiltemp,by=c("year_doy","plot"), all=TRUE)  
-  allclim2<-merge(allclim,soilmois,by=c("year_doy","plot"), all=TRUE) 
-  allclim2$year<-substr(allclim2$year_doy,1,4)
-  allclim2$doy<-substr(allclim2$year_doy,5,7)
-  allclim2$site<-"clarkduke"
-  allclim2$temptreat<-NA
-  allclim2[allclim2$plot=="G01"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S03"|allclim2$plot=="S04"|allclim2$plot=="S08",]$temptreat<-0#disturbance control
-  allclim2[allclim2$plot=="G02"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S01"|allclim2$plot=="S06"|allclim2$plot=="S07",]$temptreat<-2
-  allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S09",]$temptreat<-1
-  allclim2[allclim2$plot=="G10"|allclim2$plot=="G11"|allclim2$plot=="G12"|allclim2$plot=="S10"|allclim2$plot=="S11"|allclim2$plot=="S12",]$temptreat<-"ambient"
-  allclim2$preciptreat<-NA
-  allclim2$preciptreat<-NA
-  allclim2$soiltemp2_min<-NA
-  allclim2$soiltemp2_max<-NA
-  allclim2$soilmois2<-NA
-  allclim2$block<-NA
-  allclim2$soiltemp2_mean<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$cantemp_min<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$cantemp_min<-NA
-  allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
-  clarkdukeclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(clarkdukeclim) <- NULL
-  return(clarkdukeclim) 
+## Data type: BBD,LUD,LOD ##
+## Notes: Contact: Public data ##
+clean.raw$clarkharvard <- function(filename, path="./Data/Experiments/clark") {
+  clarkharvardplots<-c("HF_G01_3.csv","HF_G02_A.csv","HF_G03_5.csv","HF_G04_A.csv","HF_G05_5.csv","HF_G06_3.csv","HF_G07_A.csv","HF_G08_3.csv","HF_G09_5.csv","HF_G10_C.csv","HF_G11_C.csv","HF_G12_C.csv","HF_S01_5.csv","HF_S02_A.csv","HF_S03_3.csv","HF_S04_5.csv","HF_S05_A.csv","HF_S06_3.csv","HF_S07_A.csv","HF_S08_3.csv","HF_S09_5.csv","HF_S10_C.csv","HF_S11_C.csv","HF_S12_C.csv")
+  clarkharvard <- c()
+  spfile <- file.path(path, "speciesList_clark.csv")
+  specieslist<-read.csv(spfile, header=TRUE)
+  for (i in 1:length(clarkharvardplots)){
+    file <- file.path(path, paste(clarkharvardplots[i]))
+    clarkharvard1 <- read.csv(file, check.names=FALSE, header=TRUE)
+    clarkharvard1$genus<-NA
+    clarkharvard1$species<-NA
+    species1<-unique(clarkharvard1$Species)
+    for (j in 1:length(species1)){
+      clarkharvard1$genus[clarkharvard1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
+      clarkharvard1$species[clarkharvard1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
+    }
+    clarkharvard1$site<-"clarkharvard"      
+    #estimate first date of budburst, leaf unfolding, and leaf out
+    get.bbd <- function(x) names(x)[min(which(x==3), na.rm=T)]#budburst
+    get.lud <- function(x) names(x)[min(which(x==4), na.rm=T)]#leaves unfolding
+    get.lod <- function(x) names(x)[min(which(x==6), na.rm=T)]#leafout
+    bbd_2010<-substr(apply(clarkharvard1[,19:26],1,get.bbd),6,13)
+    bbd_2011<-substr(apply(clarkharvard1[,27:31],1,get.bbd),6,13)
+    bbd_2012<-substr(apply(clarkharvard1[,32:44],1,get.bbd),6,13)
+    lud_2010<-substr(apply(clarkharvard1[,19:26],1,get.lud),6,13)
+    lud_2011<-substr(apply(clarkharvard1[,27:31],1,get.lud),6,13)
+    lud_2012<-substr(apply(clarkharvard1[,32:44],1,get.lud),6,13)
+    lod_2010<-substr(apply(clarkharvard1[,19:26],1,get.lod),6,13)
+    lod_2011<-substr(apply(clarkharvard1[,27:31],1,get.lod),6,13)
+    lod_2012<-substr(apply(clarkharvard1[,32:44],1,get.lod),6,13)
+    bbd2010_doy<-strftime(strptime(bbd_2010, format = "%m.%d.%y"),format = "%j")
+    bbd2011_doy<-strftime(strptime(bbd_2011, format = "%m.%d.%y"),format = "%j")
+    bbd2012_doy<-strftime(strptime(bbd_2012, format = "%m.%d.%y"),format = "%j")
+    lud2010_doy<-strftime(strptime(lud_2010, format = "%m.%d.%y"),format = "%j")
+    lud2011_doy<-strftime(strptime(lud_2011, format = "%m.%d.%y"),format = "%j")
+    lud2012_doy<-strftime(strptime(lud_2012, format = "%m.%d.%y"),format = "%j")
+    lod2010_doy<-strftime(strptime(lod_2010, format = "%m.%d.%y"),format = "%j")
+    lod2011_doy<-strftime(strptime(lod_2011, format = "%m.%d.%y"),format = "%j")
+    lod2012_doy<-strftime(strptime(lod_2012, format = "%m.%d.%y"),format = "%j")
+    clarkharvard2<-cbind(clarkharvard1,bbd2010_doy,bbd2011_doy,bbd2012_doy,lud2010_doy,lud2011_doy,lud2012_doy,lod2010_doy,lod2011_doy,lod2012_doy)
+    clarkharvard2$plot<-substr(clarkharvard1$Chamber,1,3)
+    clarkharvard2a<-subset(clarkharvard2, select=c("site","plot","genus","species","bbd2010_doy","bbd2011_doy","bbd2012_doy","lud2010_doy","lud2011_doy","lud2012_doy","lod2010_doy","lod2011_doy","lod2012_doy"))
+    clarkharvard3<-reshape(clarkharvard2a,varying = list(names(clarkharvard2a)[5:7], names(clarkharvard2a)[8:10],names(clarkharvard2a)[11:13]), direction = "long", v.names = c("BBD","LUD", "LOD"), times = c(2010:2012))
+    clarkharvard3<-clarkharvard3[,-9]
+    colnames(clarkharvard3)[5]<-"year"
+    clarkharvard4<-reshape(clarkharvard3,varying = list(names(clarkharvard3)[6:8]), direction = "long", v.names = c("doy"), times = c(1:3))
+    clarkharvard4$event<-c(rep("bbd", times=dim(clarkharvard3)[1]),rep("lud", times=dim(clarkharvard3)[1]),rep("lod", times=dim(clarkharvard3)[1]))
+    #clarkharvard4$variety <- NA
+    #clarkharvard4$cult <- NA
+    clarkharvard4$block<-NA
+    clarkharvard5<-subset(clarkharvard4, select=c("site","block","plot","event","year","genus","species","doy"))
+    clarkharvard<-rbind(clarkharvard,clarkharvard5)
+  }
+  clarkharvard<-clarkharvard[!is.na(clarkharvard$doy),]
+  return(clarkharvard)
 }
 
-##Dukes et al. data from BACE ##
-## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
-## Notes: data shared by Jeff Dukes (jsdukes@purdue.edu)
-##updated April 5, 2016 with more years of soil data, and adding air data
-clean.clim$bace <- function(path="./Data/Experiments/bace") {
-bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
-bacesoilmoisfiles<-c("2009_0_30cmTDR12_29_09CEG.csv","bace_soilmoisture2010.csv","bace_soilmoisture2011.csv",
-    "2012_0_30cmTDR_1_23_13_CEG.csv","2013_30cmTDR3_7_15SWW.csv","2014_30cmTDR3_7_15SWW.csv")
-bacecantempfiles<-c("2009PlotTempDaily12_02_11CEG.csv","2010PlotTempDaily01_25_11CEG.csv",
-"2011PlotTempDaily1_06_12CEG.csv","2012PlotTempDaily1_30_13CEG.csv")
-allsoiltemp<-c()
-for (i in 1:length(bacesoiltempfiles)){
-  file <- file.path(path, paste(bacesoiltempfiles[i]))
-  soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
-  colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
-  colnames(soiltemp) [7:12]<-c("soiltemp1_mean","soiltemp2_mean","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
-  soiltemp<-soiltemp[,1:12]
-  if(i==4){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
-  soiltemp$preciptreat<-NA
-  soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
-  soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
-  soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
-  soiltemp$block<-NA
-  soiltemp[soiltemp$plot<13,]$block<-1
-  soiltemp[soiltemp$plot<25 & soiltemp$plot>12,]$block<-2
-  soiltemp[soiltemp$plot<37 & soiltemp$plot>24,]$block<-3
-  if(length(unique(soiltemp$plot))>36){soiltemp[soiltemp$plot>36,]$block<-0}
-  soiltemp<-soiltemp[order(soiltemp$temptreat,soiltemp$preciptreat,soiltemp$year,soiltemp$doy),]
-  soiltemp$soilmaxreftemp<-c(soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)])
-  soiltemp$soilmaxdelta<- soiltemp$soiltemp1_max-soiltemp$soilmaxreftemp
-  soiltemp$soilminreftemp<-c(soiltemp$soiltemp1_min[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_min[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_min[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_min[1:(dim(soiltemp)[1]/4)])
-  soiltemp$soilmindelta<- soiltemp$soiltemp1_min-soiltemp$soilminreftemp
-  allsoiltemp<-rbind(allsoiltemp,soiltemp)
+##Sherry from Oklahoma##
+## Data type: FFD, FFRD ##
+## Notes: Rebecca Sherry
+#Phenological stages for Forbs: F0=vegetative plants; F1, unopened buds; F2, open flowers; F3, old flowers (postanthesis); F4, initiated fruit; F5,expanding fruit; and F6, dehisced fruit. 
+#Phenological stages For grasses: G0, plants with flower stalks (in boot); G1, spikelets present (out of boot); G2,exerted anthers or styles; G3, past the presence of anthers and styles (seed development); and G4, disarticulating florets. 
+#For forb species with very small flowers and fruits that were difficult to observe, stage 3 (initiated fruit) and stage 4 (expanding fruit) were lumped into a category of ‘‘fruit present,’’ (i.e., a score of F4.5)
+clean.raw$sherry <- function(filename, path) {
+  sherryspp<-c("SherryPhenology2003_Achillea.csv","SherryPhenology2003_Ambrosia.csv","SherryPhenology2003_Andropogon.csv","SherryPhenology2003_Erigeron.csv","SherryPhenology2003_Panicum.csv","SherryPhenology2003_Schizachyrium.csv")
+  sherry <- NA
+  gen<-c("Achillea","Ambrosia","Andropogon","Erigeron","Panicum","Schizachyrium")
+  sp<-c("millefolium","psilostchya","gerardii","strigosus","virgatum","scoparium")
+  for (i in 1:length(sherryspp)){
+    file <- file.path(path, paste(sherryspp[i]))
+    sherry1 <- read.csv(file, skip=3, header=TRUE)
+    colnames(sherry1)[which(colnames(sherry1)=="Plot")]<-"plot"
+    #estimate first date of budburst, leaf unfolding, and leaf out
+    firstsurv<-min(which(substr(colnames(sherry1),1,1)=="X"))
+    lastsurv<-dim(sherry1)[2]  
+    get.ffd <- function(x) names(x)[min(which(x <= 3.5 & x >= 2.5), na.rm=T)]#first flower date
+    get.ffrd <- function(x) names(x)[min(which(x <= 5.5 & x >= 3.5), na.rm=T)]#leaves unfolding
+    ffd_doy<-substr(apply(sherry1[,firstsurv:lastsurv],1,get.ffd),2,4)
+    ffrd_doy<-substr(apply(sherry1[,firstsurv:lastsurv],1,get.ffrd),2,4)
+    sherry2<-cbind(sherry1,ffd_doy,ffrd_doy)
+    sherry2$genus<- paste(gen[i])
+    sherry2$species<-paste(sp[i])    
+    sherry3<-subset(sherry2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+    sherry<-rbind(sherry,sherry3)
   }
-allcantemp<-c()
-for (j in 1:length(bacecantempfiles)){
- file <- file.path(path, paste(bacecantempfiles[j]))
- cantemp <- read.csv(file, header=TRUE,na.strings = ".")
- colnames(cantemp) [3:5]<-c("doy","plot","temptreat")
- colnames(cantemp) [7:9]<-c("cantemp_mean","cantemp_min","cantemp_max")
- cantemp<-cantemp[,1:9]
-  cantemp$preciptreat<-NA
- cantemp[cantemp$precip.treatment==1,]$preciptreat<-0#ambient precip
-  cantemp[cantemp$precip.treatment==0,]$preciptreat<--1#50% precip
-  cantemp[cantemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
-  cantemp$block<-NA
-  cantemp[cantemp$plot<13,]$block<-1
-  cantemp[cantemp$plot<25 & cantemp$plot>12,]$block<-2
-  cantemp[cantemp$plot<37 & cantemp$plot>24,]$block<-3
-  if(length(unique(cantemp$plot))>36){cantemp[cantemp$plot>36,]$block<-0}
-  #measured canopy temps (for control (0) and high warming treatment (3)):
-  cantemp<-cantemp[order(cantemp$temptreat,cantemp$preciptreat,cantemp$year,cantemp$doy),]
-  cantemp$canmaxreftemp<-c(cantemp$cantemp_max[1:(dim(cantemp)[1]/2)],cantemp$cantemp_max[1:(dim(cantemp)[1]/2)])
-  cantemp$canmaxdelta<-cantemp$cantemp_max-cantemp$canmaxreftemp
-  cantemp$canminreftemp<-c(cantemp$cantemp_min[1:(dim(cantemp)[1]/2)],cantemp$cantemp_min[1:(dim(cantemp)[1]/2)])
-  cantemp$canmindelta<-cantemp$cantemp_min-cantemp$canminreftemp
-  rownames(cantemp)<-NULL
-  allcantemp<-rbind(allcantemp,cantemp)
-}#j
-  soilcantemp<-merge(allsoiltemp,allcantemp,by=c("year","doy","month","block","plot","temptreat","preciptreat","precip.treatment"),all=TRUE)
-  soilcantemp<-soilcantemp[order(soilcantemp$temptreat,soilcantemp$preciptreat,soilcantemp$year,soilcantemp$doy),]
-  Cmin<-soilcantemp[soilcantemp$temptreat==0,]$canminreftemp
-  Cmax<-soilcantemp[soilcantemp$temptreat==0,]$canmaxreftemp
-  DImin<-mean(soilcantemp[soilcantemp$temptreat==3,]$canmindelta, na.rm=T)
-  DImax<-mean(soilcantemp[soilcantemp$temptreat==3,]$canmaxdelta, na.rm=T)
-  DHmin<-mean(soilcantemp[soilcantemp$temptreat==3,]$soilmindelta, na.rm=T)
-  DHmax<-mean(soilcantemp[soilcantemp$temptreat==3,]$soilmaxdelta, na.rm=T)
-  soilcantemp[soilcantemp$temptreat>0 & soilcantemp$temptreat<3,]$cantemp_min<- Cmin+(DImin*(soilcantemp[soilcantemp$temptreat>0 &soilcantemp$temptreat<3,]$soilmindelta/DHmin))
-  soilcantemp[soilcantemp$temptreat>0 & soilcantemp$temptreat<3,]$cantemp_max<-Cmax+(DImax*(soilcantemp[soilcantemp$temptreat>0 &soilcantemp$temptreat<3,]$soilmaxdelta/DHmax))
-allsoilmois<-c()
-for (i in 1:length(bacesoilmoisfiles)){
-file2 <- file.path(path, paste(bacesoilmoisfiles[i]))
-soilmois<-read.csv(file2, header=T,na.strings = ".")
-colnames(soilmois)[3]<-"doy"
-soilmois<-soilmois[,1:7]
-allsoilmois<-rbind(allsoilmois,soilmois)
+  sherry<-sherry[-1,]
+  sherry4<-reshape(sherry,varying = list(names(sherry)[4:5]), direction = "long", v.names = c("doy"), times = c(1:2))
+  sherry4$event<-c(rep("ffd", times=dim(sherry)[1]),rep("ffrd", times=dim(sherry)[1]))
+  sherry4$year<-2003
+  sherry4$site<-"sherry"
+  sherry4$block<-NA
+  sherryok<-subset(sherry4, select=c("site","block","plot","event","year","genus","species", "doy"))
+  #sherryok$variety <- NA
+  #sherryok$cult <- NA
+  #file2 <- file.path(path, "SherryPhenology2003_First6spp.csv")#need to add these in- they're just a little different than others in formattin
+  #sherryotherspp<-read.csv(file2, header=T)
+  sherryok<-sherryok[!is.na(sherryok$doy),]
+  
+  return(sherryok)
 }
-allclim<-merge(soilcantemp,allsoilmois,by=c("year","doy","plot"),all.x=TRUE) 
-colnames(allclim)[29]<-"soilmois1"
-allclim[which(allclim$soilmois1==209),]$soilmois1<-NA#remove weird values for soil moisture, which should be between 0 and 1 (209, 1.87)
-allclim[which(allclim$soilmois1==1.87),]$soilmois1<-NA
-allclim[which(allclim$soilmois1==43),]$soilmois1<-NA
-allclim$soilmois2<-NA
-allclim$airtemp_min<-NA
-allclim$airtemp_max<-NA
-allclim$surftemp_min<-NA
-allclim$surftemp_max<-NA
-allclim$site<-"bace"
-baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-row.names(baceclim) <- NULL
-return(baceclim) 
- }
-##Climate data for Ellison from Harvard Forest##
-## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
-## Notes: http://harvardforest.fas.harvard.edu:8080/exist/apps/datasets/showData.html?id=hf113; i had to subset this datafile before pushing it to github as it was too large. i selected out the columns that we wanted and removed 2009 (not included in phenology data), but otherwise left data untouched
-clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/Experiments/ellison") {
+
+##Price & Wasser data RMBL
+## Data type: FFd, FFRD, SD
+## Notes: mary.price@ucr.edu
+#From Mary: "We chose up to 5 flowering individuals that spanned the elevational range of flowering individuals of that species on the small moraine.  The "DIST" column indicates the meters downslope from the upper edge of the plot.
+#There is some inconsistency in the ordering of columns.  Sometimes the "species" column domes before the "individual ID" column, and sometimes not -- you'll have to look for that if you concatenate files.
+#The "comments" column after each census date column sometimes includes estimates of fruiting success, measured as #fruits/#flowers on each plant, along with notes on whether the plant got frosted, parasitized, replaced, and the like.  I can help you translate the notes if you have problems and need to know what the notes mean.  The plant species vary considerably, as you know, in what fruit set means.  Our notes are incomplete (at least, I haven't found the relevant info in spot-checks of notes--since we didn't include fruit set info in the analyses for our published paper, I'd have to search...), but I suspect that for Asteraceae we used the head as the "flower" unit, and probably we used the umbel as the unit for Polygonaceae.
+#In all cases, 0 = not flowering; 1 = bud present; 2 = open flower present; 3   = senescent flower present (corolla still attached); 4 = initiated fruit (corolla off); 5 = expanding fruit; 6 = dehisced fruit.
+#Of course, these stages mean different things for each species.
+#Species names have changed in some cases, or if one uses different authorities.  For example, Potentilla gracilis is now P. pulcherrima, and I think Bill Weber is the only one who advocates the genus "Seriphidium" for shrubby Artemisia.  So you may want to double-check names.
+#The number of files should correspond more-or-less with the number of years reported in the 1998 paper, with the addition of a few files from 1990 censuses (which can probably be left out of analyses since we were working the bugs out of our methods in that year).
+clean.raw$price <- function(filename, path) {
+  pricefiles<-c("ATPHEN90g.csv","ATPHEN91g.csv","ATPHEN92g.csv","ATPHEN94g.csv","CLPHEN91g.csv","CLPHEN92g.csv","CLPHEN93g.csv","CLPHEN94g.csv","CRPHEN92g.csv","CRPHEN93g.csv","CRPHEN94g.csv","DNPHEN90g.csv","DNPHEN91g.csv","DNPHEN92g.csv","DNPHEN93g.csv","DNPHEN94g.csv","EGPHEN90g.csv","EGPHEN91g.csv","EGPHEN92g.csv","EGPHEN93g.csv","EGPHEN94g.csv","ESPHEN90g.csv","ESPHEN91g.csv","ESPHEN92g.csv","ESPHEN93g.csv","ESPHEN94g.csv","IAPHEN90g.csv","IAPHEN91g.csv","IAPHEN92g.csv","IAPHEN93g.csv","IAPHEN94g.csv","LLPHEN90G.csv","LLPHEN91G.csv","LLPHEN92G.csv","LLPHEN93G.csv","LLPHEN94G.csv","MFPHEN90G.csv","MFPHEN91g.csv","MFPHEN92g.csv","MFPHEN93g.csv","MFPHEN94g.csv","PGPHEN91g.csv","PGPHEN92g.csv","PGPHEN93g.csv","PGPHEN94g.csv")
+  skiplines<-c(3,3,2,2,rep(3,times=41))  
+  price <- NA
+  for (i in 1:length(pricefiles)){
+    file <- file.path(path, paste(pricefiles[i]))
+    price1 <- read.csv(file, skip=skiplines[i], header=TRUE)
+    colnames(price1)[which(colnames(price1)=="PLOT"|colnames(price1)=="plot")]<-"plot"
+    colnames(price1)[which(colnames(price1)=="SPE")]<-"SP"
+    price1<-price1[!is.na(price1$SP),]
+    price1<-price1[!is.na(price1$plot),]
+    price1<-price1[!(price1$plot==""),]
+    price1<-price1[!(price1$plot=="JDATE"),]
+    price1<-price1[!(price1$plot=="PLOT"),]
+    price1<-price1[!(price1$plot=="jdate"),]
+    price1<-price1[!(price1$plot=="1992 WARMED-MEADOW PHENOLOGY"),]
+    #estimate first date of open flowers, fruits, and seeds dispersing
+    firstsurv<-min(which(substr(colnames(price1),1,1)=="X"))
+    lastsurv<-max(which(substr(colnames(price1),1,1)=="X"))    
+    get.ffd <- function(x) names(x)[which(x==2|x==12|x==123|x==1234|x==12345|x==123456)][1]#first flower date
+    get.ffrd <- function(x) names(x)[which(x==4|x==34|x==234|x==1234|x==12345|x==123456)][1]#first fruit date
+    get.sd <- function(x) names(x)[which(x==6|x==56|x==456|x==3456|x==2345|x==123456)][1]#seed dispersal/fruit dehiscing date
+    
+    ffd<-substr(apply(price1[,firstsurv:lastsurv],1,get.ffd),2,9)
+    ffrd<-substr(apply(price1[,firstsurv:lastsurv],1,get.ffrd),2,9)
+    sd<-substr(apply(price1[,firstsurv:lastsurv],1,get.sd),2,9)
+    price2<-cbind(price1,ffd,ffrd,sd)  
+    price2$filename<-paste(pricefiles[i])
+    price2$year<-paste("19",substr(price2$filename,7,8),sep="")
+    price3<-subset(price2, select=c("plot","SP", "ffd","ffrd","sd","filename","year"))
+    price<-rbind(price,price3)
+  }
+  price<-price[-1,]
+  price4<-reshape(price,varying = list(names(price)[3:5]), direction = "long", v.names = c("date"), times = c(names(price)[3:5]))
+  colnames(price4)[5]<-"event"
+  price4$site<-"price"
+  price4$date[which(is.na(price4$date))]<-"NA.NA.NA"
+  price4$doy<-strftime(strptime(price4$date, format = "%m.%d.%y"),format = "%j") 
+  price4$genus<-NA
+  price4$species<-NA
+  price4$genus[price4$SP=="AT"] <- "Artemesia"
+  price4$species[price4$SP=="AT"] <- "tridentata"
+  price4$genus[price4$SP=="CL"] <- "Claytonia"
+  price4$species[price4$SP=="CL"] <- "lanceolata"
+  price4$genus[price4$SP=="CR"] <- "Campanula"
+  price4$species[price4$SP=="CR"] <- "rotundifolia"
+  price4$genus[price4$SP=="DN"] <- "Delphinium"
+  price4$species[price4$SP=="DN"] <- "nelsonii"
+  price4$genus[price4$SP=="EG"] <- "Erythronium"
+  price4$species[price4$SP=="EG"] <- "grandiflorum"
+  price4$genus[price4$SP=="ES"] <- "Eriogonum"
+  price4$species[price4$SP=="ES"] <- "subalpinum"
+  price4$genus[price4$SP=="es"] <- "Eriogonum"
+  price4$species[price4$SP=="es"] <- "subalpinum"
+  price4$genus[price4$SP=="IA"] <- "Ipomopsis"
+  price4$species[price4$SP=="IA"] <- "aggregata"
+  price4$genus[price4$SP=="ia"] <- "Ipomopsis"
+  price4$species[price4$SP=="ia"] <- "aggregata"
+  price4$genus[price4$SP=="LL"] <- "Lathyrus"
+  price4$species[price4$SP=="LL"] <- "leucanthus"
+  price4$genus[price4$SP=="MF"] <- "Mertensia"
+  price4$species[price4$SP=="MF"] <- "fusiformes"
+  price4$genus[price4$SP=="PG"] <- "Potentilla"
+  price4$species[price4$SP=="PG"] <- "gracilis"
+  price4<-price4[!is.na(price4$doy),]
+  price4$block<-NA
+  price5<-subset(price4, select=c("site","block", "plot","event","year","genus","species", "doy"))
+  #price5$variety <- NA
+  #price5$cult <- NA
+  return(price5)
+}
+
+##Data from Chuine
+##no plots listed for 2003
+clean.raw$chuine <- function(filename, path="./Data/Experiments/chuine") {
+  chuinefiles<-c("Chuine_pheno_2002.csv","Chuine_pheno_2003_cleaned.csv","Chuine_pheno_2004.csv")
+  years<-c(2002,2003,2004)
+  chuine <- NA
+  for (i in 1:length(chuinefiles)){
+    file <- file.path(path, paste(chuinefiles[i]))
+    chuine1 <- read.csv(file, header=TRUE)
+    chuine1$plot<-paste(chuine1$block,chuine1$Plot,sep="")
+    colnames(chuine1)[which(colnames(chuine1)=="Block")]<-"block"
+    colnames(chuine1)[which(colnames(chuine1)=="species"|colnames(chuine1)=="Species")]<-"sp"
+    colnames(chuine1)[which(colnames(chuine1)=="X55")]<-"ffb"
+    colnames(chuine1)[which(colnames(chuine1)=="X65")]<-"ffd"
+    colnames(chuine1)[which(colnames(chuine1)=="X85")]<-"ffrd"
+    colnames(chuine1)[which(colnames(chuine1)=="X91")]<-"91"
+    #colnames(chuine1)[which(colnames(chuine1)=="X95")]<-"sen"
+    chuine1<-chuine1[!is.na(chuine1$sp),]
+    phen1<-which(colnames(chuine1)=="ffb")
+    phen2<-which(colnames(chuine1)=="ffrd")
+    chuine2<-reshape(chuine1,varying = list(names(chuine1)[phen1:phen2]), direction = "long", v.names = c("date"), times = c(names(chuine1)[phen1:phen2]))
+    chuine2$year<-paste(years[i])
+    chuine2<-chuine2[!chuine2$date=="",]
+    colnames(chuine2)[which(colnames(chuine2)=="time")]<-"event"
+    if(years[i]==2002){chuine2$doy<-strftime(strptime(chuine2$date, format = "%d/%m/%y"),format = "%j")}
+    if(years[i]==2003){chuine2$doy<-strftime(strptime(chuine2$date, format = "%d-%b"),format = "%j")}
+    if(years[i]==2004){chuine2$doy<-strftime(strptime(chuine2$date, format = "%d-%b"),format = "%j")}
+    chuine3<-subset(chuine2, select=c("block","plot","sp", "event","year","doy"))
+    chuine<-rbind(chuine,chuine3)
+  }
+  chuine<-chuine[-1,]
+  chuine$genus<-NA
+  chuine$species<-NA
+  chuine$genus[chuine$sp=="aa"] <- "Artemesia"
+  chuine$species[chuine$sp=="aa"] <- "annua"
+  chuine$genus[chuine$sp=="av"] <- "Artemesia"
+  chuine$species[chuine$sp=="av"] <- "vulgaris"
+  chuine$genus[chuine$sp=="ar"] <- "Amaranthus"
+  chuine$species[chuine$sp=="ar"] <- "retroflexus"
+  chuine$genus[chuine$sp=="ad"] <- "Amaranthus"
+  chuine$species[chuine$sp=="ad"] <- "deflexus"
+  chuine$genus[chuine$sp=="qr"] <- "Quercus"
+  chuine$species[chuine$sp=="qr"] <- "robur"
+  chuine$genus[chuine$sp=="qp"] <- "Quercus"
+  chuine$species[chuine$sp=="qp"] <- "pubescens"
+  chuine$genus[chuine$sp=="qi"] <- "Quercus"
+  chuine$species[chuine$sp=="qi"] <- "ilex"
+  chuine$genus[chuine$sp=="lr"] <- "Lolium"
+  chuine$species[chuine$sp=="lr"] <- "rigidum"
+  chuine$genus[chuine$sp=="lp"] <- "Lolium"
+  chuine$species[chuine$sp=="lp"] <- "perenne"
+  chuine$genus[chuine$sp=="sv"] <- "Setaria"
+  chuine$species[chuine$sp=="sv"] <- "viridis"
+  chuine$genus[chuine$sp=="sp"] <- "Setaria"
+  chuine$species[chuine$sp=="sp"] <- "parviflora"
+  chuine$genus[chuine$sp=="lp3"] <- "Lolium"
+  chuine$species[chuine$sp=="lp3"] <- "perenne"
+  chuine$site<-"chuine"
+  chuine4<-subset(chuine, select=c("site","block","plot","event","year","genus","species", "doy"))
+  #chuine4$variety <- NA
+  #chuine4$cult <- NA
+  chuine4<-chuine4[!is.na(chuine4$doy),]
+  return(chuine4)
+  ##
+}
+##Data from FORCE
+##Contact: Christy Rollinson
+clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", path="./Data/Experiments/force") {
+  file <- file.path(path, filename)
+  force1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  force1$plot<-paste(force1$Block,force1$Treatment,sep="")
+  force1$block<-force1$Block
+  force2<-aggregate(x=force1$Survey.DOY, by=list(force1$Year,force1$block,force1$plot,force1$Species,force1$Phenology.State), FUN=min, na.rm=F)
+  colnames(force2)<-c("year","block","plot","SP","phenstate","doy")
+  force2$event<-NA
+  force2[force2$phenstate==1,]$event<-"lod"
+  force2[force2$phenstate==2,]$event<-"ffd"
+  force2[force2$phenstate==3,]$event<-"ffrd"
+  force2[force2$phenstate==4,]$event<-"sd"
+  force2[force2$phenstate==5,]$event<-"sen"
+  force3<-force2[-which(is.na(force2$event)),]
+  force3<-force3[-which(force3$SP=="11-Oct"),]
+  force3<-force3[-which(force3$SP=="9-Oct"),]
+  force3<-force3[-which(force3$SP=="CEOB"),]
+  force3<-force3[-which(force3$SP=="U44"),]
+  spfile <- file.path(path, "Species_List.csv")
+  specieslist<-read.csv(spfile, header=TRUE)
+  force3$genussp<-NA
+  species1<-unique(force3$SP)
+  species1[which(species1=="U80")]<-"ARMI"
+  for (j in 1:length(species1)){
+    force3$genussp[force3$SP==species1[j]] <- specieslist[specieslist$Species.CODE==species1[j],]$Species[1]
+  }
+  force4<-force3 %>% separate(genussp, c("genus", "species"), sep=" ", remove=F)
+  force4[which(force4$genus=="Sisynchium"),]$genus<-"Sisyrinchium"
+  #force4[which(force4$genus=="Oenethera"),]$genus<-"Oenothera"
+  force4$site<-"force"
+  force<-subset(force4, select=c("site","block","plot","event","year","genus","species", "doy"))
+  return(force)
+  ##
+}
+
+##Data from Aaron Ellison's warming/phenology/ant experiment at Harvard Forest
+##Spring and Fall phenology
+##Contact: Aaron Ellison
+clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Data/Experiments/ellison") {
   file <- file.path(path, filename)
   ellison1 <- read.csv(file, check.names=FALSE, header=TRUE)
-  names(ellison1)[9]<-"plot"
-  ellison1$year_doy<-paste(ellison1$year,ellison1$doy, sep="-")
-  #get min airtemp across both measurements for each plot
-  temp_min<-aggregate(x=subset(ellison1, select=c("cat1.min","cat2.min","csto1.min","csto2.min","csti1.min","csti2.min")), by=list(ellison1$year_doy,ellison1$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min[,3:4],1,min)
-  soiltemp1_min<-apply(temp_min[,5:6],1,min)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min[,7:8],1,min)#temp at 6cm depth(inorganic)
-  temp_max<-aggregate(x=subset(ellison1, select=c("cat1.max","cat2.max","csto1.max","csto2.max","csti1.max","csti2.max")), by=list(ellison1$year_doy,ellison1$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max[,3:4],1,max)
-  soiltemp1_max<-apply(temp_max[,5:6],1,max)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max[,7:8],1,max)#temp at 6cm depth(inorganic)
-  soilmois<-aggregate(x=subset(ellison1, select=c("csm.avg")), by=list(ellison1$year_doy,ellison1$plot), FUN=mean,na.rm=F)
-  colnames(temp_min)[1:2]<-c("year_doy","plot")
-  year_doy <- strsplit(temp_min$year_doy,'-') 
-  year_doy<-do.call(rbind, year_doy)
-  allclim<-as.data.frame(cbind(year_doy,airtemp_min,airtemp_max,soiltemp1_min,soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois))
-  colnames(allclim)[9:11]<-c("year_doy","plot","soilmois1")
-  colnames(allclim)[1:2]<-c("year","doy")
-  allclim$preciptreat<-NA
-  allclim$temptreat<-NA
-  allclim[allclim$plot==6,]$temptreat<-0
-  allclim[allclim$plot==4,]$temptreat<-0
-  allclim[allclim$plot==11,]$temptreat<-0
-  allclim[allclim$plot==7,]$temptreat<-4
-  allclim[allclim$plot==8,]$temptreat<-1
-  allclim[allclim$plot==9,]$temptreat<-3
-  allclim[allclim$plot==10,]$temptreat<-7
-  allclim[allclim$plot==12,]$temptreat<-5
-  allclim[allclim$plot==1,]$temptreat<-9
-  allclim[allclim$plot==2,]$temptreat<-6
-  allclim[allclim$plot==3,]$temptreat<-2
-  allclim[allclim$plot==5,]$temptreat<-8
-  allclim1<-subset(allclim, select=c("temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soilmois1"))
-  file2<-file.path(path, "hf113-03-hf-outside.csv")
-  ellison2<-read.csv(file2, header=TRUE)
-  ellison2<-ellison2[-which(ellison2$year==2009),]
-  ellison2$year_doy<-paste(ellison2$year,ellison2$doy, sep="-")
-  ellison2$plot<-"ambient"
-  temp_min2<-aggregate(x=subset(ellison2, select=c("oat1.min","oat2.min","oat3.min","osto1.min","osto2.min","osto3.min","osti1.min","osti2.min","osti3.min")), by=list(ellison2$year_doy,ellison2$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min2[,3:5],1,min)
-  soiltemp1_min<-apply(temp_min2[,6:8],1,min)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min2[,9:11],1,min)#temp at 6cm depth(inorganic)
-  temp_max2<-aggregate(x=subset(ellison2, select=c("oat1.max","oat2.max","oat3.max","osto1.max","osto2.max","osto3.max","osti1.max","osti2.max","osti3.max")), by=list(ellison2$year_doy,ellison2$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max2[,3:5],1,max)
-  soiltemp1_max<-apply(temp_max2[,6:8],1,max)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max2[,9:11],1,max)#temp at 6cm depth(inorganic)
-  soilmois2<-aggregate(x=subset(ellison2, select=c("oc1sm.avg","oc2sm.avg","oc3sm.avg")), by=list(ellison2$year_doy,ellison2$plot), FUN=mean,na.rm=F)
-  soilmois1<-apply(soilmois2[,3:5],1,mean)#
-  colnames(temp_min2)[1:2]<-c("year_doy","plot")
-  year_doy <- strsplit(temp_min2$year_doy,'-') 
-  year_doy<-do.call(rbind, year_doy)
-  temptreat<-rep("ambient",times=dim(year_doy)[1])
-  preciptreat<-rep("ambient",times=dim(year_doy)[1])
-  oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois1))
-  colnames(oallclim)[3:5]<-c("plot","year","doy")
-  allclim2<-rbind(allclim1,oallclim)
-  allclim2$site<-"ellison"
-  allclim2$soilmois2<-NA
-  allclim2$block<-NA
-  allclim2$cantemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
-  allclim2$soiltemp2_mean<-(as.numeric(allclim2$soiltemp2_min)+as.numeric(allclim2$soiltemp2_max))/2
-  ellisonclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  ellisonclim[which(as.numeric(ellisonclim$soiltemp2_max) > 90),]$soiltemp2_max<-NA#seems like something weird happened to the sensor? really high
-  ellisonclim<-ellisonclim[-which(ellisonclim$year=="NA"),]
-  row.names(ellisonclim) <- NULL
-  return(ellisonclim)
+  colnames(ellison1)[2]<-"plot"
+  colnames(ellison1)[4]<-"genussp"
+  ellison1$doy<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%j") 
+  ellison1$year<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%Y")
+  ellison2<-aggregate(x=ellison1$doy, by=list(ellison1$year,ellison1$plot,ellison1$genussp,ellison1$plant,ellison1$phenology), FUN=min,na.rm=F)
+  ellison3<-ellison2 %>% separate(Group.3, c("genus", "species"), sep="_", remove=F)
+  colnames(ellison3)<-c("year","plot","gensp")
+  colnames(ellison3)[4:8]<-c("genus","species","plant","phenology","doy")
+  ellison3$event<-NA
+  ellison3[ellison3$phenology=="F2",]$event<-"sen"
+  ellison3[ellison3$phenology=="F3",]$event<-"drop"
+  ellison3[ellison3$phenology=="S3",]$event<-"bbd"
+  ellison3[ellison3$phenology=="S4",]$event<-"lud"
+  ellison3[ellison3$phenology=="S5",]$event<-"lod"
+  ellison3$site<-"ellison"
+  ellison3$block<-NA
+  ellison<-subset(ellison3, select=c("site","block","plot","event","year","genus","species", "doy"))
+  return(ellison)
 }
 
-##Climate data for Sherry Oklahoma data
-##treatments were only applied in 2003; probably should use only these data!
-##moisture=VWC
-clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", path="./Data/Experiments/sherry") {
-  file <- file.path(path, filename)
-  soilmois<- read.csv(file, skip=2,na.strings = "-99999",header=TRUE)
-  soilmois$year<-paste("20",substr(soilmois$Date,(nchar(soilmois$Date)+1)-2,nchar(soilmois$Date)), sep="")
-  colnames(soilmois)[2]<-"doy"
-  colnames(soilmois)[3]<-"soilmois"
-  soilmois.control<-rbind(soilmois[,1:3],soilmois[,1:3],soilmois[,1:3],soilmois[,1:3],soilmois[,1:3])
-  soilmois.control$plot<-c(rep(2,times=dim(soilmois)[1]),rep(6,times=dim(soilmois)[1]),rep(10,times=dim(soilmois)[1]),rep(14,times=dim(soilmois)[1]),rep(18,times=dim(soilmois)[1]))
-  soilmois.control$temptreat<-0
-  soilmois.control$preciptreat<-0
-  soilmois.water<-rbind(cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1),cbind(soilmois[,1:2],soilmois$W1))
-  soilmois.water$plot<-c(rep(4,times=dim(soilmois)[1]),rep(8,times=dim(soilmois)[1]),rep(11,times=dim(soilmois)[1]),rep(16,times=dim(soilmois)[1]),rep(20,times=dim(soilmois)[1]))
-  colnames(soilmois.water)[3]<-"soilmois"
-  soilmois.water$temptreat<-0
-  soilmois.water$preciptreat<-1
-  soilmois.heat<-rbind(cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1),cbind(soilmois[,1:2],soilmois$H1))
-  soilmois.heat$plot<-c(rep(3,times=dim(soilmois)[1]),rep(7,times=dim(soilmois)[1]),rep(12,times=dim(soilmois)[1]),rep(15,times=dim(soilmois)[1]),rep(19,times=dim(soilmois)[1]))
-  soilmois.heat$temptreat<-1
-  soilmois.heat$preciptreat<-0
-  colnames(soilmois.heat)[3]<-"soilmois"
-  soilmois.both<-rbind(cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1),cbind(soilmois[,1:2],soilmois$B1))
-  soilmois.both$plot<-c(rep(5,times=dim(soilmois)[1]),rep(9,times=dim(soilmois)[1]),rep(13,times=dim(soilmois)[1]),rep(17,times=dim(soilmois)[1]),rep(1,times=dim(soilmois)[1]))
-  soilmois.both$temptreat<-1
-  soilmois.both$preciptreat<-1
-  colnames(soilmois.both)[3]<-"soilmois"
-  soilmois.all<-rbind(soilmois.control,soilmois.water,soilmois.heat,soilmois.both)
-  soilmois.all$year<-NA
-  soilmois.all$year<-paste("20",substr(soilmois.all$Date,(nchar(soilmois.all$Date)+1)-2,nchar(soilmois.all$Date)), sep="")
-  sherrytempfiles<-c("IRCEB2003JD1_35.csv","IRCEB2003JD36_69.csv","IRCEB2003JD69_103.csv","IRCEB2003JD104_205.csv","IRCEB2003JD206_239.csv","IRCEB2003JD240_273.csv","IRCEB2003JD274_303.csv","IRCEB2003JD308_340.csv","IRCEB2003JD341_365.csv","IRCEB2004JD1_102.csv","IRCEB2004JD103_170.csv","IRCEB2004JD171_204.csv","IRCEB2004JD205_238.csv","IRCEB2004JD239_249.csv","IRCEB2004JD287_320.csv","IRCEB2004JD321_323.csv","IRCEB2004JD326_359.csv","IRCEB2004JD360_366.csv")
-  alltemp<-c()
-  for (i in 1:length(sherrytempfiles)){
-    file <- file.path(path, paste(sherrytempfiles[i]))
-    temp <- read.csv(file, header=TRUE,na.strings = "-99999")
-    if(i<4){colnames(temp)[4]<-"Air.15.cm"}
-    if(i<4){colnames(temp)[5]<-"X7.5cm"}
-    if(i<4){temp$Year<-2003}
-    if(dim(temp[which(is.na(temp$Y)),])[1]>0){temp1<-temp[-which(is.na(temp$Y)),]}
-    if(dim(temp[which(is.na(temp$Y)),])[1]==0){temp1<-temp}
-    temp2<-temp1[which(temp1$Plot>=1),]
-    minairtemp<-aggregate(x=temp2$Air.15.cm, by=list(temp2$J,temp2$Plot), FUN=min,na.rm=F)
-    colnames(minairtemp)<-c("doy","plot","airtemp_min")
-    maxairtemp<-aggregate(x=temp2$Air.15.cm, by=list(temp2$J,temp2$Plot), FUN=max,na.rm=F)
-    minsoiltemp<-aggregate(x=temp2$X7.5cm, by=list(temp2$J,temp2$Plot), FUN=min,na.rm=F)
-    maxsoiltemp<-aggregate(x=temp2$X7.5cm, by=list(temp2$J,temp2$Plot), FUN=max,na.rm=F)
-    temps<-cbind(minairtemp, as.numeric(maxairtemp[,3]),as.numeric(minsoiltemp[,3]),as.numeric(maxsoiltemp[,3]))
-    temps$year<-substr(sherrytempfiles[i],6,9)
-    alltemp<-rbind(alltemp,temps)
+
+##Data from Jennifer Dunne's study at RMBL
+##Phenological stages:0=not yet flowering, 1=unopened flower buds, 2=open flowers,3 =old flowers,4=initiated fruit, 5=enlarged fruit, and 6= for dehisced fruit. 
+#For Festuca we used five phenological stages: 0=plant with flower stalks,1=presence of spikelets, 2=exerted anthers and styles from the spikelet florets, 3=dried and broken-off anthers and styles, indicating a developing seed, and 4=disarticulated seeds.
+##Contact: Jennifer Dunne
+clean.raw$dunne <- function(path="./Data/Experiments/dunne") {
+  dunnefiles<-c("1995DunnePhenologyData_Artemisia.csv","1995DunnePhenologyData_Delphinium.csv","1995DunnePhenologyData_Erigeron.csv","1995DunnePhenologyData_Helianthella.csv","1995DunnePhenologyData_Lathyrus.csv","1995DunnePhenologyData_Mertensiana.csv","1995DunnePhenologyData_Potentilla.csv","1996DunnePhenologyData_Artemisia.csv","1996DunnePhenologyData_Delphinium.csv","1996DunnePhenologyData_Erigeron.csv","1996DunnePhenologyData_Eriogonums.csv","1996DunnePhenologyData_Festuca.csv","1996DunnePhenologyData_Helianthella.csv","1996DunnePhenologyData_Lathyrus.csv","1996DunnePhenologyData_Mertensiana.csv","1996DunnePhenologyData_Potentilla.csv","1997DunnePhenologyData_Achillea.csv","1997DunnePhenologyData_Artemisia.csv","1997DunnePhenologyData_Claytonia.csv","1997DunnePhenologyData_Delphinium.csv","1997DunnePhenologyData_Erigeron.csv","1997DunnePhenologyData_Eriogonumu.csv","1997DunnePhenologyData_Festuca.csv","1997DunnePhenologyData_Helianthella.csv","1997DunnePhenologyData_Lathyrus.csv","1997DunnePhenologyData_Mertensia.csv","1997DunnePhenologyData_Potentilla.csv","1998DunnePhenologyData_Artemisia.csv","1998DunnePhenologyData_Claytonia.csv","1998DunnePhenologyData_Delphinium.csv","1998DunnePhenologyData_Erigeron.csv","1998DunnePhenologyData_Eriogonumu.csv","1998DunnePhenologyData_Eriogonums.csv","1998DunnePhenologyData_Festuca.csv","1998DunnePhenologyData_Helianthella.csv","1998DunnePhenologyData_Lathyrus.csv","1998DunnePhenologyData_Mertensia.csv","1998DunnePhenologyData_Potentilla.csv")
+  dunne <- NA
+  for (i in 1:length(dunnefiles)){
+    file <- file.path(path, paste(dunnefiles[i]))
+    dunne1 <- read.csv(file,  header=TRUE)
+    dunne_ffd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage2), FUN=min,na.rm=F)#first date of open flowers for each site/plot/rep
+    dunne_ffd$event<-"ffd"
+    if(is.element("stage4", colnames(dunne1)))(dunne_ffrd<-aggregate(x=dunne1$date, by=list(dunne1$site,dunne1$plot,dunne1$rep,dunne1$stage4), FUN=min,na.rm=F)) #first date of fruit for each site/plot/rep
+    else(dunne2<-dunne_ffd)
+    if(is.element("stage4", colnames(dunne1)))(dunne_ffrd$event<-"ffrd")
+    if(is.element("stage4", colnames(dunne1)))(dunne2<-rbind(dunne_ffd, dunne_ffrd))
+    dunne2$plot<-dunne2$Group.2
+    stop<-nchar(dunnefiles[i])-4
+    dunne2$genussp<-paste(substr(dunnefiles[i],24,stop))
+    dunne2$year<-substr(dunnefiles[i],1,4)
+    colnames(dunne2)[5]<-c("doy")
+    dunne <- rbind(dunne,dunne2)
   }
-  colnames(alltemp)<-c("doy","plot","airtemp_min","airtemp_max","soiltemp1_min","soiltemp1_max","year") 
-  allclim<-merge(alltemp,soilmois.all, all=TRUE)
-  allclim$soiltemp2_min<-NA
-  allclim$soiltemp2_max<-NA
-  allclim$soiltemp2_mean<-NA
-  allclim$soilmois2<-NA
-  allclim$soiltemp1_mean<-(allclim$soiltemp1_max+allclim$soiltemp1_min)/2
-  allclim$site<-"sherry"
-  allclim$soilmois1<-allclim$soilmois/100
-  allclim$soilmois2<-NA
-  allclim$block<-NA
-  allclim$cantemp_min<-NA
-  allclim$cantemp_max<-NA
-  allclim$surftemp_min<-NA
-  allclim$surftemp_max<-NA
-  sherryclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  sherryclim[which(sherryclim$soiltemp1_max==max(sherryclim$soiltemp1_max, na.rm=T)),]$soiltemp1_max<-NA
-  sherryclim[which(sherryclim$soiltemp1_mean==max(sherryclim$soiltemp1_mean, na.rm=T)),]$soiltemp1_mean<-NA
-  
-  sherryclim<-sherryclim[-which(sherryclim$doy==2.81e+160),]
-  row.names(sherryclim) <- NULL
-  return(sherryclim)
+  dunne$genus<-NA 
+  dunne$species<-NA
+  dunne$genus[dunne$genussp=="Artemisia"] <- "Artemisia"
+  dunne$species[dunne$genussp=="Artemisia"] <- "tridentata"
+  dunne$genus[dunne$genussp=="Claytonia"] <- "Claytonia"
+  dunne$species[dunne$genussp=="Claytonia"] <- "lanceolata"
+  dunne$genus[dunne$genussp=="Delphinium"] <- "Delphinium"
+  dunne$species[dunne$genussp=="Delphinium"] <- "nuttallianum"
+  dunne$genus[dunne$genussp=="Erigeron"] <- "Erigeron"
+  dunne$species[dunne$genussp=="Erigeron"] <- "speciosus"
+  dunne$genus[dunne$genussp=="Helianthella"] <- "Helianthella"
+  dunne$species[dunne$genussp=="Helianthella"] <- "quinquenervis"
+  dunne$genus[dunne$genussp=="Lathyrus"] <- "Lathyrus"
+  dunne$species[dunne$genussp=="Lathyrus"] <- "lanszwertii"
+  dunne$genus[dunne$genussp=="Potentilla"] <- "Potentilla"
+  dunne$species[dunne$genussp=="Potentilla"] <- "hippiana"
+  dunne$genus[dunne$genussp=="Mertensiana"] <- "Mertensiana"
+  dunne$species[dunne$genussp=="Mertensiana"] <- "fusiformis"
+  dunne$genus[dunne$genussp=="Eriogonums"] <- "Eriogonum"
+  dunne$species[dunne$genussp=="Eriogonums"] <- "subalpinum"
+  dunne$genus[dunne$genussp=="Festuca"] <- "Festuca"
+  dunne$species[dunne$genussp=="Festuca"] <- "thurberi"
+  dunne$genus[dunne$genussp=="Achillea"] <- "Achillea"
+  dunne$species[dunne$genussp=="Achillea"] <- "sp"
+  dunne$genus[dunne$genussp=="Eriogonumu"] <- "Eriogonum"
+  dunne$species[dunne$genussp=="Eriogonumu"] <- "umbellatum"
+  dunne$site<-"dunne"
+  colnames(dunne)[1]<-"block"
+  dunne<-dunne[-1,]
+  dunnermbl<-subset(dunne, select=c("site","block","plot","event","year","genus","species", "doy"))
+  dunnermbl<-dunnermbl[!is.na(dunnermbl$genus),]
+  return(dunnermbl)
 }
-##Climate data for RMBL (Price & Wasser & Dunne) from RMBL
-## Data type: soil temp and moisture (%), measured every 2 hours; no sham/disturbance control (only ambient)
-##Notes: for Dunne: 1995-1998;
-###1 - 10 = Plot (ODD = control, EVEN = Heated); A - C = Zone (A = lower, B = middle, C = upper in terms of local topography); 1 - 3 = Depth (1 = 5cm, 2 = 12cm, 3 = 25cm)  
-###average across zones,and use plot numbers
-###for 1991: only soil depth 2 (12 cm) in cleaned file
-clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Data/Experiments/dunne") {
-  file <- file.path(path,filename)
-  soiltemp<- read.csv(file,header=TRUE)
-  #soiltemp$Year<-as.factor(soiltemp$Year)
-  soiltemp2<-melt(soiltemp,id = 1:4) 
-  soiltemp2$plot<-substr(soiltemp2$variable,2,nchar(as.character(soiltemp2$variable))-2)
-  soiltemp2$depth<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable)),nchar(as.character(soiltemp2$variable)))
-  #First get average across zones, within each hour, doy, plot, and depth
-  soiltemp3<-subset(soiltemp2,select=c("Year","DOY","Hour","value","plot"))
-  soiltemp3a<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$Hour,soiltemp3$plot),FUN=mean,na.rm=F)
-  #soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","plot"))
-  #soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","plot"))
-  colnames(soiltemp3a)<-c("Year","DOY","Hour","plot","value")
-  soiltemp_min<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=min,na.rm=F)
-  soiltemp_max<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=max,na.rm=F)
-  #soiltemp_min1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=min,na.rm=F)
-  #soiltemp_max1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=max,na.rm=F)
-  #allclim1991<-cbind(soiltemp_min1991,soiltemp_max1991$x)
-  #colnames(allclim1991)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  allclim1<-cbind(soiltemp_min,soiltemp_max$x)
-  colnames(allclim1)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  #allclim1<-rbind(allclim1991,allclim)
-  allclim1$site<-"dunne"
-  allclim1$temptreat<-"ambient"
-  allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
-  allclim1$preciptreat<-NA
-  allclim1$airtemp_min<-NA
-  allclim1$airtemp_max<-NA
-  allclim1$soiltemp2_min<-NA
-  allclim1$soiltemp2_max<-NA
-  allclim1$soiltemp2_mean<-NA
-  allclim1$soiltemp1_mean<-(allclim1$soiltemp1_min+allclim1$soiltemp1_max)/2
-  allclim1$soilmois1<-NA
-  allclim1$soilmois2<-NA
-  allclim2<-allclim1[allclim1$year>1994,]
-  allclim2$cantemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$block<-NA
-  dunneclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(dunneclim) <- NULL
-  return(dunneclim)
-}  
-##Climate data for RMBL (Price & Wasser & Dunne) from RMBL
-## Data type: soil temp and moisture, measured every 2 hours
-## Notes: for Price & Wasser, 1990-1994 (climate data doesn't start until 1991)
-clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140712.csv", path="./Data/Experiments/dunne") {
-  file <- file.path(path,filename)
-  soiltemp<- read.csv(file,header=TRUE)
-  #soiltemp$Year<-as.factor(soiltemp$Year)
-  soiltemp2<-melt(soiltemp,id = 1:4) 
-  soiltemp2$plot<-substr(soiltemp2$variable,2,nchar(as.character(soiltemp2$variable))-2)
-  soiltemp2$depth<-substr(soiltemp2$variable,nchar(as.character(soiltemp2$variable)),nchar(as.character(soiltemp2$variable)))
-  #First get average across zones, within each hour, doy, plot, and depth
-  soiltemp3<-subset(soiltemp2,select=c("Year","DOY","Hour","value","plot"))
-  soiltemp3a<-aggregate(x=soiltemp3$value,by=list(soiltemp3$Year,soiltemp3$DOY,soiltemp3$Hour,soiltemp3$plot),FUN=mean,na.rm=F)
-  #soiltemp3_1991<-subset(soiltemp2[soiltemp2$Year==1991,],select=c("Year","DOY","value","plot"))
-  #soiltemp3<-subset(soiltemp2,select=c("Year","DOY","value","plot"))
-  colnames(soiltemp3a)<-c("Year","DOY","Hour","plot","value")
-  soiltemp_min<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=min,na.rm=F)
-  soiltemp_max<-aggregate(x=soiltemp3a$value,by=list(soiltemp3a$Year,soiltemp3a$DOY,soiltemp3a$plot),FUN=max,na.rm=F)
-  #soiltemp_min1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=min,na.rm=F)
-  #soiltemp_max1991<-aggregate(x=soiltemp3_1991$value,by=list(soiltemp3_1991$Year,soiltemp3_1991$DOY,soiltemp3_1991$plot),FUN=max,na.rm=F)
-  #allclim1991<-cbind(soiltemp_min1991,soiltemp_max1991$x)
-  #colnames(allclim1991)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  allclim1<-cbind(soiltemp_min,soiltemp_max$x)
-  colnames(allclim1)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  #allclim1<-rbind(allclim1991,allclim)
-  allclim1$site<-"price"
-  allclim1$temptreat<-"ambient"
-  allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
-  allclim1$preciptreat<-NA
-  allclim1$airtemp_min<-NA
-  allclim1$airtemp_max<-NA
-  allclim1$soiltemp2_min<-NA
-  allclim1$soiltemp2_max<-NA
-  allclim1$soiltemp2_mean<-NA
-  allclim1$soiltemp1_mean<-(allclim1$soiltemp1_min+allclim1$soiltemp1_max)/2
-  allclim1$soilmois1<-NA
-  allclim1$soilmois2<-NA
-  allclim2<-allclim1[allclim1$year<1995,]
-  allclim2$cantemp_min<-NA
-  allclim2$cantemp_max<-NA
-  allclim2$surftemp_min<-NA
-  allclim2$surftemp_max<-NA
-  allclim2$block<-NA
-  priceclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(priceclim) <- NULL
-  return(priceclim)
-}
+# Produce cleaned raw data
+#
+raw.data.dir <- "./Data/Experiments"
+cleandata.raw <- list()
+cleandata.raw$marchin <- clean.raw$marchin(path="./Data/Experiments/marchin")
+cleandata.raw$bace <- clean.raw$bace(path="./Data/Experiments/bace")
+cleandata.raw$farnsworth <- clean.raw$farnsworth(path="./Data/Experiments/farnsworth")
+cleandata.raw$cleland <- clean.raw$cleland(path="./Data/Experiments/cleland")
+cleandata.raw$clarkduke <- clean.raw$clarkduke(path="./Data/Experiments/clark")
+cleandata.raw$clarkharvard <- clean.raw$clarkharvard(path="./Data/Experiments/clark")
+cleandata.raw$sherry <- clean.raw$sherry(path="./Data/Experiments/sherry")
+cleandata.raw$price <- clean.raw$price(path="./Data/Experiments/price")
+cleandata.raw$chuine<- clean.raw$chuine(path="./Data/Experiments/chuine")
+cleandata.raw$force<- clean.raw$force(path="./Data/Experiments/force")
+cleandata.raw$ellison<- clean.raw$ellison(path="./Data/Experiments/ellison")
+cleandata.raw$dunne<- clean.raw$dunne(path="./Data/Experiments/dunne")
 
-##Rollinson et al. data from force ##
-## Data type: soil temp and humidity?
-## Notes: data shared by Christy Rollinson
-clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv",path="./Data/Experiments/force") {
-  file <- file.path(path,filename)
-  clim<- read.csv(file,skip=1,header=TRUE)
-  clim$doy<-strftime(strptime(paste(clim$Year,clim$Month,clim$Day,sep="-"), format = "%Y-%m-%d"),format = "%j") 
-  Tsurf<-subset(clim,select = c("Year","Month","Day","doy","IRR_A1","IRR_H1","IRR_W1","IRR_B1","IRR_A2","IRR_H2","IRR_W2","IRR_B2","IRR_A3","IRR_H3","IRR_W3","IRR_B3","IRR_A4","IRR_H4","IRR_W4","IRR_B4"))
-  Tsurf2<-melt(Tsurf,id = 1:4,na.rm = FALSE)
-  Tsurf2$variable<-as.character(Tsurf2$variable)
-  Tsurf2$plot<-substr(Tsurf2$variable,(nchar(Tsurf2$variable)+1)-2,nchar(Tsurf2$variable))
-  colnames(Tsurf2)[6]<-"Tsurf"
-  surftemp_min<-aggregate(x=Tsurf2$Tsurf, by=list(Tsurf2$Year,Tsurf2$doy,Tsurf2$plot), FUN=min, na.rm=F)
-  surftemp_max<-aggregate(x=Tsurf2$Tsurf, by=list(Tsurf2$Year,Tsurf2$doy,Tsurf2$plot), FUN=max, na.rm=F)
-  surftemp<-cbind(surftemp_min,surftemp_max[,4])
-  colnames(surftemp)<-c("year","doy","plot","surftemp_min","surftemp_max")
-  Tsoil<-subset(clim,select = c("Year","Month","Day","doy","Tsoil_A1","Tsoil_H1","Tsoil_W1","Tsoil_B1","Tsoil_A2","Tsoil_H2","Tsoil_W2","Tsoil_B2","Tsoil_A3","Tsoil_H3","Tsoil_W3","Tsoil_B3","Tsoil_A4","Tsoil_H4","Tsoil_W4","Tsoil_B4"))
-  Tsoil2<-melt(Tsoil,id = 1:4,na.rm = FALSE)
-  Tsoil2$variable<-as.character(Tsoil2$variable)
-  Tsoil2$plot<-substr(Tsoil2$variable,(nchar(Tsoil2$variable)+1)-2,nchar(Tsoil2$variable))
-  colnames(Tsoil2)[6]<-"Tsoil"
-  soiltemp1_min<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=min, na.rm=F)
-  soiltemp1_max<-aggregate(x=Tsoil2$Tsoil, by=list(Tsoil2$Year,Tsoil2$doy,Tsoil2$plot), FUN=max, na.rm=F)
-  soiltemp<-cbind(soiltemp1_min,soiltemp1_max[,4])
-  colnames(soiltemp)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
-  mois <-subset(clim,select = c("Year","Month","Day","doy","H2O_A1","H2O_H1","H2O_W1","H2O_B1","H2O_A2","H2O_H2","H2O_W2","H2O_B2","H2O_A3","H2O_H3","H2O_W3","H2O_B3","H2O_A4", "H2O_H4","H2O_W4","H2O_B4"))
-  mois2<-melt(mois,id = 1:4,na.rm = FALSE)
-  mois2$variable<-as.character(mois2$variable)
-  mois2$plot<-substr(mois2$variable,(nchar(mois2$variable)+1)-2,nchar(mois2$variable))
-  colnames(mois2)[6]<-"mois"
-  mois<-aggregate(x=mois2$mois, by=list(mois2$Year,mois2$doy,mois2$plot), FUN=mean, na.rm=F)
-  colnames(mois)<-c("year","doy","plot","soilmois1")
-  clim<-merge(surftemp,soiltemp, all=TRUE)
-  clim2<-merge(clim,mois, all=TRUE)
-  clim2$site<-"force"
-  clim2$soiltemp2_max<-NA
-  clim2$soiltemp2_min<-NA
-  clim2$soiltemp2_mean<-NA
-  clim2$temptreat<-0
-  clim2[substr(clim2$plot,1,1)=="B"|substr(clim2$plot,1,1)=="H",]$temptreat<-1
-  clim2$preciptreat<-0
-  clim2[substr(clim2$plot,1,1)=="B"|substr(clim2$plot,1,1)=="W",]$preciptreat<-1
-  clim2$soiltemp1_mean<-(clim2$soiltemp1_min+clim2$soiltemp1_max)/2
-  colnames(clim2)[3]<-"plot2"
-  clim2$plot<-NA
-  clim2[clim2$plot2=="A1",]$plot<-"1A"
-  clim2[clim2$plot2=="A2",]$plot<-"2A"
-  clim2[clim2$plot2=="A3",]$plot<-"3A"
-  clim2[clim2$plot2=="A4",]$plot<-"4A"
-  clim2[clim2$plot2=="B1",]$plot<-"1B"
-  clim2[clim2$plot2=="B2",]$plot<-"2B"
-  clim2[clim2$plot2=="B3",]$plot<-"3B"
-  clim2[clim2$plot2=="B4",]$plot<-"4B"
-  clim2[clim2$plot2=="H1",]$plot<-"1H"
-  clim2[clim2$plot2=="H2",]$plot<-"2H"
-  clim2[clim2$plot2=="H3",]$plot<-"3H"
-  clim2[clim2$plot2=="H4",]$plot<-"4H"
-  clim2[clim2$plot2=="W1",]$plot<-"1W"
-  clim2[clim2$plot2=="W2",]$plot<-"2W"
-  clim2[clim2$plot2=="W3",]$plot<-"3W"
-  clim2[clim2$plot2=="W4",]$plot<-"4W"
-  clim2$soilmois2<-NA
-  clim2$airtemp_min<-NA
-  clim2$airtemp_max<-NA
-  clim2$cantemp_min<-NA
-  clim2$cantemp_max<-NA
-  clim2$block<-substr(clim2$plot,1,1)
-  forceclim<-subset(clim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(forceclim) <- NULL
-  return(forceclim)
-}
+expphendb <- do.call("rbind", cleandata.raw)
+row.names(expphendb) <- NULL
+#Do some additional cleaning and checking:
+dim(expphendb)
+#78679 rows,
+expphendb<-expphendb[!is.na(expphendb$event),]
+expphendb<-expphendb[!is.na(expphendb$doy),]
+expphendb$doy<-as.numeric(expphendb$doy)
+dim(expphendb)#78105  rows,8 columns
+expphendb<-expphendb[!is.na(expphendb$genus),]
+expphendb<-expphendb[!expphendb$genus=="",]
+expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
+expphendb<-expphendb[-which(expphendb$genus=="Le"),]#should look at these
+expphendb<-expphendb[-which(expphendb$genus=="Unknown"),]#should look at these
+expphendb[which(expphendb$genus=="Artemesia"),]$genus<-"Artemisia"#chuine
+expphendb[which(expphendb$species=="spp"),]$species<-"sp"#force
+expphendb[which(expphendb$species=="spp."),]$species<-"sp"#force
+expphendb[which(expphendb$species=="sp."),]$species<-"sp"#force
+expphendb[which(expphendb$doy=="144153"),]$doy<-"153"#bace
+expphendb[which(expphendb$species=="officionale"),]$species<-"officinale"#force
+expphendb[which(expphendb$species=="(incanum?)"),]$species<-"incanum"#force
+expphendb[which(expphendb$species=="quiquefolia"),]$species<-"quinquefolia"#force
+expphendb[which(expphendb$species=="fusiformes"),]$species<-"fusiformis"#price
+expphendb[which(expphendb$genus=="Mertensiana"),]$genus<-"Mertensia"#price
+expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
 
+dim(expphendb)#77303  rows,8 columns
+head(expphendb)
+write.csv(expphendb,"exppheno.csv",row.names=F, eol="\r\n")
 
-##Chuine et al. data from Montpelier, France ##
-## Data type: sporadic measurements of soil temp and humidity? plus airtemp measurements frmo local climate station- isabelle says its best to use these plus the treatment differences rather than their measured airtemp data as the sensors drifted
-## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr), she said to leave out 2005 data
-clean.clim$chuine <- function(path="./Data/Experiments/chuine") {
-  ##air temp files from chuine (not on plot level, so not useful?)
-  maxtempfiles<-c("meteoTE04_maxtemp2004.csv","meteoTE03_maxtemp2003.csv","meteoTE02_maxtemp2002.csv")
-  mintempfiles<-c("meteoTE04_mintemp2004.csv","meteoTE03_mintemp2003.csv","meteoTE02_mintemp2002.csv")
-  allairtemp <- c()
-  for (i in 1:length(maxtempfiles)){
-    file <- file.path(path, paste(maxtempfiles[i]))
-    maxtemp1 <- read.csv(file, skip=1,header=TRUE)
-    colnames(maxtemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-    maxtemp2<-subset(maxtemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-    maxtemp.long<-reshape(maxtemp2,varying = list(colnames(maxtemp2)[2:13]), direction = "long", v.names = c("maxairtemp"), times = c(colnames(maxtemp2)[2:13]))
-    colnames(maxtemp.long)[2]<-"month"
-    file2 <- file.path(path, paste(mintempfiles[i]))
-    mintemp1 <- read.csv(file2, skip=1,header=TRUE)
-    colnames( mintemp1)[1:13]<-c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-    mintemp2<-subset(mintemp1[1:31,],select=c("date","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-    mintemp.long<-reshape(mintemp2,varying = list(colnames(mintemp2)[2:13]), direction = "long", v.names = c("minairtemp"), times = c(colnames(mintemp2)[2:13]))
-    colnames(mintemp.long)[2]<-"month"
-    temp <- merge(maxtemp.long,mintemp.long, all=T)
-    temp$year<-substr(maxtempfiles[i],18,21)
-    temp$doy<-strftime(strptime(paste(temp$year,temp$month,temp$date,sep="-"), format = "%Y-%b-%d"),format = "%j") 
-    allairtemp<-rbind(allairtemp,temp)
-  }
-  allairtemp<-allairtemp[,-3]
-  colnames(allairtemp)[3:4]<-c("airtemp_max","airtemp_min")
-  #add plots and treatment info
-  allairtemp_contr<-allairtemp
-  allairtemp_contr$temptreat<-0
-  allairtemp_warm1<-allairtemp
-  allairtemp_warm1$temptreat<-1
-  allairtemp_warm1$airtemp_max<-allairtemp_contr$airtemp_max+1.5
-  allairtemp_warm1$airtemp_min<-allairtemp_contr$airtemp_min+1.5
-  allairtemp_warm2<-allairtemp
-  allairtemp_warm2$temptreat<-2
-  allairtemp_warm2$airtemp_max<-allairtemp_contr$airtemp_max+3
-  allairtemp_warm2$airtemp_min<-allairtemp_contr$airtemp_min+3
-  allairtemp<-rbind(allairtemp_contr,allairtemp_warm1,allairtemp_warm2)
-  soilfiles<-c("TDR2002.csv","TDR2003.csv","TDR2004.csv")
-  allsoilhum <- c()
-for (i in 1:length(soilfiles)){
-    file <- file.path(path, soilfiles[i])
-    soilhum<- read.csv(file, header=TRUE)
-    colnames(soilhum)[1]<-"plot"
-    if(i==2){soilhum<-soilhum[,-3]}
-    soilhum<-soilhum[,1:7]
-    colnames(soilhum)[1:4]<-c("plot","block","hum","temp")
-    allsoilhum<-rbind(allsoilhum,soilhum)
-}
-  allsoilhum$temptreat<-"ambient"
-  allsoilhum[allsoilhum$temp=="T+",]$temptreat<-1
-  allsoilhum[allsoilhum$temp=="T++",]$temptreat<-2
-  allsoilhum$preciptreat<-"ambient"
-  allsoilhum[allsoilhum$hum=="S",]$preciptreat<-"-1"
-  allsoilhum$soilmois2<-allsoilhum$X30.cm/100
-  allsoilhum$soilmois1<-allsoilhum$X15.cm/100
-  allsoilhum$year<-substr(soilfiles[i],4,7)
-  allsoilhum$doy<-strftime(strptime(paste(allsoilhum$year,substr(allsoilhum$date,2,3),substr(allsoilhum$date,4,5),sep="-"), format = "%Y-%m-%d"),format = "%j") 
-  allclim<-merge(allsoilhum,allairtemp, by=c("year","doy","temptreat"), all=TRUE) 
-  allclim$site<-"chuine"
-  allclim$soiltemp2_min<-NA
-  allclim$soiltemp2_max<-NA
-  allclim$soiltemp2_mean<-NA
-  allclim$soiltemp1_min<-NA
-  allclim$soiltemp1_max<-NA
-  allclim$soiltemp1_mean<-NA
-  allclim$surftemp_min<-NA
-  allclim$surftemp_max<-NA
-  allclim$cantemp_min<-NA
-  allclim$cantemp_max<-NA
-  allclim$block<-substr(allclim$plot,1,1)
-  chuineclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(chuineclim)<- NULL
-  return(chuineclim)
-}
-##Jasper Ridge data ##
-## Data type:Right now, all we have is soil moisture 
-## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr), she said to leave out 2005 data
-clean.clim$jasper <- function(filename="SoilMoisture0to30cm1998to2002.csv",path="./Data/Experiments/jasper") {
-  file <- file.path(path,filename)
-  mois<- read.csv(file,header=TRUE)
-  colnames(mois)[2]<-c("block")
-  mois$temptreat<-NA
-  mois[mois$HEAT==1,]$temptreat<-"ambient"
-  mois[mois$HEAT==2,]$temptreat<-1
-  mois$preciptreat<-NA
-  mois[mois$WATER==1,]$preciptreat<-0
-  mois[mois$WATER==2,]$preciptreat<-1
-  colnames(mois)[10]<-c("plot")
-  colnames(mois)[13:14]<-c("year","doy")
-  mois$soilmois1<-mois$SM030/100
-  mois[which(mois$SM030>100),]$soilmois1<-NA
-  mois$site<-"jasper"
-  mois$soiltemp2_min<-NA
-  mois$soiltemp2_max<-NA
-  mois$soiltemp2_mean<-NA
-  mois$soiltemp1_min<-NA
-  mois$soiltemp1_max<-NA
-  mois$soiltemp1_mean<-NA
-  mois$surftemp_min<-NA
-  mois$surftemp_max<-NA
-  mois$cantemp_min<-NA
-  mois$cantemp_max<-NA
-  mois$airtemp_min<-NA
-  mois$airtemp_max<-NA
-  mois$soilmois2<-NA
-  jasperclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  row.names(jasperclim)<- NULL
-  return(jasperclim)
-} 
-##Produce cleaned, raw climate data
-    raw.data.dir <- "./Experiments/"
-    cleanclimdata.raw <- list()
-    cleanclimdata.raw$marchin <- clean.clim$marchin(path="./Data/Experiments/marchin")
-    cleanclimdata.raw$farnsworth <- clean.clim$farnsworth(path="./Data/Experiments/farnsworth/")
-    cleanclimdata.raw$clarkharvard <- clean.clim$clarkharvard(path="./Data/Experiments/clark/")
-    cleanclimdata.raw$clarkduke <- clean.clim$clarkduke(path="./Data/Experiments/clark/")
-    cleanclimdata.raw$bace <- clean.clim$bace(path="./Data/Experiments/bace")
-    cleanclimdata.raw$ellison <- clean.clim$ellison(path="./Data/Experiments/ellison")
-    cleanclimdata.raw$sherry <- clean.clim$sherry(path="./Data/Experiments/sherry")
-    cleanclimdata.raw$dunne <- clean.clim$dunne(path="./Data/Experiments/dunne")
-    cleanclimdata.raw$price <- clean.clim$price(path="./Data/Experiments/price")
-    cleanclimdata.raw$force <- clean.clim$force(path="./Data/Experiments/force")
-    cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Data/Experiments/chuine")
-    cleanclimdata.raw$jasper <- clean.clim$jasper(path="./Data/Experiments/jasper")
-    
-    expphenclim1 <- do.call("rbind", cleanclimdata.raw)
-    row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#241052      21
-    expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#241028      21
-    expphenclim$doy<-as.numeric(expphenclim$doy)
-    expphenclim$year<-as.numeric(expphenclim$year)
-    expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
-    expphenclim$airtemp_min<-as.numeric(expphenclim$airtemp_min)
-    expphenclim$soiltemp1_min<-as.numeric(expphenclim$soiltemp1_min)
-    expphenclim$soiltemp2_min<-as.numeric(expphenclim$soiltemp2_min)
-    expphenclim$soiltemp2_max<-as.numeric(expphenclim$soiltemp2_max)
-    expphenclim$soiltemp1_max<-as.numeric(expphenclim$soiltemp1_max)
-    expphenclim$soiltemp1_mean<-as.numeric(expphenclim$soiltemp1_mean)
-    expphenclim$soiltemp2_mean<-as.numeric(expphenclim$soiltemp2_mean)
-    expphenclim$soilmois1<-as.numeric(expphenclim$soilmois1)
-    expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
-    row.names(expphenclim) <- NULL
-    write.csv(expphenclim, "Analyses/expclim.csv", row.names=FALSE, eol="\r\n")
+unique(expphendb$site)#12 experiments across 9 sites
+sort(unique(expphendb$genus))#146 genera
+expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
+sort(unique(expphendb$genus.species))#245 species
+unique(expphendb$event)#13 phenological events
 
-  ##Look at the data to check for errors
-    head(expphenclim)
-    dim(expphenclim)
-    quartz()
-    boxplot(airtemp_min~site, data=expphenclim)
-    boxplot(airtemp_max~site, data=expphenclim)
-    boxplot(soiltemp1_max~site, data=expphenclim)
-    boxplot(soiltemp2_min~site, data=expphenclim)
-    boxplot(soiltemp1_mean~site, data=expphenclim)
-    boxplot(soiltemp2_max~site, data=expphenclim)
-    boxplot(soiltemp1_mean~temptreat, data=expphenclim)
-    boxplot(soilmois2~site, data=expphenclim)
-    
-    expphenclim$alltreat<-paste(expphenclim$temptreat,expphenclim$preciptreat,sep=".")
-    unique(expphenclim$alltreat)
-    boxplot(airtemp_min~alltreat, data=expphenclim)
-    boxplot(airtemp_max~alltreat, data=expphenclim)
-    boxplot(soiltemp1_max~alltreat, data=expphenclim)
-    boxplot(soiltemp2_min~alltreat, data=expphenclim)
-    boxplot(soiltemp1_max~alltreat, data=expphenclim)
-    boxplot(soiltemp2_max~alltreat, data=expphenclim)
-    boxplot(soiltemp1_mean~alltreat, data=expphenclim)
-    boxplot(soilmois1~alltreat, data=expphenclim)
+#Do species cleaning with Miriam's new file
+#sites<-unique(expphendb$site)
+#for(i in 1:length(sites)){
+#for (j in 1:length(species1)){
+# clarkduke1$genus[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
+#clarkduke1$species[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
+#}
+#}
 
+specieslist<-sort(unique(paste(expphendb$genus,expphendb$species, sep=".")))
+write.csv(specieslist,"exp_splist.csv")
