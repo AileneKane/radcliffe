@@ -30,7 +30,7 @@ library(ggplot2)
 library(lubridate)
 
 # dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
-dir.ranges <- "~/Desktop/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
+dir.ranges <- "input/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
 dir.out <- file.path(dir.base, "output", "SpeciesMet")
 dir.create(dir.out, recursive=T, showWarnings=F)
 
