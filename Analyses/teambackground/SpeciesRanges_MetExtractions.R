@@ -31,8 +31,8 @@ library(lubridate)
 
 # dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
 dir.ranges <- "~/Desktop/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
-dir.out <- file.path(dire.base, "output", "SpeciesMet")
-dir.create(dir.out, recursive=T)
+dir.out <- file.path(dir.base, "output", "SpeciesMet")
+dir.create(dir.out, recursive=T, showWarnings=F)
 
 # Base file path for pulling files remotely from web
 dap.base <- "http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/"
@@ -50,7 +50,7 @@ for(i in 1:length(species)){
   
   # Create the output folder
   spp.out <- file.path(dir.out, spp.now)
-  dir.create(spp.out, recursive=T)
+  dir.create(spp.out, recursive=T, showWarnings=F)
   
   # Get the species
   # Reading in the species shape file

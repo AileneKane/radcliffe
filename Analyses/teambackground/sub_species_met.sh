@@ -3,6 +3,8 @@
 #$ -j y 
 #$ -S /bin/bash         
 #$ -V 
+#$ -m e
+#$ -M crollinson@gmail.com
 #$ -q "geo*"
 #$ -l hostname=!scc-c*&!scc-t*
 #$ -l h_rt=60:00:00
