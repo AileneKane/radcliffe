@@ -1,18 +1,18 @@
 ### Started 8 December 2015 ##
 ### By Ailene Ettinger ###
-setwd("~/GitHub/radcliffe") # setwd("~/Documents/git/projects/meta_ep2/radcliffe")
+setwd("~/git/radcliffe") 
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
+##load packages
 library(reshape)
-#library(zoo)
 library(tidyr)
 # make list to store all the derived dataset cleaning functions
 clean.raw <- list()
 clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Data/Experiments/marchin") {
   
-  ## Marchin ##
-  ## Data type: BBD,FFD ##
-  ## Notes: Contact: Renee Marchin, renee.marchin@sydney.edu.au##
+## Marchin ##
+## Data type: BBD,FFD ##
+## Notes: Contact: Renee Marchin, renee.marchin@sydney.edu.au##
   file <- file.path(path, filename)
   marchin1 <- read.csv(file, check.names=FALSE, header=TRUE)
   names(marchin1)[2] <- "genusspecies"
@@ -181,11 +181,11 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace3a[bace3a$genusspecies=="Veronica arvensis ",]$genusspecies<-"Veronica arvensis"
   bace3<-bace3a %>% separate(genusspecies, c("genus", "species"), sep=" ", remove=F)
   bace3$block<-NA
-  bace3[bace3$plot<13,]$block<-1
-  bace3[bace3$plot<25 & bace3$plot>12,]$block<-2
-  bace3[bace3$plot<37 & bace3$plot>24,]$block<-3
-  bace3[bace3$plot>36,]$block<-0
-  bace3[bace3$plot=="C1"|bace3$plot=="C2"|bace3$plot=="C3",]$block<-NA
+  #bace3[bace3$plot=="C1"|bace3$plot=="C2"|bace3$plot=="C3",]$block<-NA
+  bace3[which(as.numeric(bace3$plot)<13),]$block<-1
+  bace3[which(as.numeric(bace3$plot)<25 & as.numeric(bace3$plot)>12),]$block<-2
+  bace3[which(as.numeric(bace3$plot)<37 & as.numeric(bace3$plot)>24),]$block<-3
+  bace3[which(as.numeric(bace3$plot)>36),]$block<-0# for some reason there are a few plots  less than 36 that show up as block= 0. fix this
   bace<-subset(bace3, select=c("site","block","plot","event","year","genus","species", "doy"))
   #bace$variety <- NA
   #bace$cult <- NA
@@ -377,14 +377,14 @@ clean.raw$cleland <- function(filename="JasperRidge_data.csv", path="./Data/Expe
   cleland1$site<-"cleland"
   cleland1$event<-"ffd"
   cleland1$block<-NA
-  cleland1[cleland1$plot==1|cleland1$plot==2|cleland1$plot==3|cleland1$plot==33|cleland1$plot==34|cleland1$plot==4,]$block<-1
+  cleland1[cleland1$plot==1|cleland1$plot==2|cleland1$plot==3|cleland1$plot==33|cleland1$plot==4,]$block<-1
   cleland1[cleland1$plot==12|cleland1$plot==7|cleland1$plot==8|cleland1$plot==9,]$block<-2
   cleland1[cleland1$plot==10|cleland1$plot==11|cleland1$plot==5|cleland1$plot==6,]$block<-3
   cleland1[cleland1$plot==13|cleland1$plot==14|cleland1$plot==26|cleland1$plot==32|cleland1$plot==34,]$block<-4
   cleland1[cleland1$plot==15|cleland1$plot==16|cleland1$plot==17|cleland1$plot==18,]$block<-5
-  cleland1[cleland1$plot==19|cleland1$plot==20|cleland1$plot==21|cleland1$plot==31|cleland1$plot==35|cleland1$plot==36,]$block<-6
+  cleland1[cleland1$plot==19|cleland1$plot==20|cleland1$plot==21|cleland1$plot==31|cleland1$plot==35,]$block<-6
   cleland1[cleland1$plot==27|cleland1$plot==28|cleland1$plot==29|cleland1$plot==30,]$block<-7
-  cleland1[cleland1$plot==22|cleland1$plot==23|cleland1$plot==24|cleland1$plot==25|cleland1$plot==36|cleland1$plot==36,]$block<-8
+  cleland1[cleland1$plot==22|cleland1$plot==23|cleland1$plot==24|cleland1$plot==25|cleland1$plot==36,]$block<-8
   
   cleland<-subset(cleland1, select=c("site","block","plot","event","year","genus","species", "doy"))
   #cleland$variety <- NA
@@ -656,8 +656,8 @@ clean.raw$chuine <- function(filename, path="./Data/Experiments/chuine") {
   for (i in 1:length(chuinefiles)){
     file <- file.path(path, paste(chuinefiles[i]))
     chuine1 <- read.csv(file, header=TRUE)
-    chuine1$plot<-paste(chuine1$block,chuine1$Plot,sep="")
     colnames(chuine1)[which(colnames(chuine1)=="Block")]<-"block"
+    chuine1$plot<-paste(chuine1$block,chuine1$Plot,sep="")
     colnames(chuine1)[which(colnames(chuine1)=="species"|colnames(chuine1)=="Species")]<-"sp"
     colnames(chuine1)[which(colnames(chuine1)=="X55")]<-"ffb"
     colnames(chuine1)[which(colnames(chuine1)=="X65")]<-"ffd"
@@ -722,7 +722,7 @@ clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", pa
   force2<-aggregate(x=force1$Survey.DOY, by=list(force1$Year,force1$block,force1$plot,force1$Species,force1$Phenology.State), FUN=min, na.rm=F)
   colnames(force2)<-c("year","block","plot","SP","phenstate","doy")
   force2$event<-NA
-  force2[force2$phenstate==1,]$event<-"lod"
+  force2[force2$phenstate=="1",]$event<-"lod"
   force2[force2$phenstate==2,]$event<-"ffd"
   force2[force2$phenstate==3,]$event<-"ffrd"
   force2[force2$phenstate==4,]$event<-"sd"
@@ -826,8 +826,10 @@ clean.raw$dunne <- function(path="./Data/Experiments/dunne") {
   dunne$genus[dunne$genussp=="Eriogonumu"] <- "Eriogonum"
   dunne$species[dunne$genussp=="Eriogonumu"] <- "umbellatum"
   dunne$site<-"dunne"
-  colnames(dunne)[1]<-"block"
+  #colnames(dunne)[1]<-"block"#this is the "site" column from the dunne files. i think we actually want to select out only plots frmo one site...
+  dunne$block<-NA
   dunne<-dunne[-1,]
+  dunne<-dunne[dunne$Group.1=="4",]#site 4= the warming meadow, so we only want these data
   dunnermbl<-subset(dunne, select=c("site","block","plot","event","year","genus","species", "doy"))
   dunnermbl<-dunnermbl[!is.na(dunnermbl$genus),]
   return(dunnermbl)
@@ -853,11 +855,11 @@ expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#78679 rows,
+#72029 rows,
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#78105  rows,8 columns
+dim(expphendb)#71455  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -875,14 +877,14 @@ expphendb[which(expphendb$species=="fusiformes"),]$species<-"fusiformis"#price
 expphendb[which(expphendb$genus=="Mertensiana"),]$genus<-"Mertensia"#price
 expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
 
-dim(expphendb)#77303  rows,8 columns
+dim(expphendb)#70653  rows,8 columns
 head(expphendb)
-write.csv(expphendb,"exppheno.csv",row.names=F, eol="\r\n")
+write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 
 unique(expphendb$site)#12 experiments across 9 sites
 sort(unique(expphendb$genus))#146 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
-sort(unique(expphendb$genus.species))#245 species
+sort(unique(expphendb$genus.species))#243 species
 unique(expphendb$event)#13 phenological events
 
 #Do species cleaning with Miriam's new file

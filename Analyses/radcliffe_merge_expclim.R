@@ -1,6 +1,6 @@
 ### Started 8 March 2016 ##
 ### By Ailene Ettinger ###
-setwd("~/GitHub/radcliffe")
+setwd("~/git/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
@@ -295,9 +295,9 @@ for (i in 1:length(bacesoiltempfiles)){
   soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
   soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
   soiltemp$block<-NA
-  soiltemp[soiltemp$plot<13,]$block<-1
-  soiltemp[soiltemp$plot<25 & soiltemp$plot>12,]$block<-2
-  soiltemp[soiltemp$plot<37 & soiltemp$plot>24,]$block<-3
+  soiltemp[as.numeric(soiltemp$plot)<13,]$block<-1
+  soiltemp[as.numeric(soiltemp$plot)<25 & as.numeric(soiltemp$plot)>12,]$block<-2
+  soiltemp[as.numeric(soiltemp$plot)<37 & as.numeric(soiltemp$plot)>24,]$block<-3
   if(length(unique(soiltemp$plot))>36){soiltemp[soiltemp$plot>36,]$block<-0}
   soiltemp<-soiltemp[order(soiltemp$temptreat,soiltemp$preciptreat,soiltemp$year,soiltemp$doy),]
   soiltemp$soilmaxreftemp<-c(soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)],soiltemp$soiltemp1_max[1:(dim(soiltemp)[1]/4)])
@@ -741,7 +741,7 @@ for (i in 1:length(soilfiles)){
   allsoilhum$temptreat<-"ambient"
   allsoilhum[allsoilhum$temp=="T+",]$temptreat<-1
   allsoilhum[allsoilhum$temp=="T++",]$temptreat<-2
-  allsoilhum$preciptreat<-"ambient"
+  allsoilhum$preciptreat<-0
   allsoilhum[allsoilhum$hum=="S",]$preciptreat<-"-1"
   allsoilhum$soilmois2<-allsoilhum$X30.cm/100
   allsoilhum$soilmois1<-allsoilhum$X15.cm/100
@@ -796,6 +796,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   mois$airtemp_max<-NA
   mois$soilmois2<-NA
   clelandclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  clelandclim[which(clelandclim$plot=="12" & clelandclim$block =="3"),]$block<-"2"
+  clelandclim[which(clelandclim$plot=="34" & clelandclim$block =="1"),]$block<-"4"
+  clelandclim[which(clelandclim$plot=="36" & clelandclim$block =="6"),]$block<-"8"
   row.names(clelandclim)<- NULL
   return(clelandclim)
 } 

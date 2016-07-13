@@ -23,7 +23,7 @@ setwd("~/Documents/git/projects/meta_ep2/radcliffe/Analyses")
 
 effwarm <- read.csv("EffectiveWarming_Treatment.csv", header=TRUE)
 effwarm.plot <- read.csv("EffectiveWarming_Plot.csv", header=TRUE)
-treats <- read.csv("Treats.csv", header=TRUE)
+treats <- read.csv("treats_detail.csv", header=TRUE)
 
 expphen <- read.csv("exppheno.csv", header=TRUE)
 expsite <- read.csv("expsiteinfo.csv", header=TRUE)
