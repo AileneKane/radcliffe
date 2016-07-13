@@ -20,7 +20,8 @@
 #        - temperature, preciptiation, shortwave radiation, longwave radiation, pressure, humidity, wind
 
 rm(list=ls())
-setwd("~/Dropbox/Radcliffe_Phenology/radcliffe/Analyses/teambackground/")
+dir.base <- "~/radcliffe/Analyses/teambackground/"
+setwd(dir.base)
 
 # libraries you'll need
 library(raster); library(rgdal); library(sp); library(maptools); library(maps)
@@ -28,9 +29,9 @@ library(ncdf4)
 library(ggplot2)
 library(lubridate)
 
-dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
+# dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
 dir.ranges <- "~/Desktop/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
-dir.out <- "~/Desktop/SpeciesMet"
+dir.out <- file.path(dire.base, "output", "SpeciesMet")
 dir.create(dir.out, recursive=T)
 
 # Base file path for pulling files remotely from web
@@ -56,7 +57,7 @@ for(i in 1:length(species)){
   species1 <- readShapePoly(file.path(dir.ranges, spp.now, paste0(spp.now, ".shp")))
   
   # Making a template raster for the shapefile
-  ext.template <- round(extent(species1)*2)/2 # CRUNCEP is in 0.5 degree resolution
+  ext.template <- round(extent(species1), 0) + c(-1, 1, -1, 1) # CRUNCEP is in 0.5 degree resolution; # adding a buffer
   rast.template <- raster(ext=ext.template, crs=CRS("+proj=longlat"), resolution=0.5) # 
   
   # Converting the shapefile into a raster
@@ -99,8 +100,8 @@ for(i in 1:length(species)){
     cru.lon <- ncvar_get(tair.nc, "lon")
     
     # Figuring out what lat/lon we need
-    lon.start <- which(cru.lon == dimnames(spp.mask)[[1]][1]) # Lon goes min to max
-    lat.start <- which(cru.lat == dimnames(spp.mask)[[2]][1]) # lat goes max to min
+    lon.start <- which(cru.lon == spp.lon[1]) # Lon goes min to max
+    lat.start <- which(cru.lat == spp.lat[1]) # lat goes max to min
     
     # Extract the actual data
     tair <- ncvar_get(tair.nc, varid="tair", start=c(lon.start, lat.start, 1), count=c(dim(spp.mask)[1], dim(spp.mask)[2], ntime))
@@ -151,4 +152,10 @@ for(i in 1:length(species)){
     ncvar_put(nc=loc, varid="precip", vals=ppt.day)
     nc_close(loc)
   } # end year loop
+  
+  # Compress the files as we go to make life easier
+  setwd(dir.out) # Go to the output directory so we don't get annoying file paths
+  system(paste0("tar -jcvf ", spp.now, ".tar.bz2 ", spp.now)) # Compress the folder
+  system(paste0("rm -rf ", spp.now)) # remove the uncompressed folder
+  setwd(dir.base) # Go back to our base directory
 } # end species loop
