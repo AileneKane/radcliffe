@@ -5,3 +5,9 @@ test/.Rhistory
 Analyses/expgddchill.csv
 
 Analyses/radcliffe_merge_expclim2.R
+
+*.dbf
+
+*.shp
+
+*.shx
