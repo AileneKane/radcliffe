@@ -40,7 +40,7 @@ dir.out <- file.path(dir.base, "output", "SpeciesMet")
 dir.create(dir.out, recursive=T, showWarnings=F)
 
 # Base file path for pulling files remotely from web
-# dap.base <- "http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/" # CRUNCEP
+# dap_base <- "http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/" # CRUNCEP
 
 # GLDAS Path:
 # http://hydro1.gesdisc.eosdis.nasa.gov/opendap/GLDAS/GLDAS_NOAH025_3H.2.0/1948/001/GLDAS_NOAH025_3H.A19480101.0300.020.nc4 # Example file
@@ -70,7 +70,7 @@ for(i in 1:length(species)){
   species1 <- readShapePoly(file.path(dir.ranges, spp.now, paste0(spp.now, ".shp")))
   
   # Making a template raster for the shapefile
-  ext.template <- round(extent(species1), 0) + c(-1, 1, -1, 1) # CRUNCEP is in 0.5 degree resolution; # adding a buffer
+  ext.template <- round(extent(species1), 0) + c(-1, 1, -1, 1) # GLDAS is in 0.25 degree resolution; # adding a buffer
   rast.template <- raster(ext=ext.template, crs=CRS("+proj=longlat"), resolution=0.25) # 
   
   # Converting the shapefile into a raster
@@ -98,7 +98,7 @@ for(i in 1:length(species)){
   # Get data for each year
   #  -- Note: this is hard-coded, which is generally bad, but I'm being lazy for the sake of 
   #           just getting it done
-  for(year in 1949:1950){
+  for(year in 1949:2010){
     print(paste0("   -- ", year))
     # Figure out if we're dealing with a leap year
     nday = ifelse(lubridate:: leap_year(year), 366, 365)
@@ -114,7 +114,7 @@ for(i in 1:length(species)){
     # Go by each day
     for(doy in 1:nday){
       doy2 <- str_pad(doy, 3, pad="0")
-      print(doy2)
+      # print(doy2)
       # Extract each hour into a 3-d array
       tmp <- array(dim=c(length(spp.lat), length(spp.lon), length(timestamps))) # Third dimenions = 8 because there should be 8 3-hr files per day
       ppt <- array(dim=c(length(spp.lat), length(spp.lon), length(timestamps)))
@@ -130,7 +130,7 @@ for(i in 1:length(species)){
         file.now <- paste0("GLDAS_NOAH025_3H.A", year, mo.now, day.mo, ".", timestamps[hr], ".020.nc4")
         
         # Open the files
-        nc.now <- nc_open(file.path(dap.base, year, doy2, file.now))
+        nc.now <- nc_open(file.path(dap_base, year, doy2, file.now))
                 
         # pull lat/lon just to be safe
         # Extract the lat/lon index (assume precip is same as temp)
