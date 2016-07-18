@@ -10,7 +10,7 @@
 
 %Strongly recommended
   %put your figures in one place
- \SweaveOpts{prefix.string=figures/, eps=FALSE} 
+ 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 
@@ -44,7 +44,7 @@
 
 %Start of the document
 \begin{document}
-\SweaveOpts{concordance=FALSE}
+
 % \SweaveOpts{concordance=TRUE}
 % \bibliographystyle{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
@@ -97,26 +97,6 @@ In addition, there is often temporal variation in experimental warming, and this
 \item Treatments are not applied consistently over the year- IR heaters can't
 apply consistent warming throughout the year, and some warming experiments turn off warming during some seasons (e.g. Clark et al, this is very common in the heating cable exp, like the ones in Austria, Norway, it is likely that this would yield different effects than if heating were turned on during winter (because then you change soil nutrient mineralization which might be important in winter and so change nutrient availability and moisture for the growing season). 
 \end{itemize}
-\begin{figure}[p]
-    \centering
-\includegraphics{Analyses/figures/ShamVSAmbient_mean.pdf}    
-\caption{Difference between mean temperature in sham controls compared with ambient controls, with no sham chambers/warming infrastructure. Fixed effects from a mixed effects model are plotted in the above graph (see shamvambient.R for details). The same pattern is visible with simple box plots of ambient vs sham as well, but there are different magnitudes of differences among sites (aka studies), so i wanted to account for this statistically. Temperature data for both shams and ambient controls existed for soil in five studies, all of which are located at Harvard or Duke (clarkduke, clarkharvard,ellison,farnsworth, and marchin), and for air in only four of these studies (clarkduke, clarkharvard, ellison, and marchin). }
-\end{figure}
-%%%%%%%%%%
-\begin{figure}[p]
-    \centering
-\includegraphics{Analyses/figures/ShamVSAmbient_minmax.pdf}    
-\caption{Difference between min and max temperature in sham controls compared with ambient controls, with no sham chambers/warming infrastructure. Fixed effects from the a mixed effects model are plotted in the above graph (see shamvambient.R for details). Ben suggests: make the ranges on the y-axes all the same, centered around zero, and add a dashed line at zero. This would make them more intuitive and easier for the reader to see the differences}
-\end{figure}
-\subsection {Secondary effects of warming}
-\par Temperature interacts with many other climatatic and nonclimatic factors to alterthe abiotic environment. 
-\begin{itemize}
-\item Effects of experimental warming on soil moisture (Figure 3, and Miriam's analysis). (this seems obvious but it is often overlooked or glossed over. for example, the soil warming experiments at harvard they just write one sentence about the change in moisture in each paper- this is from yann- does he mean clark et al?)
-\begin{figure}[p]
-    \centering
-\includegraphics{Analyses/figures/ShamVSAmbient_soilmois.pdf}    
-\caption{Difference between mean soil moisture in sham controls compared with ambient controls, with no sham chambers/warming infrastructure. Fixed effects from a mixed effects model are plotted in the above graph (see shamvambient.R for details). }
-\end{figure}
 
 \item Effects of experimental warming on air humidity (use Isabelle's data?). This affects VPD with potential impact for stomata closure (paper out on this response (sapflow, vpd) from Pam Templer's group using Harvard Forest ant warming chambers effects on oak trees)
 \item Change in biotic interactions, I mean if warming increase the abundance and composition of species it might change competition for resources...
@@ -135,31 +115,5 @@ the increased air temperatures and decrease soil moisture/temperature, cite Wolk
 
 \item genetic component? GXE interactions?
 \end{itemize}
-\section {Recommendations for future climate change experiments}
-\par The warming effects we describe are not meant to be criticisms or to imply that experimental warming studies are not worthwhile. On the contrary, we believe that climate change experiments provide invaluable information about biological responses to warming. We also believe that we need to more fully explore the ways in which these warming experiments are altering climate, as it is clearly not simply shifting the mean. Here we describe a few recommendations to improve implementation, interpretation, and communication of future climate change experiments.
-\begin{itemize}
-\item Include sham and ambient controls, and collect, use, and report data collectedwithin them. (carefully define what is a sham in the intro)
-\item Carefully consider and report the timing of warming treatment applied,
-including exact start and end dates within and across years.
-\item Collect climate data at least twice daily, and ideally hourly; report these
-data, in particular, variations in daytime and nighttime and season variations
-in climate variables. can use time-series modeling, not just monthly (or even daily) means. Get the ACF and PACF
-\item Report the number and cause of missing data points for climate, especially
-those collected in warming treatments. For example, are data missing
-because the heaters went out, or because rodents at the sensors?
-\item Consider implementing and following community standards for reporting
-climate data (and phenology -Chuine et al. 2017)
-\item Construct regression designs to examine possible nonlinear responses to
-warming
-\item Publish data with good, useful metadata! Recommend archives?
-\item Warming experiments should run for several seasons to account for the interannual variations that may interact with the warming treatment itself (especially when looking at non linear processes such as phenology)
-\item 
-\end{itemize}
-Notes from Aaron, who doesn't think that pooling the plots makes sense. (I should explain that I used mixed effects models with random effect of site to account for this):
-There are some big differences in exps that are obscured by pooling in these plots. Because of that, pooling them doesn't make sense to me.
-1. Farnsworth is soil-warming cables only
-2. Clarkduke & Clarkharvard are soil warming cables + air heating, but air heating is turned off in winter at Harvard (not sure about Duke) while cables (I think) were left on.
-
-3. ellison and marchin are air warming only, run all year.
 
 \end{document}

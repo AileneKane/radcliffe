@@ -2,14 +2,17 @@
 #Look at temperature, soil moisture
 library(lme4)
 update.packages()
-setwd("~/GitHub/radcliffe/Analyses")
-expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)
+setwd("~/git/radcliffe/Analyses")
+#expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)
+expclim<-read.csv("expclim.csv", header=T)
+
 head(expclim)
 unique(expclim$temptreat)
 ##want to plot "0" compared to "ambient" in each site
 ##select out just these two treatments for now
 expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
 expclim_controls$temptreat<-factor(expclim_controls$temptreat)
+expclim_controls$airtemp_mean<-(expclim_controls$airtemp_min+expclim_controls$airtemp_max)/2
 
 unique(expclim_controls$site)
 sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
@@ -30,7 +33,7 @@ for (i in 1:length(sites_con)){
 }
 mod2<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs2<-data.frame(coef(summary(mod2)))
-
+###
 quartz(height=4, width=8)
 par(mfrow=c(1,5))
 for (i in 1:length(sites_con)){
@@ -57,7 +60,7 @@ quartz(height=4, width=8)
 par(mfrow=c(1,4))
 for (i in 1:length(sites_con)){
   dat<-expclim_cont[expclim_cont$site==sites_con[i],]
-  if(length(unique(dat$airtemp_mean))==1){next}
+  if(length(unique(dat$airtemp_mean))==1|length(unique(dat$airtemp_mean))==0){next}
   boxplot(dat$airtemp_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean air temp")
 }
 quartz(height=4, width=8)

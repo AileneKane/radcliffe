@@ -1,0 +1,119 @@
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{Sweave}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+%Strongly recommended
+  %put your figures in one place
+ \SweaveOpts{prefix.string=figures/, eps=FALSE} 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+
+\setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%Here's how to do that
+ \topmargin -1.5cm        
+ \oddsidemargin -0.04cm   
+ \evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+ \textwidth 16.59cm
+ \textheight 21.94cm 
+ %\pagestyle{empty}       % Uncomment if don't want page numbers
+ \parskip 7.2pt           % sets spacing between paragraphs
+ %\renewcommand{\baselinestretch}{1.5} 	% Uncomment for 1.5 spacing between lines
+\parindent 0pt		  % sets leading space for paragraphs
+\usepackage{setspace}
+%\doublespacing
+
+%Optional: I like fancy headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[LO]{How do climate change experiments actually change climate}
+\fancyhead[RO]{2016}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
+%Start of the document
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+% \SweaveOpts{concordance=TRUE}
+% \bibliographystyle{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/styles/nature.bst}
+\title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
+\author{A. K. Ettinger,I. Chuine, B. Cook, J. Dukes, A. Ellison, M. Johnston, A. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
+%\date{\today}
+\maketitle  %put the fancy title on
+%\tableofcontents      %add a table of contents
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section {Aim}
+
+The aim is to write a Concept/Synthesis Paper about maximizing benefits of field-based climate change experiments by improved understanding of how climate is altered by these experiments. Experiments need to report what climate variables are modified by their experiment and how. %yann: perhaps also to determine which methods of warming alter the least other climatic variables or to define the most appropriate method regarding the focus of the study (phenology, growth, survival etc)?
+This is particularly valuable for improving our understanding of biological impacts of climate change.
+
+
+\section {Introduction}
+
+\par Experimental in situ climate manipulations offer several advantages to understanding biological impacts of climate change: (controlled, relative speed- i.e. multiple manipulations can be conducted simultaneously, can hit higher temps such as those forecasted, can do them in places where other data collection is hard, are less artificial than ex situ controlled experiments such as chambers
+\par These advantages come at a cost, however. Experimental in situ climatemanipulations are logistically challenging, expensive, and more important: other climatic variables than the target ones are affected with possible interactions (often overlooked), And it is dfficult to design replicated experiments that actually do the interactions well, and even moderately realistically.
+\par \underline{Problem:} People often want to extrapolate warming experiments to real life to understand (and forecast) biological impacts of climate change. Even in cases when this is not the explicit goal, it would be incredibly useful to be able to apply knowledge gained from these experiments to improve our understanding and forecasting of how anthropogenic warming will affect species' performance (growth, survival) and distributions, as well as on differences in responses among provenances/genotypes/species. However, our ability to make this application is limited because a detailed assessment of exactly how experimental warming treatments alter climate, and the extent to which these manipulations accurately model the real world,
+is lacking. Furthermore, especially given the high number of warming methods applied, rising another question: are they comparable?
+%%%%Lizzie: I think eventually we want the tone here to acknowledge that not every experiment sets out to extrapolate to climate change, but some do -- and that really is a goal we should have. This could eventually give us an elegant way to focus in on only a couple experimental designs. 
+\section {Experimental climate change vs. real climate:
+how do they compare?}
+\subsection {Structures}
+The experimental structures themselves alter temperature, in ways that are
+not generally examined or reported in experimental warming studies. Compare
+sham and ambient data on temperature (mixed effects models). we should also make explicit what a sham is and how a control plot should be
+\begin{itemize}
+\item Soil temperature is LOWER in the shams, compared with the ambient
+air (Figure 1). Define exp methods included in this analyses, and other details.
+\item Air temperature is HIGHER in the shams, compared with the ambient
+air (Figure 1).
+\item The pattern was consistent for min and max air and soil temperatures, as
+well (Figure 2).
+\end{itemize}
+\subsection {Space}
+There is spatial variation in experimental warming effects, such that extrapolation of experimental warming to forecast climate change impacts may not be a straightforward space-for-time subsitution.% from aaron: And most space-for-time substitutions turn out to be inaccurate. I think because we make assumptions about state of assemblages and temporal stationarity that are unrealistic.
+\begin{itemize}
+\item Analysis of plot vs. block level variation vs. treatment effects. Lizzie is working on this.
+\item Documented variation in warming within plots (i.e. edge effects)? (This is known for open-top chambers)
+\end{itemize}
+\subsection {Time}
+In addition, there is often temporal variation in experimental warming, and this variation may be divergent from real (i.e. non-experimental) temperature patterns so it should carefully be considered in extrapolating experimental warming to future climate change impacts. Add details and examples of why this occurs, since warming experiments are tied to ambient conditions. 
+\begin{itemize}
+\item Seasonal variations in experimental warming effects (plots over time; Christy is working on this?).
+\item Daily variations in experimental warming effects (Tmin vs Tmax). This is often neglected (common to report only the daily mean temperature that may hide huge variations in min and max) and recently there are several papers showing the importance of diurnal over nocturnal temperature on phenology.
+\item Compare these seasonal and daily variations to observational data (i.e. plot seasonal and daily variations for warmest vs coldest years)
+\item Treatments are not applied consistently over the year- IR heaters can't
+apply consistent warming throughout the year, and some warming experiments turn off warming during some seasons (e.g. Clark et al, this is very common in the heating cable exp, like the ones in Austria, Norway, it is likely that this would yield different effects than if heating were turned on during winter (because then you change soil nutrient mineralization which might be important in winter and so change nutrient availability and moisture for the growing season). 
+\end{itemize}
+
+\item Effects of experimental warming on air humidity (use Isabelle's data?). This affects VPD with potential impact for stomata closure (paper out on this response (sapflow, vpd) from Pam Templer's group using Harvard Forest ant warming chambers effects on oak trees)
+\item Change in biotic interactions, I mean if warming increase the abundance and composition of species it might change competition for resources...
+\end{itemize}
+\section {Biological Implications}
+\par We have laid out several ways in which experimental warming alters more than
+simply the mean temperature. We argue that these largely unintended alterations are important for scientists to fully understand and report in their research because they are likely to have biological implications. 
+\par Examples:
+\begin{itemize}
+\item Plant phenology: likely to be altered in opposing ways by
+the increased air temperatures and decrease soil moisture/temperature, cite Wolkavich et al's earlier work finding discrepency between observation and experimental phenology responses to warming. (Aaron: plants also respond to variability, perhaps more than mean, as we saw in W Mass this year with fruit tree flowering)
+\item Soil respiration or other microbe studies? (tight link between microbial activity and plant growth under warming. net mineralization should be accounted for)
+\item Plant growth- photosynthesis and transpiration are likely to be altered in opposing ways by the increased air temperatures and decrease soil moisture/temperature %Lizzie: I think you could find simple references in Larcher or another basic plant physiology book (Terry Chapin's?) to small temperature changes having a big effect. aforementioned paper by Templer group (Ecosphere 2016) may be a useful example. Paper here: http://harvardforest.fas.harvard.edu/sites/harvardforest.fas.harvard.edu/files/ellison-pubs/2016/Juice_etal_2016_Ecosphere.pdf
+\item change in biotic interactions (see previous comment): both plant-plant and microbes/fungi-plants
+\item intraspecific variation? All plants, ants, microbes, etc. of a single species not equivalently responsive. 
+
+\item genetic component? GXE interactions?
+\end{itemize}
+
+\end{document}

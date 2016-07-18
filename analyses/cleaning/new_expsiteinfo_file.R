@@ -1,7 +1,7 @@
 # ------------------------------------------
 # Create detailed file with treatment information
 # A. Ettinger, aettinger@fas.harvard.edu
-# Description:Code to make more useful expsiteinfo.csv file, 
+# Description:Code to make more useful treats_detailed.csv file 
 # with all blocks, plots, treatment levels, reported observed 
 # temperature, etc included in it
 
@@ -38,6 +38,7 @@ colnames(expclimplots)[1]<-"DatasetID"
 ##now merge this with exptreats5 to make new treats file with more detail:
 exptreats_all<-left_join(expclimplots,exptreats5, by = c("DatasetID","temptreat","preciptreat"))
 exptreats_detail<-subset(exptreats_all,select=c(select=c("DatasetID","block","plot","temptreat","target","reported","temptreat_units","preciptreat","preciptreat_amt","preciptreat_units")))
+head(exptreats_detail)
 write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r\n")  
   
 ###Check that expphen blocks/plots march expclim blocks/plots:
