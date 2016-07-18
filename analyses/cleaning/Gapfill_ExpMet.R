@@ -23,7 +23,7 @@ library(ggplot2)
 library(mgcv)
 
 # Read in experimental met data 
-expclim <- read.csv("expclim.csv")
+expclim <- read.csv("../expclim.csv")
 expclim <- expclim[!is.na(expclim$doy),] # get rid of data that has no day of year (bc it's unusable)
 expclim$year.frac <- expclim$year + expclim$doy/366 # Add a continuous time variable that is fractional years
 
@@ -209,7 +209,7 @@ airmax.orig$treatvar <- as.factor(paste(airmax.orig$site, airmax.orig$plot2, sep
 fill.airtmax <- gapfill.doy(gap.data=airmax.orig, fillvar="temp_max", treatvar="treatvar", doy.by="site.year", data.by="site")
 summary(fill.airtmax)
 
-pdf("figures/Gapfill_airtemp_max.pdf", height=8.5, width=11.5)
+pdf("../figures/Gapfill_airtemp_max.pdf", height=8.5, width=11.5)
 for(s in unique(fill.airtmax$site)){
   print(
     ggplot(data=fill.airtmax[fill.airtmax$site==s,]) +
@@ -284,7 +284,7 @@ airmin.orig$treatvar <- as.factor(paste(airmin.orig$site, airmin.orig$plot2, sep
 fill.airtmin <- gapfill.doy(gap.data=airmin.orig, fillvar="temp_min", treatvar="treatvar", doy.by="site.year", data.by="site")
 summary(fill.airtmin)
 
-pdf("figures/Gapfill_airtemp_min.pdf", height=8.5, width=11.5)
+pdf("../figures/Gapfill_airtemp_min.pdf", height=8.5, width=11.5)
 for(s in unique(fill.airtmin$site)){
   print(
     ggplot(data=fill.airtmin[fill.airtmin$site==s,]) +
@@ -379,7 +379,7 @@ dunne.min <- quantile(fill.soiltmax[fill.soiltmax$site=="dunne","soiltemp1_max"]
 fill.soiltmax[,"met.flag"] <- as.factor(ifelse(!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min, "forced_min", paste(fill.soiltmax$met.flag)))
 fill.soiltmax[!is.na(fill.soiltmax$met.filled) & fill.soiltmax$site=="dunne" & fill.soiltmax$met.filled < dunne.min,"met.filled"] <- dunne.min
 
-pdf("figures/Gapfill_soiltemp1_max.pdf", height=8.5, width=11.5)
+pdf("../figures/Gapfill_soiltemp1_max.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmax$site)){
   print(
     ggplot(data=fill.soiltmax[fill.soiltmax$site==s,]) +
@@ -470,7 +470,7 @@ min.dunne <- quantile(fill.soiltmin[fill.soiltmin$site=="dunne","soiltemp1_min"]
 fill.soiltmin[,"met.flag"] <- as.factor(ifelse(!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | (fill.soiltmin$met.flag=="doy.adj" & fill.soiltmin$doy<90)), "forced_min", paste(fill.soiltmin$met.flag)))
 fill.soiltmin[!is.na(fill.soiltmin$met.filled) & fill.soiltmin$site=="dunne" & (fill.soiltmin$met.filled<min.dunne | fill.soiltmin$met.flag=="forced_min"),"met.filled"] <- min.dunne
 
-pdf("figures/Gapfill_soiltemp1_min.pdf", height=8.5, width=11.5)
+pdf("../figures/Gapfill_soiltemp1_min.pdf", height=8.5, width=11.5)
 for(s in unique(fill.soiltmin$site)){
   print(
     ggplot(data=fill.soiltmin[fill.soiltmin$site==s,]) +
@@ -526,7 +526,7 @@ exp.gapfill[exp.gapfill$preciptreat=="none", "preciptreat"] <- NA
 exp.gapfill[exp.gapfill$plot       =="none", "plot"       ] <- NA
 exp.gapfill[exp.gapfill$block      =="none", "block"      ] <- NA
 
-write.csv(exp.gapfill, "expclim_gapfill.csv", row.names=F, eol="\n")
+write.csv(exp.gapfill, "../expclim_gapfill.csv", row.names=F, eol="\n")
 # --------------------------------------------------------------
 
 
