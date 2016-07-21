@@ -27,6 +27,6 @@ dir.out <- "/projectnb/dietzelab/paleon/met_ensemble/data/paleon_domain/GLDAS_da
 dir.create(dir.out, recursive=T, showWarnings=F)
 
 # Source the extraction function 
-source("extract_met_range.R")
+source("extract_gldas_region_day.R")
 
 extract.gldas.region(xmin=-170, xmax=-50, ymin=10, ymax=75, yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=F)

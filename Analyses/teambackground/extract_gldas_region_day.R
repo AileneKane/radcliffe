@@ -33,9 +33,11 @@ extract.gldas.region <- function(xmin, xmax, ymin, ymax, yr.min=1949, yr.max=201
   # Get data for each year
   # -------------------------------
   # check for years we already have
-  yrs.done <- dir(path.out, ".nc")
-  for(i in 1:length(yrs.done)){
-    yrs.done[i] <- as.numeric(substr(strpslit(yrs.done[i], "_")[[1]][3],1,4))
+  yrs.done <- dir(dir.out, ".nc")
+  if(length(yrs.done)>0){
+    for(i in 1:length(yrs.done)){
+      yrs.done[i] <- as.numeric(substr(strsplit(yrs.done[i], "_")[[1]][3],1,4))
+    }
   }
 
   
