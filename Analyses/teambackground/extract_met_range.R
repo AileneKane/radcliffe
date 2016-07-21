@@ -56,14 +56,21 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
   species.rast <- rasterize(species1, rast.template)
   
   # Storing the lat/lon vectors to make life easier
-  spp.lat <- seq(ext.template[4]-0.125, ext.template[3], by=-0.25)
+  spp.lat <- seq(ext.template[3]+0.125, ext.template[4], by=0.25)
   spp.lon <- seq(ext.template[1]+0.125, ext.template[2], by=0.25)
   
   # Now converting that raster into an array that we can use to mask CRUNCEP data
   spp.mask <- as.array(species.rast)[,,1]
-  dimnames(spp.mask) <- list(lat=spp.lat, lon=spp.lon)
+  dimnames(spp.mask) <- list(lat=spp.lat[order(spp.lat, decreasing=T)], lon=spp.lon)
   spp.mask <- t(spp.mask)
   
+  # # Flipping the dims of spp.mask so that latitude goes from small to big, 
+  # #  like it will in GLDAS
+  # spp.mask <- spp.mask[order(dimnames(spp.mask)[[1]]),order(dimnames(spp.mask)[[2]])]
+  spp.mask <- spp.mask[,order(dimnames(spp.mask)[[2]])]
+  # spp.lat <- spp.lat[order(spp.lat)]
+  # spp.lon <- spp.lon[order(spp.lon)]
+    
   
   # Make a figure of the species range for reference
   # - lets us see the range and how the mask is different from Little's range
@@ -90,18 +97,18 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
     
     # We'll write out 1 grid per year 
     out.yr <- list()
-    out.yr[["tmean" ]] <- array(dim=c(length(spp.lat), length(spp.lon), nday))
-    out.yr[["tmax"  ]] <- array(dim=c(length(spp.lat), length(spp.lon), nday))
-    out.yr[["tmin"  ]] <- array(dim=c(length(spp.lat), length(spp.lon), nday))
-    out.yr[["precip"]] <- array(dim=c(length(spp.lat), length(spp.lon), nday))
+    out.yr[["tmean" ]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
+    out.yr[["tmax"  ]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
+    out.yr[["tmin"  ]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
+    out.yr[["precip"]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
     
     # Go by each day
     for(doy in 1:nday){
       doy2 <- str_pad(doy, 3, pad="0")
-      # print(doy2)
+      print(doy2)
       # Extract each hour into a 3-d array
-      tmp <- array(dim=c(length(spp.lat), length(spp.lon), length(timestamps))) # Third dimenions = 8 because there should be 8 3-hr files per day
-      ppt <- array(dim=c(length(spp.lat), length(spp.lon), length(timestamps)))
+      tmp <- array(dim=c(length(spp.lon), length(spp.lat), length(timestamps))) # Third dimenions = 8 because there should be 8 3-hr files per day
+      ppt <- array(dim=c(length(spp.lon), length(spp.lat), length(timestamps)))
       
       # Some date indexing
       date.now <- as.Date(doy, origin=as.Date(paste0(year-1,"-12-31")))
@@ -122,28 +129,20 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
         raw.lon <- ncvar_get(nc.now, "lon")
         
         # Figuring out what lat/lon we need
-        lon.start <- which(raw.lon == spp.lon[1]) # Lon goes min to max
-        lat.start <- which(raw.lat == spp.lat[1]) # lat goes max to min
+        lon.start <- which(raw.lon == min(spp.lon)) # Lon goes min to max
+        lat.start <- which(raw.lat == min(spp.lat)) # lat goes min to max
         
         # Extract the actual data        
-        tmp[,,hr] <- t(ncvar_get(nc.now, varid="Tair_f_inst", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),1)))
-        ppt[,,hr] <- t(ncvar_get(nc.now, varid="Rainf_f_tavg", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),1)))        
+        tmp2 <- ncvar_get(nc.now, varid="Tair_f_inst", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),1))
+        ppt2 <- ncvar_get(nc.now, varid="Rainf_f_tavg", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),1)) 
         
+        # # # Mask the aggregated data
+        tmp[,,hr] <- ifelse(is.na(spp.mask), NA, tmp2)
+        ppt[,,hr] <- ifelse(is.na(spp.mask), NA, ppt2)
+      
         # Close file
         nc_close(nc.now)
       }
-      
-      # Mask the aggregated data
-      # Removing any values that aren't part of the species mask
-      # - I think this works but there's a loop below in case it doesn't
-      tmp[,,] <- ifelse(is.na(spp.mask), NA, tmp)
-      ppt[,,] <- ifelse(is.na(spp.mask), NA, ppt)
-      
-      # for(j in 1:dim(tair2)[1]){
-      #   # Going through and masking each longitude at a time
-      #   tmp[j,,] <- ifelse(is.na(mask.array[,j]), NA, tmp[j,,])
-      #   ppt[j,,] <- ifelse(is.na(mask.array[,j]), NA, ppt[j,,])
-      # }
       
       # Aggregate to day & store it in output list
       out.yr[["tmean" ]][,,doy] <- apply(tmp, c(1,2), FUN=mean)
@@ -152,17 +151,13 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
       out.yr[["precip"]][,,doy] <- apply(ppt, c(1,2), FUN=sum ) # ?? need to change to kg m-2 per day?? =*60*60*24 
       
     }
-    
-    #     # Making this into an array that makes visual sense
-    #     tair.day <- aperm(tair.day, c(2,1,3))
-    #     ppt.day <- aperm(ppt.day, c(2,1,3))
-    
+        
     # Saving the file; 1 file per year
     ## Create dimensions
     lat <- ncdim_def(name='latitude', units='degree_north', vals=spp.lat, create_dimvar=TRUE)
     lon <- ncdim_def(name='longitude', units='degree_east', vals=spp.lon, create_dimvar=TRUE)
     time <- ncdim_def(name='doy', units="day", vals=1:nday, create_dimvar=TRUE, unlim=TRUE)
-    dim.dat=list(lat,lon,time)
+    dim.dat=list(lon,lat,time)
     
     # Putting data together to make life easier
     var.list <- list()
