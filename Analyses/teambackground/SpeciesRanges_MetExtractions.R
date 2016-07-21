@@ -65,4 +65,4 @@ source("extract_met_range.R")
 # }
 
 # New method: Hack this together 
-extract.range.met(species=TEST, yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
+extract.range.met(species="TEST", yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
