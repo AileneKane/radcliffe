@@ -4,11 +4,10 @@
 #$ -S /bin/bash         
 #$ -V 
 #$ -m e
-#$ -pe omp 12
 #$ -M crollinson@gmail.com
 #$ -q "geo*"
 #$ -l hostname=!scc-c*&!scc-t*
 #$ -l h_rt=120:00:00
-#$ -N SpeciesMet
+#$ -N TEST
 #cd /usr2/postdoc/crolli/radcliffe/Analyses/teambackground
-R CMD BATCH SpeciesRanges_MetExtractions.R
+R CMD BATCH SpeciesRanges_MetExtractions_TEST.R

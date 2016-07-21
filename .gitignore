@@ -11,3 +11,5 @@ Analyses/radcliffe_merge_expclim2.R
 *.shp
 
 *.shx
+
+*.history
