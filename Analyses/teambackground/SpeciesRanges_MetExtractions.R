@@ -19,15 +19,15 @@
 #        - temperature, preciptiation, shortwave radiation, longwave radiation, pressure, humidity, wind
 
 rm(list=ls())
-dir.base <- "~/radcliffe/Analyses/teambackground/"
-# dir.base <- "~/Desktop/Research/Radcliffe_Phenology/radcliffe/Analyses/teambackground/"
-# setwd(dir.base)
+# dir.base <- "~/radcliffe/Analyses/teambackground/"
+dir.base <- "~/Dropbox/Radcliffe_Phenology/radcliffe/Analyses/teambackground/"
+setwd(dir.base)
 
 # dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
-dir.ranges <- "input/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
-dir.out <- file.path(dir.base, "output", "SpeciesMet")
-# dir.ranges <- "~/Desktop/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
-# dir.out <- file.path("~/Desktop", "SpeciesMet")
+# dir.ranges <- "input/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
+# dir.out <- file.path(dir.base, "output", "SpeciesMet")
+dir.ranges <- "~/Desktop/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
+dir.out <- file.path("~/Desktop", "SpeciesMet")
 dir.create(dir.out, recursive=T, showWarnings=F)
 
 # Getting a list of the species we'll extract met for
@@ -46,10 +46,16 @@ species.list <- as.list(species); names(species.list) <- species
 
 # Source the extraction function 
 source("extract_met_range.R")
-# extract.range.met(species="betulent", yr.min=1949, yr.max=1950, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
 
-# Load the parallel package and execute the extraction in parallel
-library(parallel)
-mclapply(species.list, FUN=extract.range.met, mc.cores=min(length(species.list), 12),  yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
+# # NOTE: trying to extract in parallel made my computer freak-out.  Probably because of the CURL operations
+# # Load the parallel package and execute the extraction in parallel
+# library(parallel)
+# # mclapply(species.list, FUN=extract.range.met, mc.cores=min(length(species.list), 12),  yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
 # mclapply(species.list, FUN=extract.range.met, mc.cores=2,  yr.min=1949, yr.max=1950, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
+
+# So instead we're just going to stick with the really old-school loop
+for(i in 1:length(species)){
+  spp.now = species[i]
+  extract.range.met(species=spp.now, yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
+}
 
