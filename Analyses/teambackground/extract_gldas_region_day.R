@@ -32,6 +32,13 @@ extract.gldas.region <- function(xmin, xmax, ymin, ymax, yr.min=1949, yr.max=201
   # -------------------------------
   # Get data for each year
   # -------------------------------
+  # check for years we already have
+  yrs.done <- dir(path.out, ".nc")
+  for(i in 1:length(yrs.done)){
+    yrs.done[i] <- as.numeric(substr(strpslit(yrs.done[i], "_")[[1]][3],1,4))
+  }
+
+  
   # CRUNCEP Path
   # dap_base <- "http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/" # CRUNCEP
 
@@ -39,6 +46,9 @@ extract.gldas.region <- function(xmin, xmax, ymin, ymax, yr.min=1949, yr.max=201
   # http://hydro1.gesdisc.eosdis.nasa.gov/opendap/GLDAS/GLDAS_NOAH025_3H.2.0/1948/001/GLDAS_NOAH025_3H.A19480101.0300.020.nc4 # Example file
   dap_base <- "http://hydro1.gesdisc.eosdis.nasa.gov/opendap/GLDAS/GLDAS_NOAH025_3H.2.0/"
   for(year in yr.min:yr.max){
+    
+    if(year %in% yrs.done) next
+
     print(paste0("   -- ", year))
     # Figure out if we're dealing with a leap year
     nday = ifelse(lubridate:: leap_year(year), 366, 365)
@@ -126,11 +136,11 @@ extract.gldas.region <- function(xmin, xmax, ymin, ymax, yr.min=1949, yr.max=201
   } # end year loop
   # -------------------------------
 
-  # Compress the files as we go to make life easier
-  if(compress==T){
-    setwd(dir.out) # Go to the output directory so we don't get annoying file paths
-    system(paste0("tar -jcvf ", species, ".tar.bz2 ", species)) # Compress the folder
-    system(paste0("rm -rf ", species)) # remove the uncompressed folder
-    setwd(dir.base) # Go back to our base directory
-  }
+  # # Compress the files as we go to make life easier
+  # if(compress==T){
+  #   setwd(dir.out) # Go to the output directory so we don't get annoying file paths
+  #   system(paste0("tar -jcvf ", species, ".tar.bz2 ", species)) # Compress the folder
+  #   system(paste0("rm -rf ", species)) # remove the uncompressed folder
+  #   setwd(dir.base) # Go back to our base directory
+  # }
 }
