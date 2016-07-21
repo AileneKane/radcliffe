@@ -4,6 +4,7 @@
 #$ -S /bin/bash         
 #$ -V 
 #$ -m e
+#$ -pe omp 12
 #$ -M crollinson@gmail.com
 #$ -q "geo*"
 #$ -l hostname=!scc-c*&!scc-t*
