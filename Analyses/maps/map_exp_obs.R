@@ -57,30 +57,34 @@ dat.map <- data.frame(Site= c(sites.exp$DatasetID, sites.obs$Site.code),
                       )
 summary(dat.map)
 
-# library(ggmap)
-# map <- get_map(location=c(min(dat.map$Lon, na.rm=T), min(dat.map$Lat, na.rm=T), max(dat.map$Lon, na.rm=T), max(dat.map$Lat, na.rm=T)), zoom=3)
-# map
 
 
-rad.region <- map_data("world")
-rad.region$region <- as.factor(rad.region$region)
-rad.region$subregion <- as.factor(rad.region$subregion)
-summary(rad.region)
+library(raster)
+nat.earth <- stack("~/Desktop/NE1_50M_SR_W/NE1_50M_SR_W.tif")
+nat.crop <- crop(nat.earth, y=c(min(dat.map$Lon, na.rm=T)-5, max(dat.map$Lon, na.rm=T)+5, min(dat.map$Lat, na.rm=T)-10, max(dat.map$Lat, na.rm=T)+10))
+nat.crop <- aggregate(nat.crop, fact=5, fun=mean)
 
-region.names <- unique(rad.region[rad.region$long>=min(dat.map$Lon, na.rm=T)-1 & rad.region$long<=max(dat.map$Lon, na.rm=T)+1 &
-                                    rad.region$lat>=min(dat.map$Lat, na.rm=T)-1 & rad.region$lat<=max(dat.map$Lat, na.rm=T)+1 ,
-                                  "region"])
 
-rad.region2 <- rad.region[rad.region$region %in% region.names,]
+rast.table <- data.frame(xyFromCell(nat.crop, 1:ncell(nat.crop)),
+                         getValues(nat.crop/255))
 
+rast.table$rgb <- with(rast.table, rgb(NE1_50M_SR_W.1,
+                                       NE1_50M_SR_W.2,
+                                       NE1_50M_SR_W.3,
+                                       1))
+
+
+# Note: the natural earth data takes quite a while to plot!`
 png("RadcliffeLocations_Experiments_Observations.png", width=10, height=5, units="in", res=220)
 ggplot(data=dat.map) +
-  geom_path(data=rad.region, aes(x=long, y=lat, group=group)) +
+  guides(fill="none") +
+  geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
+  scale_x_continuous(expand=c(0,0), name="Degrees Longitude") +
+  scale_y_continuous(expand=c(0,0), name="Degrees Latitude") +
   geom_point(aes(x=Lon, y=Lat, color=type), size=2.5, alpha=0.75) +
-  scale_x_continuous(limits=c(min(dat.map$Lon, na.rm=T)-5, max(dat.map$Lon, na.rm=T)+5), expand=c(0,0)) +
-  scale_y_continuous(limits=c(min(dat.map$Lat, na.rm=T)-8, max(dat.map$Lat, na.rm=T)+5), expand=c(0,0)) +
-  scale_color_manual(values=c("red", "blue")) +
+  scale_color_manual(values=c("red", "blue"), name="Data Type") +
   theme_bw() +
   theme(legend.position="top") +
   coord_equal()
 dev.off()
+
