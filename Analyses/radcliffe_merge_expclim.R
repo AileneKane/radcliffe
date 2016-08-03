@@ -4,7 +4,7 @@ setwd("~/git/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
-##Daily temp  data and whatever soil moisture data are available
+##Daily temperature and soil moisture data
 clean.clim <- list()
 
 clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/Experiments/marchin") {
@@ -273,7 +273,7 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
 }
 
 ##Dukes et al. data from BACE ##
-## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC, just using 2010 data sine that is when we have phenology
+## Data type: hourly soil temp, from 2 and 10 cm; soil mois=VWC
 ## Notes: data shared by Jeff Dukes (jsdukes@purdue.edu)
 ##updated April 5, 2016 with more years of soil data, and adding air data
 clean.clim$bace <- function(path="./Data/Experiments/bace") {
@@ -361,6 +361,7 @@ allclim$surftemp_min<-NA
 allclim$surftemp_max<-NA
 allclim$site<-"bace"
 baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+baceclim<-baceclim[which(baceclim$cantemp_max<203),]#remove weird value
 row.names(baceclim) <- NULL
 return(baceclim) 
  }
