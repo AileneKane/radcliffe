@@ -278,3 +278,6 @@ plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21
 for (i in 1:12){
   arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0.05,angle=90,code=3)}
 points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="green")
+
+#Try doing average predictive comparisons for 
+airmod<-lmer(airtemp_mean~temptreat + (temptreat|site), data=monthdat, REML=FALSE)
