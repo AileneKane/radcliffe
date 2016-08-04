@@ -1,0 +1,66 @@
+Radcliffe Metanalysis Experimental Design Metadata
+These data were compiled from multiple experimental studies that manipulated temperature (and in some cases precipitation as well) and monitored phenology. 
+The data were generously shared by authors of the experiments and should only be used by members of the Radcliffe “Predicting Future Springs” Working Group 
+for purposes outlined in the working group. 
+Contact Ailene Ettinger or Lizzie Wolkovich if you would like to use the data for other purposes.
+aettinger@fas.harvard.edu, wolkovich@fas.harvard.edu
+
+This file provides details on experimental design and set-up of each experiment included.
+
+1) PRICE. 
+M.V. PRICE & N.M. WASER."EFFECTS OF EXPERIMENTAL WARMING ON PLANT REPRODUCTIVE PHENOLOGY IN A SUBALPINE MEADOW"
+Ecology, 79(4), 1998, pp. 1261–1271.
+Plot design: 
+10 plots, 3m X 10m in size and separated by >2m, were established in an alpine meadow at RMBL.
+Plots numbered consequetively and odd-numbered plots were heated by electric heaters suspended 2.5 m above them.
+
+Heating Method:
+Parabolic reflectors were installed above the heating elements and caused "nearly uniform delivery of 15 W/m2 of 
+IR radiation over the central 80% of each warmed plot, 5 W/m2 at the periphery and in a central band between the heaters, 
+and no additional radiation to neighboring control plots."
+
+Soil temperature measurements:
+Thermocouples were buried 5, 12, and 25 cm deep at three positions in each plot, recorded temperature every 2 h.
+
+2) MARCHIN
+R.M. MARCHIN, C.F. SALK, W.A. HOFFMANN & R.R. DUNN. "Temperature alone does not explain phenological variation of diverse 
+temperate plants under experimental warming." Global Change Biology (2015) 21, 3138–3151
+15 plots in the
+forest understory: nine are heated chambers, three are
+unheated control chambers, and three are control plots that
+lack chambers but are the same size as the chambers. The
+octagonal open-top chambers have a volume of 21.7 m3 (5 m
+in diameter, 1.2 m wall height) and are located on a north-facing
+slope (6–15% slope) above a small creek. The chambers are
+heated by forced air blown over hydronic radiators fed by a
+closed-loop mixture of hot water and propylene glycol (antifreeze).
+To control for effects of wind, unheated chambers had
+the same forced air delivery system minus the radiators. Heat
+delivery to the chambers began in January 2010, and chambers
+are heated year-round, both day and night. The experiment
+uses a regression design of chamber heating, where each
+chamber is heated to a target of 1.5–5.5 °C above ambient temperature
+with 0.5 °C increments between chambers. Maintaining
+a precise target air temperature over long time periods is
+difficult, and the assigned treatment levels varied by a small
+amount over time (but were not statistically different from target
+temperatures, see Fig. S1). This design is particularly useful
+for revealing potential nonlinearities and threshold effects
+in plant temperature responses.
+Air temperature (two temperature probes per chamber at
+22 cm above ground level), soil temperature (two sensors buried
+2 cm and two sensors buried 6 cm below the surface), relative
+humidity (HS-2000V capacitive polymer sensor; Precon,
+Memphis, TN, USA), soil moisture (Model CS616 TDR probes,
+Campbell Scientific Inc., Logan, UT, USA), and photosynthetically
+active radiation (PAR; Model SQ110; Apogee Instruments
+Inc., Logan, UT, USA) were measured inside each
+experimental chamber every minute and recorded as hourly
+means by automated dataloggers (CR1000; Campbell Scientific
+Inc.). Further details of the warming experiment can be found
+in Pelini et al. (2011).
+To determine how environmental conditions varied among
+experimental chambers, mean air temperature, soil temperature,
+vapor pressure deficit (VPD), PAR, and relative extractable
+soil water content (REW) were calculated for each
+chamber. REW was calculated according to the equation
