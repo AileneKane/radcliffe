@@ -1,4 +1,5 @@
-Radcliffe Metanalysis Experimental Design Metadata
+Radcliffe Meta-analysis Experimental Design Metadata
+
 These data were compiled from multiple experimental studies that manipulated temperature (and in some cases precipitation as well) and monitored phenology. 
 The data were generously shared by authors of the experiments and should only be used by members of the Radcliffe “Predicting Future Springs” Working Group 
 for purposes outlined in the working group. 
@@ -40,7 +41,7 @@ Air temperature measurements:
 2 temperature probes per chamber at 22 cm above ground level
 
 Soil temperature measurements:
-2 sensors buried at 2 cm and 2 sensors buried 6 cm below groundsurface
+2 sensors buried at 2 cm and 2 sensors buried 6 cm below ground surface
 
 Other measurements:
 Relative humidity (HS-2000V capacitive polymer sensor; Precon, Memphis, TN, USA) measured ever minute, recorded as hourly means by dataloggers
@@ -75,7 +76,7 @@ Within each chamber, two 4.6 m 9 1.05 m areas were designated as ‘experimental
 3 additional control plots per site had no chamber ("ambient" in our meta-analysis) 
 unheated chambers received buried cables as a disturbance control and air circulating through these chambers was not heated.
 
-Half of chambers at each site (n=9) were located in artificial gaps (plot names beginning with "G") created in 2008 and half were located in intact-canopy stands (plot names beging with "S")
+Half of chambers at each site (n=9) were located in artificial gaps (plot names beginning with "G") created in 2008 and half were located in intact-canopy stands (plot names beginning with "S")
 
 Heating Method:
 Soil and air heated with independent systems to track ambient temperatures with the consistent +3 °C and +5 °C offsets.
@@ -102,7 +103,7 @@ One 240 V infrared heater was suspended 1.5 m above each plot. A real-time propo
 feedback system controlled warming through infrared radiometer (IRR) monitoring of surface temperatures in
 warmed and not warmed plots. 
 Ambient and precipitation only plots that did not receive warming treatments had heater replicas to replicate shading and drip-line effects of the lamp structures in warmed plots.
-Precipitaiton treatments:
+Precipitation treatments:
 Weekly additions of collected rainwater or snow that equaled 20% of the 1882–2005 monthly mean historical record from State College, PA (US Historical Climatology Data Network, Easterling et al., 1996). "April through December precipitation treatments were added in the form of water collected in a series of rainwater catchments distributed throughout the site. In winter months (December–March), precipitation was collected in a series of open topped plastic bins and distributed as water, ice, or snow, depending on the state at time of application." 
 
 
