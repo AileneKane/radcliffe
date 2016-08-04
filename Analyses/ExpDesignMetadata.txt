@@ -7,8 +7,8 @@ aettinger@fas.harvard.edu, wolkovich@fas.harvard.edu
 
 This file provides details on experimental design and set-up of each experiment included.
 
-1) PRICE. 
-M.V. PRICE & N.M. WASER."EFFECTS OF EXPERIMENTAL WARMING ON PLANT REPRODUCTIVE PHENOLOGY IN A SUBALPINE MEADOW"
+1) PRICE
+Source: M.V. PRICE & N.M. WASER."EFFECTS OF EXPERIMENTAL WARMING ON PLANT REPRODUCTIVE PHENOLOGY IN A SUBALPINE MEADOW"
 Ecology, 79(4), 1998, pp. 1261–1271.
 Plot design: 
 10 plots, 3m X 10m in size and separated by >2m, were established in an alpine meadow at RMBL.
@@ -18,49 +18,91 @@ Heating Method:
 Parabolic reflectors were installed above the heating elements and caused "nearly uniform delivery of 15 W/m2 of 
 IR radiation over the central 80% of each warmed plot, 5 W/m2 at the periphery and in a central band between the heaters, 
 and no additional radiation to neighboring control plots."
+Heaters activated in January 1991 and operated continuously. In May 1993 a third heater was added to each warmed plot, raising the incident IR flux to 22 W/m2 and removing the central ‘‘cold spot.’’
 
 Soil temperature measurements:
 Thermocouples were buried 5, 12, and 25 cm deep at three positions in each plot, recorded temperature every 2 h.
 
 2) MARCHIN
-R.M. MARCHIN, C.F. SALK, W.A. HOFFMANN & R.R. DUNN. "Temperature alone does not explain phenological variation of diverse 
+Source: R.M. MARCHIN, C.F. SALK, W.A. HOFFMANN & R.R. DUNN. "Temperature alone does not explain phenological variation of diverse 
 temperate plants under experimental warming." Global Change Biology (2015) 21, 3138–3151
-15 plots in the
-forest understory: nine are heated chambers, three are
-unheated control chambers, and three are control plots that
-lack chambers but are the same size as the chambers. The
-octagonal open-top chambers have a volume of 21.7 m3 (5 m
-in diameter, 1.2 m wall height) and are located on a north-facing
-slope (6–15% slope) above a small creek. The chambers are
-heated by forced air blown over hydronic radiators fed by a
-closed-loop mixture of hot water and propylene glycol (antifreeze).
-To control for effects of wind, unheated chambers had
-the same forced air delivery system minus the radiators. Heat
-delivery to the chambers began in January 2010, and chambers
-are heated year-round, both day and night. The experiment
-uses a regression design of chamber heating, where each
-chamber is heated to a target of 1.5–5.5 °C above ambient temperature
-with 0.5 °C increments between chambers. Maintaining
-a precise target air temperature over long time periods is
-difficult, and the assigned treatment levels varied by a small
-amount over time (but were not statistically different from target
-temperatures, see Fig. S1). This design is particularly useful
-for revealing potential nonlinearities and threshold effects
-in plant temperature responses.
-Air temperature (two temperature probes per chamber at
-22 cm above ground level), soil temperature (two sensors buried
-2 cm and two sensors buried 6 cm below the surface), relative
-humidity (HS-2000V capacitive polymer sensor; Precon,
-Memphis, TN, USA), soil moisture (Model CS616 TDR probes,
-Campbell Scientific Inc., Logan, UT, USA), and photosynthetically
-active radiation (PAR; Model SQ110; Apogee Instruments
-Inc., Logan, UT, USA) were measured inside each
+Plot design: 
+15 plots in forest understory: 9 heated chambers,3 unheated control chambers ("shams"), and 3 control plots with no chambers 
+octagonal open-top chambers have a volume of 21.7 m3 (5 m in diameter, 1.2 m wall height) 
+
+Heating Method:
+Forced air blown over hydronic radiators fed by a closed-loop mixture of hot water and propylene glycol (antifreeze).
+Unheated chambers had same forced air delivery system minus the radiators. 
+chambers heated year-round, both day and night. 
+Regression design of chamber heating: each chamber heated to target of 1.5–5.5 °C above ambient temperature, with 0.5 °C increments between chambers. 
+
+Air temperature measurements:
+2 temperature probes per chamber at 22 cm above ground level
+
+Soil temperature measurements:
+2 sensors buried at 2 cm and 2 sensors buried 6 cm below groundsurface
+
+Other measurements:
+Relative humidity (HS-2000V capacitive polymer sensor; Precon, Memphis, TN, USA) measured ever minute, recorded as hourly means by dataloggers
+
+Soil moisture (Model CS616 TDR probes, Campbell Scientific Inc., Logan, UT, USA) measured ever minute, recorded as hourly means by dataloggers
+Photosynthetically active radiation (PAR; Model SQ110; Apogee Instruments Inc., Logan, UT, USA) were measured inside each
 experimental chamber every minute and recorded as hourly
 means by automated dataloggers (CR1000; Campbell Scientific
-Inc.). Further details of the warming experiment can be found
-in Pelini et al. (2011).
-To determine how environmental conditions varied among
-experimental chambers, mean air temperature, soil temperature,
-vapor pressure deficit (VPD), PAR, and relative extractable
-soil water content (REW) were calculated for each
-chamber. REW was calculated according to the equation
+Inc.). 
+
+3) BACE
+Source: Jeff Dukes, jsdukes@purdue.edu
+Plot design: 
+4 blocks, each with 12 plots with fully crossed warming (4 levels, including ambient) and precipitation (3 levels, including ambient, reduction, and addition)
+
+Heating Method:
+infrared above-canopy heating of: ambient temperature, low (target of +1:0 C), medium (+2:7 C), and high warming (+4:0 C)
+
+Precipitation Treatment:
+drought= 50% reduction, using rainout shelters
+high precip=150%
+
+4) CLARK DUKE & HARVARD
+Source: J.S. Clark,C. Salk, J. Melillo & J. Mohan. "Tree phenology responses to winter chilling, spring
+warming, at north and south range limits." Functional Ecology 2014, 28, 1344–1355.
+
+Plot design: 
+18 17-m2 rectangular open-top chambers per site at 2 sites (Duke Forest and Harvard Forest) established in deciduous forest
+in a factorial design with three temperatures (ambient, +3 °C, +5 °C assigned randomly)
+Within each chamber, two 4.6 m 9 1.05 m areas were designated as ‘experimental strips’ for soil heating and seed establishment.. Chamber walls are transparent plastic greenhouse sheeting attached to wooden frames, with heights of 2.5 m. 
+
+3 additional control plots per site had no chamber ("ambient" in our meta-analysis) 
+unheated chambers received buried cables as a disturbance control and air circulating through these chambers was not heated.
+
+Half of chambers at each site (n=9) were located in artificial gaps (plot names beginning with "G") created in 2008 and half were located in intact-canopy stands (plot names beging with "S")
+
+Heating Method:
+Soil and air heated with independent systems to track ambient temperatures with the consistent +3 °C and +5 °C offsets.
+Soil heated with electric resistance cable buried 10 cm deep at 20-cm spacing. Temperature offsets were
+maintained by an automated tracking system. 
+Air heated indirectly with propane. Heated water with non-toxic propylene glycol was pumped to a heat-exchange coil
+and airflow system in +3 and +5 chambers.  The temperature offset maintained by a defined heat delivery rate. 
+Harvard site not heated from December through March when snow-cover present.
+
+Soil temperature measured 10 cm deep
+Air temperatures measured 30 cm above-ground
+
+4) FORCE
+Source: C.R. ROLLINSON & M.W. KAYE. "Experimental warming alters spring phenology of certain plant functional groups in an early successional forest community." Global Change Biology (2012) 18, 1108–1116
+
+Plot design: 
+16  2x2 m plots established in a two-factorial randomized complete block design in cleared deciduous forest site
+4 blocks with one plot of each of the following treatments: warming only, precipitation only, warming + precipitation, and ambient.
+Plots treated from May 2008 through August 2010, spaced a minimum of 10 m apart to minimize the effects of neighboring treatments 
+
+Heating method:
+Plots were warmed with suspended infrared heaters, with target temperature increases above ambient of 1.5 °C during the day and 3 °C at night.  
+One 240 V infrared heater was suspended 1.5 m above each plot. A real-time proportional-integrative-derivative
+feedback system controlled warming through infrared radiometer (IRR) monitoring of surface temperatures in
+warmed and not warmed plots. 
+Ambient and precipitation only plots that did not receive warming treatments had heater replicas to replicate shading and drip-line effects of the lamp structures in warmed plots.
+Precipitaiton treatments:
+Weekly additions of collected rainwater or snow that equaled 20% of the 1882–2005 monthly mean historical record from State College, PA (US Historical Climatology Data Network, Easterling et al., 1996). "April through December precipitation treatments were added in the form of water collected in a series of rainwater catchments distributed throughout the site. In winter months (December–March), precipitation was collected in a series of open topped plastic bins and distributed as water, ice, or snow, depending on the state at time of application." 
+
+
