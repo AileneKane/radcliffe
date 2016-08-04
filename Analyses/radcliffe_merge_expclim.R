@@ -17,14 +17,14 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   names(marchin1)[8]<-"plot"
   marchin1$year_doy<-paste(marchin1$year,marchin1$doy, sep="-")
   #get min airtemp across all 3 measurements for each plot
-  temp_min<-aggregate(x=subset(marchin1, select=c("CAT1_Min","CAT2_Min","CAT3_Min","CSTo1_Min","CSTo2_Min","CSTI1_Min","CSTI2_Min")), by=list(marchin1$year_doy,marchin1$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min[,3:5],1,min,na.rm=F)
-  soiltemp1_min<-apply(temp_min[,6:7],1,min,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min[,8:9],1,min,na.rm=F)#temp at 6cm depth(inorganic)
-  temp_max<-aggregate(x=subset(marchin1, select=c("CAT1_Max","CAT2_Max","CAT3_Max","CSTo1_Max","CSTo2_Max","CSTI1_Max","CSTI2_Max")), by=list(marchin1$year_doy,marchin1$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max[,3:5],1,max,na.rm=F)
-  soiltemp1_max<-apply(temp_max[,6:7],1,max,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max[,8:9],1,max,na.rm=F)#temp at 6cm depth(inorganic)
+  temp_min<-aggregate(x=subset(marchin1, select=c("CAT2_Min","CAT3_Min","CSTo1_Min","CSTo2_Min","CSTI1_Min","CSTI2_Min")), by=list(marchin1$year_doy,marchin1$plot), FUN=min,na.rm=F)
+  airtemp_min<-apply(temp_min[,3:4],1,min,na.rm=F)
+  soiltemp1_min<-apply(temp_min[,5:6],1,min,na.rm=F)#temp at 2cm depth(organic)
+  soiltemp2_min<-apply(temp_min[,7:8],1,min,na.rm=F)#temp at 6cm depth(inorganic)
+  temp_max<-aggregate(x=subset(marchin1, select=c("CAT2_Max","CAT3_Max","CSTo1_Max","CSTo2_Max","CSTI1_Max","CSTI2_Max")), by=list(marchin1$year_doy,marchin1$plot), FUN=max,na.rm=F)
+  airtemp_max<-apply(temp_max[,3:4],1,max,na.rm=F)
+  soiltemp1_max<-apply(temp_max[,5:6],1,max,na.rm=F)#temp at 2cm depth(organic)
+  soiltemp2_max<-apply(temp_max[,7:8],1,max,na.rm=F)#temp at 6cm depth(inorganic)
   soilmois<-aggregate(x=subset(marchin1, select=c("CSM_Avg")), by=list(marchin1$year_doy,marchin1$plot), FUN=mean,na.rm=F)
   colnames(temp_min)[1:2]<-c("year_doy","plot")
   year_doy <- strsplit(temp_min$year_doy,'-') 
@@ -821,9 +821,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#241052      21
+    dim(expphenclim1)#240075      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#241028      21
+    dim(expphenclim)#240051      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
