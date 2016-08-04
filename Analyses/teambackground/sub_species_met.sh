@@ -8,6 +8,6 @@
 #$ -q "geo*"
 #$ -l hostname=!scc-c*&!scc-t*
 #$ -l h_rt=120:00:00
-#$ -N TEST
+#$ -N SpeciesMet
 #cd /usr2/postdoc/crolli/radcliffe/Analyses/teambackground
-R CMD BATCH SpeciesRanges_MetExtractions_TEST.R
+R CMD BATCH 2_SpeciesRanges_MetExtractions.R

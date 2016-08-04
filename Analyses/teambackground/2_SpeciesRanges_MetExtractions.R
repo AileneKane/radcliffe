@@ -23,6 +23,11 @@ dir.base <- "~/radcliffe/Analyses/teambackground/"
 # dir.base <- "~/Dropbox/Radcliffe_Phenology/radcliffe/Analyses/teambackground/"
 setwd(dir.base)
 
+# NOTE: Because things were so darn slow, I downloaded, trimmed, and aggregated to day 
+#       GLDAS data for North America.  This will suit the needs of the ranges we have, but
+#       will not get the met for all of our sites (that's a separate & slow script)
+dir.dat <- "/projectnb/dietzelab/paleon/met_ensemble/data/paleon_domain/GLDAS_day"
+
 # dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
 dir.ranges <- "input/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
 dir.out <- file.path(dir.base, "output", "SpeciesMet")
@@ -52,17 +57,17 @@ source("extract_met_range.R")
 
 # So instead we're just going to stick with the really old-school loop
 # Note: starting at a different number to try and get a couple downloads going at once
-# for(i in 1:length(species)){
-#   spp.now = species[i]
-#   # Update the species done list each time so we can have multiple versions going at once
-#   species.done <- dir(dir.out, ".tar.bz2")
-#   species.done <- substr(species.done, 1, 8)
-# 
-#   if(spp.now %in% species.done) next
-#   
-#   print(spp.now)
-#   extract.range.met(species=spp.now, yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
-# }
+for(i in 1:length(species)){
+  spp.now = species[i]
+  # Update the species done list each time so we can have multiple versions going at once
+  species.done <- dir(dir.out, ".tar.bz2")
+  species.done <- substr(species.done, 1, 8)
 
-# New method: Hack this together 
-extract.range.met(species="TEST", yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
+  if(spp.now %in% species.done) next
+
+  print(spp.now)
+  extract.range.met.day(species=spp.now, yr.min=1949, yr.max=2010, dir.dat=dir.dat, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)
+}
+
+# # New method: Hack this together 
+# extract.range.met(species="TEST", yr.min=1949, yr.max=2010, dir.out=dir.out, dir.ranges=dir.ranges, compress=T)

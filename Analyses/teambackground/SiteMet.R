@@ -33,7 +33,7 @@ library(stringr)
 dir.base <- "~/Dropbox/Radcliffe_Phenology/radcliffe/Analyses/teambackground/"
 setwd(dir.base)
 
-dir.out <- file.path(dire.base, "output", "SiteMet")
+dir.out <- file.path(dir.base, "output", "SiteMet")
 
 # Load in the locations for experimental and observational sites
 sites.exp <- read.csv("../expsiteinfo.csv")

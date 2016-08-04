@@ -1,6 +1,6 @@
 # Creating a function to extract species Ranges to make it easier to parrallelize
-# Note: This takes 3-houlry GLDAS 2.0 data (1949-2010) and calculates daily 
-#       tmin, tmax, tavg, and precip
+# Note: This now runs from GLDAS day that has been downloaded locally & aggregated 
+#       to a daily timestep
 # Arguments:
 #  1. species    -- name of the species; must match the codes in dir.ranges
 #  2. yr.min     -- the first year you want to extra data for
@@ -16,7 +16,7 @@
 #  3. tmax   - daily maximum temperature (K)
 #  4. precip - daily total precipitation (kg m-2 day-1)
 
-extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ranges, compress=T){
+extract.range.met.day <- function(species, yr.min=1949, yr.max=2010, dir.dat, dir.out, dir.ranges, compress=T){
   # libraries you'll need
   library(raster); library(rgdal); library(sp); library(maptools); library(maps)
   library(ncdf4)
@@ -26,10 +26,6 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
   library(XML)
   library(stringr)
   
-  # Creating a vector of timestamps
-  timestamps <- seq(0, 2100, by=300)
-  timestamps <- str_pad(timestamps, 4, pad="0")
-
   # Create the output folder
   spp.out <- file.path(dir.out, species)
   if(dir.exists(spp.out)){
@@ -83,90 +79,57 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
   # -------------------------------
   # Get data for each year
   # -------------------------------
-  # CRUNCEP Path
-  # dap_base <- "http://thredds.daac.ornl.gov/thredds/dodsC/ornldaac/1220/" # CRUNCEP
-  
-  # GLDAS Path:
-  # http://hydro1.gesdisc.eosdis.nasa.gov/opendap/GLDAS/GLDAS_NOAH025_3H.2.0/1948/001/GLDAS_NOAH025_3H.A19480101.0300.020.nc4 # Example file
-  dap_base <- "http://hydro1.gesdisc.eosdis.nasa.gov/opendap/GLDAS/GLDAS_NOAH025_3H.2.0/"
   for(year in yr.min:yr.max){
     print(paste0("   -- ", year))
     # Figure out if we're dealing with a leap year
     nday = ifelse(lubridate:: leap_year(year), 366, 365)
     ntime=nday
-    
-    # We'll write out 1 grid per year 
+
+    # We'll write out 1 grid per year
     out.yr <- list()
-    out.yr[["tmean" ]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
-    out.yr[["tmax"  ]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
-    out.yr[["tmin"  ]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
-    out.yr[["precip"]] <- array(dim=c(length(spp.lon), length(spp.lat), nday))
     
-    # Go by each day
-    for(doy in 1:nday){
-      doy2 <- str_pad(doy, 3, pad="0")
-      print(doy2)
-      # Extract each hour into a 3-d array
-      tmp <- array(dim=c(length(spp.lon), length(spp.lat), length(timestamps))) # Third dimenions = 8 because there should be 8 3-hr files per day
-      ppt <- array(dim=c(length(spp.lon), length(spp.lat), length(timestamps)))
-      
-      # Some date indexing
-      date.now <- as.Date(doy, origin=as.Date(paste0(year-1,"-12-31")))
-      mo.now <- str_pad(month(date.now), 2, pad="0")
-      day.mo <- str_pad(day(date.now), 2, pad="0")
-      
-      for(hr in 1:length(timestamps)){
-        # Construct the file names
-        # GLDAS_NOAH025_3H.A19480101.0300.020.nc4
-        file.now <- paste0("GLDAS_NOAH025_3H.A", year, mo.now, day.mo, ".", timestamps[hr], ".020.nc4")
-        
-        # Open the files
-        nc.now <- nc_open(file.path(dap_base, year, doy2, file.now))
-        
-        # pull lat/lon just to be safe
-        # Extract the lat/lon index (assume precip is same as temp)
-        raw.lat <- ncvar_get(nc.now, "lat") 
-        raw.lon <- ncvar_get(nc.now, "lon")
-        
-        # Figuring out what lat/lon we need
-        lon.start <- which(raw.lon == min(spp.lon)) # Lon goes min to max
-        lat.start <- which(raw.lat == min(spp.lat)) # lat goes min to max
-        
-        # Extract the actual data        
-        tmp2 <- ncvar_get(nc.now, varid="Tair_f_inst", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),1))
-        ppt2 <- ncvar_get(nc.now, varid="Rainf_f_tavg", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),1)) 
-        
-        # # # Mask the aggregated data
-        tmp[,,hr] <- ifelse(is.na(spp.mask), NA, tmp2)
-        ppt[,,hr] <- ifelse(is.na(spp.mask), NA, ppt2)
-      
-        # Close file
-        nc_close(nc.now)
-      }
-      
-      # Aggregate to day & store it in output list
-      out.yr[["tmean" ]][,,doy] <- apply(tmp, c(1,2), FUN=mean)
-      out.yr[["tmax"  ]][,,doy] <- apply(tmp, c(1,2), FUN=max )
-      out.yr[["tmin"  ]][,,doy] <- apply(tmp, c(1,2), FUN=min )
-      out.yr[["precip"]][,,doy] <- apply(ppt, c(1,2), FUN=sum ) # ?? need to change to kg m-2 per day?? =*60*60*24 
-      
-    }
-        
+    # Open the files
+    nc.now <- nc_open(file.path(dir.dat, paste0("GLDAS2.0_day_", year, ".nc")))
+
+    # pull lat/lon just to be safe
+    # Extract the lat/lon index (assume precip is same as temp)
+    raw.lat <- ncvar_get(nc.now, "latitude")
+    raw.lon <- ncvar_get(nc.now, "longitude")
+
+    # Figuring out what lat/lon we need
+    lon.start <- which(raw.lon == min(spp.lon)) # Lon goes min to max
+    lat.start <- which(raw.lat == min(spp.lat)) # lat goes min to max
+
+    # Extract the actual data
+    out.yr[["tmean" ]] <- ncvar_get(nc.now, varid="tmean", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),nday))
+    out.yr[["tmin"  ]] <- ncvar_get(nc.now, varid="tmin", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),nday))
+    out.yr[["tmax"  ]] <- ncvar_get(nc.now, varid="tmax", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),nday))
+    out.yr[["precip"]] <- ncvar_get(nc.now, varid="precip", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),nday))
+
+    # # # Mask the aggregated data
+    out.yr[["tmean" ]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["tmean" ]])
+    out.yr[["tmin"  ]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["tmin"  ]])
+    out.yr[["tmax"  ]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["tmax"  ]])
+    out.yr[["precip"]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["precip"]])
+
+    # Close file
+    nc_close(nc.now)
+
     # Saving the file; 1 file per year
     ## Create dimensions
     lat <- ncdim_def(name='latitude', units='degree_north', vals=spp.lat, create_dimvar=TRUE)
     lon <- ncdim_def(name='longitude', units='degree_east', vals=spp.lon, create_dimvar=TRUE)
     time <- ncdim_def(name='doy', units="day", vals=1:nday, create_dimvar=TRUE, unlim=TRUE)
     dim.dat=list(lon,lat,time)
-    
+
     # Putting data together to make life easier
     var.list <- list()
-    
+
     var.list[["tmean" ]] <- ncvar_def(name="tmean" , longname="daily mean temperature"   , units="K", dim=dim.dat, missval=-999)
     var.list[["tmin"  ]] <- ncvar_def(name="tmin"  , longname="daily minimum temperature", units="K", dim=dim.dat, missval=-999)
     var.list[["tmax"  ]] <- ncvar_def(name="tmax"  , longname="daily maximum temperature", units="K", dim=dim.dat, missval=-999)
     var.list[["precip"]] <- ncvar_def(name="precip", longname="daily total precipitation", units="kg m-2 (= mm/m2)", dim=dim.dat, missval=-999)
-    
+
     ## put data in new file
     loc.file <- file.path(spp.out, paste0(species, "_gldas2.0_", year, ".nc"))
     loc <- nc_create(filename=loc.file, vars=var.list)
@@ -176,7 +139,7 @@ extract.range.met <- function(species, yr.min=1949, yr.max=2010, dir.out, dir.ra
     nc_close(loc)
   } # end year loop
   # -------------------------------
-  
+
   # Compress the files as we go to make life easier
   if(compress==T){
     setwd(dir.out) # Go to the output directory so we don't get annoying file paths
