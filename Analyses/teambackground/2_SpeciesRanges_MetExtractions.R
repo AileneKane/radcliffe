@@ -30,7 +30,9 @@ dir.dat <- "/projectnb/dietzelab/paleon/met_ensemble/data/paleon_domain/GLDAS_da
 
 # dir.met <- "~/Desktop/BEST_TempGrids/" # Note: I'm using BEST because it goes back furthest and goes into Canada
 dir.ranges <- "input/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
-dir.out <- file.path(dir.base, "output", "SpeciesMet")
+# dir.out <- file.path(dir.base, "output", "SpeciesMet")
+dir.out <- "/projectnb/dietzelab/crolli/SpeciesMet" # Ran out of local file space, because individual species can be >5 GB
+
 # dir.ranges <- "~/Desktop/little_ranges/" # Note: this is the same folder as on github, but on the desktop to save space & not having it sync
 # dir.out <- file.path("~/Desktop", "SpeciesMet")
 dir.create(dir.out, recursive=T, showWarnings=F)
