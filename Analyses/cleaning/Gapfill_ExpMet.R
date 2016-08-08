@@ -109,8 +109,9 @@ test1[test1$doy=="5",]
 # Redo year.frac
 expclim$year.frac <- expclim$year + expclim$doy/366 # Add a continuous time variable that is fractional years
 
-# Note: BACE canopy temps (modeled) extremely high, so I'm excluding the ones that are flat out impossible (>100 C = above boiling)
-expclim[!is.na(expclim$temp_max) & expclim$temp_max>100,"temp_max"] <- NA
+# # Note: BACE canopy temps (modeled) extremely high, so I'm excluding the ones that are flat out impossible (>100 C = above boiling)
+# # Note: Ailene checked with everybody and said the values that are there should be left alone, so I'm doing so
+# expclim[!is.na(expclim$temp_max) & expclim$temp_max>100,"temp_max"] <- NA
 
 # Putting our NAs back where appropriate
 # expclim[expclim$temptreat  =="none", "temptreat"  ] <- NA
