@@ -43,13 +43,13 @@ if(!dir.exists(dir.out)) dir.create(dir.out, recursive=T)
 sites.exp <- read.csv("../expsiteinfo.csv")
 sites.obs <- read.csv("../obssiteinfo.csv")
 
-sites.exp[,c("Site", "Lat", "Long")]
+sites.exp[,c("DatasetID", "Lat", "Long")]
 sites.obs[,c("Site.code", "Lat", "Long")]
 
 # -------------
 # Note that in Sierra Nevadas, there appear to be two sites & these must be two separate rows
 # -------------
-siernev <- sites.obs[sites.obs$Site.cod=="siernev", ]
+siernev <- sites.obs[sites.obs$Site.code=="siernev", ]
 sn.lat <- as.numeric(strsplit(paste(siernev[, "Lat"]), split=",")[[1]])
 sn.lon <- as.numeric(strsplit(paste(siernev[, "Long"]), split=",")[[1]])
 
