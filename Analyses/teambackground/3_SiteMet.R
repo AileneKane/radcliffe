@@ -111,9 +111,9 @@ for(s in 1:nrow(sites.master)){
     next
   }
     
-  # Finding our lat & lon index
-  lat.ind <- which((lat-0.125)<=slat & (lat+0.125)>=slat)
-  lon.ind <- which((lon-0.125)<=slon & (lon+0.125)>=slon)
+  # Finding our lat & lon index; making this left-truncated
+  lat.ind <- which((lat-0.125)<slat & (lat+0.125)>=slat)
+  lon.ind <- which((lon-0.125)<slon & (lon+0.125)>=slon)
   
   for(i in 1:length(files.gldas)){  
     # Setting up all the date information that would be handy to have
