@@ -7,10 +7,10 @@
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{hyperref}
-
+\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
   %put your figures in one place
-\SweaveOpts{prefix.string=figures/, eps=FALSE} 
+ 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 
@@ -44,7 +44,7 @@
 
 %Start of the document
 \begin{document}
-\SweaveOpts{concordance=FALSE}
+
 % \SweaveOpts{concordance=TRUE}
 % \bibliographystyle{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
@@ -57,26 +57,47 @@
 
 \section {Aim}
 
-The aim is to write a Concept/Synthesis Paper about maximizing benefits of field-based climate change experiments by improved understanding of how climate is altered by these experiments. Experiments need to report what climate variables are modified by their experiment and how. %yann: perhaps also to determine which methods of warming alter the least other climatic variables or to define the most appropriate method regarding the focus of the study (phenology, growth, survival etc)?%annmarie: Somewhere in this paper,  we should discuss that is important that “how” climate variables are modified relative to the predicted change under various emission scenarios is important.  Thus, the “how” should be not only the direction and magnitude of the variable change but also the extent to which the change mirrors change projected for the region in which the experiment took place)
-This is particularly valuable for improving our understanding of biological impacts of climate change.
-
-build up a discussion of studies that report only mean shifts in temperature in the intro. 
+The aim is to write a Concept/Synthesis Paper, for Nature Climate Change, about maximizing benefits of field-based climate change experiments. We argue that there is a need to improve our understanding of how climate is actually altered by these experiments, particularly if we wish to use these experiments to understand biological impacts of climate change. %yann: perhaps also to determine which methods of warming alter the least other climatic variables or to define the most appropriate method regarding the focus of the study (phenology, growth, survival etc)?%annmarie: Somewhere in this paper,  we should discuss that is important that “how” climate variables are modified relative to the predicted change under various emission scenarios is important.  Thus, the “how” should be not only the direction and magnitude of the variable change but also the extent to which the change mirrors change projected for the region in which the experiment took place). build up a discussion of studies that report only mean shifts in temperature in the intro. 
 
 \section {Introduction}
-
-\par Experimental in situ climate manipulations offer several advantages to understanding biological impacts of climate change: (controlled, relative speed- i.e. multiple manipulations can be conducted simultaneously, can hit higher temps such as those forecasted, can do them in places where other data collection is hard, are less artificial than ex situ controlled experiments such as chambers%annmarie: what kind of data collection is hard?
-\par These advantages come at a cost, however. Experimental in situ climate manipulations are logistically challenging, expensive, and more important: other climatic variables than the target ones are affected with possible interactions (often overlooked), And it is dfficult to design replicated experiments that actually do the interactions well, and even moderately realistically.
-\par \underline{Problem:} People often want to extrapolate the results of warming experiments to real life to understand (and forecast) biological impacts of climate change. Even in cases when this is not the explicit goal, it would be incredibly useful to be able to apply knowledge gained from these experiments to improve our understanding and forecasting of how anthropogenic warming will affect species' performance (growth, survival) and distributions, as well as on differences in responses among provenances/genotypes/species. However, our ability to make this application is limited because a detailed assessment of exactly how experimental warming treatments alter climate, and the extent to which these manipulations accurately model the real world,
-is lacking. Furthermore, especially given the high number of warming methods applied, rising another question: are they comparable?% when you say “the real world” do you mean contemporary climate change or present-day relationships between temperature, moisture, etc? 
+\par Future climate change is expected to cause dramatic changes to Earth's biota. The physiology, distribution, and abundance of organisms will shift, and likely cause cascading community and ecosystem effects (Thomas et al. 2004, Parmesan 2006,Sheldon et al. 2011, Urban et al. 2012). Much uncertainty remains about how particular individuals, populations, communities, and ecosystems will respond, making predicting organism responses to the climate change one of the most significant challenges facing biology today.
+\par One way that people have sought to understand and forecast future biological conditions is through in situ experimental climate manipulations. Commonly used field techniques include passive warming, such as open-top chambers to increase temperatures, and active warming methods (forced air, soil cables,infra-red radiation), as well as precipitation manipulations, including drought, snow-removal, and supplemental precipitation treatments. Add citations.
+\par Experimental in situ climate manipulations offer several advantages for understanding biological impacts of climate change. Experiments allow temperature and precipitation to be modified in a relatively controlled and rapid way, for example to compare species' performance under current climate conditions versus those forecasted at some future, warmer time (e.g. Rollinson 2012, Pelini et al 2014, Jameison et al 2015). Field experiments can be performed in places when no historic data exist, so that scientists can understand how a range of climatic conditions affect focal organisms and communities, and are less artificial than ex situ controlled experiments such as greenhouses and laboratory warming chambers.
+\par These advantages come at a cost, however. Experimental in situ climate manipulations are logistically challenging and expensive. It is difficult to design, implement, and monitor replicated experiments that consistently apply the intended climate manipulations, and multiple climatic variables may be affected by these manipulations, beyond the target ones. Furthermore, these manipulations often include detailed monitoring of climate variables, yielding large amounts of data, such as daily, or even hourly temperature and other climate variables, over the course of the experiment. Scientists seem to be overwhelmed with what to do with these detailed data, as most publications report only the mean change in climate over the course of the experiment and whether or not that mean change matched their target level of change (Clark et al 2014,Price and Wasser). 
+\par The focus on biological responses to mean shifts makes sense, atleast as a first pass at understanding how species respond to warming or other climatic changes. However, as we seek to prepare for future, altered conditions in our biological environment, scientists and others often wish to extrapolate the results of these in situ climate change experiments to forecast how organisms and ecosystems will respond to particular climate change scenarios. Even in cases when this is not the explicit goal of warming and other climate change experiments, it would be incredibly useful to be able to apply knowledge gained from these experiments to improve our understanding and forecasting of how anthropogenic warming will affect species' performance (growth, survival) and distributions. Our ability to make this application is currently limited because a detailed assessment of exactly how experimental warming treatments alter climate, beyond mean differences, and the extent to which these manipulations accurately model the real world, both present and future, are lacking.
+\par Here, we suggest that a more nuanced understanding of how climate change experiments actually change climate is critical for the forecasting potential of climate change experiments to be realized. We first use plot-level microclimate data from XX climate change experiments that manipulate temperature (and precipitation, in some cases) to demonstrate the complex ways that climate is altered by active warming treatments, both directly and indirectly. We then discuss the challenges of interpreting biological implications of experimental shifts in climate, when these climate manipulations are more complex then simple shifts in the mean. Finally, we use these data, as well as experience gained from XX years of combined experimence on the part of the authors in field-installed in situ experimental warming, to make recommendations for future climate change experiments.
+ 
 %%%%Lizzie: I think eventually we want the tone here to acknowledge that not every experiment sets out to extrapolate to climate change, but some do -- and that really is a goal we should have. This could eventually give us an elegant way to focus in on only a couple experimental designs. 
-\section {Experimental climate change vs. real climate:
-how do they compare?}%Again, I find the “real climate” phrase confusing.   Also, a different subject heading may be appropriate given the points below.  Points 3.1-3.4 seem to highlight complicating factors rather than clear comparisons between experimental warming effects and observed effects due to contemporary climate change.  
+\section {Complications in extrapolating experimental climate change}
+Climate change experiments often collect detailed microcliamte data, at the plot level. However, in our experience, biologists are generally interested primarly in the biological responses associated with each treatment (e.g. growth or abundance of a species), rather than the details of the climate manipulation. As such, authors typically report the mean change in temperature, humidity, or other climatic factor achieved under different treatments, and provide more detailed information on the observed biological responses. The imposed climate manipulations result in much more than a simple shift in the mean, however.
+\subsection {Time}
+There is often temporal variation in applications of experimental warming, and this variation may be divergent from real (i.e. non-experimental) temperature patterns so it should carefully be considered in extrapolating experimental warming to future climate change impacts. Add details and examples of why this occurs, since warming experiments are tied to ambient conditions. 
+\begin{itemize}
+\item There are frequently strong seasonal variations in experimental warming effects (Figure 1). This can occur because treatments are not applied consistently over the year, either because heat applications are frequently shut off during some seasons such as when snowcover is present (e.g. Clark et al 2014, Austria,Norway) or becuase some heating methods, even if left on throughout the year, are not capable of applying consistent warming year-round (e.g. infrared radiation, CITATION). Furthermore, seasonal precipitation patterns can alter the effectiveness of warming treatments. % it is likely that this would yield different effects than if heating were turned on during winter (because then you change soil nutrient mineralization which might be important in winter and so change nutrient availability and moisture for the growing season ).
+
+ \begin{figure}[p]
+     \centering
+ \includegraphics{figures/Exploratory_TimeSeries_SoilTemp1Max_Deviation.png}    
+ \caption{Figure 1. Time series of soil temperature over one year, in treatments and controls at XX sites.}
+ \end{figure}
+\item In addition to seasonal patterns, experimental warming effects can vary on a daily timescale. %could add figure of tmin vs Tmax vs. Tmean. 
+It is common to report only the daily mean temperature, however, and this may hide huge variations in minimum and maximum temperautres. %there are several recent papers showing the importance of diurnal over nocturnal temperature on phenology.
+\item Compare these seasonal and daily variations to observational data (i.e. plot seasonal and daily variations for warmest vs coldest years)?
+
+\item Include a discussion that 3-5 year studies may not capture ultimate, long-term responses that may actually be in the opposite direction to short-term responses.  Cite recent Global Change Biology paper by Harte et al.  Ideally, we want to run studies long enough to capture population-level responses to warming.
+\end{itemize}
 \subsection {Infrastructure}
 The experimental structures themselves alter temperature and other important biotic and abiotic variables (see note below), in ways that are not generally examined or reported in experimental warming studies. Compare sham and ambient data on temperature (mixed effects models). we should also make explicit what a sham is and how a control plot should be%
 \begin{itemize}
-\item Soil temperature is LOWER in the shams, compared with the ambient air (Figure 1). Define exp methods included in this analyses, and other details.
-\item Air temperature is HIGHER in the shams, compared with the ambient air (Figure 1).
-\item The pattern was consistent for min and max air and soil temperatures, as well (Figure 2).
+\item Air temperature is HIGHER in the structural controls, compared with the ambient air with no structures installed (Figure 1). Define exp methods included in this analyses, and other details.
+\item Soil temperatures are LOWER in the structural controls, compared with ambient air  (Figure 1). 
+\item The pattern was consistent for min and max air and soil temperatures, as well (not shown).
+
+ \begin{figure}[p]
+     \centering
+ \includegraphics{figures/ShamVSAmbient_mean.pdf}    
+ \caption{Difference between mean air and soil temperatures in structural controls compared with ambient controls, with no control chambers or warming infrastructure in place. Air temperatures were higher, whereas soil temperatures were lower in the structural controls compared with ambient conditions. We show fixed effects from a mixed effects model that accounts for differences in experimental design and other factors among sites by including site as an intercept-only random effect (see shamvambient.R for details). }
+ \end{figure}
 \item From anne-marie: It seems as though it may be interesting (and important) to focus on other variables that shams may affect than temperature, as the net effect of the sham plus the intended temperature treatment is often what is measured/reported. We should think about discussing the facts that infrastructure may shade the plots and intercept precipitation.  Thus, if covariates of soil moisture and solar radiation are not measured/considered, there could be erroneous conclusions about cause and effect.  Perhaps even more importantly, there have been a number of good studies now that show that there are important interactions between warming and herbivory.  Thus, if shams affect access of herbivores to the plots (like open-top chambers may do), they may give results that are not realistic.  (This discussion should likely go in the biotic interactions section, but should be mentioned here in the infrastructure section.  I am happy to provide some good references.)
 I am not convinced by section 3.1 (as it stands now) hat this is important, as long as all of the temperature, moisture, humidity data from the treatment and control plots are reported.  Why go through all the extra cost (and space)?  If we are to make this argument, I think it needs more supporting evidence/ discussion in section 3.1 (please see my notes on initial ideas on how to do so)
 \end{itemize}
@@ -86,16 +107,7 @@ There is spatial variation in experimental warming effects, such that extrapolat
 \item Analysis of plot vs. block level variation vs. treatment effects. Lizzie is working on this.
 \item Documented variation in warming within plots (i.e. edge effects)? (This is known for open-top chambers)
 \end{itemize}
-\subsection {Time}
-In addition, there is often temporal variation in experimental warming, and this variation may be divergent from real (i.e. non-experimental) temperature patterns so it should carefully be considered in extrapolating experimental warming to future climate change impacts. Add details and examples of why this occurs, since warming experiments are tied to ambient conditions. 
-\begin{itemize}
-\item Seasonal variations in experimental warming effects (plots over time; Christy is working on this?).
-\item Daily variations in experimental warming effects (Tmin vs Tmax). This is often neglected (common to report only the daily mean temperature that may hide huge variations in min and max) and recently there are several papers showing the importance of diurnal over nocturnal temperature on phenology.
-\item Compare these seasonal and daily variations to observational data (i.e. plot seasonal and daily variations for warmest vs coldest years)
-\item Treatments are not applied consistently over the year- IR heaters can't
-apply consistent warming throughout the year, and some warming experiments turn off warming during some seasons (e.g. Clark et al, this is very common in the heating cable exp, like the ones in Austria, Norway, it is likely that this would yield different effects than if heating were turned on during winter (because then you change soil nutrient mineralization which might be important in winter and so change nutrient availability and moisture for the growing season). 
-\item Include a discussion that 3-5 year studies may not capture ultimate, long-term responses that may actually be in the opposite direction to short-term responses.  Site recent Global Change Biology paper by Harte et al.  Ideally, we want to run studies long enough to capture population-level responses to warming.
-\end{itemize}
+
 \section {Secondary effects of warming}
 Temperature interacts with many other climatic and nonclimatic factors to alter the abiotic environment. It is important that experimentally induced changes in other variables are realistic; for example, that experimental treatment does not increase moisture an an area projected to get much drier). Understanding the effect of an experimental treatment on the suite of interrelated variables becomes particularly  important when one is trying to determine mechanistic explanations for observed responses to warming.
 \begin{itemize}
@@ -104,7 +116,7 @@ Temperature interacts with many other climatic and nonclimatic factors to alter 
 \item 
 \end{itemize}
 \section {Biological Implications}
-\par We have highlighted a suite of factors that complicate simple interpretation of warming experiments. We argue that these largely unintended alterations are important for scientists to fully understand and report in their research because they are likely to have biological implications. 
+\par We have highlighted a suite of factors that complicate simple interpretation of warming experiments. We argue that these largely unintended alterations are important for scientists to fully understand and report in their research because they are likely to have biological implications (Figure 3).
 \par Examples:
 \begin{itemize}
 \item Plant phenology: likely to be altered in opposing ways by
@@ -117,7 +129,11 @@ the increased air temperatures and decrease soil moisture/temperature, cite Wolk
 \item genetic component? GXE interactions?
 \item herbivory
 \end{itemize}
-
+ \begin{figure}[p]
+     \centering
+ \includegraphics{figures/DirIndWarmingEffects.pdf}    
+ \caption{Figure 3. Experimental warming may cause biological responses to be muted or exaggerated, compared to direct responses to temperature alone, when indirect effects of experimental warming are also drivers of focal responses. For example, phenology may appear to be less sensitive to warming in experiments versus observational studies (Wolkovich et al 2012) because experimental warming reduces soil moisture, perhaps more than natural warming.}
+ \end{figure}
 \section {Recommendations for future climate change experiments}
  \par The warming effects we describe are not meant to be criticisms or to imply that experimental warming studies are not worthwhile. On the contrary, we believe that climate change experiments provide invaluable information about biological responses to warming. We also believe that we need to more fully explore the ways in which these warming experiments are altering climate, as it is clearly not simply shifting the mean. Here we describe a few recommendations to improve implementation, interpretation, and communication of future climate change experiments.
  \begin{itemize}

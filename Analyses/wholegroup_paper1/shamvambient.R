@@ -1,13 +1,10 @@
 ###Analyses of sham ("control") vs. "ambient" microclimate data, to examine how warming chambers may alter micrclimate.
 #Look at temperature, soil moisture
 library(lme4)
-update.packages()
 setwd("~/git/radcliffe/Analyses")
 #expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)
 expclim<-read.csv("expclim.csv", header=T)
 
-head(expclim)
-unique(expclim$temptreat)
 ##want to plot "0" compared to "ambient" in each site
 ##select out just these two treatments for now
 expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
@@ -21,7 +18,6 @@ sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$am
 sites_con<-sites_con[-which(sites_con=="chuine")]
 expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
 unique(expclim_cont$site)
-head(expclim_cont)
 #make figures of sham controls vs. ambient conditions:
 #mean soil temp:
 quartz(height=4, width=8)
@@ -146,18 +142,23 @@ air_monthsums<-monthsums_allyear[substring(rownames(monthsums_allyear),1,9)=="ai
 
 quartz(height=6,width=7)
 par(mfrow=c(2,1),mai=c(.6,.7,.2,.1), omi=c(.7,.01,.2,.2))
-#soil
-plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="Month", ylab="", ylim=c(min(soil_monthsums$temptreat0)-(max(soil_monthsums$SE)),max(soil_monthsums$temptreat0)+(max(soil_monthsums$SE))), bty="l", main="Mean Soil Temp")
-for (i in 1:12){
-  arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.05,angle=90,code=3)}
-points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="brown4")
 #air
-mtext("Difference between sham and ambient",side=2, line=2, adj=1.8)
-plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="Month", ylab="", ylim=c(min(air_monthsums$temptreat0)-(max(air_monthsums$SE)),max(air_monthsums$temptreat0)+(max(air_monthsums$SE))),bty="l", main="Mean Air Temp")
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="Month", ylab="", ylim=c(-1,1),bty="l", main="Mean Air Temperature")
+abline(h=0,lty=2)
 for (i in 1:12){
-  arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.05,angle=90,code=3)}
+  arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0,angle=90,code=0)}
 points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="blue")
+#mtext("a)",side=3, line=1, adj=0)
+#soil
+mtext("Difference between structural control and ambient",side=2, line=2, adj=1.2)
+plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="Month", ylab="", ylim=c(-1,1), bty="l", main="Mean Soil Temperature")
+abline(h=0,lty=2)
+for (i in 1:12){
+  arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0,angle=90,code=3)}
+points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="brown4")
 mtext("Month",side=1, line=2, adj=.5)
+#mtext("b)",side=3, line=1, adj=0)
+
 ####Now, min soil and air temp
 monthsums_allyear_min<-c()
 for (i in 1:length(months)){

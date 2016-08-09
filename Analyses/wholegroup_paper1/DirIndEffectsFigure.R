@@ -54,7 +54,7 @@ par(mfrow=c(1,3),omi=c(.1,.2,.1,.8), mai=c(.6,.3,.5,1))
 x<-c(seq(1:10));y<-seq(261,270)
 plot(x,y,type="l", lty=2,lwd=1, xlab="", ylab="", bty="l", cex.lab=1.2,ylim=c(255,275), yaxt="n",xaxt="n")
 lines(x,y+.5,lty=1,lwd=2)#observed response
-mtext("a) Isolated treatment effect",side=3, line=2, adj=.5,cex=.9)
+mtext("a) Temperature only response",side=3, line=2, adj=.5,cex=.9)
 mtext("Treatment intensity",side=1, line=1, adj=.5)
 mtext("(cooler", side=1, line=2, adj=0)
 mtext("warmer)", side=1, line=2, adj=1)
