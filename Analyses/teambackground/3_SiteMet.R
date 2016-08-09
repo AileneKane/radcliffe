@@ -142,6 +142,6 @@ for(s in 1:nrow(sites.master)){
     }
   }  # End file loop
   # Write all met for each site into it's own .csv file
-  write.csv(dat.out, file.path(dir.out, paste0(sname, "_gldas_2.0_", min(dat.out$year), "-", max(dat.out$year), ".nc")), row.names=F)
+  write.csv(dat.out, file.path(dir.out, paste0(sname, "_gldas_2.0_", min(dat.out$year), "-", max(dat.out$year), ".csv")), row.names=F)
 } # End site loop
 # -------------
