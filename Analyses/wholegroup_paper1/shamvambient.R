@@ -141,21 +141,21 @@ soil_monthsums<-monthsums_allyear[substring(rownames(monthsums_allyear),1,10)=="
 air_monthsums<-monthsums_allyear[substring(rownames(monthsums_allyear),1,9)=="air_fixed",]
 
 quartz(height=6,width=7)
-par(mfrow=c(2,1),mai=c(.6,.7,.2,.1), omi=c(.7,.01,.2,.2))
+par(mfrow=c(2,1),mai=c(.5,.7,.2,.1), omi=c(.4,.01,.2,.2))
 #air
-plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="Month", ylab="", ylim=c(-1,1),bty="l", main="Mean Air Temperature")
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="gray", xlab="Month", ylab="", ylim=c(-1,1),bty="l", main="Mean Air Temperature")
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0,angle=90,code=0)}
-points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="blue")
+points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="gray")
 #mtext("a)",side=3, line=1, adj=0)
 #soil
-mtext("Difference between structural control and ambient",side=2, line=2, adj=1.2)
-plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="Month", ylab="", ylim=c(-1,1), bty="l", main="Mean Soil Temperature")
+mtext("Difference between structural control and ambient (C)",side=2, line=2, adj=1.2)
+plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="gray", xlab="Month", ylab="", ylim=c(-1,1), bty="l", main="Mean Soil Temperature")
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0,angle=90,code=3)}
-points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="brown4")
+points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="gray")
 mtext("Month",side=1, line=2, adj=.5)
 #mtext("b)",side=3, line=1, adj=0)
 
@@ -275,10 +275,11 @@ for (i in 1:length(months)){
 ###Plot model results:
 mois_monthsums<-monthsums_allyear_mois[substring(rownames(monthsums_allyear_mois),1,10)=="mois_fixed",]
 quartz(height=5,width=6)
-plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="green", xlab="Month", ylab="Difference between sham and ambient", ylim=c(min(mois_monthsums$temptreat0)-(max(mois_monthsums$SE)),max(mois_monthsums$temptreat0)+(max(mois_monthsums$SE))),bty="l", main="Soil Moisture")
+plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="gray", xlab="Month", ylab="Difference between sham and ambient", ylim=c(-.05,0.05),bty="l", main="Soil Moisture")
+abline(h=0,lty=2)
 for (i in 1:12){
-  arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0.05,angle=90,code=3)}
-points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="green")
+  arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0,angle=90,code=3)}
+points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="gray")
 
 #Try doing average predictive comparisons for 
 airmod<-lmer(airtemp_mean~temptreat + (temptreat|site), data=monthdat, REML=FALSE)
