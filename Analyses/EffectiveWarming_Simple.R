@@ -1,5 +1,5 @@
 # Analysis of the effective (observed) warming of each experiment:
-
+library(car); library(reshape2)
 # ------------------------------
 # 1. read & format the RAW data
 # ------------------------------
@@ -23,6 +23,9 @@ expclim[which(!is.na(expclim$airtemp_max)), "AG.type"] <- "air"
 expclim$AG.type <- as.factor(expclim$AG.type)
 
 summary(expclim)
+
+# Check the plot IDs
+summary(expclim$plot)
 }
 # ------------------------------
 
@@ -84,9 +87,17 @@ for(s in unique(expclim$site)){
     exp.dev <- rbind(exp.dev, dat.stack)
   }
 }
+
+# Check the plot IDs on exp.dev
+summary(exp.dev$plot)
+
 # Merge the deviations into expclim
 expclim <- merge(expclim, exp.dev, all.x=T)
 summary(expclim)
+
+# Check the plot IDs on exp.dev
+summary(expclim$plot)
+
 # ------------------------------
 
 
@@ -112,13 +123,17 @@ effect.plot <- aggregate(expclim[,treatvars],
                          by=expclim[,c("site", "plot", "temptreat", "preciptreat", "block", "AG.type")],
                          FUN=mean, na.rm=T)
 # put our NAs back in 
-effect.plot$plot        <- as.factor(ifelse(effect.plot$plot       =="BLANK", NA, effect.plot$plot       ))
-effect.plot$temptreat   <- as.factor(ifelse(effect.plot$temptreat  =="BLANK", NA, effect.plot$temptreat  ))
-effect.plot$preciptreat <- as.factor(ifelse(effect.plot$preciptreat=="BLANK", NA, effect.plot$preciptreat))
-effect.plot$block       <- as.factor(ifelse(effect.plot$block      =="BLANK", NA, effect.plot$block      ))
-effect.plot$AG.type     <- as.factor(ifelse(effect.plot$AG.type    =="BLANK", NA, effect.plot$AG.type    ))
+effect.plot$plot        <- as.factor(ifelse(effect.plot$plot       =="BLANK", NA, paste(effect.plot$plot)       ))
+effect.plot$temptreat   <- as.factor(ifelse(effect.plot$temptreat  =="BLANK", NA, paste(effect.plot$temptreat)  ))
+effect.plot$preciptreat <- as.factor(ifelse(effect.plot$preciptreat=="BLANK", NA, paste(effect.plot$preciptreat)))
+effect.plot$block       <- as.factor(ifelse(effect.plot$block      =="BLANK", NA, paste(effect.plot$block)      ))
+effect.plot$AG.type     <- as.factor(ifelse(effect.plot$AG.type    =="BLANK", NA, paste(effect.plot$AG.type)    ))
 
 summary(effect.plot)
+
+# check plotIDs 
+summary(effect.plot$plot)
+
 
 # Save as a csv
 write.csv(effect.plot, "EffectiveWarming_Plot.csv", row.names=F, eol="\n")
