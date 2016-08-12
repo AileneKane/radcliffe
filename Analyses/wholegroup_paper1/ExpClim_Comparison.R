@@ -420,7 +420,7 @@ agg.dev.graph[agg.dev.graph$AGtemp_mean.dev.lo<= min(agg.dev.graph$AGtemp_mean.d
 agg.dev.graph[agg.dev.graph$AGtemp_mean.dev.hi>= max(agg.dev.graph$AGtemp_mean.dev, na.rm=T)  & !is.na(agg.dev.graph$AGtemp_mean.dev.hi),"AGtemp_mean.dev.hi"] <- max(agg.dev.graph$AGtemp_mean.dev, na.rm=T)
 summary(agg.dev.graph)
 
-png("figures/Exploratory_TimeSeries_AGTempMean_Deviation.png", height=10, width=10, units="in", res=180)
+png("../figures/Exploratory_TimeSeries_AGTempMean_Deviation.png", height=10, width=10, units="in", res=180)
 ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=AGtemp_mean.dev.lo, ymax=AGtemp_mean.dev.hi, fill=target), alpha=0.3) +
