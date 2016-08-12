@@ -106,4 +106,14 @@ Ambient and precipitation only plots that did not receive warming treatments had
 Precipitation treatments:
 Weekly additions of collected rainwater or snow that equaled 20% of the 1882–2005 monthly mean historical record from State College, PA (US Historical Climatology Data Network, Easterling et al., 1996). "April through December precipitation treatments were added in the form of water collected in a series of rainwater catchments distributed throughout the site. In winter months (December–March), precipitation was collected in a series of open topped plastic bins and distributed as water, ice, or snow, depending on the state at time of application." 
 
+5) CLELAND (JASPER RIDGE)
+Source: E.E. Cleland, N.R. Chiariello, S.R. Loarie, H.A. Mooney, C.B. Field "Diverse Responses of Phenology to Global Changes in a Grassland Ecosystem." Proceedings of the National Academy of Sciences of the United States of America (2006) 103, 13740-13744
+Plot design: 
+Randomized block, split-plot with 8 replicates of each treatment. 
+Elevated CO2 and warming were applied to whole circular plots (each 2-m diameter, 3.14-m2 area), whereas N deposition and increased precipitation were applied in a factorial arrangement to four 0.78 m2 quadrants within each plot. We excluded elevated CO2 and N treatments from this analysis, and use only ambient CO2 and ambient N treatments. Global change treatments were applied to undisturbed grassland plots beginning in November 1998, and are presently ongoing.
 
+Heating method:
+Plots were warmed with suspended infrared heaters, with target temperature increases above ambient of 1.5 °C
+
+Precipitation treatments:
+An irrigation system increased precipitation by supplementing +50% to every rainfall event. In addition, we extended the wet season by 20 days with two supplemental irrigation events. 
