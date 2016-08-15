@@ -117,3 +117,5 @@ Plots were warmed with suspended infrared heaters, with target temperature incre
 
 Precipitation treatments:
 An irrigation system increased precipitation by supplementing +50% to every rainfall event. In addition, we extended the wet season by 20 days with two supplemental irrigation events. 
+
+We have phenology data from 32 plots, and climate data from 44 plots.
