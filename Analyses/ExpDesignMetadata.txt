@@ -24,6 +24,7 @@ Heaters activated in January 1991 and operated continuously. In May 1993 a third
 Soil temperature measurements:
 Thermocouples were buried 5, 12, and 25 cm deep at three positions in each plot, recorded temperature every 2 h.
 
+At Duke, no phenology data were collected from one chamber (G08, warmed 5 degrees) for some reason
 2) MARCHIN
 Source: R.M. MARCHIN, C.F. SALK, W.A. HOFFMANN & R.R. DUNN. "Temperature alone does not explain phenological variation of diverse 
 temperate plants under experimental warming." Global Change Biology (2015) 21, 3138–3151
