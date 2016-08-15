@@ -39,15 +39,27 @@ colnames(expclimplots)[1]<-"DatasetID"
 exptreats_all<-left_join(expclimplots,exptreats5, by = c("DatasetID","temptreat","preciptreat"))
 exptreats_detail<-subset(exptreats_all,select=c(select=c("DatasetID","block","plot","temptreat","target","reported","temptreat_units","preciptreat","preciptreat_amt","preciptreat_units")))
 head(exptreats_detail)
+exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$target<-2
+exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$reported<-2.3
+exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-120
+exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perchistmean"
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="1"),]$target<-200
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="2"),]$target<-600
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="3"),]$target<-1000
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat>0),]$temptreat_units<-"Watts"
+
 write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r\n")  
   
-###Check that expphen blocks/plots march expclim blocks/plots:
+###Check that expphen blocks/plots match expclim blocks/plots:
 expphen<-read.csv("analyses/exppheno.csv", header=T)
 expphen$site.block.plot<-paste(expphen$site,expphen$block,expphen$plot,sep=".")
+expclimplots$site.block.plot<-paste(expclimplots$DatasetID,expclimplots$block,expclimplots$plot,sep=".")
+
 expplots <- expphen %>% # start with the data frame
   distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
   select(site, block, plot,site.block.plot)
-expplots  <- expplots [apply(expplots , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+#expplots  <- expplots [apply(expplots , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 #check for missing/nonmatching site/block/plots between these two files
 expphenplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,expclimplots$site.block.plot))),]
 ##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"

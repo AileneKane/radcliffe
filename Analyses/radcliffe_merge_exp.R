@@ -361,6 +361,8 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Dat
 clean.raw$cleland <- function(filename="JasperRidge_data.csv", path="./Data/Experiments/cleland") {
   file <- file.path(path, filename)
   cleland1 <- read.csv(file, check.names=FALSE, header=TRUE)  
+  cleland1<-cleland1[cleland1$CO2==1,]#remove plots with CO2 added
+  cleland1<-cleland1[cleland1$Nutrient==1,]#remove plots with N added
   colnames(cleland1)[8]<-"genus"
   cleland1$species<-NA
   cleland1$species[cleland1$genus=="Crepis"] <- "vessicaria"
@@ -385,6 +387,8 @@ clean.raw$cleland <- function(filename="JasperRidge_data.csv", path="./Data/Expe
   cleland1[cleland1$plot==19|cleland1$plot==20|cleland1$plot==21|cleland1$plot==31|cleland1$plot==35,]$block<-6
   cleland1[cleland1$plot==27|cleland1$plot==28|cleland1$plot==29|cleland1$plot==30,]$block<-7
   cleland1[cleland1$plot==22|cleland1$plot==23|cleland1$plot==24|cleland1$plot==25|cleland1$plot==36,]$block<-8
+  colnames(cleland1)[5]<-"plot2"
+  cleland1$plot<-paste(cleland1$plot2,cleland1$quad,sep="-")
   
   cleland<-subset(cleland1, select=c("site","block","plot","event","year","genus","species", "doy"))
   #cleland$variety <- NA
@@ -756,6 +760,7 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Data
   file <- file.path(path, filename)
   ellison1 <- read.csv(file, check.names=FALSE, header=TRUE)
   colnames(ellison1)[2]<-"plot"
+  ellison1[which(ellison1$plot=="13"|ellison1$plot=="14"|ellison1$plot=="15"),]$plot=="OUT"
   colnames(ellison1)[4]<-"genussp"
   ellison1$doy<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%j") 
   ellison1$year<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%Y")
@@ -855,11 +860,11 @@ expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#72029 rows,
+#70283 rows,    8 columns
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#71455  rows,8 columns
+dim(expphendb)#69709  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -877,7 +882,7 @@ expphendb[which(expphendb$species=="fusiformes"),]$species<-"fusiformis"#price
 expphendb[which(expphendb$genus=="Mertensiana"),]$genus<-"Mertensia"#price
 expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
 
-dim(expphendb)#70653  rows,8 columns
+dim(expphendb)#68907 rows,8 columns
 head(expphendb)
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 

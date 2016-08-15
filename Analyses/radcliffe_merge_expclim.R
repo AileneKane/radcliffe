@@ -42,7 +42,7 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   file2<-file.path(path, "hf113-11-df-outside.csv")
   marchin2<-read.csv(file2, header=TRUE)
   marchin2$year_doy<-paste(marchin2$year,marchin2$doy, sep="-")
-  marchin2$plot<-"ambient"
+  marchin2$plot<-"OUT"
   temp_min2<-aggregate(x=subset(marchin2, select=c("oAT1_Min","oAT2_Min","oAT3_Min","oSTo1_Min","oSTo2_Min","oSTo3_Min","oSTI1_Min","oSTI2_Min","oSTI3_Min")), by=list(marchin2$year_doy,marchin2$plot), FUN=min,na.rm=F)
   airtemp_min<-apply(temp_min2[,3:5],1,min,na.rm=F)
   soiltemp1_min<-apply(temp_min2[,6:8],1,min,na.rm=F)#temp at 2cm depth(organic)
@@ -408,7 +408,7 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
   ellison2<-read.csv(file2, header=TRUE)
   ellison2<-ellison2[-which(ellison2$year==2009),]
   ellison2$year_doy<-paste(ellison2$year,ellison2$doy, sep="-")
-  ellison2$plot<-"ambient"
+  ellison2$plot<-"OUT"
   temp_min2<-aggregate(x=subset(ellison2, select=c("oat1.min","oat2.min","oat3.min","osto1.min","osto2.min","osto3.min","osti1.min","osti2.min","osti3.min")), by=list(ellison2$year_doy,ellison2$plot), FUN=min,na.rm=F)
   airtemp_min<-apply(temp_min2[,3:5],1,min)
   soiltemp1_min<-apply(temp_min2[,6:8],1,min)#temp at 2cm depth(organic)
@@ -771,6 +771,8 @@ for (i in 1:length(soilfiles)){
 clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path="./Data/Experiments/cleland") {
   file <- file.path(path,filename)
   mois<- read.csv(file,header=TRUE)
+  mois<-mois[mois$CO2==1,]#remove plots with CO2 added
+  mois<-mois[mois$N==1,]#remove plots with N added
   colnames(mois)[2]<-c("block")
   mois$temptreat<-NA
   mois[mois$HEAT==1,]$temptreat<-"ambient"
@@ -778,10 +780,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   mois$preciptreat<-NA
   mois[mois$WATER==1,]$preciptreat<-0
   mois[mois$WATER==2,]$preciptreat<-1
-  colnames(mois)[10]<-c("plot")
+  mois$plot<-paste(mois$PLOT,mois$QUAD,sep="-")
   colnames(mois)[13:14]<-c("year","doy")
   mois$soilmois1<-mois$SM030/100
-  mois[which(mois$SM030>100),]$soilmois1<-NA
   mois$site<-"cleland"
   mois$soiltemp2_min<-NA
   mois$soiltemp2_max<-NA
@@ -797,9 +798,8 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   mois$airtemp_max<-NA
   mois$soilmois2<-NA
   clelandclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  clelandclim[which(clelandclim$plot=="12" & clelandclim$block =="3"),]$block<-"2"
-  clelandclim[which(clelandclim$plot=="34" & clelandclim$block =="1"),]$block<-"4"
-  clelandclim[which(clelandclim$plot=="36" & clelandclim$block =="6"),]$block<-"8"
+  clelandclim[which(substr(clelandclim$plot,1,2)=="34" & clelandclim$block =="1"),]$block<-"4"
+  clelandclim[which(substr(clelandclim$plot,1,2)=="36" & clelandclim$block =="6"),]$block<-"8"
   row.names(clelandclim)<- NULL
   return(clelandclim)
 } 
@@ -821,7 +821,7 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#240075      21
+    dim(expphenclim1)#232483      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
     dim(expphenclim)#240051      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
