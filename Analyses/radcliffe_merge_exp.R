@@ -578,7 +578,7 @@ clean.raw$sherry <- function(filename, path) {
 #In all cases, 0 = not flowering; 1 = bud present; 2 = open flower present; 3   = senescent flower present (corolla still attached); 4 = initiated fruit (corolla off); 5 = expanding fruit; 6 = dehisced fruit.
 #Of course, these stages mean different things for each species.
 #Species names have changed in some cases, or if one uses different authorities.  For example, Potentilla gracilis is now P. pulcherrima, and I think Bill Weber is the only one who advocates the genus "Seriphidium" for shrubby Artemisia.  So you may want to double-check names.
-#The number of files should correspond more-or-less with the number of years reported in the 1998 paper, with the addition of a few files from 1990 censuses (which can probably be left out of analyses since we were working the bugs out of our methods in that year).
+#The number of files should correspond more-or-less with the number of years reported in the 1998 paper, with the addition of a few files from 1990 censuses (which can probably be left out of analyses since we were working the bugs out of our methods in that year and this was not a warming year).
 clean.raw$price <- function(filename, path) {
   pricefiles<-c("ATPHEN90g.csv","ATPHEN91g.csv","ATPHEN92g.csv","ATPHEN94g.csv","CLPHEN91g.csv","CLPHEN92g.csv","CLPHEN93g.csv","CLPHEN94g.csv","CRPHEN92g.csv","CRPHEN93g.csv","CRPHEN94g.csv","DNPHEN90g.csv","DNPHEN91g.csv","DNPHEN92g.csv","DNPHEN93g.csv","DNPHEN94g.csv","EGPHEN90g.csv","EGPHEN91g.csv","EGPHEN92g.csv","EGPHEN93g.csv","EGPHEN94g.csv","ESPHEN90g.csv","ESPHEN91g.csv","ESPHEN92g.csv","ESPHEN93g.csv","ESPHEN94g.csv","IAPHEN90g.csv","IAPHEN91g.csv","IAPHEN92g.csv","IAPHEN93g.csv","IAPHEN94g.csv","LLPHEN90G.csv","LLPHEN91G.csv","LLPHEN92G.csv","LLPHEN93G.csv","LLPHEN94G.csv","MFPHEN90G.csv","MFPHEN91g.csv","MFPHEN92g.csv","MFPHEN93g.csv","MFPHEN94g.csv","PGPHEN91g.csv","PGPHEN92g.csv","PGPHEN93g.csv","PGPHEN94g.csv")
   skiplines<-c(3,3,2,2,rep(3,times=41))  
@@ -646,9 +646,10 @@ clean.raw$price <- function(filename, path) {
   price4<-price4[!is.na(price4$doy),]
   price4$block<-NA
   price5<-subset(price4, select=c("site","block", "plot","event","year","genus","species", "doy"))
+  price6<-price5[which(price5$year!="1990"),]#remove 1990, since this is prewarming data
   #price5$variety <- NA
   #price5$cult <- NA
-  return(price5)
+  return(price6)
 }
 
 ##Data from Chuine
@@ -760,7 +761,6 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Data
   file <- file.path(path, filename)
   ellison1 <- read.csv(file, check.names=FALSE, header=TRUE)
   colnames(ellison1)[2]<-"plot"
-  ellison1[which(ellison1$plot=="13"|ellison1$plot=="14"|ellison1$plot=="15"),]$plot=="OUT"
   colnames(ellison1)[4]<-"genussp"
   ellison1$doy<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%j") 
   ellison1$year<-strftime(strptime(ellison1$date, format = "%m/%d/%y"),format = "%Y")
@@ -774,6 +774,7 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Data
   ellison3[ellison3$phenology=="S3",]$event<-"bbd"
   ellison3[ellison3$phenology=="S4",]$event<-"lud"
   ellison3[ellison3$phenology=="S5",]$event<-"lod"
+  ellison3[which(ellison3$plot=="13"|ellison3$plot=="14"|ellison3$plot=="15"),]$plot<-"OUT"
   ellison3$site<-"ellison"
   ellison3$block<-NA
   ellison<-subset(ellison3, select=c("site","block","plot","event","year","genus","species", "doy"))
@@ -860,11 +861,11 @@ expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#70283 rows,    8 columns
+#70029 rows,    8 columns
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#69709  rows,8 columns
+dim(expphendb)#69455  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -882,7 +883,7 @@ expphendb[which(expphendb$species=="fusiformes"),]$species<-"fusiformis"#price
 expphendb[which(expphendb$genus=="Mertensiana"),]$genus<-"Mertensia"#price
 expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
 
-dim(expphendb)#68907 rows,8 columns
+dim(expphendb)#68653 rows,8 columns
 head(expphendb)
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 

@@ -50,5 +50,7 @@ unique(chuine.phen$plot) # these don't merge!
 
 ## try some merges, need this to also include block!
 goo <- merge(expphen, treats, by=c("site", "block", "plot")) # losing about 2% of the data
-goo <- merge(goo, effwarm.plot, by=c("site", "block", "plot")) # losing 93% of resulting data
 
+goo <- merge(goo, effwarm.plot, by=c("site", "block", "plot")) # losing 93% of resulting data
+dim(goo)
+effwarm.plot

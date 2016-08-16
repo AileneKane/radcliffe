@@ -15,8 +15,8 @@ library(dplyr)
 expsite<-read.csv("analyses/expsiteinfo.csv", header=TRUE)
 expsite2<-subset(expsite,select=c("DatasetID","FirstAuthor","warming_type","temptreat_1","temptreat_2","temptreat_3","temptreat_4","temptreat_5","temptreat_6","temptreat_7","temptreat_8","temptreat_9","temptreat_units"))
 expsite3<-subset(expsite,select=c("DatasetID","FirstAuthor","temptreat_1_reported","temptreat_2_reported","temptreat_3_reported","temptreat_4_reported","temptreat_5_reported","temptreat_6_reported","temptreat_7_reported","temptreat_8_reported","temptreat_9_reported"))
-exptreats<-gather(expsite2,key=treat,value=target,temptreat_1,temptreat_2,temptreat_3,temptreat_4,temptreat_5,temptreat_6,temptreat_7,temptreat_8,temptreat_9,na.rm=TRUE)#temperature treatments
-exptreats2<-gather(expsite3,key=treat,value=reported,temptreat_1_reported,temptreat_2_reported,temptreat_3_reported,temptreat_4_reported,temptreat_5_reported,temptreat_6_reported,temptreat_7_reported,temptreat_8_reported,temptreat_9_reported,na.rm=TRUE)#reported temperature
+exptreats<-gather(expsite2,key=treat,value=target,temptreat_1,temptreat_2,temptreat_3,temptreat_4,temptreat_5,temptreat_6,temptreat_7,temptreat_8,temptreat_9,na.rm=FALSE)#temperature treatments
+exptreats2<-gather(expsite3,key=treat,value=reported,temptreat_1_reported,temptreat_2_reported,temptreat_3_reported,temptreat_4_reported,temptreat_5_reported,temptreat_6_reported,temptreat_7_reported,temptreat_8_reported,temptreat_9_reported,na.rm=FALSE)#reported temperature
 exptreats2$treat<-substr(exptreats2$treat,1,11)
 exptreats3<-left_join(exptreats,exptreats2, by = c("DatasetID","FirstAuthor","treat"))
 exptreats3$temptreat<-substr(exptreats3$treat,11,11)
@@ -48,7 +48,28 @@ exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$tem
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="2"),]$target<-600
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="3"),]$target<-1000
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat>0),]$temptreat_units<-"Watts"
+exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$target<-4
+exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$reported<-4.17
+exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-200
+exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="1"),]$target<-1.5
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="1"),]$reported<-1.5
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="2"),]$target<-3
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="2"),]$reported<-3
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="2"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-70
+exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$preciptreat=="-1"),]$preciptreat_units<-"perc"
 
+exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$target<-1.5
+exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$reported<-1
+exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
+exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-perc
+exptreats_detail[which(exptreats_detail$DatasetID=="ellison" & exptreats_detail$preciptreat=="ambient"),]$preciptreat<-NA
+exptreats_detail[which(exptreats_detail$DatasetID=="marchin" & exptreats_detail$preciptreat=="ambient"),]$preciptreat<-NA
+colnames(exptreats_detail)[1]<-"site"
 write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r\n")  
   
 ###Check that expphen blocks/plots match expclim blocks/plots:
@@ -64,4 +85,16 @@ expplots <- expphen %>% # start with the data frame
 expphenplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,expclimplots$site.block.plot))),]
 ##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
 expphenplots_nomatch2<-expclimplots[which(is.na(match(expclimplots$site.block.plot,expplots$site.block.plot))),]
-#for some reason, there are a few plots in the cleland dataset in which phenology data were not collected, but climate data were
+#these are all fine, there are a few plots (33,34,35,36) in the cleland dataset and one plot in the clarkduke dataset (G08) in which climate data were collected, but no phenology data were
+
+##now need to check with effective warming data...for some reason that is not lining up.
+###Check that expphen blocks/plots match expclim blocks/plots:
+effwarm<-read.csv("analyses/EffectiveWarming_Plot.csv", header=T)
+effwarm$site.block.plot<-paste(effwarm$site,effwarm$block,effwarm$plot,sep=".")
+
+effwarmplots <- effwarm %>% # start with the data frame
+  distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
+  select(site, block, plot,site.block.plot)
+#check for missing/nonmatching site/block/plots between effective warming and expphen
+exppheneffwarmplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,effwarm$site.block.plot))),]
+effwarmplots_nomatch2<-effwarmplots[which(is.na(match(effwarmplots$site.block.plot,expplots$site.block.plot))),]

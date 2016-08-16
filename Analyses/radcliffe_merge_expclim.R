@@ -56,7 +56,7 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   year_doy <- strsplit(temp_min2$year_doy,'-') 
   year_doy<-do.call(rbind, year_doy)
   temptreat<-rep("ambient",times=dim(year_doy)[1])
-  preciptreat<-rep("ambient",times=dim(year_doy)[1])
+  preciptreat<-rep(NA,times=dim(year_doy)[1])
   oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max))
   oallclim$soilmois1<-NA
   oallclim$soilmois2<-NA
@@ -423,7 +423,7 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
   year_doy <- strsplit(temp_min2$year_doy,'-') 
   year_doy<-do.call(rbind, year_doy)
   temptreat<-rep("ambient",times=dim(year_doy)[1])
-  preciptreat<-rep("ambient",times=dim(year_doy)[1])
+  preciptreat<-rep(NA,times=dim(year_doy)[1])
   oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois1))
   colnames(oallclim)[3:5]<-c("plot","year","doy")
   allclim2<-rbind(allclim1,oallclim)
@@ -762,12 +762,13 @@ for (i in 1:length(soilfiles)){
   allclim$cantemp_max<-NA
   allclim$block<-substr(allclim$plot,1,1)
   chuineclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  chuineclim  <- chuineclim [apply(chuineclim[5] , 1, function(x) all(!is.na(x))),] # only keep rows with plotnames in them
   row.names(chuineclim)<- NULL
   return(chuineclim)
 }
 ##Jasper Ridge data ##
 ## Data type:Right now, all we have is soil moisture 
-## Notes: data shared by isabelle chuine (isabelle.chuine@cefe.cnrs.fr), she said to leave out 2005 data
+## Notes: data shared by jeff dukes
 clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path="./Data/Experiments/cleland") {
   file <- file.path(path,filename)
   mois<- read.csv(file,header=TRUE)
@@ -821,9 +822,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#232483      21
+    dim(expphenclim1)#229269      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#240051      21
+    dim(expphenclim)#229245     21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -863,3 +864,4 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     boxplot(soiltemp1_mean~alltreat, data=expphenclim)
     boxplot(soilmois1~alltreat, data=expphenclim)
 
+unique(cleanclimdata.raw$chuine$plot)
