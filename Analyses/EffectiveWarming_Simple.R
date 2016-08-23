@@ -1,5 +1,7 @@
 # Analysis of the effective (observed) warming of each experiment:
 library(car); library(reshape2)
+options(stringsAsFactors = FALSE)
+
 # ------------------------------
 # 1. read & format the RAW data
 # ------------------------------

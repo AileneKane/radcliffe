@@ -35,6 +35,7 @@ expclimplots <- expclim %>% # start with the data frame
   distinct(siteblockplot,.keep_all = TRUE) %>% # establishing grouping variables
   select(site, block, plot,siteblockplot,temptreat,preciptreat)
 colnames(expclimplots)[1]<-"DatasetID"
+expclimplots$preciptreat<-as.character(expclimplots$preciptreat)
 ##now merge this with exptreats5 to make new treats file with more detail:
 exptreats_all<-left_join(expclimplots,exptreats5, by = c("DatasetID","temptreat","preciptreat"))
 exptreats_detail<-subset(exptreats_all,select=c(select=c("DatasetID","block","plot","temptreat","target","reported","temptreat_units","preciptreat","preciptreat_amt","preciptreat_units")))
@@ -48,6 +49,10 @@ exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$tem
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="2"),]$target<-600
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="3"),]$target<-1000
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat>0),]$temptreat_units<-"Watts"
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-50
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="-1"),]$preciptreat_units<-"perc"
 exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$target<-4
 exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
 exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$reported<-4.17
@@ -66,9 +71,7 @@ exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$
 exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$reported<-1
 exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
 exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
-exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-perc
-exptreats_detail[which(exptreats_detail$DatasetID=="ellison" & exptreats_detail$preciptreat=="ambient"),]$preciptreat<-NA
-exptreats_detail[which(exptreats_detail$DatasetID=="marchin" & exptreats_detail$preciptreat=="ambient"),]$preciptreat<-NA
+exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
 colnames(exptreats_detail)[1]<-"site"
 write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r\n")  
   
@@ -76,6 +79,7 @@ write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r
 expphen<-read.csv("analyses/exppheno.csv", header=T)
 expphen$site.block.plot<-paste(expphen$site,expphen$block,expphen$plot,sep=".")
 expclimplots$site.block.plot<-paste(expclimplots$DatasetID,expclimplots$block,expclimplots$plot,sep=".")
+expphen$site.block.plot<-paste(expphen$site,expphen$block,expphen$plot,sep=".")
 
 expplots <- expphen %>% # start with the data frame
   distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
@@ -90,11 +94,15 @@ expphenplots_nomatch2<-expclimplots[which(is.na(match(expclimplots$site.block.pl
 ##now need to check with effective warming data...for some reason that is not lining up.
 ###Check that expphen blocks/plots match expclim blocks/plots:
 effwarm<-read.csv("analyses/EffectiveWarming_Plot.csv", header=T)
-effwarm$site.block.plot<-paste(effwarm$site,effwarm$block,effwarm$plot,sep=".")
+effwarm$site.block.plot.precip<-paste(effwarm$site,effwarm$block,effwarm$plot,effwarm$preciptreat,sep=".")
 
 effwarmplots <- effwarm %>% # start with the data frame
-  distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
-  select(site, block, plot,site.block.plot)
+  distinct(site.block.plot.precip,.keep_all = TRUE) %>% # establishing grouping variables
+  select(site, block, plot,site.block.plot.precip)
 #check for missing/nonmatching site/block/plots between effective warming and expphen
 exppheneffwarmplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,effwarm$site.block.plot))),]
+##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
 effwarmplots_nomatch2<-effwarmplots[which(is.na(match(effwarmplots$site.block.plot,expplots$site.block.plot))),]
+#these are all fine, there are a few plots (33,34,35,36) in the cleland dataset and one plot in the clarkduke dataset (G08) in which climate data were collected, but no phenology data were
+dim(effwarm)
+head(effwarm)#nothing duplicated...

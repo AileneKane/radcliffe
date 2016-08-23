@@ -16,7 +16,7 @@ options(stringsAsFactors = FALSE)
 library(plyr)
 library(nlme)
 
-setwd("~/Documents/git/projects/meta_ep2/radcliffe/Analyses")
+setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses")
 
 ## get the data
 # Christy says (early June 2016): I just pushed two sets of calculations: one at the plot level (EffectiveWarming_Plot.csv) and one at the treatment level (EffectiveWarming_Treatment.csv). Because not all treatments have above or below ground temperature, I went ahead and calculated the deviation from control/ambient for aboveground and belowground max, min, and mean temperature.
@@ -49,8 +49,5 @@ unique(chuine.clim$plot)
 unique(chuine.phen$plot) # these don't merge!
 
 ## try some merges, need this to also include block!
-goo <- merge(expphen, treats, by=c("site", "block", "plot")) # losing about 2% of the data
-
-goo <- merge(goo, effwarm.plot, by=c("site", "block", "plot")) # losing 93% of resulting data
-dim(goo)
-effwarm.plot
+goo <- join(expphen, treats, by=c("site", "block", "plot")) # losing about 2% of the data
+goo <- join(goo, effwarm.plot, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")# losing 93% of resulting data
