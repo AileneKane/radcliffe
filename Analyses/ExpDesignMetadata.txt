@@ -161,9 +161,14 @@ We have phenology data from 32 plots, and climate data from 44 plots.
 9) SHERRY
 Source:
 Plot design:
+20 3x2-m plots were placed 1.5 m apart in two rows 3 m apart. 10 plots were selected to have heaters and  10 plots hung with two
+‘‘dummy’’ heaters to simulate shading effects of the heaters. Five of both the warmed and unwarmed plots were selected to receive
+doubled precipitation. Air temperature was monitored hourly with automated thermocouple systems (Campbell Science Equipment, Logan, UT) at 15 cm above and at depths of 7.5, 22.5, 45, 75, and 105 cm in the soil. Relative to the temperature in control plots, the air temperature increased by 4.17°C in the warmed plots, decreased by 0.44°C in the double precipitation plots, and increased by 4.83°C in the warming plus doubled precipitation plots during the observation period (February 20, 2003, through November 16,2003). The increase in temperature, which is at the upper range of the Intergovernmental Panel on Climate Change projection, was designed to generate a perturbation large enough to affect ecosystem processes. 
 Heating method:
-Precipitation treatments
+two 165  15 cm infrared heaters (Kalglo Electronics Inc., Bethlehem, PA) suspended at a height of 1.5 m above the ground. 
 
+Precipitation treatments
+doubled precipitation was implemented by using a rainfall collection pan, which was an angled catchment the same size and shape as the plot that funneled water onto these plots with each rain event so that the amount of rainfall was doubled.
 10) DUNNE
 Source:
 Plot design:
