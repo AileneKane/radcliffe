@@ -107,7 +107,44 @@ Ambient and precipitation only plots that did not receive warming treatments had
 Precipitation treatments:
 Weekly additions of collected rainwater or snow that equaled 20% of the 1882–2005 monthly mean historical record from State College, PA (US Historical Climatology Data Network, Easterling et al., 1996). "April through December precipitation treatments were added in the form of water collected in a series of rainwater catchments distributed throughout the site. In winter months (December–March), precipitation was collected in a series of open topped plastic bins and distributed as water, ice, or snow, depending on the state at time of application." 
 
-5) CLELAND (JASPER RIDGE)
+
+5) CHUINE
+Source:
+X. Morin, J. Roy, L. Sonie, I. Chuine. Changes in leaf phenology of three European oak species in response to experimental climate change. New Phytologist (2010) 186: 900–910
+Plot design:
+30 1.25X1.25 m plots grouped into five blocks. In each block, six plots received either ambient temperature conditions or increased temperature treatment of +1.5C or +3C compared with ambient temperature, and either ambient precipitation or reduced precipitation by 30% compared with ambient precipitation during spring and summer. Treatments’ levels were chosen according to climate predictions for the French Mediterranean region for 2100 (IPCC, 2001). The experimental design was a factorial split plot on a randomized complete block design. 
+
+Heating method:
+ two infrared heaters (80 cm, 800 W, Vulcanic; Paris, France) equipped with reflectors installed at 1 m height laterally at the eastern and western border of the plot to avoid shading. At each plot air temperature was monitored by infrared sensors (Raytek; Thermalert MID MIC, Berlin, Germany) at a height of 1 m, which were protected within a plastic cap. As these sensors were revealed to be poorly robust in outdoor conditions, supplementary thermocouples and PT100 sensors were installed in two of the five repetitions, and periodic measurements with an infrared manual sensor (Raytek; Thermalert MID MIC, Berlin, Germany) were made. 
+
+Precipitation treatments:
+The plots of the reduced water supply treatment were equipped with an automatic, extensible shelter system composed of six plastic gutters. The shelter was activated by a rain sensor 12V (Kemo, Langen, Germany) and reduced incoming rainwater by c. 30% during spring and summer. During the summer 2003, which was particularly hot and dry, all plots were occasionally watered with 15 l and 10 l of water for normal and reduced water supply treatments, respectively, in order to attenuate drought stress, but in
+
+6) ELLISON
+Source:
+S.L. Pelini, F.P. Bowles3, A.M. Ellison, Ni.J. Gotelli, N.J. Sanders,R.R. Dunn. Heating up the forest: open-top chamber warming manipulation of arthropod communities at Harvard and Duke Forests. Methods in Ecology and Evolution 2011, 2, 534–540
+
+Plot design:
+15 experimental plots in the forest understorey: 12 of the plots have octagonal chambers with 9 heated and 3 are unheated chamber controls. Each site also has 3 chamberless control plots that lack chambers but are equal in surface area to the chambers. Vegetation within the experimental plots was not cleared prior to chamber construction. chambers are 5 m in diameter with eight walls. Each chamber has a±20-cm-diameter oak tree (Quercus rubra), that provides a large thermal storage mass at the centre of the plot that reduces a ‘cold core’ in the middle of the chamber (as the chambers are essentially chimneys) and increases thermal mixing. Chamber walls are composed of wood frames attached to metal fence posts and are covered with plastic greenhouse sheeting. The bottoms of the chamber walls are elevated 2–3 cm above the ground so that movement of ants and other arthropods into and out of the chambers is not restricted. 
+
+Heating method:
+forced air blown over hydronic radiators fed by a closed-loop mixture of hot water and antifreeze (propylene glycol).Water is heated with onsite, propane-fuelled highefficiency Prestige Solo condensing water boilers (Triangle Tube, Blackwood, NJ, USA) and is delivered to the chambers through 1- and 1¼-inch (2Æ54 and 3Æ175 cm)-diameter Insulpex piping (Rehau, Leesburg, VA, USA). For each heated chamber, heat is transferred to the air via a copper coil heat exchanger (Model HF2-17518; Smith’s Environmental Products Ltd., Randolph,MA,USA),and the heat level is controlled by a Belimo valve (3-way valve set via an LR-24 actuator; Belimo America, Danbury, CT, USA). The highefficiency boilers work best when running constantly. Thus, temperature in each chamber is controlled by adjusting fan speed and hot water flow through the Belimo valve, not by thermostats that would repeatedly cycle the boilers on and off. Once heated, air is delivered to the chambers by blowers (FKD12XL blower; Fantech, Lenexa, KS, USA) through 15-cm-diameter plastic plena (Figs 2 and 3b). The plena, which hang 45 cm above the ground, run in two concentric
+
+Precipitation treatments: none
+
+7) FARNSWORTH
+Source:
+Farnsworth, E. J., Nunez-Farfan, J. , Careaga, S. A., Bazzaz, F. A. 1995. Phenology and growth of three temperate forest life forms in response to artificial soil warming. Journal of Ecology 83: 967-977.
+
+Plot design:
+18 6mx6m plots in 6 blocks of 3 plots per block. Each block contained a heated plot (heated to 5 degrees above ambient), a disturbance control that contained soil cables but no electricity, and control plots left intact.
+
+Heating method:
+subterranean soil cables placed 20 cm apart and 10cm deep in the soil
+
+Precipitation treatments: none
+
+8) CLELAND (JASPER RIDGE)
 Source: E.E. Cleland, N.R. Chiariello, S.R. Loarie, H.A. Mooney, C.B. Field "Diverse Responses of Phenology to Global Changes in a Grassland Ecosystem." Proceedings of the National Academy of Sciences of the United States of America (2006) 103, 13740-13744
 Plot design: 
 Randomized block, split-plot with 8 replicates of each treatment. 
@@ -120,3 +157,15 @@ Precipitation treatments:
 An irrigation system increased precipitation by supplementing +50% to every rainfall event. In addition, we extended the wet season by 20 days with two supplemental irrigation events. 
 
 We have phenology data from 32 plots, and climate data from 44 plots.
+
+9) SHERRY
+Source:
+Plot design:
+Heating method:
+Precipitation treatments
+
+10) DUNNE
+Source:
+Plot design:
+Heating method:
+Precipitation treatments
