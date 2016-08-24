@@ -6,7 +6,7 @@ options(stringsAsFactors=FALSE)
 #library(lme4)
 #library(car)
 ##Read in climate and phenology data
-setwd("~/GitHub/radcliffe")
+setwd("~/git/radcliffe")
 expclim<-read.csv("Analyses/expclim.csv", header=T)
 ##Calculate chilling days. We want to use a base of 5 (<5 degrees C=chilling day)
 #For all sites/years/blocks/plots that we have data from previous year (starting sept 1), calculate chilling days from sept 1 through December 31
@@ -103,3 +103,4 @@ expclim3[expclim3$site==noblocksites[1]|expclim3$site==noblocksites[2]|expclim3$
 
 write.csv(expclim3,"Analyses/gddchill/expclim.wchillgdd.csv", row.names=FALSE)
 
+head(expclim3)
