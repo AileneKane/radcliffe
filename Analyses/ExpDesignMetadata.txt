@@ -165,12 +165,19 @@ Plot design:
 ‘‘dummy’’ heaters to simulate shading effects of the heaters. Five of both the warmed and unwarmed plots were selected to receive
 doubled precipitation. Air temperature was monitored hourly with automated thermocouple systems (Campbell Science Equipment, Logan, UT) at 15 cm above and at depths of 7.5, 22.5, 45, 75, and 105 cm in the soil. Relative to the temperature in control plots, the air temperature increased by 4.17°C in the warmed plots, decreased by 0.44°C in the double precipitation plots, and increased by 4.83°C in the warming plus doubled precipitation plots during the observation period (February 20, 2003, through November 16,2003). The increase in temperature, which is at the upper range of the Intergovernmental Panel on Climate Change projection, was designed to generate a perturbation large enough to affect ecosystem processes. 
 Heating method:
-two 165  15 cm infrared heaters (Kalglo Electronics Inc., Bethlehem, PA) suspended at a height of 1.5 m above the ground. 
+two 165 x 15 cm infrared heaters (Kalglo Electronics Inc., Bethlehem, PA) suspended at a height of 1.5 m above the ground. 
 
-Precipitation treatments
+Precipitation treatment:
 doubled precipitation was implemented by using a rainfall collection pan, which was an angled catchment the same size and shape as the plot that funneled water onto these plots with each rain event so that the amount of rainfall was doubled.
+
 10) DUNNE
 Source:
+SUBALPINE MEADOW FLOWERING PHENOLOGY RESPONSES TO CLIMATE CHANGE: INTEGRATING EXPERIMENTAL AND GRADIENT METHODS
+J.A. DUNNE,J.HARTE, AND K.J. TAYLOR. Ecological Monographs, 73(1), 2003, pp. 69–86
 Plot design:
+10 experimental plots (3 X 10 m) were established in a subalpine meadow site at RMBL. plots were laid out in an arc, with control and treatment plots alternating to facilitate separation of treatment effects from north to south plot position effects 
+
 Heating method:
-Precipitation treatments
+In January 1991, two electric radiant heaters were suspended 2.5 m above the ground parallel to the 10-m midline for each treatment plot. These heaters produced a nearly uniform 15 W/m2 year-round additional heat flux over 80% of the plot soil surface (Harte et al. 1995). In May 1993, Harte and colleagues added a third heater to each plot and increased the heat flux to 22 W/m2 for more accurate simulation of warming predicted due to doubling of atmospheric CO2 (Harte and Shaw 1995).
+
+Precipitation treatments: none
