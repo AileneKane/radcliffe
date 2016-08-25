@@ -54,16 +54,21 @@ means by automated dataloggers (CR1000; Campbell Scientific
 Inc.). 
 
 3) BACE
-Source: Jeff Dukes, jsdukes@purdue.edu
+Source: 
+S.S. HOEPPNER and J.S. DUKES. Interactive responses of old-field plant growth and composition to warming and precipitation. Global Change Biology (2012) 18, 1754–1768; also Jeff Dukes, jsdukes@purdue.edu
 Plot design: 
-4 blocks, each with 12 plots with fully crossed warming (4 levels, including ambient) and precipitation (3 levels, including ambient, reduction, and addition)
-
+3 blocks, each with 12 2 m by 2 m plots with fully crossed warming (4 levels, including ambient) and precipitation (3 levels, including ambient, reduction, and addition)
+randomized, complete block, split-plot design with factorial combinations of three precipitation treatments and four temperature treatments in each of three blocks
 Heating Method:
-infrared above-canopy heating of: ambient temperature, low (target of +1:0 C), medium (+2:7 C), and high warming (+4:0 C)
+infrared ceramic infrared heaters (200, 600,and 1000 Watts in the low, medium and high warming treatments,respectively) applied above-canopy heating of: ambient temperature, low (target of +1.0 C), medium (+2.7 C), and high warming (+4.0 C)
+Warming treatments were applied year-round and were mounted 1 m above the ground at each corner of the 4 m2 plots to provide an even spatial heating pattern across each plot.‘Dummy’ heaters simulated shading from infrastructure in the ambient warming treatments. Infrared radiometers measured canopy temperatures in the center of the ambient and warmest plots along each group of four plots; these readings were used to provide active feedback control to regulate heater output to maintain the target 4 °C temperature difference. Heaters achieved the target temperatures much of the time, but during the day and during rainstorms temperatures tended to dip below targets.
 
 Precipitation Treatment:
-drought= 50% reduction, using rainout shelters
+ambient=
+drought= 50% reduction of incoming precipitation throughout the year, using rainout shelters
 high precip=150%
+During the growing season (early May to mid-November), this water was routed to sprinklers that immediately reapplied it onto the wet plots, increasing precipitation by 50%. The sprinkler systems for the wet treatment were shut off from mid-November to early May to avoid damage from frozen pipes. 
+The ambient and wet sections of each greenhouse shelter were covered by deer fencing to reduce photosynthetically active radiation by ~5%, which approximates the reduction caused by the clear corrugated polycarbonate roof slats covering the drought sections. 
 
 4) CLARK DUKE & HARVARD
 Source: J.S. Clark,C. Salk, J. Melillo & J. Mohan. "Tree phenology responses to winter chilling, spring
