@@ -45,10 +45,10 @@ exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$te
 exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
 exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-120
 exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perchistmean"
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="1"),]$target<-200
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="2"),]$target<-600
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="3"),]$target<-1000
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat>0),]$temptreat_units<-"Watts"
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="1"),]$target<-1
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="2"),]$target<-2.7
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="3"),]$target<-4
+exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat>0),]$temptreat_units<-"C"
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-50
 exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
@@ -94,11 +94,11 @@ expphenplots_nomatch2<-expclimplots[which(is.na(match(expclimplots$site.block.pl
 ##now need to check with effective warming data...for some reason that is not lining up.
 ###Check that expphen blocks/plots match expclim blocks/plots:
 effwarm<-read.csv("analyses/EffectiveWarming_Plot.csv", header=T)
-effwarm$site.block.plot.precip<-paste(effwarm$site,effwarm$block,effwarm$plot,effwarm$preciptreat,sep=".")
+effwarm$site.block.plot<-paste(effwarm$site,effwarm$block,effwarm$plot,sep=".")
 
 effwarmplots <- effwarm %>% # start with the data frame
-  distinct(site.block.plot.precip,.keep_all = TRUE) %>% # establishing grouping variables
-  select(site, block, plot,site.block.plot.precip)
+  distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
+  select(site, block, plot,site.block.plot)
 #check for missing/nonmatching site/block/plots between effective warming and expphen
 exppheneffwarmplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,effwarm$site.block.plot))),]
 ##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
