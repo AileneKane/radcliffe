@@ -10,7 +10,7 @@
 # How to deal wth 1.2,1.9 in the reported temperatures .... and the NA
 # Think about default contrasts (options(contrasts=c("contr.sum", "contr.poly"))
 # Species .... just treating it as ranef at intercept, definitely not ideal but easy
-# 104 BACE observations with no block
+# 104 BACE observations with no block: Ailene says these are plots where phonology data were collected, but there is no climate data. they are separate from the experimental setup (maybe remove?)
 # Why doesn't Dunne have a block?
 # Ask Ailene if there is a way to see if including species in the slope is much better (I bet it is). This might be important to add to paper too .... 
 
@@ -158,11 +158,7 @@ anova(block.p)
 anova(block.ranefyr.p)
 
 
-stop(print("stop, the below code is in progress!"))
-
-##
-## START HERE!
-##
+# stop(print("stop, the below code is in progress!"))
 
 mode(phendat$target)
 mode(phendat$reported)
