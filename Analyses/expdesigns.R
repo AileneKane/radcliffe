@@ -11,6 +11,8 @@
 # Think about default contrasts (options(contrasts=c("contr.sum", "contr.poly"))
 # Species .... just treating it as ranef at intercept, definitely not ideal but easy
 # 104 BACE observations with no block
+# Why doesn't Dunne have a block?
+# Ask Ailene if there is a way to see if including species in the slope is much better (I bet it is). This might be important to add to paper too .... 
 
 ## housekeeping
 rm(list=ls()) 
@@ -63,6 +65,7 @@ phendat <- join(phendat.simple, effwarm.plot, by=c("site", "block", "plot","temp
 
 phendat$target <- as.numeric(phendat$target)
 phendat$latbi <- paste(phendat$genus, phendat$species)
+phendat$yr <- phendat$year-1980 # a little scaling
 
 ## ask a few questions
 whoblocks <- ddply(phendat, c("site"), count,
@@ -91,7 +94,7 @@ ggplot(phendat, aes(x=year, y=doy, color=genus)) +
 
 
 ##
-## First, let's look at Cleland, the only split-plot (split-plot, the plot is quadrant-plot in this case)
+## First, let's look at Cleland, the only split-plot (the plot is quadrant-within-plot in this case)
 
 # Based on Zavaleta et al. 2003 (PNAS):
 # Warming applied at plot level (as was CO2)
@@ -99,16 +102,16 @@ ggplot(phendat, aes(x=year, y=doy, color=genus)) +
 
 jasper <- subset(phendat, site=="cleland")
 
-jr.split <- lmer(doy~temptreat*preciptreat + (1|temptreat:block) + (1|year) +
+jr.split <- lmer(doy~temptreat*preciptreat + (1|temptreat:block) + (1|yr) +
     (1|latbi), data=jasper)
-jr.block <- lmer(doy~temptreat*preciptreat + (1|block) + (1|year) + (1|latbi), data=jasper)
+jr.block <- lmer(doy~temptreat*preciptreat + (1|block) + (1|yr) + (1|latbi), data=jasper)
 
 anova(jr.block, jr.split)
 
 # but does appropriately handle the repeated measures aspect? Below are not very happy
-jr.split.rm <- lmer(doy~temptreat*preciptreat*year + (1|temptreat:block) + (1|block/plot) +
+jr.split.rm <- lmer(doy~temptreat*preciptreat*yr + (1|temptreat:block) + (1|block/plot) +
     (1|latbi), data=jasper) # cannot nest plot in block here: (1|temptreat:block/plot)
-jr.block.rm <- lmer(doy~temptreat*preciptreat*year + (1|block/plot) +
+jr.block.rm <- lmer(doy~temptreat*preciptreat*yr + (1|block/plot) +
     (1|latbi), data=jasper)
 
 anova(jr.split.rm, jr.block.rm)
@@ -119,40 +122,41 @@ phenblock <- phendat[which(!phendat$site %in% noblocks),]
 phenblock.noprecip <- subset(phenblock, preciptreat==0 | is.na(preciptreat)==TRUE)
 phenblock.wprecip <- phenblock[which(phenblock$site %in% ayprecip),]
 
-# start with temp only, year as fixed
-ignoreblock <- lmer(doy~temptreat*year + (1|site/plot) + (1|latbi), data=phenblock.noprecip,
+# start with temp only, yr as fixed
+ignoreblock <- lmer(doy~temptreat*yr + (1|site/plot) + (1|latbi), data=phenblock.noprecip,
     na.action=na.exclude)
-block <- lmer(doy~temptreat*year + (1|site/block/plot) + (1|latbi), data=phenblock.noprecip,
+block <- lmer(doy~temptreat*yr + (1|site/block/plot) + (1|latbi), data=phenblock.noprecip,
     na.action=na.exclude)
-block.ranefyr <- lmer(doy~temptreat + (1|site/block/plot) + (1|latbi) + (1|year), data=phenblock.noprecip,
+block.ranefyr <- lmer(doy~temptreat + (1|site/block/plot) + (1|latbi) + (1|yr), data=phenblock.noprecip,
     na.action=na.exclude)
 
 summary(ignoreblock) # plot:site = 3.7
 summary(block) # variance explained by block and plot = 3.76
-summary(block.ranefyr) # hmm
+summary(block.ranefyr) # hmm .. (note: 7K obs)
 
 anova(ignoreblock)
 anova(block)
 anova(block.ranefyr)
 
-# Take homes: blocking doesn't do much for you. Year is a huge effect.
+# Take homes: blocking doesn't do much for you. Yr is a huge effect.
 
 # same for precip*temp studies
-ignoreblock.p <- lmer(doy~temptreat*preciptreat*year + (1|site/plot) + (1|latbi), data=phenblock.wprecip,
+ignoreblock.p <- lmer(doy~temptreat*preciptreat*yr + (1|site/plot) + (1|latbi), data=phenblock.wprecip,
     na.action=na.exclude)
-block.p <- lmer(doy~temptreat*preciptreat*year + (1|site/block/plot) + (1|latbi), data=phenblock.wprecip,
+block.p <- lmer(doy~temptreat*preciptreat*yr + (1|site/block/plot) + (1|latbi), data=phenblock.wprecip,
     na.action=na.exclude)
-block.ranefyr.p <- lmer(doy~temptreat*preciptreat + (1|site/block/plot) + (1|latbi) + (1|year), data=phenblock.wprecip,
+block.ranefyr.p <- lmer(doy~temptreat*preciptreat + (1|site/block/plot) + (1|latbi) + (1|yr), data=phenblock.wprecip,
     na.action=na.exclude)
 
 # note the warnings!
 summary(ignoreblock.p) # plot:site = 3.8
-summary(block.p) # 3.8 again, really nothing added by block I don't think?
+summary(block.p) # 3.8 again, really not much added by block I don't think?
 summary(block.ranefyr.p) # hmm
 
 anova(ignoreblock.p)
 anova(block.p)
 anova(block.ranefyr.p)
+
 
 stop(print("stop, the below code is in progress!"))
 
@@ -164,49 +168,71 @@ mode(phendat$target)
 mode(phendat$reported)
 
 # effects of target versus reported temp? Not much.
-temp.target <- lmer(doy~target + (1|site/block/plot) + (1|latbi) + (1|year), data=phendat.noprecip.wrep,
+temp.target <- lmer(doy~target + (1|site/block/plot) + (1|latbi) + (1|yr), data=phendat.noprecip.wrep,
     na.action=na.exclude)
-temp.reported <- lmer(doy~reported + (1|site/block/plot) + (1|latbi) + (1|year), data=phendat.noprecip.wrep,
+temp.reported <- lmer(doy~reported + (1|site/block/plot) + (1|latbi) + (1|yr), data=phendat.noprecip.wrep,
     na.action=na.exclude)
 
 summary(temp.target)
-summary(temp.reported) # super similar estimates of -3.6 days (I think this is almost exactly what I got in Fig S8 in my paper for above-canopy heaters!) 
+summary(temp.reported)
+# super similar estimates of -3.6 days (in my 2012 paper I got -3 (2.9 something), see in Fig S8 in my paper for above-canopy heaters) ... but based on 3K obs because of block ...
 
+# effects of target versus reported temp? Not much.
+temp.target.noblock <- lmer(doy~target + (1|site/plot) + (1|latbi) + (1|yr), data=phendat.noprecip.wrep,
+    na.action=na.exclude)
+temp.reported.noblock <- lmer(doy~reported + (1|site/plot) + (1|latbi) + (1|yr), data=phendat.noprecip.wrep,
+    na.action=na.exclude)
+
+summary(temp.target.noblock) # -0.37
+summary(temp.reported.noblock) # -0.57
+
+unique(phendat.noprecip.wrep$site)
 
 ## Real temperatures ...
 phendat.air <- subset(phendat.noprecip, is.na(AGtemp_mean_dev)==FALSE)
 phendat.soil <- subset(phendat.noprecip, is.na(BGtemp_mean_dev)==FALSE)
 
+unique(phendat.air$site)
+unique(phendat.soil$site)
+
 ## soil temps from 9 studies
-ggplot(phendat.soil, aes(x=year, y=doy, color=genus)) + 
+ggplot(phendat.soil, aes(x=yr, y=doy, color=genus)) + 
     facet_wrap(~site, scales="free_x") +
     geom_point()
 ## air temps from 6 studies
-ggplot(phendat.air, aes(x=year, y=doy, color=genus)) + 
+ggplot(phendat.air, aes(x=yr, y=doy, color=genus)) + 
     facet_wrap(~site, scales="free_x") +
     geom_point()
 
 
-temp.rep.air <- lmer(doy~target + (1|site/plot) + (1|latbi) + (1|year), 
+temp.tar.air <- lmer(doy~target + (1|site/plot) + (1|latbi) + (1|yr), 
     data=phendat.air, na.action=na.exclude) # block not sampled enough in this data subset
-temp.rep.soil <- lmer(doy~target + (1|site/block/plot) + (1|latbi) + (1|year),
+temp.tar.soil <- lmer(doy~target + (1|site/plot) + (1|latbi) + (1|yr),
     data=phendat.soil, na.action=na.exclude) 
 
-temp.real.air <- lmer(doy~AGtemp_mean_dev + (1|site/plot) + (1|latbi) + (1|year), 
+temp.rep.air <- lmer(doy~reported + (1|site/plot) + (1|latbi) + (1|yr), 
     data=phendat.air, na.action=na.exclude) # block not sampled enough in this data subset
-temp.real.soil <- lmer(doy~BGtemp_mean_dev + (1|site/block/plot) + (1|latbi) + (1|year),
-    data=phendat.soil, na.action=na.exclude) 
+temp.rep.soil <- lmer(doy~reported + (1|site/plot) + (1|latbi) + (1|yr),
+    data=phendat.soil, na.action=na.exclude) # block not sampled enough in this data subset
 
-summary(temp.rep.air) # 0.05, weird, need to look into
-summary(temp.real.air) # -2.3
+temp.real.air <- lmer(doy~AGtemp_mean_dev + (1|site/plot) + (1|latbi) + (1|yr), 
+    data=phendat.air, na.action=na.exclude) # block not sampled enough in this data subset
+temp.real.soil <- lmer(doy~BGtemp_mean_dev + (1|site/plot) + (1|latbi) + (1|yr),
+    data=phendat.soil, na.action=na.exclude)
 
-summary(temp.rep.soil) # -1.27
-summary(temp.real.soil) # effect of real temp is almost double
+
+summary(temp.tar.air) # 0.05 (22K obs)
+summary(temp.rep.air) # 0.71 (22K obs)
+summary(temp.real.air) # -2.3 (48K obs)
+
+summary(temp.tar.soil) # 0.7 (26K obs)
+summary(temp.rep.soil) # 0.09 (23K obs)
+summary(temp.real.soil) # -2.514 (55K obs)
 
 # does max air or min matter more?
-temp.real.air.min <- lmer(doy~AGtemp_min_dev + (1|site/plot) + (1|latbi) + (1|year), 
+temp.real.air.min <- lmer(doy~AGtemp_min_dev + (1|site/plot) + (1|latbi) + (1|yr), 
     data=phendat.air, na.action=na.exclude)
-temp.real.air.max <- lmer(doy~AGtemp_max_dev + (1|site/plot) + (1|latbi) + (1|year), 
+temp.real.air.max <- lmer(doy~AGtemp_max_dev + (1|site/plot) + (1|latbi) + (1|yr), 
     data=phendat.air, na.action=na.exclude)
 
 summary(temp.real.air) # -2.33
