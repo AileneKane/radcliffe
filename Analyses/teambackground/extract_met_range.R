@@ -107,11 +107,12 @@ extract.range.met.day <- function(species, yr.min=1949, yr.max=2010, dir.dat, di
     out.yr[["precip"]] <- ncvar_get(nc.now, varid="precip", start=c(lon.start, lat.start,1), count=c(length(spp.lon), length(spp.lat),nday))
 
     # # # Mask the aggregated data
-    out.yr[["tmean" ]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["tmean" ]])
-    out.yr[["tmin"  ]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["tmin"  ]])
-    out.yr[["tmax"  ]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["tmax"  ]])
-    out.yr[["precip"]][,,] <- ifelse(is.na(spp.mask), NA, out.yr[["precip"]])
-
+    for(d in 1:dim(out.yr$tmean)[3]){
+      out.yr[["tmean" ]][,,d] <- ifelse(is.na(spp.mask), NA, out.yr[["tmean" ]][,,d])
+      out.yr[["tmin"  ]][,,d] <- ifelse(is.na(spp.mask), NA, out.yr[["tmin"  ]][,,d])
+      out.yr[["tmax"  ]][,,d] <- ifelse(is.na(spp.mask), NA, out.yr[["tmax"  ]][,,d])
+      out.yr[["precip"]][,,d] <- ifelse(is.na(spp.mask), NA, out.yr[["precip"]][,,d])
+    }
     # Close file
     nc_close(nc.now)
 
