@@ -4,15 +4,16 @@
 ## Looking at simple ANOVA results of warming experiments ##
 ## Given different estimates of warming and given exact design (e.g., blocks) ##
 
-###############
-## To do ... ##
-###############
-# How to deal wth 1.2,1.9 in the reported temperatures .... and the NA
+################################
+## Read me, notes from Lizzie ##
+################################
+# Merge in a file that has the different target/reported temperatures by Year
 # Think about default contrasts (options(contrasts=c("contr.sum", "contr.poly"))
-# Species .... just treating it as ranef at intercept, definitely not ideal but easy
+# Species .... just treating it as ranef at intercept, definitely not ideal but easy, really need to get into slopes I think. 
 # 104 BACE observations with no block: Ailene says these are plots where phonology data were collected, but there is no climate data. they are separate from the experimental setup (maybe remove?)
-# Why doesn't Dunne have a block?
-# Ask Ailene if there is a way to see if including species in the slope is much better (I bet it is). This might be important to add to paper too .... 
+# Watch out on including block as not all studies have it (you thus lose lots of data)
+# Year ... think more, continuous variable? Fixef or Ranef?
+# And don't forget! Events (BBD or FLD, for example). Need to consider. ##
 
 ## housekeeping
 rm(list=ls()) 
