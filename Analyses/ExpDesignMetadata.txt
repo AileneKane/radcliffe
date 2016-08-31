@@ -11,6 +11,8 @@ This file provides details on experimental design and set-up of each experiment 
 1) PRICE
 Source: M.V. PRICE & N.M. WASER."EFFECTS OF EXPERIMENTAL WARMING ON PLANT REPRODUCTIVE PHENOLOGY IN A SUBALPINE MEADOW"
 Ecology, 79(4), 1998, pp. 1261–1271.
+Source: J.Harte & R. Shaw. Shifting dominance within a montane vegetation community: results of a climate-warming experiment
+ Science,  267 (5199),1995, pp. 876-880 
 Plot design: 
 10 plots, 3m X 10m in size and separated by >2m, were established in an alpine meadow at RMBL.
 Plots numbered consequetively and odd-numbered plots were heated by electric heaters suspended 2.5 m above them.
@@ -23,8 +25,8 @@ Heaters activated in January 1991 and operated continuously. In May 1993 a third
 
 Soil temperature measurements:
 Thermocouples were buried 5, 12, and 25 cm deep at three positions in each plot, recorded temperature every 2 h.
+Temperature differences noted in expsiteinfo_year.csv file are those from dry zone in Table 1 from Hart & Shaw for 1991-1994. Temperatures reported in expsiteinfo.csv (& treats detail) are the average across all years.
 
-At Duke, no phenology data were collected from one chamber (G08, warmed 5 degrees) for some reason
 2) MARCHIN
 Source: R.M. MARCHIN, C.F. SALK, W.A. HOFFMANN & R.R. DUNN. "Temperature alone does not explain phenological variation of diverse 
 temperate plants under experimental warming." Global Change Biology (2015) 21, 3138–3151
@@ -52,6 +54,7 @@ Photosynthetically active radiation (PAR; Model SQ110; Apogee Instruments Inc., 
 experimental chamber every minute and recorded as hourly
 means by automated dataloggers (CR1000; Campbell Scientific
 Inc.). 
+Temperature differences noted in expsiteinfo_year.csv file were scraped from suppleemental figure S1 in MArchin et al 2015. Temperatures reported in expsiteinfo.csv (& treats detail) are the average across both years (2011 and 2013).
 
 3) BACE
 Source: 
@@ -94,6 +97,8 @@ Harvard site not heated from December through March when snow-cover present.
 
 Soil temperature measured 10 cm deep
 Air temperatures measured 30 cm above-ground
+
+At Duke, no phenology data were collected from one chamber (G08, warmed 5 degrees) for some reason
 
 4) FORCE
 Source: C.R. ROLLINSON & M.W. KAYE. "Experimental warming alters spring phenology of certain plant functional groups in an early successional forest community." Global Change Biology (2012) 18, 1108–1116
@@ -186,3 +191,4 @@ Heating method:
 In January 1991, two electric radiant heaters were suspended 2.5 m above the ground parallel to the 10-m midline for each treatment plot. These heaters produced a nearly uniform 15 W/m2 year-round additional heat flux over 80% of the plot soil surface (Harte et al. 1995). In May 1993, Harte and colleagues added a third heater to each plot and increased the heat flux to 22 W/m2 for more accurate simulation of warming predicted due to doubling of atmospheric CO2 (Harte and Shaw 1995).
 
 Precipitation treatments: none
+Temperature difference noted in expsiteinfo.csv (& treats detail) is across all years for spring temperature, as reported in Dunne et al 2003. Reported summer temperature difference was 1.2. Annual differences reported in expsiteinfo_year.csv are from Dunne et al table 2.
