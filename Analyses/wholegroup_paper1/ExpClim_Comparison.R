@@ -7,7 +7,7 @@ library(ggplot2)
 # ----------------
 # Read in the raw data
 # ----------------
-expclim <- read.csv("../expclim.csv")
+expclim <- read.csv("expclim.csv")
 expclim <- expclim[!is.na(expclim$doy),] # get rid of observations without day of year because we can't use them
 expclim$year.frac <- expclim$year + expclim$doy/366 # Make a continuous time variable
 summary(expclim)
@@ -51,7 +51,8 @@ summary(expclim)
 # ----------------
 # Read in some metadata about the intended warming levels
 # ----------------
-targets <- read.csv("../treats_detail.csv", na.strings=c("NA"))
+targets <- read.csv("treats_detail.csv", na.strings=c("NA"))
+#targets <- read.csv("Analyses/treats_detail.csv", na.strings=c("NA"))
 
 # # Fill missing targets with what is given for the temptreat level
 # for(s in unique(targets[is.na(targets$target), "site"])){
@@ -97,12 +98,12 @@ summary(expclim)
 
 
 # Making some color ramps for graphing
-expclim$target <- factor(expclim$target, levels=c("0", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.17", "4.5", "5", "5.5", "200", "600", "1000", "unknown", NA))
-#                   0          1               1.5           2      2.5            3                3.5        4            4.17      4.5,      5,           5.5,  200, 600, 1000, unknown
-colors.target <- c("black", "purple", "mediumpurple", "mediumorchid", "plum3", "palevioletred", "salmon1", "goldenrod", "orange", "coral2", "orangered", "red", "green4", "palegreen3", "seagreen2", "gray50")
+expclim$target <- factor(expclim$target, levels=c("0", "1", "1.5", "2", "2.5", "2.7","3", "3.5", "4", "4.5", "5", "5.5"))
+#                   0          1               1.5           2      2.5       2.7     3                3.5        4            4.5,      5,           5.5
+colors.target <- c("black", "purple", "mediumpurple", "mediumorchid", "plum3","plum2", "palevioletred", "salmon1", "orange", "coral2", "orangered", "red")
 
 # For when 1-degree drops out for some reason
-colors.target2 <- c("black", "purple", "mediumpurple", "plum3", "palevioletred", "salmon1", "goldenrod", "orange", "coral2", "orangered", "red", "green4", "palegreen3", "seagreen2", "gray50")
+colors.target2 <- c("black", "purple", "mediumpurple", "plum3", "plum2","palevioletred", "salmon1", "orange", "coral2", "orangered", "red")
 
 # Some handy day indices to help line up months & doy
 dpm   <- c(31,28,31,30,31,30,31,31,30,31,30,31) #days per month
@@ -128,7 +129,7 @@ expclim[expclim$doy>=doy.start[6] & expclim$doy<=doy.start[8],"season"] <- "summ
 expclim$season <- as.factor(expclim$season)
 summary(expclim)
 
-png("../figures/Exploratory_Boxplot_SoilMoist_Warming_Season.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_Boxplot_SoilMoist_Warming_Season.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!is.na(expclim$season) & !is.na(expclim$soilmois1),]) +
   facet_wrap(~site, scales="free_x") +
   geom_boxplot(aes(x=season, y=soilmois1, fill=temptreat2)) +
@@ -137,7 +138,7 @@ ggplot(data=expclim[!is.na(expclim$season) & !is.na(expclim$soilmois1),]) +
   theme_bw()
 dev.off()
 
-png("../figures/Exploratory_Boxplot_AirTempMax_Warming_Season.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_Boxplot_AirTempMax_Warming_Season.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!is.na(expclim$season) & !is.na(expclim$airtemp_max),]) +
   facet_wrap(~site, scales="free_x") +
   geom_boxplot(aes(x=season, y=airtemp_max, fill=temptreat2)) +
@@ -146,7 +147,7 @@ ggplot(data=expclim[!is.na(expclim$season) & !is.na(expclim$airtemp_max),]) +
   theme_bw()
 dev.off()
 
-png("../figures/Exploratory_Boxplot_SoilTempMax_Warming_Season.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_Boxplot_SoilTempMax_Warming_Season.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!is.na(expclim$season) & !is.na(expclim$soiltemp1_max),]) +
   facet_wrap(~site, scales="free_x") +
   geom_boxplot(aes(x=season, y=soiltemp1_max, fill=temptreat2)) +
@@ -161,7 +162,7 @@ ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   # scale_fill_manual(values=colors.temptreat2) +
   theme_bw()
 
-png("../figures/Exploratory_Scatter_Tairmax_Tsoilmax.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_Scatter_Tairmax_Tsoilmax.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   facet_grid(temptreat2 ~ preciptreat2) +
   geom_point(aes(x=airtemp_max, y=soiltemp1_max, color=site), size=0.05, alpha=0.25) + 
@@ -169,7 +170,7 @@ ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
 #   stat_smooth(aes(x=airtemp_max, y=soiltemp1_max, color=site, fill=site), method="lm")
 dev.off()
 
-png("../figures/Exploratory_LM_Tairmax_Tsoilmax.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_LM_Tairmax_Tsoilmax.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   facet_grid(temptreat2 ~ preciptreat2) +
 #   geom_point(aes(x=airtemp_max, y=soiltemp1_max, color=site), size=0.05, alpha=0.25)
@@ -183,7 +184,7 @@ ggplot(data=expclim[!expclim$preciptreat2=="- precip" & !is.na(expclim$airtemp_m
   stat_smooth(aes(x=airtemp_max, y=soiltemp1_max, color=temptreat, fill=temptreat), method="lm")
 
 
-png("../figures/Exploratory_Scatter_Tsoilmax_SoilMoist.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_Scatter_Tsoilmax_SoilMoist.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   facet_grid(temptreat2 ~ preciptreat2) +
   geom_point(aes(x=soiltemp1_max, y=soilmois1, color=site), size=0.05, alpha=0.25)
@@ -191,7 +192,7 @@ ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   theme_bw()
 dev.off()
 
-png("../figures/Exploratory_LM_Tsoilmax_SoilMoist.png", height=6, width=6, units="in", res=180)
+png("figures/Exploratory_LM_Tsoilmax_SoilMoist.png", height=6, width=6, units="in", res=180)
 ggplot(data=expclim[!expclim$preciptreat2=="- precip",]) +
   facet_grid(temptreat2 ~ preciptreat2) +
   #   geom_point(aes(x=airtemp_max, y=soiltemp1_max, color=site), size=0.05, alpha=0.25)
@@ -289,7 +290,7 @@ summary(expclim.agg2b)
 expclim.agg2b$target <- factor(expclim.agg2b$target, levels=c("0", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.17", "4.5", "5", "5.5", "200", "600", "1000", "unknown", NA))
 
 
-png("../figures/Exploratory_SoilMoist1_byTarget.png", height=8, width=10, units="in", res=180)
+png("figures/Exploratory_SoilMoist1_byTarget.png", height=8, width=10, units="in", res=180)
 ggplot(data=expclim.agg2b[,]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=soilmois1-soilmois1.sd, ymax=soilmois1+soilmois1.sd, fill=target), alpha=0.3) +
@@ -300,7 +301,7 @@ ggplot(data=expclim.agg2b[,]) +
   theme_bw()
 dev.off()
 
-png("../figures/Exploratory_SoilTempMean_byTarget.png", height=8, width=10, units="in", res=180)
+png("figures/Exploratory_SoilTempMean_byTarget.png", height=8, width=10, units="in", res=180)
 ggplot(data=expclim.agg2b[,]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=BGtemp_mean-BGtemp_mean.sd, ymax=BGtemp_mean+BGtemp_mean.sd, fill=target), alpha=0.5) +
@@ -311,7 +312,7 @@ ggplot(data=expclim.agg2b[,]) +
   theme_bw()
 dev.off()
 
-png("../figures/Exploratory_AGtempMean_byTarget.png", height=8, width=10, units="in", res=180)
+png("figures/Exploratory_AGtempMean_byTarget.png", height=8, width=10, units="in", res=180)
 ggplot(data=expclim.agg2b[,]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=AGtemp_mean-AGtemp_mean.sd, ymax=AGtemp_mean+AGtemp_mean.sd, fill=target), alpha=0.5) +
@@ -385,7 +386,7 @@ agg.dev.graph[agg.dev.graph$soilmois1.dev.lo<= min(agg.dev.graph$soilmois1.dev, 
 agg.dev.graph[agg.dev.graph$soilmois1.dev.hi>= max(agg.dev.graph$soilmois1.dev, na.rm=T) & !is.na(agg.dev.graph$soilmois1.dev.hi),"soilmois1.dev.hi"] <- max(agg.dev.graph$soilmois1.dev, na.rm=T)
 summary(agg.dev.graph)
 
-png("../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png", height=10, width=10, units="in", res=180)
+png("figures/Exploratory_TimeSeries_SoilMoist_Deviation.png", height=10, width=10, units="in", res=180)
 ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=soilmois1.dev.lo, ymax=soilmois1.dev.hi, fill=target), alpha=0.3) +
@@ -401,7 +402,7 @@ agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.lo<= min(agg.dev.graph$BGtemp_mean.d
 agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.hi>= max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)  & !is.na(agg.dev.graph$BGtemp_mean.dev.hi),"BGtemp_mean.dev.hi"] <- max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)
 summary(agg.dev.graph)
 
-png("../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png", height=10, width=10, units="in", res=180)
+png("figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png", height=10, width=10, units="in", res=180)
 ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=BGtemp_mean.dev.lo, ymax=BGtemp_mean.dev.hi, fill=target), alpha=0.3) +
@@ -420,7 +421,7 @@ agg.dev.graph[agg.dev.graph$AGtemp_mean.dev.lo<= min(agg.dev.graph$AGtemp_mean.d
 agg.dev.graph[agg.dev.graph$AGtemp_mean.dev.hi>= max(agg.dev.graph$AGtemp_mean.dev, na.rm=T)  & !is.na(agg.dev.graph$AGtemp_mean.dev.hi),"AGtemp_mean.dev.hi"] <- max(agg.dev.graph$AGtemp_mean.dev, na.rm=T)
 summary(agg.dev.graph)
 
-png("../figures/Exploratory_TimeSeries_AGTempMean_Deviation.png", height=10, width=10, units="in", res=180)
+png("figures/Exploratory_TimeSeries_AGTempMean_Deviation.png", height=10, width=10, units="in", res=180)
 ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),]) +
   facet_wrap(~site, scales="fixed") +
   geom_ribbon(aes(x=doy, ymin=AGtemp_mean.dev.lo, ymax=AGtemp_mean.dev.hi, fill=target), alpha=0.3) +
@@ -429,8 +430,8 @@ ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),]) +
   scale_x_continuous(expand=c(0,0), name="day of year") +
   scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("AGtemp_mean.dev.lo", "AGtemp_mean.dev.hi")], na.rm=T), name="diff from non-warmed (degrees C)") +
   ggtitle("Daily Mean Aboveground Temperature Difference")+
-  scale_color_manual(values=colors.target2) +
-  scale_fill_manual(values=colors.target2) +
+  scale_color_manual(values=colors.target) +
+  scale_fill_manual(values=colors.target) +
   theme_bw()
 dev.off()
 # --------------------
