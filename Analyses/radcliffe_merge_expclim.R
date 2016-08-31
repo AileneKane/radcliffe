@@ -34,10 +34,19 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   colnames(allclim)[1:2]<-c("year","doy")
   allclim$preciptreat<-NA
   allclim$soilmois2<-NA
-  allclim$temptreat<-1
+  allclim$temptreat<-NA
   allclim[allclim$plot==2,]$temptreat<-0
   allclim[allclim$plot==5,]$temptreat<-0
   allclim[allclim$plot==11,]$temptreat<-0
+  allclim[allclim$plot==1,]$temptreat<-5
+  allclim[allclim$plot==3,]$temptreat<-7
+  allclim[allclim$plot==4,]$temptreat<-2
+  allclim[allclim$plot==6,]$temptreat<-1
+  allclim[allclim$plot==7,]$temptreat<-4
+  allclim[allclim$plot==8,]$temptreat<-8
+  allclim[allclim$plot==9,]$temptreat<-9
+  allclim[allclim$plot==10,]$temptreat<-3
+  allclim[allclim$plot==12,]$temptreat<-6
   allclim1<-subset(allclim, select=c("temptreat","preciptreat","plot","year","doy","airtemp_min","airtemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soilmois1","soilmois2"))
   file2<-file.path(path, "hf113-11-df-outside.csv")
   marchin2<-read.csv(file2, header=TRUE)
