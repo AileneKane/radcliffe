@@ -11,7 +11,7 @@
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
   %put your figures in one place
- 
+\SweaveOpts{prefix.string=figures/, eps=FALSE} 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 
@@ -45,7 +45,7 @@
 
 %Start of the document
 \begin{document}
-
+\SweaveOpts{concordance=FALSE}
 % \SweaveOpts{concordance=TRUE}
  \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
@@ -86,7 +86,7 @@ There is often temporal variation in applications of experimental warming, and t
 
  \begin{figure}[p]
      \centering
- \includegraphics{figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}    
+ \includegraphics{../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}    
  \caption{Time series of deviations from mean soil temperature over one year, in control (black line) and warming treatments with various target warming levels at 10 study sites.}
  \end{figure}
 \item In addition to seasonal patterns, experimental warming effects can vary on a daily timescale. %could add figure of tmin vs Tmax vs. Tmean. 
@@ -109,7 +109,7 @@ The experimental structures themselves alter temperature and other important bio
 
  \begin{figure}[p]
      \centering
- \includegraphics{figures/ShamVSAmbient_mean.pdf}    
+ \includegraphics{../figures/ShamVSAmbient_mean.pdf}    
  \caption{Difference between mean air and soil temperatures in structural controls compared with ambient controls, with no control chambers or warming infrastructure in place. Air temperatures were higher, whereas soil temperatures were lower in the structural controls compared with ambient conditions. We show fixed effects from a mixed effects model that accounts for differences in experimental design and other factors among sites by including site as an intercept-only random effect (see shamvambient.R for details). }
  \end{figure}
 
@@ -135,7 +135,7 @@ the increased air temperatures and decrease soil moisture, cite Wolkovich et al'
 \end{itemize}
  \begin{figure}[p]
      \centering
- \includegraphics{figures/DirIndWarmingEffects.pdf}    
+ \includegraphics{../figures/DirIndWarmingEffects.pdf}    
  \caption{Experimental warming may cause biological responses to be muted or exaggerated, compared to direct responses to temperature alone, when indirect effects of experimental warming are also drivers of focal responses. For example, phenology may appear to be less sensitive to warming in experiments versus observational studies \citep{wolkovich2012} because experimental warming reduces soil moisture, perhaps more than natural warming.}
  % EMW: Change the Y axis title so it's clearer -- effect of structural control (difference ....)?
  \end{figure}
