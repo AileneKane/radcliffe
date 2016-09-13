@@ -104,7 +104,12 @@ points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtar
 
 
 #Statistical tests to test if there are differences in temperature treatment by block and year the below is not done- need to think about this more....
-blockmod<-lmer(soiltemp1_mean~temptreat*as.factor(block) + (1|site/year), data= blockdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+blockdat2<-subset(blockdat,select=c(site,block,year,temptreat,soiltemp1_mean,temptreat))
+blockdat2$block<-as.factor(block2dat$block)
+block2dat$year<-as.factor(block2dat$year)
+blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= blockdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+summary(blockmod)
 Anova(blockmod, type="III")
-yearmod<-lmer(soiltemp1_mean~temptreat*as.factor(year) + (1|site/block), data= blockdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 Anova(yearmod,type="III")
