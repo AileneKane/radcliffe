@@ -20,7 +20,7 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Data/Expe
   names(marchin1)[3] <- "plot"
   names(marchin1)[8] <- "doy"
   marchin1a<- subset(marchin1, select=c("year","genusspecies","plot", "doy"))
-  marchin1a$site <- "marchin"
+  marchin1a$site <- "exp10"
   marchin1a$event <- "bbd"
   marchin2<-read.csv("Data/Experiments/marchin/Flower_Marchin.csv", header=T)
   names(marchin2)[2] <- "genusspecies"
@@ -28,7 +28,7 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Data/Expe
   names(marchin2)[3] <- "plot"
   names(marchin2)[7] <- "doy"  
   marchin2a<- subset(marchin2, select=c("year","genusspecies","plot", "doy"))
-  marchin2a$site <- "marchin"
+  marchin2a$site <- "exp10"
   marchin2a$event <- "ffd"
   marchin3<-rbind(marchin1a, marchin2a)
   marchin3$genus<-NA
@@ -78,18 +78,18 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace1a<- subset(bace1, select=c("genusspecies","plot", "doy_bb"))
   bace1a$event <- "bbd"
   bace1a$year <- 2010
-  bace1a$site <- "bace"
+  bace1a$site <- "exp01"
   head(bace1a)
   names(bace1a)[3]<-"doy"
   bace2a<- subset(bace1, select=c("genusspecies","plot", "doy_lo"))
   bace2a$event <- "lod"
   bace2a$year <- 2010
-  bace2a$site <- "bace"
+  bace2a$site <- "exp01"
   names(bace2a)[3]<-"doy"
   bace2b<- subset(bace1, select=c("genusspecies","plot", "doy_lunf"))
   bace2b$event <- "lud"
   bace2b$year <- 2010
-  bace2b$site <- "bace"
+  bace2b$site <- "exp01"
   names(bace2b)[3]<-"doy"
   file2 <- file.path(path, "BACE_pinustrobus2010_originaltrees.csv")
   bace4 <- read.csv(file2, check.names=FALSE, header=TRUE,na.strings = ".")
@@ -102,27 +102,27 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace4a<-subset(bace4, select=c("genusspecies","plot", "doy_bbd"))
   bace4a$event <- "bbd"
   bace4a$year <- 2010
-  bace4a$site <- "bace"
+  bace4a$site <- "exp01"
   names(bace4a)[3]<-"doy"
   bace4b<- subset(bace4, select=c("genusspecies","plot", "doy_fgn"))
   bace4b$event <- "fgn"
   bace4b$year <- 2010
-  bace4b$site <- "bace"
+  bace4b$site <- "exp01"
   names(bace4b)[3]<-"doy"
   bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_fnb"))
   bace4c$event <- "fnb"
   bace4c$year <- 2010
-  bace4c$site <- "bace"
+  bace4c$site <- "exp01"
   names(bace4c)[3]<-"doy"
   bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_fnb"))
   bace4c$event <- "fnb"
   bace4c$year <- 2010
-  bace4c$site <- "bace"
+  bace4c$site <- "exp01"
   names(bace4c)[3]<-"doy"
   bace4d<- subset(bace4, select=c("genusspecies","plot", "doy_fyn"))
   bace4d$event <- "fyn"
   bace4d$year <- 2010
-  bace4d$site <- "bace"
+  bace4d$site <- "exp01"
   names(bace4d)[3]<-"doy"
   file3 <- file.path(path, "2011BACEherbaceousphenologydata11_11CEG.csv")
   bace5 <- read.csv(file3, skip=1, header=TRUE)
@@ -134,7 +134,7 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace5a<- subset(bace5, select=c("genusspecies","plot", "doy_ffd"))
   bace5a$event <- "ffd"
   bace5a$year <- 2011
-  bace5a$site <- "bace"
+  bace5a$site <- "exp01"
   names(bace5a)[3]<-"doy"
   file4 <- file.path(path, "2013BACEherbaceousphenologydatasheet.csv")
   bace6 <- read.csv(file4, skip=1, header=TRUE)
@@ -146,7 +146,7 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace6a<- subset(bace6, select=c("genusspecies","plot", "doy_ffd"))
   bace6a$event <- "ffd"
   bace6a$year <- 2013
-  bace6a$site <- "bace"
+  bace6a$site <- "exp01"
   names(bace6a)[3]<-"doy"
   bace3a<-rbind(bace1a,bace2a,bace2b,bace4a,bace4b,bace4c,bace4d,bace5a,bace6a)
   bace3a<-bace3a[-which(bace3a$genusspecies==""),]
@@ -296,7 +296,7 @@ clean.raw$farnsworth <- function(filename="hf033-01-diameter-1.csv", path="./Dat
   farnsworth1$species1[farnsworth1$species=="vest"] <- "lentago"
   farnsworth1$genus[farnsworth1$species=="rm"] <- "Acer"
   farnsworth1$species1[farnsworth1$species=="rm"] <- "rubrum"
-  farnsworth1$site<-"farnsworth"  
+  farnsworth1$site<-"exp08"  
   #farnsworth1$variety <- NA
   #farnsworth1$cult <- NA
   farnsworth1$event <- NA
@@ -376,7 +376,7 @@ clean.raw$cleland <- function(filename="JasperRidge_data.csv", path="./Data/Expe
   cleland1$genus[cleland1$genus=="Bromusd"] <- "Bromus"
   cleland1$genus[cleland1$genus=="Bromush"] <- "Bromus"
   colnames(cleland1)[10]<-"doy"
-  cleland1$site<-"cleland"
+  cleland1$site<-"exp05"
   cleland1$event<-"ffd"
   cleland1$block<-NA
   cleland1[cleland1$plot==1|cleland1$plot==2|cleland1$plot==3|cleland1$plot==33|cleland1$plot==4,]$block<-1
@@ -416,7 +416,7 @@ clean.raw$clarkduke <- function(filename, path="./Data/Experiments/clark/") {
       clarkduke1$genus[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
       clarkduke1$species[clarkduke1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
     }
-    clarkduke1$site<-"clarkduke"
+    clarkduke1$site<-"exp03"
     clarkduke1$plot<-substr(clarkduke1$Chamber,1,3)
     
     #estimate first date of budburst, leaf unfolding, and leaf out
@@ -484,7 +484,7 @@ clean.raw$clarkharvard <- function(filename, path="./Data/Experiments/clark") {
       clarkharvard1$genus[clarkharvard1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$genus
       clarkharvard1$species[clarkharvard1$Species==species1[j]] <- specieslist[specieslist$shortCode==species1[j],]$species
     }
-    clarkharvard1$site<-"clarkharvard"      
+    clarkharvard1$site<-"exp04"      
     #estimate first date of budburst, leaf unfolding, and leaf out
     get.bbd <- function(x) names(x)[min(which(x==3), na.rm=T)]#budburst
     get.lud <- function(x) names(x)[min(which(x==4), na.rm=T)]#leaves unfolding
@@ -557,7 +557,7 @@ clean.raw$sherry <- function(filename, path) {
   sherry4<-reshape(sherry,varying = list(names(sherry)[4:5]), direction = "long", v.names = c("doy"), times = c(1:2))
   sherry4$event<-c(rep("ffd", times=dim(sherry)[1]),rep("ffrd", times=dim(sherry)[1]))
   sherry4$year<-2003
-  sherry4$site<-"sherry"
+  sherry4$site<-"exp12"
   sherry4$block<-NA
   sherryok<-subset(sherry4, select=c("site","block","plot","event","year","genus","species", "doy"))
   #sherryok$variety <- NA
@@ -614,7 +614,7 @@ clean.raw$price <- function(filename, path) {
   price<-price[-1,]
   price4<-reshape(price,varying = list(names(price)[3:5]), direction = "long", v.names = c("date"), times = c(names(price)[3:5]))
   colnames(price4)[5]<-"event"
-  price4$site<-"price"
+  price4$site<-"exp11"
   price4$date[which(is.na(price4$date))]<-"NA.NA.NA"
   price4$doy<-strftime(strptime(price4$date, format = "%m.%d.%y"),format = "%j") 
   price4$genus<-NA
@@ -709,7 +709,7 @@ clean.raw$chuine <- function(filename, path="./Data/Experiments/chuine") {
   chuine$species[chuine$sp=="sp"] <- "parviflora"
   chuine$genus[chuine$sp=="lp3"] <- "Lolium"
   chuine$species[chuine$sp=="lp3"] <- "perenne"
-  chuine$site<-"chuine"
+  chuine$site<-"exp02"
   chuine4<-subset(chuine, select=c("site","block","plot","event","year","genus","species", "doy"))
   #chuine4$variety <- NA
   #chuine4$cult <- NA
@@ -748,7 +748,7 @@ clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", pa
   force4<-force3 %>% separate(genussp, c("genus", "species"), sep=" ", remove=F)
   force4[which(force4$genus=="Sisynchium"),]$genus<-"Sisyrinchium"
   #force4[which(force4$genus=="Oenethera"),]$genus<-"Oenothera"
-  force4$site<-"force"
+  force4$site<-"exp09"
   force<-subset(force4, select=c("site","block","plot","event","year","genus","species", "doy"))
   return(force)
   ##
@@ -775,7 +775,7 @@ clean.raw$ellison <- function(filename="hf113-27-hf-phenology.csv", path="./Data
   ellison3[ellison3$phenology=="S4",]$event<-"lud"
   ellison3[ellison3$phenology=="S5",]$event<-"lod"
   ellison3[which(ellison3$plot=="13"|ellison3$plot=="14"|ellison3$plot=="15"),]$plot<-"OUT"
-  ellison3$site<-"ellison"
+  ellison3$site<-"exp07"
   ellison3$block<-NA
   ellison<-subset(ellison3, select=c("site","block","plot","event","year","genus","species", "doy"))
   return(ellison)
@@ -831,7 +831,7 @@ clean.raw$dunne <- function(path="./Data/Experiments/dunne") {
   dunne$species[dunne$genussp=="Achillea"] <- "sp"
   dunne$genus[dunne$genussp=="Eriogonumu"] <- "Eriogonum"
   dunne$species[dunne$genussp=="Eriogonumu"] <- "umbellatum"
-  dunne$site<-"dunne"
+  dunne$site<-"exp06"
   #colnames(dunne)[1]<-"block"#this is the "site" column from the dunne files. i think we actually want to select out only plots frmo one site...
   dunne$block<-NA
   dunne<-dunne[-1,]

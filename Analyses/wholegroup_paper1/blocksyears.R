@@ -28,7 +28,7 @@ blockdat[which(blockdat$treat=="1.-1"),]$treat<-"temp1precip-1"
 blockdat[which(blockdat$treat=="2.-1"),]$treat<-"temp2precip-1"
 blockdat[which(blockdat$treat=="3.-1"),]$treat<-"temp3precip-1"
 blockmns<-tapply(blockdat$soiltemp1_mean,list(blockdat$site,blockdat$block,blockdat$treat), mean, na.rm=TRUE)
-blockmns<-blockmns[which(rownames(blockmns)=="bace"|rownames(blockmns)=="farnsworth"|rownames(blockmns)=="force"),,]
+blockmns<-blockmns[which(rownames(blockmns)=="exp01"|rownames(blockmns)=="exp08"|rownames(blockmns)=="exp09"),,]
 blockdat$site<-factor(blockdat$site)
 blockdat$block<-factor(blockdat$block)
 controls<-blockmns[,1:6,5]
@@ -60,7 +60,7 @@ dry3dif<-dry3-controls
 
 #Now by year instead of by block
 yearmns<-tapply(blockdat$soiltemp1_mean,list(blockdat$site,blockdat$year,blockdat$treat), mean, na.rm=TRUE)
-yearmns<-yearmns[which(rownames(yearmns)=="bace"|rownames(yearmns)=="farnsworth"|rownames(yearmns)=="force"),,]
+yearmns<-yearmns[which(rownames(yearmns)=="exp01"|rownames(yearmns)=="exp08"|rownames(yearmns)=="exp09"),,]
 yearcontrols<-yearmns[,,5]
 yearcontrols<-yearcontrols[,colSums(is.na(yearcontrols)) != nrow(yearcontrols)]#remove columns that are all NA
 yeartreat1<-yearmns[,,8]
@@ -101,7 +101,7 @@ yeardry3dif<-yeardry3-yearcontrols[,3:6]
 
 #target warming
 treats<-read.csv("expsiteinfo.csv", header=T)
-target1<-treats[treats$DatasetID=="bace"|treats$DatasetID=="farnsworth"|treats$DatasetID=="force",26:28]
+target1<-treats[treats$DatasetID=="exp01"|treats$DatasetID=="exp08"|treats$DatasetID=="exp09",27:29]
 rownames(target1)<-treats[as.numeric(rownames(target1)),]$DatasetID
 
 #plot difference between warmed and control, by block and year
@@ -111,7 +111,7 @@ plot(c(rep(target1$temptreat_1,times=6)),c(warm1[,1],warm1[,2],warm1[,3],warm1[,
 points(c(rep(target1$temptreat_2,times=6)),c(warm2[,1],warm2[,2],warm2[,3],warm2[,4],warm2[,5],warm2[,6]),pch=21,col="black",bg=c("black","black","black"))
 points(c(rep(target1$temptreat_3,times=6)),c(warm3[,1],warm3[,2],warm3[,3],warm3[,4],warm3[,5],warm3[,6]),pch=21,col="black",bg=c("black","black","black"))
 abline(a=0,b=1,lty=1)
-legend(0,6,pch=c(21,22,24),pt.bg="black",legend=rownames(target1),bty="n")
+#legend(0,6,pch=c(21,22,24),pt.bg="black",legend=rownames(target1),bty="n")
 #add precip treatment points
 points(c(rep(0,times=12)),c(wet0dif[,1],wet0dif[,2],wet0dif[,3],wet0dif[,4]),pch=rep(c(21,22,24), times=4),col="black",bg=c("blue","blue","blue"))
 points(c(rep(target1$temptreat_1,times=4)),c(wet1dif[,1],wet1dif[,2],wet1dif[,3],wet1dif[,4]),pch=rep(c(21,22,24), times=4),col="black",bg=c("blue","blue","blue"))
@@ -142,7 +142,7 @@ blockdat$agtemp_mean<-(blockdat$airtemp_min+blockdat$airtemp_max)/2
 blockdat[which(!is.na(blockdat$cantemp_min)),]$agtemp_mean<-(blockdat[which(!is.na(blockdat$cantemp_min)),]$cantemp_max+blockdat[which(!is.na(blockdat$cantemp_min)),]$cantemp_min)/2
 blockdat[which(!is.na(blockdat$surftemp_min)),]$agtemp_mean<-(blockdat[which(!is.na(blockdat$surftemp_min)),]$surftemp_max+blockdat[which(!is.na(blockdat$surftemp_min)),]$surftemp_min)/2
 agblockmns<-tapply(blockdat$agtemp_mean,list(blockdat$site,blockdat$block,blockdat$temptreat), mean, na.rm=TRUE)
-agblockmns<-agblockmns[which(rownames(agblockmns)=="bace"|rownames(agblockmns)=="force"),,]
+agblockmns<-agblockmns[which(rownames(agblockmns)=="exp01"|rownames(agblockmns)=="exp09"),,]
 agcontrols<-agblockmns[,1:4,1]
 agtreat1<-agblockmns[,1:4,2]
 agtreat2<-agblockmns[,1:4,3]
@@ -153,7 +153,7 @@ agwarm2<-agtreat2-agcontrols
 agwarm3<-agtreat3-agcontrols
 #Now by year instead of by block
 agyearmns<-tapply(blockdat$agtemp_mean,list(blockdat$site,blockdat$year,blockdat$temptreat), mean, na.rm=TRUE)
-agyearmns<-agyearmns[which(rownames(agyearmns)=="bace"|rownames(agyearmns)=="force"),,]
+agyearmns<-agyearmns[which(rownames(agyearmns)=="exp01"|rownames(agyearmns)=="exp09"),,]
 agyearcontrols<-agyearmns[,,1]
 agyearcontrols<-agyearcontrols[, colSums(is.na(agyearcontrols)) != nrow(agyearcontrols)]#remove columns that are all NA
 agyeartreat1<-agyearmns[,,2]
@@ -168,19 +168,42 @@ agyearwarm2<-agyeartreat2-agyearcontrols[,2:5]
 agyearwarm3<-agyeartreat3-agyearcontrols[,2:5]
 
 #target warming
-agtarget1<-target1[-which(rownames(target1)=="farnsworth"),]
-#plot difference between warmed and control, by block and year
+agtarget1<-target1[-which(rownames(target1)=="exp08"),]
 quartz(height=6,width=11)
 par(mfrow=c(1,2))
-plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agwarm1[,1],agwarm1[,2],agwarm1[,3],agwarm1[,4]),pch=rep(c(21,24), times=6),col="black",bg=c("black","black"),xlab="Target warming (C)", ylab="Observed above-ground warming (C)", bty="l", main="By Block", xlim=c(0,6), ylim=c(0,6))
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agwarm1[,1],agwarm1[,2],agwarm1[,3],agwarm1[,4]),pch=rep(c(21,24), times=6),col="black",bg=c("black","black"),xlab="Target warming (C)", ylab="Observed above-ground warming (C)", bty="l", xlim=c(0,6), ylim=c(0,6))
 points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agwarm2[,1],agwarm2[,2],agwarm2[,3],agwarm2[,4]),pch=rep(c(21,24), times=6),col="black",bg=c("black","black"))
 points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agwarm3[,1],agwarm3[,2],agwarm3[,3],agwarm3[,4]),pch=rep(c(21,24), times=6),col="black",bg="black")
 abline(a=0,b=1,lty=1)
 legend(1,6,pch=c(21,24),pt.bg="black",legend=rownames(agtarget1),bty="n")
-plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5]),pch=rep(c(21,24), times=5),col="black",bg="black",xlab="Target warming (C)", ylab="Observed above-ground warming (C)", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6))
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5]),pch=rep(c(21,24), times=5),col="black",bg="black", ylab="Observed above-ground warming (C)", bty="l", xlab="Target warming (C)",xlim=c(0,6), ylim=c(0,6))
 points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agyearwarm2[,1],agyearwarm2[,2],agyearwarm2[,3],agyearwarm2[,4]),pch=rep(c(21,24),times=4),col="black",bg="black")
 points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agyearwarm3[,1],agyearwarm3[,2],agyearwarm3[,3],agyearwarm3[,4]),pch=rep(c(21,24),times=4),col="black",bg="black")
 abline(a=0,b=1,lty=1)
+###Try making same figure with above-ground and soil temperature shown
+#plot difference between warmed and control, by block and year
+quartz(height=6.5,width=6.5)
+par(mfrow=c(2,2),mai=c(.5,.7,.2,.01),omi=c(.7,.3,.2,.7))
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agwarm1[,1],agwarm1[,2],agwarm1[,3],agwarm1[,4]),pch=rep(c(21,24), times=6),col="black",bg=c("black","black"),xlab="",ylab="Above-ground", bty="l", main="By Block", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.3)
+points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agwarm2[,1],agwarm2[,2],agwarm2[,3],agwarm2[,4]),pch=rep(c(21,24), times=6),col="black",bg=c("black","black"))
+points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agwarm3[,1],agwarm3[,2],agwarm3[,3],agwarm3[,4]),pch=rep(c(21,24), times=6),col="black",bg="black")
+abline(a=0,b=1,lty=1)
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5]),pch=rep(c(21,24), times=5),col="black",bg="black",xlab="",ylab="", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
+points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agyearwarm2[,1],agyearwarm2[,2],agyearwarm2[,3],agyearwarm2[,4]),pch=rep(c(21,24),times=4),col="black",bg="black")
+points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agyearwarm3[,1],agyearwarm3[,2],agyearwarm3[,3],agyearwarm3[,4]),pch=rep(c(21,24),times=4),col="black",bg="black")
+abline(a=0,b=1,lty=1)
+plot(c(rep(target1$temptreat_1,times=6)),c(warm1[,1],warm1[,2],warm1[,3],warm1[,4],warm1[,5],warm1[,6]),pch=rep(c(21,22,24), times=6),col="black",bg=c("black","black","black"),xlab="Target warming (C)", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
+points(c(rep(target1$temptreat_2,times=6)),c(warm2[,1],warm2[,2],warm2[,3],warm2[,4],warm2[,5],warm2[,6]),pch=21,col="black",bg=c("black","black","black"))
+points(c(rep(target1$temptreat_3,times=6)),c(warm3[,1],warm3[,2],warm3[,3],warm3[,4],warm3[,5],warm3[,6]),pch=21,col="black",bg=c("black","black","black"))
+abline(a=0,b=1,lty=1)
+mtext("Observed warming (C)", side=2,line=4.5,adj=14, cex=1.2)
+
+plot(c(target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1),c(yearwarm1[,1],yearwarm1[,2],yearwarm1[,3],yearwarm1[,4],yearwarm1[,5]),pch=rep(c(21,22,24), times=6),bg="black",xlab="Target warming (C)", ylab="", bty="l", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
+points(c(target1$temptreat_2,target1$temptreat_2,target1$temptreat_2,target1$temptreat_2),c(yearwarm2[,1],yearwarm2[,2],yearwarm2[,3],yearwarm2[,4]),pch=rep(c(21,22,24), times=4), bg="black")
+points(c(target1$temptreat_3,target1$temptreat_3,target1$temptreat_3,target1$temptreat_3),c(yearwarm3[,1],yearwarm3[,2],yearwarm3[,3],yearwarm3[,4]),pch=rep(c(21,22,24), times=4),bg="black")
+abline(a=0,b=1,lty=1)
+legend(5,2,pch=c(21,22,24),pt.bg="black",legend=c("exp01","exp08","exp09"),bty="n")
+mtext("Target warming (C)", side=1,line=3,adj=-2.3, cex=1.2)
 
 #Statistical tests to test if there are differences in temperature treatment by block and year the below is not done- need to think about this more....
 blockdat2<-subset(blockdat,select=c(site,block,year,temptreat,soiltemp1_mean,temptreat))

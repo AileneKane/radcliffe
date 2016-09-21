@@ -71,7 +71,7 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   oallclim$soilmois2<-NA
   colnames(oallclim)[3:5]<-c("plot","year","doy")
   allclim2<-rbind(allclim1,oallclim)
-  allclim2$site<-"marchin"
+  allclim2$site<-"exp10"
   allclim2$block<-NA
   allclim2$soilmois2<-NA
   allclim2$surftemp_max<-NA
@@ -120,7 +120,7 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   allclim[which(allclim$treatment2=="H"),]$temptreat<-1
   allclim[which(allclim$treatment2=="C"),]$temptreat<-"ambient"
   allclim[which(allclim$treatment2=="DC"),]$temptreat<-0
-  allclim$site<-"farnsworth"
+  allclim$site<-"exp08"
   allclim$preciptreat<-NA
   allclim$soiltemp2_mean<-NA
   allclim$soilmois2<-NA
@@ -185,7 +185,7 @@ clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Dat
   allclim2<-merge(allclim,soilmois,by=c("year_doy","plot"), all=TRUE) 
   allclim2$year<-substr(allclim2$year_doy,1,4)
   allclim2$doy<-substr(allclim2$year_doy,5,7)  
-  allclim2$site<-"clarkharvard"
+  allclim2$site<-"exp04"
   allclim2$temptreat<-NA
   allclim2[allclim2$plot=="G02"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S02"|allclim2$plot=="S05"|allclim2$plot=="S07",]$temptreat<-0#disturbance control
   allclim2[allclim2$plot=="G03"|allclim2$plot=="G05"|allclim2$plot=="G09"|allclim2$plot=="S01"|allclim2$plot=="S04"|allclim2$plot=="S09",]$temptreat<-2
@@ -254,7 +254,7 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
   allclim2<-merge(allclim,soilmois,by=c("year_doy","plot"), all=TRUE) 
   allclim2$year<-substr(allclim2$year_doy,1,4)
   allclim2$doy<-substr(allclim2$year_doy,5,7)
-  allclim2$site<-"clarkduke"
+  allclim2$site<-"exp03"
   allclim2$temptreat<-NA
   allclim2[allclim2$plot=="G01"|allclim2$plot=="G04"|allclim2$plot=="G07"|allclim2$plot=="S03"|allclim2$plot=="S04"|allclim2$plot=="S08",]$temptreat<-0#disturbance control
   allclim2[allclim2$plot=="G02"|allclim2$plot=="G06"|allclim2$plot=="G08"|allclim2$plot=="S01"|allclim2$plot=="S06"|allclim2$plot=="S07",]$temptreat<-2
@@ -368,7 +368,7 @@ allclim$airtemp_min<-NA
 allclim$airtemp_max<-NA
 allclim$surftemp_min<-NA
 allclim$surftemp_max<-NA
-allclim$site<-"bace"
+allclim$site<-"exp01"
 baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
 baceclim<-baceclim[which(baceclim$cantemp_max<203),]#remove weird value
 row.names(baceclim) <- NULL
@@ -436,7 +436,7 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
   oallclim<-as.data.frame(cbind(temptreat,preciptreat,temp_min2$plot,year_doy,airtemp_min, airtemp_max,soiltemp1_min, soiltemp2_min,soiltemp1_max,soiltemp2_max,soilmois1))
   colnames(oallclim)[3:5]<-c("plot","year","doy")
   allclim2<-rbind(allclim1,oallclim)
-  allclim2$site<-"ellison"
+  allclim2$site<-"exp07"
   allclim2$soilmois2<-NA
   allclim2$block<-NA
   allclim2$cantemp_min<-NA
@@ -510,7 +510,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   allclim$soiltemp2_mean<-NA
   allclim$soilmois2<-NA
   allclim$soiltemp1_mean<-(allclim$soiltemp1_max+allclim$soiltemp1_min)/2
-  allclim$site<-"sherry"
+  allclim$site<-"exp12"
   allclim$soilmois1<-allclim$soilmois/100
   allclim$soilmois2<-NA
   allclim$block<-NA
@@ -554,7 +554,7 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim1<-cbind(soiltemp_min,soiltemp_max$x)
   colnames(allclim1)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
   #allclim1<-rbind(allclim1991,allclim)
-  allclim1$site<-"dunne"
+  allclim1$site<-"exp06"
   allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
   allclim1$preciptreat<-NA
@@ -601,7 +601,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim1<-cbind(soiltemp_min,soiltemp_max$x)
   colnames(allclim1)<-c("year","doy","plot","soiltemp1_min","soiltemp1_max")
   #allclim1<-rbind(allclim1991,allclim)
-  allclim1$site<-"price"
+  allclim1$site<-"exp11"
   allclim1$temptreat<-"ambient"
   allclim1[which(allclim1$plot==2|allclim1$plot==4|allclim1$plot==6|allclim1$plot==8|allclim1$plot==10),]$temptreat<-1
   allclim1$preciptreat<-NA
@@ -658,7 +658,7 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   colnames(mois)<-c("year","doy","plot","soilmois1")
   clim<-merge(surftemp,soiltemp, all=TRUE)
   clim2<-merge(clim,mois, all=TRUE)
-  clim2$site<-"force"
+  clim2$site<-"exp09"
   clim2$soiltemp2_max<-NA
   clim2$soiltemp2_min<-NA
   clim2$soiltemp2_mean<-NA
@@ -758,7 +758,7 @@ for (i in 1:length(soilfiles)){
   allsoilhum$year<-substr(soilfiles[i],4,7)
   allsoilhum$doy<-strftime(strptime(paste(allsoilhum$year,substr(allsoilhum$date,2,3),substr(allsoilhum$date,4,5),sep="-"), format = "%Y-%m-%d"),format = "%j") 
   allclim<-merge(allsoilhum,allairtemp, by=c("year","doy","temptreat"), all=TRUE) 
-  allclim$site<-"chuine"
+  allclim$site<-"exp02"
   allclim$soiltemp2_min<-NA
   allclim$soiltemp2_max<-NA
   allclim$soiltemp2_mean<-NA
@@ -793,7 +793,7 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   mois$plot<-paste(mois$PLOT,mois$QUAD,sep="-")
   colnames(mois)[13:14]<-c("year","doy")
   mois$soilmois1<-mois$SM030/100
-  mois$site<-"cleland"
+  mois$site<-"exp05"
   mois$soiltemp2_min<-NA
   mois$soiltemp2_max<-NA
   mois$soiltemp2_mean<-NA

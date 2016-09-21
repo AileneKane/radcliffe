@@ -393,8 +393,8 @@ ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),]) +
   geom_line(aes(x=doy, y=soilmois1.dev, color=target), size=0.5) +
   scale_y_continuous(expand=c(0,0), name="diff from non-warmed (m3 H2O/mg3 soil ??)") +
   ggtitle("Daily Mean Soil Moisture Difference") +
-  scale_color_manual(values=colors.target2) +
-  scale_fill_manual(values=colors.target2) +
+  scale_color_manual(values=colors.target) +
+  scale_fill_manual(values=colors.target) +
   theme_bw()
 dev.off()
 
@@ -509,3 +509,4 @@ dev.off()
 # 
 # #(F) Split up model by... phenology? precip?
 # 
+

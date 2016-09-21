@@ -40,38 +40,38 @@ expclimplots$preciptreat<-as.character(expclimplots$preciptreat)
 exptreats_all<-left_join(expclimplots,exptreats5, by = c("DatasetID","temptreat","preciptreat"))
 exptreats_detail<-subset(exptreats_all,select=c(select=c("DatasetID","block","plot","temptreat","target","reported","temptreat_units","preciptreat","preciptreat_amt","preciptreat_units")))
 head(exptreats_detail)
-exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$target<-2
-exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$reported<-2.3
-exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
-exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-120
-exptreats_detail[which(exptreats_detail$DatasetID=="force" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perchistmean"
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="1"),]$target<-1
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="2"),]$target<-2.7
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat=="3"),]$target<-4
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$temptreat>0),]$temptreat_units<-"C"
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-50
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
-exptreats_detail[which(exptreats_detail$DatasetID=="bace" & exptreats_detail$preciptreat=="-1"),]$preciptreat_units<-"perc"
-exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$target<-4
-exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
-exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$temptreat=="1"),]$reported<-4.17
-exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-200
-exptreats_detail[which(exptreats_detail$DatasetID=="sherry" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="1"),]$target<-1.5
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="1"),]$reported<-1.5
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="2"),]$target<-3
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="2"),]$reported<-3
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$temptreat=="2"),]$temptreat_units<-"C"
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-70
-exptreats_detail[which(exptreats_detail$DatasetID=="chuine" & exptreats_detail$preciptreat=="-1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp09" & exptreats_detail$temptreat=="1"),]$target<-2
+exptreats_detail[which(exptreats_detail$DatasetID=="exp09" & exptreats_detail$temptreat=="1"),]$reported<-2.3
+exptreats_detail[which(exptreats_detail$DatasetID=="exp09" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp09" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-120
+exptreats_detail[which(exptreats_detail$DatasetID=="exp09" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perchistmean"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="1"),]$target<-1
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="2"),]$target<-2.7
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="3"),]$target<-4
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat>0),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-50
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$preciptreat=="-1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp12" & exptreats_detail$temptreat=="1"),]$target<-4
+exptreats_detail[which(exptreats_detail$DatasetID=="exp12" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp12" & exptreats_detail$temptreat=="1"),]$reported<-4.17
+exptreats_detail[which(exptreats_detail$DatasetID=="exp12" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-200
+exptreats_detail[which(exptreats_detail$DatasetID=="exp12" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$temptreat=="1"),]$target<-1.5
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$temptreat=="1"),]$reported<-1.5
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$temptreat=="2"),]$target<-3
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$temptreat=="2"),]$reported<-3
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$temptreat=="2"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-70
+exptreats_detail[which(exptreats_detail$DatasetID=="exp02" & exptreats_detail$preciptreat=="-1"),]$preciptreat_units<-"perc"
 
-exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$target<-1.5
-exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$reported<-1
-exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
-exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
-exptreats_detail[which(exptreats_detail$DatasetID=="cleland" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$temptreat=="1"),]$target<-1.5
+exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$temptreat=="1"),]$reported<-1
+exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$temptreat=="1"),]$temptreat_units<-"C"
+exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
+exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
 colnames(exptreats_detail)[1]<-"site"
 write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r\n")  
   
