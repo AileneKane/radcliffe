@@ -107,6 +107,7 @@ Climate change experiments often manipulate one or two climate variables, such a
 When studying biological implications of a global challenge as large as climate change, it facilitate progress if we can design, run, and report experiments in such a way that we can eventually create global dataset. This recommendation stems from our work gathering and analyzing data from many climate change experiments. We found that studies report a diverse range of climate variables, collected in different ways (i.e. soil temperature collected at different depths; soil moisture using different units and methods). It has been difficult to synthesize these data in a comprensive way that can fully address important questions. 
 \par I would love someone to suggest points to make and/or take a stab at writing a closing paragraph!
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\clearpage
 \section* {Tables}
 <<label=table, echo=FALSE, results=tex>>=
 library(xtable)
@@ -135,20 +136,18 @@ yeartable<-Anova(yearmod, type="III")
 #yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
 @
 
-\section* {Tables}
-\par
 <<xtable1, echo=FALSE,results=tex>>=
 require(xtable)
 xtab<-xtable(blocktable,digits=3,caption="Effects of warming vary by block, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effects")
 print(xtab,floating=TRUE, include.rownames = TRUE)
 @
-\par
-<<xtable1, echo=FALSE,results=tex>>=
+
+<<xtable2, echo=FALSE,results=tex>>=
 xtab2<-xtable(yeartable,digits=3,caption="Effects of warming vary by year, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effect")
 print(xtab2,floating=TRUE, include.rownames = TRUE)
 @
-\section* {}
-\par
+\par The below are all tables related to the sham and ambient comparisons. i want to include more information in the tables, probably (random effects- intercepts, and variance), and most will be in the supplemental (perhaps just the mean soil and air in the main text?)
+.
 <<label=shamtable, echo=FALSE, results=tex>>=
 ##select out just these two treatments for now
 require(lme4)
@@ -159,14 +158,14 @@ sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_control
 colnames(sitesums)<-c("sham.control","ambient")
 sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
 expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
-unique(expclim_cont$site)
 expclim_cont$site<-as.factor(expclim_cont$site)
-soilmnmod<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-soilmimod<-lmer(soiltemp1_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-soilmxmod<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-airmnmod<-lmer(airtemp_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-airmimod<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-airmxmod<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+colnames(expclim_cont)[2]<-"controltype"
+soilmnmod<-lmer(soiltemp1_mean~controltype + (1|site), data=expclim_cont, REML=FALSE)
+soilmimod<-lmer(soiltemp1_min~controltype + (1|site), data=expclim_cont, REML=FALSE)
+soilmxmod<-lmer(soiltemp1_max~controltype + (1|site), data=expclim_cont, REML=FALSE)
+airmnmod<-lmer(airtemp_mean~controltype + (1|site), data=expclim_cont, REML=FALSE)
+airmimod<-lmer(airtemp_min~controltype + (1|site), data=expclim_cont, REML=FALSE)
+airmxmod<-lmer(airtemp_max~controltype + (1|site), data=expclim_cont, REML=FALSE)
 airmntable<-summary(airmnmod)$coef
 airmitable<-summary(airmimod)$coef
 airmxtable<-summary(airmxmod)$coef
@@ -174,45 +173,43 @@ soilmntable<-summary(soilmnmod)$coef
 soilmitable<-summary(soilmimod)$coef
 soilmxtable<-summary(soilmxmod)$coef
 @
-\par
+\par 
 <<shamtable1, echo=FALSE,results=tex>>=
 require(xtable)
 xtabA<-xtable(airmntable,digits=3,caption="Summary of linear mixed effects model testing difference in mean air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtabA,floating=FALSE, include.rownames = FALSE)
+print(xtabA,floating=TRUE, include.rownames = TRUE)
 @
-\par Summary of linear mixed effects model testing difference in mean air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.
+
 \par
 <<shamtable1, echo=FALSE,results=tex>>=
 xtabS<-xtable(soilmntable,digits=3,caption="Summary of linear mixed effects model testing difference in mean soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtabS,floating=FALSE, include.rownames = TRUE)
+print(xtabS,floating=TRUE, include.rownames = TRUE)
 @
-\par Summary of linear mixed effects model testing difference in mean soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.
+
 \par
 <<shamtable1, echo=FALSE,results=tex>>=
 xtab3<-xtable(airmitable,digits=3,caption="Summary of linear mixed effects model testing difference in minimum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtab3,floating=FALSE, include.rownames = FALSE)
+print(xtab3,floating=TRUE, include.rownames = TRUE)
 @
-\par Summary of linear mixed effects model testing difference in minimum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.
 \par
 <<shamtable1, echo=FALSE,results=tex>>=
 xtab4<-xtable(soilmitable,digits=3,caption="Summary of linear mixed effects model testing difference in minimum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtab4,floating=FALSE, include.rownames = FALSE)
+print(xtab4,floating=TRUE, include.rownames = TRUE)
 @
-\par Summary of linear mixed effects model testing difference in minimum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.
-\par
+ 
 <<shamtable1, echo=FALSE,results=tex>>=
 xtab5<-xtable(airmxtable,digits=3,caption="Summary of linear mixed effects model testing difference in maximum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
 
-print(xtab5,floating=FALSE, include.rownames = FALSE)
+print(xtab5,floating=TRUE, include.rownames = TRUE)
 @
-\par Summary of linear mixed effects model testing difference in maximum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.
-\par
+
 <<shamtable1, echo=FALSE,results=tex>>=
 xtab6<-xtable(soilmxtable,digits=3,caption="Summary of linear mixed effects model testing difference in maximum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtab6,floating=FALSE, include.rownames = FALSE)
+print(xtab6,floating=TRUE, include.rownames = TRUE)
 @
-\par Summary of linear mixed effects model testing difference in maximum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.
-\par
+
+
+\clearpage
 \section* {Figures}
 
  \begin{figure}[p]
@@ -220,25 +217,26 @@ print(xtab6,floating=FALSE, include.rownames = FALSE)
  \includegraphics{../figures/BothWarmingbyblockyear.pdf}    
  \caption{The amount of warming (i.e. the difference between treatment and control plots, within each block) varies among blocks (left panels), as well as among years (right panels). See Tables 1 and 2 for statistical differences.}
  \end{figure}
-
- \begin{figure}[p]
+\clearpage
+ \begin{figure}[h]
      \centering
  \includegraphics{../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}    
  \caption{Time series of deviations from mean soil temperature over one year, in control (black line) and warming treatments with various target warming levels at 10 study sites.}
  \end{figure}
-
- \begin{figure}[p]
+\clearpage
+ \begin{figure}[h]
      \centering
  \includegraphics{../figures/ShamVSAmbient_mean.pdf}    
  \caption{Difference between mean air and soil temperatures in structural controls compared with ambient controls, with no control chambers or warming infrastructure in place. Air temperatures were higher, whereas soil temperatures were lower in the structural controls compared with ambient conditions. We show fixed effects from a mixed effects model that accounts for differences in experimental design and other factors among sites by including site as an intercept-only random effect (see Supplemental Materials for details). }
  \end{figure}
- \begin{figure}[p]
+ \clearpage
+ \begin{figure}[h]
      \centering
  \includegraphics{../figures/DirIndWarmingEffects.pdf}    
  \caption{Experimental warming may cause biological responses to be muted or exaggerated, compared to direct responses to temperature alone, when indirect effects of experimental warming are also drivers of focal responses. For example, phenology may appear to be less sensitive to warming in experiments versus observational studies \citep{wolkovich2012} because experimental warming reduces soil moisture, perhaps more than natural warming.}
  % EMW: Change the Y axis title so it's clearer -- effect of structural control (difference ....)?
  \end{figure}
-
+\clearpage
 \section*{Supplemental Materials}
 \subsection*{Description of database}
 Search terms used and criteria for selecting the 12 studies that we ended up with. Climate variables included, and where database and metadata are housed.
