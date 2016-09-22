@@ -1,4 +1,4 @@
-\begin{thebibliography}{24}
+\begin{thebibliography}{25}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
@@ -163,5 +163,12 @@ Matthews, E.~R. \& Mazer, S.~J.
   temperature$\times$ precipitation interactions in a widespread perennial herb
   in western North America.
 \newblock \emph{New Phytologist} \textbf{210}, 157--167 (2016).
+
+\bibitem[{Berry \& Bjorkman(1980)}]{berry1980}
+Berry, J. \& Bjorkman, O.
+\newblock Photosynthetic response and adaptation to temperature in higher
+  plants.
+\newblock \emph{Annual Review of Plant Physiology} \textbf{31}, 491--543
+  (1980).
 
 \end{thebibliography}

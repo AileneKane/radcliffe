@@ -7,15 +7,12 @@ expclim<-read.csv("expclim.csv", header=T)
 
 ##want to plot "0" compared to "ambient" in each site
 ##select out just these two treatments for now
-expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
+expclim_controls<-expclim[expclim$temptreat=="0"|expclim$temptreat=="ambient",]
 expclim_controls$temptreat<-factor(expclim_controls$temptreat)
 expclim_controls$airtemp_mean<-(expclim_controls$airtemp_min+expclim_controls$airtemp_max)/2
-
-unique(expclim_controls$site)
 sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
 colnames(sitesums)<-c("sham.control","ambient")
 sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
-sites_con<-sites_con[-which(sites_con=="chuine")]
 expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
 unique(expclim_cont$site)
 #make figures of sham controls vs. ambient conditions:
