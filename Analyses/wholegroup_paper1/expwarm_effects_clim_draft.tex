@@ -11,7 +11,7 @@
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
   %put your figures in one place
-\SweaveOpts{prefix.string=figures/, eps=FALSE} 
+ 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 
@@ -45,7 +45,7 @@
 
 %Start of the document
 \begin{document}
-\SweaveOpts{concordance=FALSE}
+
 % \SweaveOpts{concordance=TRUE}
  \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
@@ -148,107 +148,129 @@ When studying biological implications of a global challenge as large as climate 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 \clearpage
 \section* {Tables}
-<<label=table, echo=FALSE, results=tex>>=
-library(xtable)
-library(lme4)
-library(car)
-expclim<-read.csv("../expclim.csv", header=T)
-blockdat<-expclim[which(!is.na(expclim$block)),]
-blockdat2<-subset(blockdat,select=c(site,block,year,temptreat,soiltemp1_mean,temptreat))
-blockdat2$block<-as.factor(blockdat2$block)
-blockdat2$year<-as.factor(blockdat2$year)
-blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-blockdat2<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
-testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
-blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-blocktable<-round(Anova(blockmod, type="III"),digits=3)
-#blocktable2<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=2),blocktable$Df,round(blocktable$Pr,digits=2)))
-#colnames(blocktable2)<-c("Predictor","Chi-squared","df","p")
-#blocktable2$p[which(as.numeric(blocktable2$p)<0.05)]<-"<0.05"
-testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
-testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
-testdat3$year<-as.factor(testdat3$year)
-yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-yeartable<-Anova(yearmod, type="III")
-#yeartable2<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=2),yeartable$Df,round(yeartable$Pr,digits=4)))
-#colnames(yeartable2)<-c("","Chi-squared","df","p")
-#yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
-@
 
 % EMW all tables should go into supp and give the results parenthetically in main text (sweavedemo has an example of how to do this). Also be SURE TO GIVE ERROR DF throughout. 
 
-<<xtable1, echo=FALSE,results=tex>>=
-require(xtable)
-xtab<-xtable(blocktable,digits=3,caption="Effects of warming vary by block, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effects")
-print(xtab,floating=TRUE, include.rownames = TRUE)
-@
-
-<<xtable2, echo=FALSE,results=tex>>=
-xtab2<-xtable(yeartable,digits=3,caption="Effects of warming vary by year, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effect")
-print(xtab2,floating=TRUE, include.rownames = TRUE)
-@
-\par The below are all tables related to the sham and ambient comparisons. i want to include more information in the tables, probably (random effects- intercepts, and variance), and most will be in the supplemental (perhaps just the mean soil and air in the main text?)
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:48 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrr}
+  \hline
+ & Chisq & Df & Pr($>$Chisq) \\ 
+  \hline
+(Intercept) & 861.834 & 1.000 & 0.000 \\ 
+  temptreat & 431.799 & 3.000 & 0.000 \\ 
+  block & 5.795 & 2.000 & 0.055 \\ 
+  temptreat:block & 43.094 & 6.000 & 0.000 \\ 
+   \hline
+\end{tabular}
+\caption{Effects of warming vary by block, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effects} 
+\end{table}
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:48 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrr}
+  \hline
+ & Chisq & Df & Pr($>$Chisq) \\ 
+  \hline
+(Intercept) & 1455.294 & 1.000 & 0.000 \\ 
+  temptreat & 126.093 & 3.000 & 0.000 \\ 
+  year & 16.676 & 1.000 & 0.000 \\ 
+  temptreat:year & 61.646 & 3.000 & 0.000 \\ 
+   \hline
+\end{tabular}
+\caption{Effects of warming vary by year, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effect} 
+\end{table}\par The below are all tables related to the sham and ambient comparisons. i want to include more information in the tables, probably (random effects- intercepts, and variance), and most will be in the supplemental (perhaps just the mean soil and air in the main text?)
 .
-<<label=shamtable, echo=FALSE, results=tex>>=
-##select out just these two treatments for now
-require(lme4)
-expclim_controls<-expclim[expclim$temptreat=="0"|expclim$temptreat=="ambient",]
-expclim_controls$temptreat<-factor(expclim_controls$temptreat)
-expclim_controls$airtemp_mean<-(expclim_controls$airtemp_min+expclim_controls$airtemp_max)/2
-sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
-colnames(sitesums)<-c("sham.control","ambient")
-sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
-expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
-expclim_cont$site<-as.factor(expclim_cont$site)
-colnames(expclim_cont)[2]<-"controltype"
-soilmnmod<-lmer(soiltemp1_mean~controltype + (1|site), data=expclim_cont, REML=FALSE)
-soilmimod<-lmer(soiltemp1_min~controltype + (1|site), data=expclim_cont, REML=FALSE)
-soilmxmod<-lmer(soiltemp1_max~controltype + (1|site), data=expclim_cont, REML=FALSE)
-airmnmod<-lmer(airtemp_mean~controltype + (1|site), data=expclim_cont, REML=FALSE)
-airmimod<-lmer(airtemp_min~controltype + (1|site), data=expclim_cont, REML=FALSE)
-airmxmod<-lmer(airtemp_max~controltype + (1|site), data=expclim_cont, REML=FALSE)
-airmntable<-summary(airmnmod)$coef
-airmitable<-summary(airmimod)$coef
-airmxtable<-summary(airmxmod)$coef
-soilmntable<-summary(soilmnmod)$coef
-soilmitable<-summary(soilmimod)$coef
-soilmxtable<-summary(soilmxmod)$coef
-@
 \par 
-<<shamtable1, echo=FALSE,results=tex>>=
-require(xtable)
-xtabA<-xtable(airmntable,digits=3,caption="Summary of linear mixed effects model testing difference in mean air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtabA,floating=TRUE, include.rownames = TRUE)
-@
-
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:52 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Estimate & Std. Error & t value \\ 
+  \hline
+(Intercept) & 12.674 & 1.632 & 7.766 \\ 
+  controltypeambient & -0.356 & 0.092 & -3.859 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of linear mixed effects model testing difference in mean air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.} 
+\end{table}
 \par
-<<shamtable1, echo=FALSE,results=tex>>=
-xtabS<-xtable(soilmntable,digits=3,caption="Summary of linear mixed effects model testing difference in mean soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtabS,floating=TRUE, include.rownames = TRUE)
-@
-
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:52 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Estimate & Std. Error & t value \\ 
+  \hline
+(Intercept) & 11.312 & 1.366 & 8.283 \\ 
+  controltypeambient & 0.425 & 0.068 & 6.285 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of linear mixed effects model testing difference in mean soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.} 
+\end{table}
 \par
-<<shamtable1, echo=FALSE,results=tex>>=
-xtab3<-xtable(airmitable,digits=3,caption="Summary of linear mixed effects model testing difference in minimum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtab3,floating=TRUE, include.rownames = TRUE)
-@
-\par
-<<shamtable1, echo=FALSE,results=tex>>=
-xtab4<-xtable(soilmitable,digits=3,caption="Summary of linear mixed effects model testing difference in minimum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtab4,floating=TRUE, include.rownames = TRUE)
-@
- 
-<<shamtable1, echo=FALSE,results=tex>>=
-xtab5<-xtable(airmxtable,digits=3,caption="Summary of linear mixed effects model testing difference in maximum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-
-print(xtab5,floating=TRUE, include.rownames = TRUE)
-@
-
-<<shamtable1, echo=FALSE,results=tex>>=
-xtab6<-xtable(soilmxtable,digits=3,caption="Summary of linear mixed effects model testing difference in maximum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.")
-print(xtab6,floating=TRUE, include.rownames = TRUE)
-@
-
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:52 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Estimate & Std. Error & t value \\ 
+  \hline
+(Intercept) & 7.161 & 1.381 & 5.186 \\ 
+  controltypeambient & -0.389 & 0.092 & -4.236 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of linear mixed effects model testing difference in minimum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.} 
+\end{table}\par
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:52 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Estimate & Std. Error & t value \\ 
+  \hline
+(Intercept) & 10.493 & 1.334 & 7.866 \\ 
+  controltypeambient & 0.346 & 0.068 & 5.089 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of linear mixed effects model testing difference in minimum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.} 
+\end{table} 
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:52 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Estimate & Std. Error & t value \\ 
+  \hline
+(Intercept) & 18.187 & 1.899 & 9.576 \\ 
+  controltypeambient & -0.322 & 0.098 & -3.290 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of linear mixed effects model testing difference in maximum air temperatures of structural controls compared with ambient controls (i.e.with no control chambers or warming infrastructure in place). The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.} 
+\end{table}
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Thu Sep 29 18:32:52 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Estimate & Std. Error & t value \\ 
+  \hline
+(Intercept) & 13.599 & 1.670 & 8.145 \\ 
+  controltypeambient & 0.572 & 0.076 & 7.532 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of linear mixed effects model testing difference in maximum soil temperature (at the shallowest depth measured) of structural controls compared with ambient controls. The model included a fixed effect of control type and an intercept-only random effect of studysite to account for study and measurement, as well as environmental, differences.} 
+\end{table}
 
 \clearpage
 \section* {Figures}
