@@ -61,6 +61,8 @@
 
 The aim is to write a Concept/Synthesis Paper, for Nature Climate Change, about maximizing benefits of field-based climate change experiments. We argue that there is a need to improve our understanding of how climate is actually altered by these experiments, particularly if we wish to use these experiments to forecast biological impacts of climate change. %yann: perhaps also to determine which methods of warming alter the least other climatic variables or to define the most appropriate method regarding the focus of the study (phenology, growth, survival etc)?%annmarie: Somewhere in this paper,  we should discuss that is important that “how” climate variables are modified relative to the predicted change under various emission scenarios is important.  Thus, the “how” should be not only the direction and magnitude of the variable change but also the extent to which the change mirrors change projected for the region in which the experiment took place). build up a discussion of studies that report only mean shifts in temperature in the intro. 
 
+%EMW: Overall, looking great! I think we just now need to work on fine-tuning pieces, slimming long sentences and adding a little pep into here and there. 
+
 \section* {Introduction}
 % EMW: Some changes below -- tried to break up the two long, complicated sentences. I think we also need a little more intro to climate change here and acknowledgment that it IS already changing. Adjust so it reads more like: climate change is shifting things, future change will be even bigger with cascading effects...
 \par Future climate change is expected to cause dramatic alterations to Earth's biota. The physiology, distribution, and abundance of organisms will shift, and likely cause cascading community and ecosystem effects \citep{thomas2004,parmesan2006,sheldon2011,urban2012}. Much uncertainty remains, however, about how particular individuals, populations, communities, and ecosystems will respond. These uncertainties make predicting ecological responses to the climate change one of the most significant challenges facing biology today.
@@ -173,6 +175,8 @@ yeartable<-Anova(yearmod, type="III")
 #yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
 @
 
+% EMW all tables should go into supp and give the results parenthetically in main text (sweavedemo has an example of how to do this). Also be SURE TO GIVE ERROR DF throughout. 
+
 <<xtable1, echo=FALSE,results=tex>>=
 require(xtable)
 xtab<-xtable(blocktable,digits=3,caption="Effects of warming vary by block, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effects")
@@ -252,26 +256,27 @@ print(xtab6,floating=TRUE, include.rownames = TRUE)
  \begin{figure}[p]
      \centering
  \includegraphics{../figures/BothWarmingbyblockyear.pdf}    
- \caption{The amount of warming (i.e. the difference between treatment and control plots, within each block) varies among blocks (left panels), as well as among years (right panels). See Tables 1 and 2 for statistical differences.}
+ \caption{The amount of warming (i.e. the difference between treatment and control plots, within each block) varies among blocks (left panels), as well as among years (right panels). See Tables 1 and 2 for statistical differences.} %EMW: line is 1:1? Also, we should have a map of the sites somewhere? New Figure 1?
  \end{figure}
 \clearpage
  \begin{figure}[h]
      \centering
  \includegraphics{../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}    
- \caption{Time series of deviations from mean soil temperature over one year, in control (black line) and warming treatments with various target warming levels at 10 study sites.}
+ \caption{Time series of deviations from mean soil temperature over one year, in control (black line) and warming treatments with various target warming levels at 10 study sites.} %EMW: This figure is great -- you should make it sound more exciting when you mention it in the main text.
  \end{figure}
 \clearpage
  \begin{figure}[h]
      \centering
  \includegraphics{../figures/ShamVSAmbient_mean.pdf}    
- \caption{Difference between mean air and soil temperatures in structural controls compared with ambient controls, with no control chambers or warming infrastructure in place. Air temperatures were higher, whereas soil temperatures were lower in the structural controls compared with ambient conditions. We show fixed effects from a mixed effects model that accounts for differences in experimental design and other factors among sites by including site as an intercept-only random effect (see Supplemental Materials for details). }
+ \caption{Difference between mean air and soil temperatures in structural controls compared with ambient controls, with no control chambers or warming infrastructure in place. Air temperatures were higher, whereas soil temperatures were lower in the structural controls compared with ambient conditions. We show fixed effects from a mixed effects model that accounts for differences in experimental design and other factors among sites by including site as an intercept-only random effect (see Supplemental Materials for details). } % Add ref to table in supp for stats.
  \end{figure}
  \clearpage
  \begin{figure}[h]
      \centering
  \includegraphics{../figures/DirIndWarmingEffects.pdf}    
- \caption{Experimental warming may cause biological responses to be muted or exaggerated, compared to direct responses to temperature alone, when indirect effects of experimental warming are also drivers of focal responses. For example, phenology may appear to be less sensitive to warming in experiments versus observational studies \citep{wolkovich2012} because experimental warming reduces soil moisture, perhaps more than natural warming.}
- % EMW: Change the Y axis title so it's clearer -- effect of structural control (difference ....)?
+ \caption{Experimental warming may cause biological responses to be muted or exaggerated, compared to direct responses to temperature alone, when indirect effects of experimental warming are also drivers of focal responses. For example, phenology may appear to be less sensitive to warming in experiments versus observational studies \citep{wolkovich2012} because experimental warming reduces soil moisture, perhaps more than natural warming.} 
+ % EMW: Change the Y axis title so it's clearer -- effect of structural control (difference ....)? 
+ % EMW: Explain phenology better (advances and delays) or just refer reader to main text for examples.
  \end{figure}
 \clearpage
 \section*{Supplemental Materials}
