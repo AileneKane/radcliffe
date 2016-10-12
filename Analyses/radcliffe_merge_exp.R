@@ -559,13 +559,16 @@ clean.raw$sherry <- function(filename, path) {
   sherry4$year<-2003
   sherry4$site<-"exp12"
   sherry4$block<-NA
+  sherry4[as.numeric(sherry4$plot)<6,]$block<-1
+  sherry4[as.numeric(sherry4$plot)<11 & as.numeric(sherry4$plot)>5,]$block<-2
+  sherry4[as.numeric(sherry4$plot)<16 & as.numeric(sherry4$plot)>10,]$block<-3
+  sherry4[as.numeric(sherry4$plot)>15,]$block<-4
   sherryok<-subset(sherry4, select=c("site","block","plot","event","year","genus","species", "doy"))
   #sherryok$variety <- NA
   #sherryok$cult <- NA
   #file2 <- file.path(path, "SherryPhenology2003_First6spp.csv")#need to add these in- they're just a little different than others in formattin
   #sherryotherspp<-read.csv(file2, header=T)
   sherryok<-sherryok[!is.na(sherryok$doy),]
-  
   return(sherryok)
 }
 
@@ -904,3 +907,4 @@ unique(expphendb$event)#13 phenological events
 
 specieslist<-sort(unique(paste(expphendb$genus,expphendb$species, sep=".")))
 write.csv(specieslist,"exp_splist.csv")
+

@@ -16,15 +16,28 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   marchin1 <- read.csv(file, check.names=FALSE, header=TRUE)
   names(marchin1)[8]<-"plot"
   marchin1$year_doy<-paste(marchin1$year,marchin1$doy, sep="-")
-  #get min airtemp across all 3 measurements for each plot
+  #get min airtemp across both measurements for each plot
   temp_min<-aggregate(x=subset(marchin1, select=c("CAT2_Min","CAT3_Min","CSTo1_Min","CSTo2_Min","CSTI1_Min","CSTI2_Min")), by=list(marchin1$year_doy,marchin1$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min[,3:4],1,min,na.rm=F)
-  soiltemp1_min<-apply(temp_min[,5:6],1,min,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min[,7:8],1,min,na.rm=F)#temp at 6cm depth(inorganic)
+  airtemp_min<-apply(temp_min[,3:4],1,min,na.rm=T)
+  soiltemp1_min<-apply(temp_min[,5:6],1,min,na.rm=T)#temp at 2cm depth(organic)
+  soiltemp2_min<-apply(temp_min[,7:8],1,min,na.rm=T)#temp at 6cm depth(inorganic)
+  airtemp_min[which(airtemp_min=="Inf")]<-NA
+  airtemp_min[which(airtemp_min=="-Inf")]<-NA
+  soiltemp1_min[which(soiltemp1_min=="Inf")]<-NA
+  soiltemp1_min[which(soiltemp1_min=="-Inf")]<-NA
+  soiltemp2_min[which(soiltemp2_min=="Inf")]<-NA
+  soiltemp2_min[which(soiltemp2_min=="-Inf")]<-NA
+  
   temp_max<-aggregate(x=subset(marchin1, select=c("CAT2_Max","CAT3_Max","CSTo1_Max","CSTo2_Max","CSTI1_Max","CSTI2_Max")), by=list(marchin1$year_doy,marchin1$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max[,3:4],1,max,na.rm=F)
-  soiltemp1_max<-apply(temp_max[,5:6],1,max,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max[,7:8],1,max,na.rm=F)#temp at 6cm depth(inorganic)
+  airtemp_max<-apply(temp_max[,3:4],1,max,na.rm=T)
+  soiltemp1_max<-apply(temp_max[,5:6],1,max,na.rm=T)#temp at 2cm depth(organic)
+  soiltemp2_max<-apply(temp_max[,7:8],1,max,na.rm=T)#temp at 6cm depth(inorganic)
+  airtemp_max[which(airtemp_max=="Inf")]<-NA
+  soiltemp1_max[which(soiltemp1_max=="Inf")]<-NA
+  soiltemp2_max[which(soiltemp2_max=="Inf")]<-NA
+  airtemp_max[which(airtemp_max=="-Inf")]<-NA
+  soiltemp1_max[which(soiltemp1_max=="-Inf")]<-NA
+  soiltemp2_max[which(soiltemp2_max=="-Inf")]<-NA
   soilmois<-aggregate(x=subset(marchin1, select=c("CSM_Avg")), by=list(marchin1$year_doy,marchin1$plot), FUN=mean,na.rm=F)
   colnames(temp_min)[1:2]<-c("year_doy","plot")
   year_doy <- strsplit(temp_min$year_doy,'-') 
@@ -53,13 +66,25 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   marchin2$year_doy<-paste(marchin2$year,marchin2$doy, sep="-")
   marchin2$plot<-"OUT"
   temp_min2<-aggregate(x=subset(marchin2, select=c("oAT1_Min","oAT2_Min","oAT3_Min","oSTo1_Min","oSTo2_Min","oSTo3_Min","oSTI1_Min","oSTI2_Min","oSTI3_Min")), by=list(marchin2$year_doy,marchin2$plot), FUN=min,na.rm=F)
-  airtemp_min<-apply(temp_min2[,3:5],1,min,na.rm=F)
-  soiltemp1_min<-apply(temp_min2[,6:8],1,min,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_min<-apply(temp_min2[,9:11],1,min,na.rm=F)#temp at 6cm depth(inorganic)
+  airtemp_min<-apply(temp_min2[,3:5],1,min,na.rm=T)
+  soiltemp1_min<-apply(temp_min2[,6:8],1,min,na.rm=T)#temp at 2cm depth(organic)
+  soiltemp2_min<-apply(temp_min2[,9:11],1,min,na.rm=T)#temp at 6cm depth(inorganic)
+  airtemp_min[which(airtemp_min=="Inf")]<-NA
+  soiltemp1_min[which(soiltemp1_min=="Inf")]<-NA
+  soiltemp2_min[which(soiltemp2_min=="Inf")]<-NA
+  airtemp_min[which(airtemp_min=="-Inf")]<-NA
+  soiltemp1_min[which(soiltemp1_min=="-Inf")]<-NA
+  soiltemp2_min[which(soiltemp2_min=="-Inf")]<-NA
   temp_max2<-aggregate(x=subset(marchin2, select=c("oAT1_Max","oAT2_Max","oAT3_Max","oSTo1_Max","oSTo2_Max","oSTo3_Max","oSTI1_Max","oSTI2_Max","oSTI3_Max")), by=list(marchin2$year_doy,marchin2$plot), FUN=max,na.rm=F)
-  airtemp_max<-apply(temp_max2[,3:5],1,max,na.rm=F)
-  soiltemp1_max<-apply(temp_max2[,6:8],1,max,na.rm=F)#temp at 2cm depth(organic)
-  soiltemp2_max<-apply(temp_max2[,9:11],1,max,na.rm=F)#temp at 6cm depth(inorganic)
+  airtemp_max<-apply(temp_max2[,3:5],1,max,na.rm=T)
+  soiltemp1_max<-apply(temp_max2[,6:8],1,max,na.rm=T)#temp at 2cm depth(organic)
+  soiltemp2_max<-apply(temp_max2[,9:11],1,max,na.rm=T)#temp at 6cm depth(inorganic)
+  airtemp_max[which(airtemp_max=="Inf")]<-NA
+  soiltemp1_max[which(soiltemp1_max=="Inf")]<-NA
+  soiltemp2_max[which(soiltemp2_max=="Inf")]<-NA
+  airtemp_max[which(airtemp_max=="-Inf")]<-NA
+  soiltemp1_max[which(soiltemp1_max=="-Inf")]<-NA
+  soiltemp2_max[which(soiltemp2_max=="-Inf")]<-NA
   #looks like no soil moisture for outside chambers?
   colnames(temp_min2)[1:2]<-c("year_doy","plot")
   year_doy <- strsplit(temp_min2$year_doy,'-') 
@@ -514,6 +539,10 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   allclim$soilmois1<-allclim$soilmois/100
   allclim$soilmois2<-NA
   allclim$block<-NA
+  allclim[as.numeric(allclim$plot)<6,]$block<-1
+  allclim[as.numeric(allclim$plot)<11 & as.numeric(allclim$plot)>5,]$block<-2
+  allclim[as.numeric(allclim$plot)<16 & as.numeric(allclim$plot)>10,]$block<-3
+  allclim[as.numeric(allclim$plot)>15,]$block<-4
   allclim$cantemp_min<-NA
   allclim$cantemp_max<-NA
   allclim$surftemp_min<-NA
@@ -846,6 +875,8 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     expphenclim$soiltemp2_mean<-as.numeric(expphenclim$soiltemp2_mean)
     expphenclim$soilmois1<-as.numeric(expphenclim$soilmois1)
     expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
+    soiltemp2_max[which(soiltemp2_max=="Inf")]<-NA
+    
     row.names(expphenclim) <- NULL
     write.csv(expphenclim, "Analyses/expclim.csv", row.names=FALSE, eol="\r\n")
 
@@ -874,3 +905,4 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     boxplot(soilmois1~alltreat, data=expphenclim)
 
 unique(cleanclimdata.raw$chuine$plot)
+
