@@ -942,7 +942,6 @@ mod9.d<-lmer(soilmois1~airtemp_min+airtemp_max+soiltemp1_min+ soiltemp1_max + #f
 qqnorm(resid(mod9.d))
 plot(fitted(mod9.d),resid(mod9.d),xlab="Fitted",ylab="Resid");abline(0,0)
 
-
 ### (K) Updated modeling - addressing collinearity in the predictors-----------------------------------------------
 #random effects and terms controlling for temporal variation have been decided; we are
 #now dealing with the fixed effects.
@@ -1213,3 +1212,12 @@ plot(fitted(mod10.p),resid(mod10.p),xlab="Fitted",ylab="Resid");abline(0,0)
 #-Tested for interactions with mod 10.p as a base model, the airtemp_min*soiltemp1_mean interaction was sig.
 #However, including the interaction made the residual plot look less random
 #-Keep mod10.p as final model, including airtemp_mean and soiltemp_max as fixed effects
+
+### (L) Just looking at some plain ol' correlations to challenge common assumptions ----------------------------------
+par(mfrow=c(1,2))
+plot(dat$airtemp_mean,dat$soilmois1)
+cor(dat$airtemp_mean,dat$soilmois1) 
+plot(dat$soiltemp1_mean,dat$soilmois1)
+cor(dat$soiltemp1_mean,dat$soilmois1)
+#these (above) are not as obvious as I might have thought they would be!
+
