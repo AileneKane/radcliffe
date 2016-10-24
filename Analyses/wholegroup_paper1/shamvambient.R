@@ -1,5 +1,8 @@
 ###Analyses of sham ("control") vs. "ambient" microclimate data, to examine how warming chambers may alter micrclimate.
 #Look at temperature, soil moisture
+rm(list=ls()) 
+options(stringsAsFactors = FALSE)
+
 library(lme4)
 setwd("~/git/radcliffe/Analyses")
 #expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)
@@ -22,7 +25,7 @@ par(mfrow=c(1,5))
 for (i in 1:length(sites_con)){
   dat<-expclim_cont[expclim_cont$site==sites_con[i],]
   if(length(unique(dat$soiltemp1_mean))==1){next}
-  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")
+  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp", na.fail="na.omit")
 }
 mod2<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs2<-data.frame(coef(summary(mod2)))
@@ -42,7 +45,7 @@ par(mfrow=c(1,5))
 for (i in 1:length(sites_con)){
   dat<-expclim_cont[expclim_cont$site==sites_con[i],]
   if(length(unique(dat$soiltemp1_max))==1){next}
-  boxplot(dat$soiltemp1_max~dat$temptreat, main=paste(sites_con[i]), ylab="M soil temp")
+  boxplot(dat$soiltemp1_max~dat$temptreat, main=paste(sites_con[i]), ylab="Max soil temp")
 }
 mod4<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs4<-data.frame(coef(summary(mod4)))
@@ -192,16 +195,18 @@ air_monthsums<-monthsums_allyear_min[substring(rownames(monthsums_allyear_min),1
 quartz(height=6,width=8)
 par(mfcol=c(2,2),mai=c(.6,.7,.2,.1), omi=c(.7,.01,.2,.2))
 #air
-plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="", ylab="", ylim=c(min(air_monthsums$temptreat0)-(max(air_monthsums$SE)),max(air_monthsums$temptreat0)+(max(air_monthsums$SE))),bty="l", main="Min Air Temp")
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="", ylab="", ylim=c(min(air_monthsums$temptreat0)-(max(air_monthsums$SE)),max(air_monthsums$temptreat0)+(max(air_monthsums$SE))),bty="l", main="Min Air Temp", las=TRUE)
 for (i in 1:12){
   arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.05,angle=90,code=3)}
+abline(h=0,lty=2)
 points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="blue")
 mtext("Difference between sham and ambient",side=2, line=2, adj=1.8)
 
 #soil
-plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="", ylab="", ylim=c(min(soil_monthsums$temptreat0)-(max(soil_monthsums$SE)),max(soil_monthsums$temptreat0)+(max(soil_monthsums$SE))), bty="l", main="Min Soil Temp")
+plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="", ylab="", ylim=c(min(soil_monthsums$temptreat0)-(max(soil_monthsums$SE)),max(soil_monthsums$temptreat0)+(max(soil_monthsums$SE))), bty="l", main="Min Soil Temp", las=TRUE)
 for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.05,angle=90,code=3)}
+abline(h=0,lty=2)
 points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="brown4")
 mtext("Month",side=1, line=2, adj=.5)
 
@@ -238,13 +243,15 @@ for (i in 1:length(months)){
 soil_monthsums<-monthsums_allyear_max[substring(rownames(monthsums_allyear_max),1,10)=="soil_fixed",]
 air_monthsums<-monthsums_allyear_max[substring(rownames(monthsums_allyear_max),1,9)=="air_fixed",]
 #air
-plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="", ylab="", ylim=c(min(air_monthsums$temptreat0)-(max(air_monthsums$SE)),max(air_monthsums$temptreat0)+(max(air_monthsums$SE))),bty="l", main="Max Air Temp")
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="blue", xlab="", ylab="", ylim=c(min(air_monthsums$temptreat0)-(max(air_monthsums$SE)),max(air_monthsums$temptreat0)+(max(air_monthsums$SE))),bty="l", main="Max Air Temp", las=TRUE)
+abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.05,angle=90,code=3)}
 points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="blue")
 
 #soil
-plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="", ylab="", ylim=c(min(soil_monthsums$temptreat0)-(max(soil_monthsums$SE)),max(soil_monthsums$temptreat0)+(max(soil_monthsums$SE))), bty="l", main="Max Soil Temp")
+plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="brown4", xlab="", ylab="", ylim=c(min(soil_monthsums$temptreat0)-(max(soil_monthsums$SE)),max(soil_monthsums$temptreat0)+(max(soil_monthsums$SE))), bty="l", main="Max Soil Temp", las=TRUE)
+abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.05,angle=90,code=3)}
 points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="brown4")
@@ -272,7 +279,7 @@ for (i in 1:length(months)){
 ###Plot model results:
 mois_monthsums<-monthsums_allyear_mois[substring(rownames(monthsums_allyear_mois),1,10)=="mois_fixed",]
 quartz(height=5,width=6)
-plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="gray", xlab="Month", ylab="Difference between sham and ambient", ylim=c(-.05,0.05),bty="l", main="Soil Moisture")
+plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="gray", xlab="Month", ylab="Difference between sham and ambient", ylim=c(-.05,0.05),bty="l", main="Soil Moisture", las=TRUE)
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0,angle=90,code=3)}

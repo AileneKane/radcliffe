@@ -43,11 +43,7 @@ plot(as.numeric(tempexp2$target),as.numeric(tempexp2$AGtemp_max_dev),pch=symb_si
 abline(a=0,b=1,lty=1)
 plot(as.numeric(tempexp2$target),as.numeric(tempexp2$AGtemp_min_dev ),pch=symb_site,col="black",xlab="Target temp difference (C)",ylab="AGTemp Min Dev (C)", bty="l",, cex.axis=.9,ylim=c(0,5),xlim=c(0,5))
 abline(a=0,b=1,lty=1)
-#now look at min  and max variance
-var()
-#Now look at min and max temp
-head(tempexp2)
-head(expclim)
+
 expclim3<-subset(expclim,select=c("site","temptreat","airtemp_min","airtemp_max","cantemp_min", "cantemp_max","surftemp_min","surftemp_max"))
 #want to compare mean and variances of min and max temperatures in control plots and warmed plots in each study
 #using two types structural controls separately
@@ -61,24 +57,12 @@ expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agt
 
 sites<-sort(unique(expclimt$site))#use data without precipitation manipulation
 temptreats<-sort(unique(expclimt$temptreat))
-#alltemp.df <- data.frame(site=character(),tempmax.mn.0=numeric(),
-#    tempmax.mn.1=numeric(),tempmax.mn.2=numeric(),tempmax.mn.3=numeric(),
- #   tempmax.mn.4=numeric(),tempmax.mn.5=numeric(),tempmax.mn.6=numeric(),
-  #  tempmax.mn.7=numeric(),tempmax.mn.8=numeric(),tempmax.mn.9=numeric(),
-   # tempmax.mn.amb=numeric(),tempmax.var.0=numeric(),
-  #  tempmax.var.1=numeric(),tempmax.var.2=numeric(),tempmax.var.3=numeric(),
-  #  tempmax.var.4=numeric(),tempmax.var.5=numeric(),tempmax.var.6=numeric(),
-  #  tempmax.var.7=numeric(),tempmax.var.8=numeric(),tempmax.var.9=numeric(),
-  #  tempmax.var.amb=numeric(),tempmin.mn.0=numeric(),
-  #  tempmin.mn.1=numeric(),tempmin.mn.2=numeric(),tempmin.mn.3=numeric(),
-  #  tempmin.mn.4=numeric(),tempmin.mn.5=numeric(),tempmin.mn.6=numeric(),
-  #  tempmin.mn.7=numeric(),tempmin.mn.8=numeric(),tempmin.mn.9=numeric(),
-  #  tempmin.mn.amb=numeric(),tempmin.var.0=numeric(),
-  #  tempmin.var.1=numeric(),tempmin.var.2=numeric(),tempmin.var.3=numeric(),
-  #  tempmin.var.4=numeric(),tempmin.var.5=numeric(),tempmin.var.6=numeric(),
-  #  tempmin.var.7=numeric(),tempmin.var.8=numeric(),tempmin.var.9=numeric(),
-  #  tempmin.var.amb=numeric(),stringsAsFactors=FALSE) 
-quartz()
+alltemp.df <- data.frame(site=character(),temptreat=character(),agtempmax_mn=numeric(),
+                         agtempmax_var=numeric(),agtempmin_mn=numeric(),
+                         agtempmin_var=numeric(),agtempmax_mn=numeric(),
+                         agtempmax_var=numeric(),agtempmin_mn=numeric(),
+                         agtempmin_var=numeric())
+
 for (i in 1:length(sites)){
   sitedat<-expclimt[expclimt$site==sites[i],]
   siteagtempmaxmn<-tapply(sitedat$agtemp_max,sitedat$temptreat,mean,na.rm=TRUE)
@@ -120,21 +104,83 @@ alltemptarget[which(alltemptarget$temptreat=="ambient"),]$target<--1
 #plot variance by target warming
 #remove exp02 (chuine), as these variances aren't real
 alltemptarget<-alltemptarget[-which(alltemptarget$site=="exp02"),]
+
+sitesymb<-c(21,22,16,24,25,17,3,4,5,10,12)
+symb_site<-sitesymb[factor(alltemptarget$site)]
+
 quartz(height=5,width=10)
 par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
-plot(alltemptarget$target,alltemptarget$AGTempMax_Var,pch=sitesymb[as.numeric(as.factor(alltemptarget$site))],xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,170), bty="l", cex.axis=.9, main="Max AG temp")
+plot(alltemptarget$target,alltemptarget$AGTempMax_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Max AG temp")
 #mtext(side=2,"Max AG temp", line=2.2, adj=.8, cex=.9)
 axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-mtext(side=2,"Variance in temperature (C)", line=4,adj=3,cex=.9)
-plot(alltemptarget$target,alltemptarget$AGTempMin_Var,pch=sitesymb[as.numeric(as.factor(alltemptarget$site))],xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,170), bty="l",, cex.axis=.9, main="Min AG temp")
+axis(side=1,at=c(-1,0,1,2,3,4,5), labels=FALSE,cex=.9)
+mtext(side=2,"Variance (C)", line=3,adj=-1,cex=.9)
+plot(alltemptarget$target,alltemptarget$AGTempMin_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l",, cex.axis=.9, main="Min AG temp")
+axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
+axis(side=1,at=c(-1,0,1,2,3,4,5), labels=FALSE,cex=.9)
+#mtext(side=2,"Min AG temp", line=1, adj=.8, cex=.9)
+plot(alltemptarget$target,alltemptarget$BGTempMax_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9,main="Max BG temp")
+axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
+axis(side=1,at=c(-1,0,1,2,3,4,5), labels=c("ambient","0","1","2","3","4","5"),cex=.9)
+mtext(side=1,"Target warming (C)", line=2.3, adj=.5)
+plot(alltemptarget$target,alltemptarget$BGTempMin_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l",cex.axis=.9, main="Min BG temp")
+axis(side=1,at=c(-1,0,1,2,3,4,5), labels=c("ambient","0","1","2","3","4","5"),cex=.9)
+axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
+mtext(side=1,"Target warming (C)", line=2.3, adj=.5)
+legend(x=4.5,y=195,legend=unique(alltemptarget$site),pch=unique(symb_site),bty="n",cex=0.7,pt.cex=0.7)
+
+#remake figure with site/experiment on x axis, and color coding by target warming
+library(RColorBrewer)
+targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+
+quartz(height=5,width=10)
+par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
+plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$AGTempMax_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Max AG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
+axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
+axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
+mtext(side=2,"Variance (C)", line=3,adj=-1,cex=.9)
+plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$AGTempMin_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Min AG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
+axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
+axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
+plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$BGTempMax_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Max BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
+axis(side=1,at=c(seq(1:11)), labels=substr(sort(unique(alltemptarget$site)),4,5),cex=.9)
 axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
 
-#mtext(side=2,"Min AG temp", line=1, adj=.8, cex=.9)
-plot(alltemptarget$target,alltemptarget$BGTempMax_Var,pch=sitesymb[as.numeric(as.factor(alltemptarget$site))],xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,170), bty="l", cex.axis=.9,main="Max BG temp")
+mtext(side=1,"Study/site", line=2.3, adj=.5)
+plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$BGTempMin_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Min BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
+axis(side=1,at=c(seq(1:11)), labels=substr(sort(unique(alltemptarget$site)),4,5),cex=.9)
 axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(-1,0,1,2,3,4,5), labels=c("ambient","0","1","2","3","4","5"),cex=.9)
-mtext(side=1,"Target warming (C)", line=2.3, adj=1.5)
-plot(alltemptarget$target,alltemptarget$BGTempMin_Var,pch=sitesymb[as.numeric(as.factor(alltemptarget$site))],xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,170), bty="l",, cex.axis=.9, main="Min BG temp")
-axis(side=1,at=c(-1,0,1,2,3,4,5), labels=c("ambient","0","1","2","3","4","5"),cex=.9)
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-mtext(side=1,"Target warming (C)", line=2.3, adj=1.5)
+mtext(side=1,"Study/site", line=2.3, adj=.5)
+legend(x=10.5,y=195,legend=sort(unique(alltemptarget$target)),pch=21,pt.bg=targetcol,bty="n",cex=0.7,pt.cex=0.7)
+
+alltemptarget$treatcat<-NA
+alltemptarget[which(alltemptarget$temptreat=="ambient"|alltemptarget$temptreat==0),]$treatcat<-"control"
+alltemptarget[which(as.numeric(alltemptarget$temptreat)>0),]$treatcat<-"warmed"
+
+head(alltemptarget)
+library(lme4)
+alltemptarget$site<-as.factor(alltemptarget$site)
+alltemptarget$treatcat<-as.factor(alltemptarget$treatcat)
+#testing if treatments yield larger variances.
+test1<-lmer(AGTempMax_Var~treatcat + (1|site), data=alltemptarget,na.action=na.omit)
+summary(test1)
+test2<-lmer(AGTempMin_Var~treatcat + (1|site), data=alltemptarget,na.action=na.omit)
+summary(test2)
+test3<-lmer(BGTempMax_Var~treatcat + (1|site), data=alltemptarget,na.action=na.omit)
+summary(test3)
+test4<-lmer(BGTempMin_Var~treatcat + (1|site), data=alltemptarget,na.action=na.omit)
+summary(test4)#
+#all show a triend toward higher variance in the warmed vs unwarmed but doesn't seem to be
+#"significant (small t value). BG min is that only one that may be significant
+#But, i realize that Yann was actually interested in comparing the variance of min vs max temp, so i should restructure these models a bit
+#(figures are fine)
+maxtemp<-cbind(subset(alltemptarget,select=c(site,target,treatcat,AGTempMax_Var,BGTempMax_Var)),rep("tmax", times=dim(alltemptarget)[1]))
+colnames(maxtemp)<-c("site","target","treatcat","AGVar","BGVar","temptype")
+mintemp<-cbind(subset(alltemptarget,select=c(site,target,treatcat,AGTempMin_Var,BGTempMin_Var)),rep("tmin", times=dim(alltemptarget)[1]))
+colnames(mintemp)<-c("site","target","treatcat","AGVar","BGVar","temptype")
+
+newdat<-rbind(maxtemp,mintemp)
+test5<-lmer(AGVar~treatcat*temptype + (1|site), data=newdat,na.action=na.omit)
+summary(test5)
+test6<-lmer(BGVar~treatcat*temptype + (1|site), data=newdat,na.action=na.omit)
+summary(test6)#
