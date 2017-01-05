@@ -11,10 +11,15 @@ options(stringsAsFactors=FALSE)
 
 library(lme4)
 library(car)
+library(raster)
+library(RColorBrewer)
+library(dplyr)
+library(tidyr)
+
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
 effwarm.plot <- read.csv("EffectiveWarming_Plot.csv", header=TRUE)#i think the treats file and effective warming should have the same number of rows- one per site-plot, right? why aren't they matching up?
-exp.tarrep <- join(treats,effwarm.plot, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
+exp.tarrep <- full_join(treats,effwarm.plot, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
 ###First just plot Target vs. reported and Reported vs. our measure
 #select out only plots with temperature manipulation
 tempexp<-exp.tarrep[which(exp.tarrep$preciptreat==0|is.na(exp.tarrep$preciptreat)),]
@@ -47,7 +52,9 @@ abline(a=0,b=1,lty=1)
 expclim3<-subset(expclim,select=c("site","temptreat","airtemp_min","airtemp_max","cantemp_min", "cantemp_max","surftemp_min","surftemp_max"))
 #want to compare mean and variances of min and max temperatures in control plots and warmed plots in each study
 #using two types structural controls separately
-expclimt<-expclim[which(expclim$preciptreat==0|is.na(expclim$preciptreat)),]
+expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
+
+expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
 expclimt$agtemp_min<-expclimt$airtemp_min
 expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
 expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
@@ -65,7 +72,10 @@ alltemp.df <- data.frame(site=character(),temptreat=character(),agtempmax_mn=num
 
 for (i in 1:length(sites)){
   sitedat<-expclimt[expclimt$site==sites[i],]
+  sitedat$agtemp_max.cn<-sitedat$agtemp_max-mean(sitedat$agtemp_max)
+    
   siteagtempmaxmn<-tapply(sitedat$agtemp_max,sitedat$temptreat,mean,na.rm=TRUE)
+  
   siteagtempmaxvar<-tapply(sitedat$agtemp_max,sitedat$temptreat,var,na.rm=TRUE)
   siteagtempminmn<-tapply(sitedat$agtemp_min,sitedat$temptreat,mean,na.rm=TRUE)
   siteagtempminvar<-tapply(sitedat$agtemp_min,sitedat$temptreat,var,na.rm=TRUE)
@@ -94,7 +104,7 @@ treats2 <- treats %>% # start with the data frame
   distinct(site, temptreat,.keep_all = TRUE) %>% # establishing grouping variables
   select(site,temptreat,target,reported)
 
-alltemptarget <- join(treats2,alltemp.df, by=c("site","temptreat"), match="first")
+alltemptarget <- full_join(treats2,alltemp.df, by=c("site","temptreat"), match="first")
 head(alltemptarget)
 #for control plots with structures, use target warming=0
 alltemptarget[which(alltemptarget$temptreat==0),]$target<-0
@@ -130,7 +140,6 @@ mtext(side=1,"Target warming (C)", line=2.3, adj=.5)
 legend(x=4.5,y=195,legend=unique(alltemptarget$site),pch=unique(symb_site),bty="n",cex=0.7,pt.cex=0.7)
 
 #remake figure with site/experiment on x axis, and color coding by target warming
-library(RColorBrewer)
 targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
 
 quartz(height=5,width=10)
@@ -184,3 +193,126 @@ test5<-lmer(AGVar~treatcat*temptype + (1|site), data=newdat,na.action=na.omit)
 summary(test5)
 test6<-lmer(BGVar~treatcat*temptype + (1|site), data=newdat,na.action=na.omit)
 summary(test6)#
+
+####Try coefficient of variation for each treatment and temperature type
+head(expclimt)#may need to aggregate instead,,,
+cv_agtemp_max<-aggregate(expclimt$agtemp_max, by=list(expclimt$site,expclimt$plot,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_agtemp_max)<-c("site","plot","temptreat","agtemp_max")
+
+#now Min AG temp
+cv_agtemp_min<-aggregate(expclimt$agtemp_min, by=list(expclimt$site,expclimt$plot,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_agtemp_min)<-c("site","plot","temptreat","agtemp_min")
+
+#BG Max Temp
+cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max, by=list(expclimt$site,expclimt$plot,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_bgtemp_max)<-c("site","plot","temptreat","bgtemp_max")
+
+#BG Min Temp
+cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min, by=list(expclimt$site,expclimt$plot,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_bgtemp_min)<-c("site","plot","temptreat","bgtemp_min")
+
+#Now combine the four temperature variables
+dim(cv_bgtemp_min);dim(cv_bgtemp_max);dim(cv_agtemp_min);dim(cv_agtemp_max)
+#Add new column for temptreat that can be merged with the files so that it has target warming instead of level
+cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,4],cv_bgtemp_max[,4],cv_bgtemp_min[,4])
+colnames(cv_all)[4:7]<-c("cv_agtemp_max","cv_agtemp_min","cv_bgtemp_max","cv_bgtemp_min")
+colnames(cv_all)[3]<-"temptreatx"
+cv_all$temptreat<-NA
+cv_all[which(cv_all$temptreatx=="ambient"),]$temptreat<-cv_all[which(cv_all$temptreatx=="ambient"),]$temptreatx
+cv_all[1:130,]$temptreat<-substr(cv_all$temptreatx[1:130],1,2)
+#now merge target temperatures in
+cv_allt <- left_join(treats2,cv_all, by=c("site","temptreat"), match="all")
+cv_allt[which(cv_allt$temptreatx=="ambient"),]$target<--1
+unique(cv_allt$temptreat)
+#now figure
+#remake figure with site/experiment on x axis, and color coding by target warming
+targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+quartz(height=5,width=10)
+par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
+plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_agtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main="Max AG Temp CV",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
+mtext(side=2,"CV (C)", line=3,adj=-1,cex=.9)
+plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_agtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,400), bty="l", cex.axis=.9, main="Min AG temp",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+axis(side=2,at=c(0,100,200,300,400), labels=TRUE, las=TRUE, cex=.9)
+axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
+plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_bgtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main="Max BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_allt$site)),4,5),cex=.9)
+axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+
+mtext(side=1,"Study/site", line=2.3, adj=.5)
+plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_bgtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main="Min BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+
+axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_allt$site)),4,5),cex=.9)
+axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+mtext(side=1,"Study/site", line=2.3, adj=.5)
+legend(x=11.5,y=100,legend=sort(unique(cv_allt$target)),pch=21,pt.bg=targetcol,bty="n",cex=0.7,pt.cex=0.7)
+
+
+#Make same plots, but by month for each site
+
+####Try coefficient of variation for each treatment and temperature type
+head(expclimt)#may need to aggregate instead,,,
+expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
+expclimt$agtemp_min<-expclimt$airtemp_min
+expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
+expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
+expclimt$agtemp_max<-expclimt$airtemp_max
+expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
+expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
+#add column for month to expclimt
+expclimt$month<-substr(as.Date(paste(expclimt$year, expclimt$doy,sep="-"), format="%Y-%j"),6,7)
+expclimt <- left_join(treats2,expclimt, by=c("site","temptreat"), match="all")
+
+sites<-sort(unique(expclimt$site))#use data without precipitation manipulation
+for(i in i:length(sites))
+{
+  sited<-expclimt[expclimt$site==sites[i],]
+  #Max AG Temp
+  cv_agtemp_max<-aggregate(expclimt$agtemp_max, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
+  colnames(cv_agtemp_max)<-c("month","plot","temptreat","target","agtemp_max")
+  #now Min AG temp
+  cv_agtemp_min<-aggregate(expclimt$agtemp_min, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
+  colnames(cv_agtemp_min)<-c("month","plot","temptreat","target","agtemp_min")
+  
+  #BG Max Temp
+  cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
+  colnames(cv_bgtemp_max)<-c("month","plot","temptreat","target","bgtemp_max")
+  
+  #BG Min Temp
+  cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
+  colnames(cv_bgtemp_min)<-c("month","plot","temptreat","target","bgtemp_min")
+  #Now combine the four temperature variables
+  #Add new column for temptreat that can be merged with the files so that it has target warming instead of level
+  cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,5],cv_bgtemp_max[,5],cv_bgtemp_min[,5])
+  colnames(cv_all)[5:8]<-c("cv_agtemp_max","cv_agtemp_min","cv_bgtemp_max","cv_bgtemp_min")
+  colnames(cv_all)[3]<-"temptreatx"
+  cv_all$temptreat<-cv_all$temptreatx
+  #now merge target temperatures in
+  if(length(which(cv_all$temptreatx=="ambient"))>0){cv_all[which(cv_all$temptreatx=="ambient"),]$target<--1}
+  #now figures
+  #remake figure with site/experiment on x axis, and color coding by target warming
+  targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+  targetcol<-targetcol[1:length(cvall$)]
+  quartz(height=5,width=10)
+  par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
+  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_agtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main=paste(sites[i],"AG Max"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_all$target))]))
+  axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+  axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
+  mtext(side=2,"CV (C)", line=3,adj=-1,cex=.9)
+  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_agtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,400), bty="l", cex.axis=.9, main=paste(sites[i],"AG Min"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+  axis(side=2,at=c(0,100,200,300,400), labels=TRUE, las=TRUE, cex=.9)
+  axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
+  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_bgtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main=paste(sites[i],"BG Max"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+  axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_all$month)),4,5),cex=.9)
+  axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+  
+  mtext(side=1,"Month", line=2.3, adj=.5)
+  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_bgtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main=paste(sites[i],"BG Min"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+  
+  axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_all$month)),4,5),cex=.9)
+  axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+  mtext(side=1,"Month", line=2.3, adj=.5)
+  legend(x=11.5,y=100,legend=sort(unique(cv_all$target)),pch=21,pt.bg=targetcol,bty="n",cex=0.7,pt.cex=0.7)
+}
+

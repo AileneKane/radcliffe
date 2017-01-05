@@ -41,7 +41,7 @@ mod3<-lmer(soiltemp1_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs3<-data.frame(coef(summary(mod3)))
 
 quartz(height=4, width=8)
-par(mfrow=c(1,5))
+par(mfrow=c(2,5))
 for (i in 1:length(sites_con)){
   dat<-expclim_cont[expclim_cont$site==sites_con[i],]
   if(length(unique(dat$soiltemp1_max))==1){next}
