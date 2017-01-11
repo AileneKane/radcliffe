@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: expwarm_effects_clim_draft2.aux
+The style file: /Users/aileneettinger/citations/Bibtex/styles/nature.bst.bst
+Database file #1: /Users/aileneettinger/citations/Bibtex/mylibrary.bib
+Warning--I didn't find a database entry for "reich2015"
+Warning--I didn't find a database entry for "mcdaniel2014"
+Warning--I didn't find a database entry for "williams2015"
+Warning--empty journal in ipcc2013
+Warning--empty journal in box1978
+Warning--can't use both author and editor fields in gelman2014
+You've used 52 entries,
+            2605 wiz_defined-function locations,
+            907 strings with 17060 characters,
+and the built_in function-call counts, 25660 in all, are:
+= -- 2538
+> -- 1076
+< -- 15
++ -- 569
+- -- 282
+* -- 2284
+:= -- 4408
+add.period$ -- 165
+call.type$ -- 52
+change.case$ -- 220
+chr.to.int$ -- 51
+cite$ -- 55
+duplicate$ -- 1239
+empty$ -- 1819
+format.name$ -- 454
+if$ -- 5134
+int.to.chr$ -- 2
+int.to.str$ -- 53
+missing$ -- 53
+newline$ -- 276
+num.names$ -- 156
+pop$ -- 483
+preamble$ -- 1
+purify$ -- 208
+quote$ -- 0
+skip$ -- 842
+stack$ -- 0
+substring$ -- 1684
+swap$ -- 362
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 310
+warning$ -- 3
+while$ -- 170
+width$ -- 0
+write$ -- 695
+(There were 6 warnings)

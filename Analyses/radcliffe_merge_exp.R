@@ -540,7 +540,7 @@ clean.raw$sherry <- function(filename, path) {
     file <- file.path(path, paste(sherryspp[i]))
     sherry1 <- read.csv(file, skip=3, header=TRUE)
     colnames(sherry1)[which(colnames(sherry1)=="Plot")]<-"plot"
-    #estimate first date of budburst, leaf unfolding, and leaf out
+    #estimate first date of flowering and fruiting
     firstsurv<-min(which(substr(colnames(sherry1),1,1)=="X"))
     lastsurv<-dim(sherry1)[2]  
     get.ffd <- function(x) names(x)[min(which(x <= 3.5 & x >= 2.5), na.rm=T)]#first flower date
@@ -556,18 +556,96 @@ clean.raw$sherry <- function(filename, path) {
   sherry<-sherry[-1,]
   sherry4<-reshape(sherry,varying = list(names(sherry)[4:5]), direction = "long", v.names = c("doy"), times = c(1:2))
   sherry4$event<-c(rep("ffd", times=dim(sherry)[1]),rep("ffrd", times=dim(sherry)[1]))
-  sherry4$year<-2003
-  sherry4$site<-"exp12"
-  sherry4$block<-NA
-  sherry4[as.numeric(sherry4$plot)<6,]$block<-1
-  sherry4[as.numeric(sherry4$plot)<11 & as.numeric(sherry4$plot)>5,]$block<-2
-  sherry4[as.numeric(sherry4$plot)<16 & as.numeric(sherry4$plot)>10,]$block<-3
-  sherry4[as.numeric(sherry4$plot)>15,]$block<-4
-  sherryok<-subset(sherry4, select=c("site","block","plot","event","year","genus","species", "doy"))
+  #add in other file,which has different species that are little different than others in formatting
+  file2 <- file.path(path, "SherryPhenology2003_First6spp.csv")
+  sherry5 <- read.csv(file2, skip=3, header=TRUE)
+  verarv<-sherry5[1:40,]
+  viobic<-sherry5[44:82,]
+  colnames(viobic)<-c(sherry5[43,])
+  cerglo<-sherry5[86:119,]
+  colnames(cerglo)<-c(sherry5[85,])
+  plavir<-sherry5[123:158,]
+  colnames(plavir)<-c(sherry5[122,])
+  broarv<-sherry5[162:201,]
+  colnames(broarv)<-c(sherry5[161,])
+  dicoli<-sherry5[205:235,]
+  colnames(dicoli)<-c(sherry5[204,])
+  get.ffd <- function(x) names(x)[min(which(x <= 3.5 & x >= 2.5), na.rm=T)]#first flower date
+  get.ffrd <- function(x) names(x)[min(which(x <= 5.5 & x >= 3.5), na.rm=T)]#leaves unfolding
+  dicoli_ffd_doy<-substr(apply(dicoli[,5:14],1,get.ffd),2,4)
+  dicoli_ffrd_doy<-substr(apply(dicoli[,5:14],1,get.ffrd),2,4)
+  dicoli2<-cbind(dicoli,dicoli_ffd_doy,dicoli_ffrd_doy)
+  dicoli2$genus<-"Dichanthelium" 
+  dicoli2$species<-"oligosanthes"   
+  colnames(dicoli2)[1]<-"plot"
+  colnames(dicoli2)[16]<-"ffd_doy"
+  colnames(dicoli2)[17]<-"ffrd_doy"
+  dicoli3<-subset(dicoli2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  broarv_ffd_doy<-substr(apply(broarv[,5:14],1,get.ffd),1,4)
+  broarv_ffrd_doy<-substr(apply(broarv[,5:14],1,get.ffrd),1,4)
+  broarv_ffd_doy[which(substr(broarv_ffd_doy,1,1)=="d")]<-substr(broarv_ffd_doy[which(substr(broarv_ffd_doy,1,1)=="d")],2,4)
+  broarv_ffrd_doy[which(substr(broarv_ffrd_doy,1,1)=="d")]<-substr(broarv_ffrd_doy[which(substr(broarv_ffrd_doy,1,1)=="d")],2,4)
+  broarv2<-cbind(broarv,broarv_ffd_doy,broarv_ffrd_doy)
+  broarv2$genus<-"Bromus" 
+  broarv2$species<-"arvensis"   
+  colnames(broarv2)[1]<-"plot"
+  colnames(broarv2)[16]<-"ffd_doy"
+  colnames(broarv2)[17]<-"ffrd_doy"
+  broarv3<-subset(broarv2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  cerglo_ffd_doy<-substr(apply(cerglo[,5:10],1,get.ffd),2,7)
+  cerglo_ffrd_doy<-substr(apply(cerglo[,5:10],1,get.ffrd),2,7)
+  cerglo_ffd_doy[which(substr(cerglo_ffd_doy,1,2)=="ay")]<-substr(cerglo_ffd_doy[which(substr(cerglo_ffd_doy,1,2)=="ay")],3,5)
+  cerglo_ffrd_doy[which(substr(cerglo_ffrd_doy,1,2)=="ay")]<-substr(cerglo_ffrd_doy[which(substr(cerglo_ffrd_doy,1,2)=="ay")],3,5)
+  cerglo2<-cbind(cerglo,cerglo_ffd_doy,cerglo_ffrd_doy)
+  cerglo2$genus<-"Cerastium" 
+  cerglo2$species<-"glomeratum"   
+  colnames(cerglo2)[1]<-"plot"
+  colnames(cerglo2)[16]<-"ffd_doy"
+  colnames(cerglo2)[17]<-"ffrd_doy"
+  cerglo3<-subset(cerglo2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  plavir_ffd_doy<-substr(apply(plavir[,5:14],1,get.ffd),2,4)
+  plavir_ffrd_doy<-substr(apply(plavir[,5:14],1,get.ffrd),2,4)
+  plavir2<-cbind(plavir,plavir_ffd_doy,plavir_ffrd_doy)
+  plavir2$genus<-"Plantago" 
+  plavir2$species<-"virginica"   
+  colnames(plavir2)[1]<-"plot"
+  colnames(plavir2)[16]<-"ffd_doy"
+  colnames(plavir2)[17]<-"ffrd_doy"
+  plavir3<-subset(plavir2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  viobic_ffd_doy<-substr(apply(viobic[,5:14],1,get.ffd),2,4)
+  viobic_ffrd_doy<-substr(apply(viobic[,5:14],1,get.ffrd),2,4)
+  viobic2<-cbind(viobic,viobic_ffd_doy,viobic_ffrd_doy)
+  viobic2$genus<-"Viola" 
+  viobic2$species<-"bicolor"   
+  colnames(viobic2)[1]<-"plot"
+  colnames(viobic2)[16]<-"ffd_doy"
+  colnames(viobic2)[17]<-"ffrd_doy"
+  viobic3<-subset(viobic2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  verarv_ffd_doy<-substr(apply(verarv[,5:14],1,get.ffd),4,6)
+  verarv_ffrd_doy<-substr(apply(verarv[,5:14],1,get.ffrd),4,6)
+  verarv2<-cbind(verarv,verarv_ffd_doy,verarv_ffrd_doy)
+  verarv2$genus<-"Veronica" 
+  verarv2$species<-"arvensis"   
+  colnames(verarv2)[1]<-"plot"
+  colnames(verarv2)[16]<-"ffd_doy"
+  colnames(verarv2)[17]<-"ffrd_doy"
+  verarv3<-subset(verarv2, select=c("plot","genus","species", "ffd_doy","ffrd_doy"))
+  sherry6<-rbind(broarv3,dicoli3,verarv3,viobic3,plavir3,cerglo3)
+  sherry7<-reshape(sherry6,varying = list(names(sherry6)[4:5]), direction = "long", v.names = c("doy"), times = c(1:2))
+  sherry7$event<-c(rep("ffd", times=dim(sherry6)[1]),rep("ffrd", times=dim(sherry6)[1]))
+  
+  sherry8<-rbind(sherry4,sherry7)
+  sherry8$year<-2003
+  sherry8$site<-"exp12"
+  sherry8$block<-NA
+  sherry8[as.numeric(sherry8$plot)<5,]$block<-1
+  sherry8[as.numeric(sherry8$plot)<11 & as.numeric(sherry8$plot)>6,]$block<-2
+  sherry8[as.numeric(sherry8$plot)<15 & as.numeric(sherry8$plot)>10,]$block<-3
+  sherry8[as.numeric(sherry8$plot)==5|as.numeric(sherry8$plot)==6|as.numeric(sherry8$plot)==15|as.numeric(sherry8$plot)==16,]$block<-4
+  sherry8[as.numeric(sherry8$plot)>16,]$block<-5
+  sherryok<-subset(sherry8, select=c("site","block","plot","event","year","genus","species", "doy"))
   #sherryok$variety <- NA
   #sherryok$cult <- NA
-  #file2 <- file.path(path, "SherryPhenology2003_First6spp.csv")#need to add these in- they're just a little different than others in formattin
-  #sherryotherspp<-read.csv(file2, header=T)
   sherryok<-sherryok[!is.na(sherryok$doy),]
   return(sherryok)
 }
@@ -864,11 +942,11 @@ expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#70029 rows,    8 columns
+#70384 rows,    8 columns
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#69455  rows,8 columns
+dim(expphendb)#69810  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -886,16 +964,15 @@ expphendb[which(expphendb$species=="fusiformes"),]$species<-"fusiformis"#price
 expphendb[which(expphendb$genus=="Mertensiana"),]$genus<-"Mertensia"#price
 expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
 
-dim(expphendb)#68653 rows,8 columns
+dim(expphendb)#69008 rows,8 columns
 head(expphendb)
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 
 unique(expphendb$site)#12 experiments across 9 sites
-sort(unique(expphendb$genus))#146 genera
+sort(unique(expphendb$genus))#147 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
-sort(unique(expphendb$genus.species))#243 species
+sort(unique(expphendb$genus.species))#248 species
 unique(expphendb$event)#13 phenological events
-
 #Do species cleaning with Miriam's new file
 #sites<-unique(expphendb$site)
 #for(i in 1:length(sites)){

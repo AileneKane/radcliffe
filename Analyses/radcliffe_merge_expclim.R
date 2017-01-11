@@ -480,6 +480,7 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
 ##Climate data for Sherry Oklahoma data
 ##treatments were only applied in 2003; probably should use only these data!
 ##moisture=VWC
+##temperature measured every 15 minutes
 clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", path="./Data/Experiments/sherry") {
   file <- file.path(path, filename)
   soilmois<- read.csv(file, skip=2,na.strings = "-99999",header=TRUE)
@@ -519,6 +520,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
     if(dim(temp[which(is.na(temp$Y)),])[1]>0){temp1<-temp[-which(is.na(temp$Y)),]}
     if(dim(temp[which(is.na(temp$Y)),])[1]==0){temp1<-temp}
     temp2<-temp1[which(temp1$Plot>=1),]
+    if(max(temp2$Air.15.cm,na.rm=T)>55){temp2[which(temp2$Air.15.cm>55),]$Air.15.cm<-NA}
     minairtemp<-aggregate(x=temp2$Air.15.cm, by=list(temp2$J,temp2$Plot), FUN=min,na.rm=F)
     colnames(minairtemp)<-c("doy","plot","airtemp_min")
     maxairtemp<-aggregate(x=temp2$Air.15.cm, by=list(temp2$J,temp2$Plot), FUN=max,na.rm=F)
@@ -527,6 +529,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
     temps<-cbind(minairtemp, as.numeric(maxairtemp[,3]),as.numeric(minsoiltemp[,3]),as.numeric(maxsoiltemp[,3]))
     temps$year<-substr(sherrytempfiles[i],6,9)
     alltemp<-rbind(alltemp,temps)
+    #print(sherrytempfiles[i]);print(unique(temps$doy));print(unique(temps$year))
   }
   colnames(alltemp)<-c("doy","plot","airtemp_min","airtemp_max","soiltemp1_min","soiltemp1_max","year") 
   allclim<-merge(alltemp,soilmois.all, all=TRUE)
@@ -539,19 +542,19 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   allclim$soilmois1<-allclim$soilmois/100
   allclim$soilmois2<-NA
   allclim$block<-NA
-  allclim[as.numeric(allclim$plot)<6,]$block<-1
-  allclim[as.numeric(allclim$plot)<11 & as.numeric(allclim$plot)>5,]$block<-2
-  allclim[as.numeric(allclim$plot)<16 & as.numeric(allclim$plot)>10,]$block<-3
-  allclim[as.numeric(allclim$plot)>15,]$block<-4
+  allclim[as.numeric(allclim$plot)<5,]$block<-1
+  allclim[as.numeric(allclim$plot)<11 & as.numeric(allclim$plot)>6,]$block<-2
+  allclim[as.numeric(allclim$plot)<15 & as.numeric(allclim$plot)>10,]$block<-3
+  allclim[as.numeric(allclim$plot)>16,]$block<-5
+  allclim[as.numeric(allclim$plot)==5|as.numeric(allclim$plot)==6|as.numeric(allclim$plot)==15|as.numeric(allclim$plot)==16,]$block<-4
   allclim$cantemp_min<-NA
   allclim$cantemp_max<-NA
   allclim$surftemp_min<-NA
   allclim$surftemp_max<-NA
-  sherryclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-  sherryclim[which(sherryclim$soiltemp1_max==max(sherryclim$soiltemp1_max, na.rm=T)),]$soiltemp1_max<-NA
-  sherryclim[which(sherryclim$soiltemp1_mean==max(sherryclim$soiltemp1_mean, na.rm=T)),]$soiltemp1_mean<-NA
-  
-  sherryclim<-sherryclim[-which(sherryclim$doy==2.81e+160),]
+  allclim2<-allclim[allclim$year<2004,]
+  sherryclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  sherryclim[which(sherryclim$soiltemp1_max==max(sherryclim$soiltemp1_max, na.rm=T)),]$soiltemp1_max<-NA#remove really weird high value that is clearly an error (2.51e+289)
+  sherryclim[which(sherryclim$soiltemp1_mean==max(sherryclim$soiltemp1_mean, na.rm=T)),]$soiltemp1_mean<-NA#remove really weird high value that is clearly an error (1.255e+289)
   row.names(sherryclim) <- NULL
   return(sherryclim)
 }
