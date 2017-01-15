@@ -19,7 +19,50 @@ sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$am
 expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
 unique(expclim_cont$site)
 #make figures of sham controls vs. ambient conditions:
+#trying different random effects structures
 #mean soil temp:
+smod_mn_site<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=TRUE)
+expclim_cont$year<-as.factor(expclim_cont$year)
+smod_mn_siteyr<-lmer(soiltemp1_mean~temptreat + (1|site)+ (1|year), data=expclim_cont, REML=TRUE)
+smod_mn_rsite<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data=expclim_cont, REML=TRUE)
+smod_mn_rsiteyr<-lmer(soiltemp1_mean~temptreat + (temptreat|site) + (temptreat|year), data=expclim_cont, REML=TRUE)
+smod_mn_rsiteyr2<-lmer(soiltemp1_mean~temptreat + (temptreat|site/year), data=expclim_cont, REML=TRUE)
+AIC(smod_mn_site,smod_mn_siteyr,smod_mn_rsite,smod_mn_rsiteyr,smod_mn_rsiteyr2)#lowest AIC is random slopes with year nested within site
+#final model for soil temp mean:
+smod_mn<-lmer(soiltemp1_mean~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+#max soil temp:
+smod_max_site<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=TRUE)
+smod_max_siteyr<-lmer(soiltemp1_max~temptreat + (1|site)+ (1|year), data=expclim_cont, REML=TRUE)
+smod_max_rsite<-lmer(soiltemp1_max~temptreat + (temptreat|site), data=expclim_cont, REML=TRUE)
+smod_max_rsiteyr<-lmer(soiltemp1_max~temptreat + (temptreat|site) + (temptreat|year), data=expclim_cont, REML=TRUE)
+smod_max_rsiteyr2<-lmer(soiltemp1_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=TRUE)
+AIC(smod_max_site,smod_max_siteyr,smod_max_rsite,smod_max_rsiteyr,smod_max_rsiteyr2)#lowest AIC is random slopes with year nested within site
+#final model for soil temp mean:
+smod_max<-lmer(soiltemp1_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+
+#now with min soil temp
+smod_min_site<-lmer(soiltemp1_min~temptreat + (1|site), data=expclim_cont, REML=TRUE)
+smod_min_siteyr<-lmer(soiltemp1_min~temptreat + (1|site)+ (1|year), data=expclim_cont, REML=TRUE)
+smod_min_rsite<-lmer(soiltemp1_min~temptreat + (temptreat|site), data=expclim_cont, REML=TRUE)
+smod_min_rsiteyr<-lmer(soiltemp1_min~temptreat + (temptreat|site) + (temptreat|year), data=expclim_cont, REML=TRUE)
+smod_min_rsiteyr2<-lmer(soiltemp1_min~temptreat + (temptreat|year/site), data=expclim_cont, REML=TRUE)
+AIC(smod_min_site,smod_min_siteyr,smod_min_rsite,smod_min_rsiteyr,smod_min_rsiteyr2)#lowest AIC is rs with year nested within site
+#final model for air max temp:
+smod_min<-lmer(soiltemp1_min~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+scoefs_max<-data.frame(coef(summary(smod_max)))
+scoefs_min<-data.frame(coef(summary(smod_min)))
+scoefs_mn<-data.frame(coef(summary(smod_mn)))
+scoefs_mn
+scoefs_max
+scoefs_min
+ranef(smod_min)
+ranef(smod_max)
+ranef(smod_mn)
+
+summary(smod_max)
+summary(smod_min)
+summary(smod_mn)
+
 quartz(height=4, width=8)
 par(mfrow=c(1,5))
 for (i in 1:length(sites_con)){
@@ -27,8 +70,7 @@ for (i in 1:length(sites_con)){
   if(length(unique(dat$soiltemp1_mean))==1){next}
   boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp", na.fail="na.omit")
 }
-mod2<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs2<-data.frame(coef(summary(mod2)))
+
 ###
 quartz(height=4, width=8)
 par(mfrow=c(1,5))
@@ -37,9 +79,6 @@ for (i in 1:length(sites_con)){
   if(length(unique(dat$soiltemp1_min))==1){next}
   boxplot(dat$soiltemp1_min~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")
 }
-mod3<-lmer(soiltemp1_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs3<-data.frame(coef(summary(mod3)))
-
 quartz(height=4, width=8)
 par(mfrow=c(2,5))
 for (i in 1:length(sites_con)){
@@ -49,7 +88,7 @@ for (i in 1:length(sites_con)){
 }
 mod4<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs4<-data.frame(coef(summary(mod4)))
-soil_difs<-c(coefs2[2,1],coefs4[2,1],coefs3[2,1])
+soil_difs<-c(scoefs_mn[2,1],scoefs_max[2,1],scoefs_min[2,1])
 #looks like soil temperatures are colder in the shams
 ####Now mean air temp (for the 4 sites that have this)
 quartz(height=4, width=8)
@@ -74,34 +113,40 @@ for (i in 1:length(sites_con)){
   boxplot(dat$airtemp_max~dat$temptreat, main=paste(sites_con[i]), ylab="Max air temp")
 }
 #looks like air temperatures are WARMER in the shams
-expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
-mod_air<-lmer(airtemp_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_air<-data.frame(coef(summary(mod_air)))
-print(coef(summary(mod_air)))
 #Do we see the same patterns for max and min values? OR are these altered in different ways 
-mod_max<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
+#trying different random effects structures
+mod_max_site<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=TRUE)
+expclim_cont$year<-as.factor(expclim_cont$year)
+mod_max_siteyr<-lmer(airtemp_max~temptreat + (1|site)+ (1|year), data=expclim_cont, REML=TRUE)
+mod_max_rsite<-lmer(airtemp_max~temptreat + (temptreat|site), data=expclim_cont, REML=TRUE)
+mod_max_rsiteyr<-lmer(airtemp_max~temptreat + (temptreat|site) + (temptreat|year), data=expclim_cont, REML=TRUE)
+mod_max_rsiteyr2<-lmer(airtemp_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=TRUE)
+AIC(mod_max_site,mod_max_siteyr,mod_max_rsite,mod_max_rsiteyr,mod_max_rsiteyr2)#lowest AIC is random slopes with year nested within site
+#final model for air max temp:
+mod_max<-lmer(airtemp_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+
+#now with min airtemp
+mod_min_site<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=TRUE)
+mod_min_siteyr<-lmer(airtemp_min~temptreat + (1|site)+ (1|year), data=expclim_cont, REML=TRUE)
+mod_min_rsite<-lmer(airtemp_min~temptreat + (temptreat|site), data=expclim_cont, REML=TRUE)
+mod_min_rsiteyr<-lmer(airtemp_min~temptreat + (temptreat|site) + (temptreat|year), data=expclim_cont, REML=TRUE)
+mod_min_rsiteyr2<-lmer(airtemp_min~temptreat + (temptreat|year/site), data=expclim_cont, REML=TRUE)
+AIC(mod_min_site,mod_min_siteyr,mod_min_rsite,mod_min_rsiteyr,mod_min_rsiteyr2)#lowest AIC is rs with year nested within site
+#final model for air max temp:
+mod_min<-lmer(airtemp_min~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
 coefs_max<-data.frame(coef(summary(mod_max)))
-mod_min<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
 coefs_min<-data.frame(coef(summary(mod_min)))
 coefs_max
 coefs_min
-air_difs<-c(coefs_air[2,1], coefs_min[2,1], coefs_max[2,1])
-amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
-colnames(amb_shamdifs)<-c("mean","min","max")
-rownames(amb_shamdifs)<-c("soiltemp","airtemp")
+ranef(mod_min)
+ranef(mod_max)
+summary(mod_max)
+summary(mod_min)
+
+air_difs<-c(coefs_min[2,1], coefs_max[2,1])
+amb_shamdifs<-c(round(soil_difs, digits=3),round(air_difs, digits=3))
+names(amb_shamdifs)<-c("soiltemp_mean","soiltemp_min","soiltemp_max","airtemp_min","airtemp_max")
 ##look at differences by site, to see if there are relationships by warming type. perhaps add this interaction?
-ranef(mod2)
-fixef(mod2)
-coef(mod2)
-#to do this, include random slope too:
-expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
-mod2a<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-summary(mod2a)
-coef(mod2a)
-mod_air<-lmer(airtemp_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-coefs_air<-data.frame(coef(summary(mod_air)))
-summary(mod_air)
-coef(mod_air)
 ###Ok, now look across season-make plots and fit models by month.
 ###First, for mean soil and air:
 expclim_cont$date<-strptime(paste(expclim_cont$year, expclim_cont$doy), "%Y%j")
@@ -111,8 +156,8 @@ monthsums_allyear<-c()
 for (i in 1:length(months)){
   monthdat<-expclim_cont[expclim_cont$month==months[i],]
   monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
-  soilmod<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data= monthdat, REML=FALSE)
-  airmod<-lmer(airtemp_mean~temptreat + (temptreat|site), data=monthdat, REML=FALSE)
+  soilmod<-lmer(soiltemp1_mean~temptreat + (temptreat|site/year), data= monthdat, REML=FALSE)
+  airmod<-lmer(airtemp_mean~temptreat + (temptreat|site/year), data=monthdat, REML=FALSE)
   coefs_air<-data.frame(coef(summary(airmod)))
   monthsums_soil<-rbind(fixef(soilmod),coef(soilmod)$site)
   rownames(monthsums_soil)[1]<-"soil_fixed"
@@ -161,11 +206,13 @@ mtext("Month",side=1, line=2, adj=.5)
 
 ####Now, min soil and air temp
 monthsums_allyear_min<-c()
+soilranef_all<-data.frame(matrix(NA, nrow = 48, ncol = 4))
+airranef_all<-data.frame(matrix(NA, nrow = 48, ncol = 4))
 for (i in 1:length(months)){
   monthdat<-expclim_cont[expclim_cont$month==months[i],]
   monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
-  soilmod<-lmer(soiltemp1_min~temptreat + (temptreat|site), data= monthdat, REML=FALSE)
-  airmod<-lmer(airtemp_min~temptreat + (temptreat|site), data=monthdat, REML=FALSE)
+  soilmod<-lmer(soiltemp1_min~temptreat + (temptreat|site/year), data= monthdat, REML=FALSE)
+  airmod<-lmer(airtemp_min~temptreat + (temptreat|site/year), data=monthdat, REML=FALSE)
   coefs_air<-data.frame(coef(summary(airmod)))
   monthsums_soil<-rbind(fixef(soilmod),coef(soilmod)$site)
   rownames(monthsums_soil)[1]<-"soil_fixed"
@@ -187,7 +234,16 @@ for (i in 1:length(months)){
   month<-rep(months[i], times=dim(monthsums_all)[1])
   monthsums_all<-cbind(month,monthsums_all)
   monthsums_allyear_min<-rbind(monthsums_allyear_min,monthsums_all)
+  soilranef_month<-cbind(rownames(coef(soilmod)$site),paste(i),coef(soilmod)$site)
+  soilranef_all[((i*4)-3):(i*4),]<-soilranef_month
+  airranef_month<-cbind(rownames(coef(airmod)$site),paste(i),coef(airmod)$site)
+  airranef_all[((i*4)-3):(i*4),]<-airranef_month
 }
+minsoilranef<-soilranef_all
+minairranef<-airranef_all
+colnames(minsoilranef)<-c("site","month","ambT","shamdif")
+colnames(minairranef)<-c("site","month","ambT","shamdif")
+
 ###Plot model results:
 soil_monthsums<-monthsums_allyear_min[substring(rownames(monthsums_allyear_min),1,10)=="soil_fixed",]
 air_monthsums<-monthsums_allyear_min[substring(rownames(monthsums_allyear_min),1,9)=="air_fixed",]
@@ -212,11 +268,13 @@ mtext("Month",side=1, line=2, adj=.5)
 
 ##Now max soil and air temp
 monthsums_allyear_max<-c()
+soilranef_all<-data.frame(matrix(NA, nrow = 48, ncol = 4))
+airranef_all<-data.frame(matrix(NA, nrow = 48, ncol = 4))
 for (i in 1:length(months)){
   monthdat<-expclim_cont[expclim_cont$month==months[i],]
   monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
-  soilmod<-lmer(soiltemp1_max~temptreat + (temptreat|site), data= monthdat, REML=FALSE)
-  airmod<-lmer(airtemp_max~temptreat + (temptreat|site), data=monthdat, REML=FALSE)
+  soilmod<-lmer(soiltemp1_max~temptreat + (temptreat|site/year), data= monthdat, REML=FALSE)
+  airmod<-lmer(airtemp_max~temptreat + (temptreat|site/year), data=monthdat, REML=FALSE)
   coefs_air<-data.frame(coef(summary(airmod)))
   monthsums_soil<-rbind(fixef(soilmod),coef(soilmod)$site)
   rownames(monthsums_soil)[1]<-"soil_fixed"
@@ -238,7 +296,15 @@ for (i in 1:length(months)){
   month<-rep(months[i], times=dim(monthsums_all)[1])
   monthsums_all<-cbind(month,monthsums_all)
   monthsums_allyear_max<-rbind(monthsums_allyear_max,monthsums_all)
+  soilranef_month<-cbind(rownames(coef(soilmod)$site),paste(i),coef(soilmod)$site)
+  soilranef_all[((i*4)-3):(i*4),]<-soilranef_month
+  airranef_month<-cbind(rownames(coef(airmod)$site),paste(i),coef(airmod)$site)
+  airranef_all[((i*4)-3):(i*4),]<-airranef_month
 }
+maxsoilranef<-soilranef_all
+maxairranef<-airranef_all
+colnames(maxsoilranef)<-c("site","month","ambT","shamdif")
+colnames(maxairranef)<-c("site","month","ambT","shamdif")
 ###Plot model results:
 soil_monthsums<-monthsums_allyear_max[substring(rownames(monthsums_allyear_max),1,10)=="soil_fixed",]
 air_monthsums<-monthsums_allyear_max[substring(rownames(monthsums_allyear_max),1,9)=="air_fixed",]
@@ -259,6 +325,31 @@ mtext("Month",side=1, line=2, adj=.5)
 write.csv(monthsums_allyear,"output/shamVSambient_meandifs.csv",row.names=FALSE)
 write.csv(monthsums_allyear_max,"output/shamVSambient_maxdifs.csv",row.names=FALSE)
 write.csv(monthsums_allyear_min,"output/shamVSambient_mindifs.csv",row.names=FALSE)
+
+#Plot each site difference/mean temperature by month (i.e. the random effects)
+#First try plotting difference versus ambient temp and color code by site (harvard=blue, duke= red) with difference experimnets having different symbols
+
+quartz(height=6,width=8)
+par(mfcol=c(2,2),mai=c(.6,.7,.2,.1), omi=c(.7,.01,.2,.2))
+#air
+plot(c(as.numeric(minairranef$ambT)),c(as.numeric(minairranef$shamdif)),type="p", pch=20+as.numeric(as.factor(minairranef$site)),bg=c("red","blue","blue","red"),xlab="", ylab="", ylim=c(-2.5,2.5),bty="l", main="Air", las=TRUE)
+abline(h=0,lty=2)
+mtext("Difference between sham and ambient",side=2, line=3, adj=1.8)
+
+#soil
+plot(c(as.numeric(minsoilranef$ambT)),c(as.numeric(minsoilranef$shamdif)),type="p", pch=20+as.numeric(as.factor(minsoilranef$site)),bg=c("red","blue","blue","red"), xlab="", ylab="",ylim=c(-2.5,2.5),bty="l", main="Soil", las=TRUE)
+abline(h=0,lty=2)
+mtext("Mean minimum temperature",side=1, line=2, adj=.5)
+#air
+plot(as.numeric(maxairranef$ambT),as.numeric(maxairranef$shamdif),type="p", pch=20+as.numeric(as.factor(maxairranef$site)),bg=c("red","blue","blue","red"), xlab="", ylab="", ylim=c(-2.5,2.5),bty="l", main="Air", las=TRUE)
+abline(h=0,lty=2)
+#mtext("Difference between sham and ambient",side=2, line=2, adj=1.8)
+
+#soil
+plot(as.numeric(maxsoilranef$ambT),as.numeric(maxsoilranef$shamdif),type="p", pch=20+as.numeric(as.factor(maxsoilranef$site)),bg=c("red","blue","blue","red"), xlab="", ylab="",ylim=c(-2.5,2.5),bty="l", main="Soil", las=TRUE)
+abline(h=0,lty=2)
+mtext("Mean maximum temperature",side=1, line=2, adj=.5)
+
 ####Look at soil moisture now:
 monthsums_allyear_mois<-c()
 for (i in 1:length(months)){
@@ -285,5 +376,3 @@ for (i in 1:12){
   arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0,angle=90,code=3)}
 points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="gray")
 
-#Try doing average predictive comparisons for 
-airmod<-lmer(airtemp_mean~temptreat + (temptreat|site), data=monthdat, REML=FALSE)

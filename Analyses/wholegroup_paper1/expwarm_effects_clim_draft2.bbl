@@ -1,4 +1,4 @@
-\begin{thebibliography}{52}
+\begin{thebibliography}{61}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
@@ -161,7 +161,7 @@ Rollinson, C.~R. \& Kaye, M.~W.
 \bibitem[{Dukes \& Mooney(1999)}]{dukes1999}
 Dukes, J.~S. \& Mooney, H.~A.
 \newblock Does global change increase the success of biological invaders?
-\newblock \emph{Trends in Ecology & Evolution} \textbf{14}, 135--139 (1999).
+\newblock \emph{Trends in Ecology and Evolution} \textbf{14}, 135--139 (1999).
 \newblock PT: J.
 
 \bibitem[{Hobbie \emph{et~al.}(1999)Hobbie, Shevtsova \&
@@ -170,6 +170,14 @@ Hobbie, S.~E., Shevtsova, A. \& Chapin~III, F.~S.
 \newblock Plant responses to species removal and experimental warming in
   Alaskan tussock tundra.
 \newblock \emph{Oikos} 417--434 (1999).
+
+\bibitem[{Reich \emph{et~al.}(2015)}]{reich2015}
+Reich, P.~B. \emph{et~al.}
+\newblock Geographic range predicts photosynthetic and growth response to
+  warming in co-occurring tree species.
+\newblock \emph{Nature Clim.Change} \textbf{5}, 148--152 (2015).
+\newblock \urlprefix\url{http://dx.doi.org/10.1038/nclimate2497},
+  2015/02//print.
 
 \bibitem[{Gruner \emph{et~al.}(2016)}]{gruner2016}
 Gruner, D.~S. \emph{et~al.}
@@ -240,6 +248,12 @@ Jochner, S., Caffarra, A. \& Menzel, A.
   A survey using birch flowering.
 \newblock \emph{Tree physiology} \textbf{33}, 1256--1268 (2013).
 
+\bibitem[{Rollinson \& Kaye(2015)}]{rollinson2015}
+Rollinson, C.~R. \& Kaye, M.~W.
+\newblock Modeling monthly temperature in mountainous ecoregions: importance of
+  spatial scale for ecological research.
+\newblock \emph{Climate Research} \textbf{64}, 99--110 (2015).
+
 \bibitem[{Farnsworth \emph{et~al.}(1995)Farnsworth, Nunez-Farfan, Careaga \&
   Bazzaz}]{farnsworth1995}
 Farnsworth, E., Nunez-Farfan, J., Careaga, S. \& Bazzaz, F.
@@ -260,6 +274,13 @@ Pelini, S.~L. \emph{et~al.}
   arthropod communities at Harvard and Duke Forests.
 \newblock \emph{Methods in Ecology and Evolution} \textbf{2}, 534--540 (2011).
 
+\bibitem[{McDaniel \emph{et~al.}(2014)}]{mcdaniel2014}
+McDaniel, M. \emph{et~al.}
+\newblock Microclimate and ecological threshold responses in a warming and
+  wetting experiment following whole tree harvest.
+\newblock \emph{Theoretical and applied climatology} \textbf{116}, 287--299
+  (2014).
+
 \bibitem[{Morin \emph{et~al.}(2010)Morin, Roy, Soni{\'e} \& Chuine}]{morin2010}
 Morin, X., Roy, J., Soni{\'e}, L. \& Chuine, I.
 \newblock Changes in leaf phenology of three European oak species in response
@@ -271,6 +292,32 @@ Morin, X., Roy, J., Soni{\'e}, L. \& Chuine, I.
 Templer, P.~H., Phillips, N.~G., Ellison, A.~M. \& Pelini, S.~L.
 \newblock Ecosystem warming increases sap flow rates of northern red oak trees.
 \newblock \emph{Ecosphere} \textbf{7} (2016).
+
+\bibitem[{Pelini \emph{et~al.}(2014)}]{pelini2014}
+Pelini, S. \emph{et~al.}
+\newblock Geographic differences in effects of experimental warming on ant
+  species diversity and community composition.
+\newblock \emph{Ecosphere} \textbf{5}, 1--12 (2014).
+
+\bibitem[{Pe{\~n}uelas \emph{et~al.}(2004)}]{penuelas2004}
+Pe{\~n}uelas, J. \emph{et~al.}
+\newblock Complex spatiotemporal phenological shifts as a response to rainfall
+  changes.
+\newblock \emph{New Phytologist} \textbf{161}, 837--846 (2004).
+
+\bibitem[{Craine \emph{et~al.}(2012)Craine, Wolkovich, Towne \&
+  Kembel}]{craine2012}
+Craine, J.~M., Wolkovich, E.~M., Towne, E.~G. \& Kembel, S.~W.
+\newblock Flowering phenology as a functional trait in a tallgrass prairie.
+\newblock \emph{New Phytologist} \textbf{193}, 673--682 (2012).
+\newblock PT: J; TC: 3; UT: WOS:000298984900013.
+
+\bibitem[{Matthews \& Mazer(2016)}]{matthews2016}
+Matthews, E.~R. \& Mazer, S.~J.
+\newblock Historical changes in flowering phenology are governed by
+  temperature$\times$ precipitation interactions in a widespread perennial herb
+  in western North America.
+\newblock \emph{New Phytologist} \textbf{210}, 157--167 (2016).
 
 \bibitem[{Shen \emph{et~al.}(2016)}]{shen2016}
 Shen, M. \emph{et~al.}
@@ -290,40 +337,12 @@ Piao, S. \emph{et~al.}
   temperature.
 \newblock \emph{Nature communications} \textbf{6} (2015).
 
-\bibitem[{Matthews \& Mazer(2016)}]{matthews2016}
-Matthews, E.~R. \& Mazer, S.~J.
-\newblock Historical changes in flowering phenology are governed by
-  temperature$\times$ precipitation interactions in a widespread perennial herb
-  in western North America.
-\newblock \emph{New Phytologist} \textbf{210}, 157--167 (2016).
-
 \bibitem[{Berry \& Bjorkman(1980)}]{berry1980}
 Berry, J. \& Bjorkman, O.
 \newblock Photosynthetic response and adaptation to temperature in higher
   plants.
 \newblock \emph{Annual Review of Plant Physiology} \textbf{31}, 491--543
   (1980).
-
-\bibitem[{Jamieson \emph{et~al.}(2015)Jamieson, Schwartzberg, Raffa, Reich \&
-  Lindroth}]{jamieson2015}
-Jamieson, M.~A., Schwartzberg, E.~G., Raffa, K.~F., Reich, P.~B. \& Lindroth,
-  R.~L.
-\newblock Experimental climate warming alters aspen and birch phytochemistry
-  and performance traits for an outbreak insect herbivore.
-\newblock \emph{Global change biology} \textbf{21}, 2698--2710 (2015).
-
-\bibitem[{Kharouba \emph{et~al.}(2015)Kharouba, Vellend, Sarfraz \&
-  Myers}]{kharouba2015}
-Kharouba, H.~M., Vellend, M., Sarfraz, R.~M. \& Myers, J.~H.
-\newblock The effects of experimental warming on the timing of a plant--insect
-  herbivore interaction.
-\newblock \emph{Journal of Animal Ecology} \textbf{84}, 785--796 (2015).
-
-\bibitem[{Stanton-Geddes \emph{et~al.}(2016)}]{stanton2016}
-Stanton-Geddes, J. \emph{et~al.}
-\newblock Thermal reactionomes reveal divergent responses to thermal extremes
-  in warm and cool-climate ant species.
-\newblock \emph{BMC genomics} \textbf{17}, 1 (2016).
 
 \bibitem[{Del~Toro \emph{et~al.}(2015)Del~Toro, Ribbons \&
   Ellison}]{deltoro2015}
@@ -332,11 +351,39 @@ Del~Toro, I., Ribbons, R.~R. \& Ellison, A.~M.
   movement, decomposition and nutrient cycling.
 \newblock \emph{Journal of Animal Ecology} \textbf{84}, 1233--1241 (2015).
 
-\bibitem[{Pelini \emph{et~al.}(2014)}]{pelini2014}
-Pelini, S. \emph{et~al.}
-\newblock Geographic differences in effects of experimental warming on ant
-  species diversity and community composition.
-\newblock \emph{Ecosphere} \textbf{5}, 1--12 (2014).
+\bibitem[{Rustad \emph{et~al.}(2001)}]{rustad2001}
+Rustad, L. \emph{et~al.}
+\newblock A meta-analysis of the response of soil respiration, net nitrogen
+  mineralization, and aboveground plant growth to experimental ecosystem
+  warming.
+\newblock \emph{Oecologia} \textbf{126}, 543--562 (2001).
+
+\bibitem[{Rivkina \emph{et~al.}(2000)Rivkina, Friedmann, McKay \&
+  Gilichinsky}]{rivkina2000}
+Rivkina, E., Friedmann, E., McKay, C. \& Gilichinsky, D.
+\newblock Metabolic activity of permafrost bacteria below the freezing point.
+\newblock \emph{Applied and Environmental Microbiology} \textbf{66}, 3230--3233
+  (2000).
+
+\bibitem[{Fatichi \emph{et~al.}(2014)Fatichi, Leuzinger \&
+  Koerner}]{fatichi2014}
+Fatichi, S., Leuzinger, S. \& Koerner, C.
+\newblock Moving beyond photosynthesis: from carbon source to sink-driven
+  vegetation modeling.
+\newblock \emph{New Phytologist} \textbf{201}, 1086--1095 (2014).
+
+\bibitem[{Du \& Fang(2014)}]{du2014}
+Du, E. \& Fang, J.
+\newblock Linking belowground and aboveground phenology in two boreal forests
+  in Northeast China.
+\newblock \emph{Oecologia} \textbf{176}, 883--892 (2014).
+
+\bibitem[{Kharouba \emph{et~al.}(2015)Kharouba, Vellend, Sarfraz \&
+  Myers}]{kharouba2015}
+Kharouba, H.~M., Vellend, M., Sarfraz, R.~M. \& Myers, J.~H.
+\newblock The effects of experimental warming on the timing of a plant--insect
+  herbivore interaction.
+\newblock \emph{Journal of Animal Ecology} \textbf{84}, 785--796 (2015).
 
 \bibitem[{Diamond \emph{et~al.}(2016)}]{diamond2016}
 Diamond, S.~E. \emph{et~al.}
@@ -349,5 +396,16 @@ Diamond, S.~E. \emph{et~al.}
   warming.
 \newblock \emph{Integrative and comparative biology} \textbf{53}, 965--974
   (2013).
+
+\bibitem[{Franklin(1989)}]{franklin1989}
+Franklin, J.~F.
+\newblock Importance and justification of long-term studies in ecology.
+\newblock In \emph{Long-term studies in ecology}, 3--19 (Springer, 1989).
+
+\bibitem[{Giasson \emph{et~al.}(2013)}]{giasson2013}
+Giasson, M.-A. \emph{et~al.}
+\newblock Soil respiration in a northeastern US temperate forest: a 22-year
+  synthesis.
+\newblock \emph{Ecosphere} \textbf{4}, 1--28 (2013).
 
 \end{thebibliography}
