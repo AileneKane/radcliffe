@@ -102,8 +102,6 @@ effwarmplots <- effwarm %>% # start with the data frame
   dplyr::select(site, block, plot,site.block.plot)
 #check for missing/nonmatching site/block/plots between effective warming and expphen
 exppheneffwarmplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,effwarm$site.block.plot))),]
-##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
+##misalignment with blocks in exp12 now- effective warming is off- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
 effwarmplots_nomatch2<-effwarmplots[which(is.na(match(effwarmplots$site.block.plot,expplots$site.block.plot))),]
-#these are all fine, there are a few plots (33,34,35,36) in the cleland dataset and one plot in the clarkduke dataset (G08) in which climate data were collected, but no phenology data were
-dim(effwarm)
-head(effwarm)#nothing duplicated...
+#again, there is a misalignment with blocks in exp12
