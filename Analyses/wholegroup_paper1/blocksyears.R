@@ -88,21 +88,20 @@ yearwet3<-yearwet3[,colSums(is.na(yearwet3)) != nrow(yearwet3)]#remove columns t
 
 #Difference between treatments and mean control
 yearwarm1<-yeartreat1-yearcontrols
-yearwarm2<-yeartreat2-yearcontrols[,5:8]
-yearwarm3<-yeartreat3-yearcontrols[,5:8]
-yearwet0dif<-yearwet0-yearcontrols[,2:8]
-yearwet1dif<-yearwet1-yearcontrols[,2:8]
-yearwet2dif<-yearwet2-yearcontrols[,5:8]
-yearwet3dif<-yearwet3-yearcontrols[,5:8]
-yeardry0dif<-yeardry0-yearcontrols[,5:8]
-yeardry1dif<-yeardry1-yearcontrols[,5:8]
-yeardry2dif<-yeardry2-yearcontrols[,5:8]
-yeardry3dif<-yeardry3-yearcontrols[,5:8]
+yearwarm2<-yeartreat2-yearcontrols[,4:7]
+yearwarm3<-yeartreat3-yearcontrols[,4:7]
+yearwet0dif<-yearwet0-yearcontrols[,2:7]
+yearwet1dif<-yearwet1-yearcontrols[,2:7]
+yearwet2dif<-yearwet2-yearcontrols[,4:7]
+yearwet3dif<-yearwet3-yearcontrols[,4:7]
+yeardry0dif<-yeardry0-yearcontrols[,4:7]
+yeardry1dif<-yeardry1-yearcontrols[,4:7]
+yeardry2dif<-yeardry2-yearcontrols[,4:7]
+yeardry3dif<-yeardry3-yearcontrols[,4:7]
 
 #target warming
 treats<-read.csv("expsiteinfo.csv", header=T)
 target1<-treats[treats$DatasetID=="exp01"|treats$DatasetID=="exp08"|treats$DatasetID=="exp09"|treats$DatasetID=="exp12",27:29]
-rownames(target1)<-treats[as.numeric(rownames(target1)),]$DatasetID
 
 #plot difference between warmed and control, by block and year
 quartz(height=6,width=11)
@@ -122,13 +121,13 @@ points(c(rep(target1$temptreat_1,times=4)),c(dry1dif[,1],dry1dif[,2],dry1dif[,3]
 points(c(rep(target1$temptreat_2,times=4)),c(dry2dif[,1],dry2dif[,2],dry2dif[,3],dry2dif[,4]),pch=rep(c(21,22,24,23), times=4),col="black",bg="white")
 points(c(rep(target1$temptreat_3,times=4)),c(dry3dif[,1],dry3dif[,2],dry3dif[,3],dry3dif[,4]),pch=rep(c(21,22,24,23), times=4),col="black",bg="white")
 
-plot(c(target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1),c(yearwarm1[,1],yearwarm1[,2],yearwarm1[,3],yearwarm1[,4],yearwarm1[,5],yearwarm1[,6],yearwarm1[,7],yearwarm1[,8]),pch=rep(c(21,22,24,23), times=6),bg="black",xlab="Target warming (C)", ylab="Observed soil warming (C)", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6))
+plot(c(target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1),c(yearwarm1[,1],yearwarm1[,2],yearwarm1[,3],yearwarm1[,4],yearwarm1[,5],yearwarm1[,6],yearwarm1[,7]),pch=rep(c(21,22,24,23), times=6),bg="black",xlab="Target warming (C)", ylab="Observed soil warming (C)", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6))
 points(c(target1$temptreat_2,target1$temptreat_2,target1$temptreat_2,target1$temptreat_2),c(yearwarm2[,1],yearwarm2[,2],yearwarm2[,3],yearwarm2[,4]),pch=rep(c(21,22,24,23), times=4), bg="black")
 points(c(target1$temptreat_3,target1$temptreat_3,target1$temptreat_3,target1$temptreat_3),c(yearwarm3[,1],yearwarm3[,2],yearwarm3[,3],yearwarm3[,4]),pch=rep(c(21,22,24,23), times=4),bg="black")
 abline(a=0,b=1,lty=1)
 #add precip treatment points
-points(c(rep(0,times=28)),c(yearwet0dif[,1],yearwet0dif[,2],yearwet0dif[,3],yearwet0dif[,4],yearwet0dif[,5],yearwet0dif[,6],yearwet0dif[,7]),pch=rep(c(21,22,24,23), times=5),col="black",bg="blue")
-points(c(rep(target1$temptreat_1,times=7)),c(yearwet1dif[,1],yearwet1dif[,2],yearwet1dif[,3],yearwet1dif[,4],yearwet1dif[,5],yearwet1dif[,6],yearwet1dif[,7]),pch=rep(c(21,22,24,23), times=5),col="black",bg="blue")
+points(c(rep(0,times=24)),c(yearwet0dif[,1],yearwet0dif[,2],yearwet0dif[,3],yearwet0dif[,4],yearwet0dif[,5],yearwet0dif[,6]),pch=rep(c(21,22,24,23), times=5),col="black",bg="blue")
+points(c(rep(target1$temptreat_1,times=6)),c(yearwet1dif[,1],yearwet1dif[,2],yearwet1dif[,3],yearwet1dif[,4],yearwet1dif[,5],yearwet1dif[,6]),pch=rep(c(21,22,24,23), times=5),col="black",bg="blue")
 points(c(rep(target1$temptreat_2,times=4)),c(yearwet2dif[,1],yearwet2dif[,2],yearwet2dif[,3],yearwet2dif[,4]),pch=rep(c(21,22,24,23), times=5),col="black",bg="blue")
 points(c(rep(target1$temptreat_3,times=4)),c(yearwet3dif[,1],yearwet3dif[,2],yearwet3dif[,3],yearwet3dif[,4]),pch=rep(c(21,22,24,23), times=5),col="black",bg="blue")
 points(c(rep(0,times=16)),c(yeardry0dif[,1],yeardry0dif[,2],yeardry0dif[,3],yeardry0dif[,4]),pch=rep(c(21,22,24,23), times=5),col="black",bg="white")
@@ -164,8 +163,8 @@ agyeartreat3<-agyearmns[,,4]
 agyeartreat3<-agyeartreat3[, colSums(is.na(agyeartreat3)) != nrow(agyeartreat3)]#remove columns that are all NA
 #Difference between treatments and mean control
 agyearwarm1<-agyeartreat1-agyearcontrols
-agyearwarm2<-agyeartreat2-agyearcontrols[,4:7]
-agyearwarm3<-agyeartreat3-agyearcontrols[,4:7]
+agyearwarm2<-agyeartreat2-agyearcontrols[,3:6]
+agyearwarm3<-agyeartreat3-agyearcontrols[,3:6]
 
 #target warming
 agtarget1<-target1[-which(rownames(target1)=="exp08"),]
@@ -176,7 +175,7 @@ points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtar
 points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agwarm3[,1],agwarm3[,2],agwarm3[,3],agwarm3[,4]),pch=rep(c(21,24,23), times=6),col="black",bg="black")
 abline(a=0,b=1,lty=1)
 legend(1,6,pch=c(21,24,23),pt.bg="black",legend=rownames(agtarget1),bty="n")
-plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5],agyearwarm1[,6],agyearwarm1[,7]),pch=rep(c(21,24,23), times=5),col="black",bg="black", ylab="Observed above-ground warming (C)", bty="l", xlab="Target warming (C)",xlim=c(0,6), ylim=c(0,6))
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5],agyearwarm1[,6]),pch=rep(c(21,24,23), times=5),col="black",bg="black", ylab="Observed above-ground warming (C)", bty="l", xlab="Target warming (C)",xlim=c(0,6), ylim=c(0,6))
 points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agyearwarm2[,1],agyearwarm2[,2],agyearwarm2[,3],agyearwarm2[,4]),pch=rep(c(21,24,23),times=4),col="black",bg="black")
 points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agyearwarm3[,1],agyearwarm3[,2],agyearwarm3[,3],agyearwarm3[,4]),pch=rep(c(21,24,23),times=4),col="black",bg="black")
 abline(a=0,b=1,lty=1)
@@ -188,7 +187,7 @@ plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarge
 points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agwarm2[,1],agwarm2[,2],agwarm2[,3],agwarm2[,4]),pch=rep(c(21,24,23), times=6),col="gray",bg="gray")
 points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agwarm3[,1],agwarm3[,2],agwarm3[,3],agwarm3[,4]),pch=rep(c(21,24,23), times=6),col="gray",bg="gray")
 abline(a=0,b=1,lty=1)
-plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5],agyearwarm1[,6],agyearwarm1[,7]),pch=rep(c(21,24,23), times=5),col="gray",bg="gray",xlab="",ylab="", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5],agyearwarm1[,6]),pch=rep(c(21,24,23), times=5),col="gray",bg="gray",xlab="",ylab="", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
 points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agyearwarm2[,1],agyearwarm2[,2],agyearwarm2[,3],agyearwarm2[,4]),pch=rep(c(21,24,23),times=4),col="gray",bg="gray")
 points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agyearwarm3[,1],agyearwarm3[,2],agyearwarm3[,3],agyearwarm3[,4]),pch=rep(c(21,24,23),times=4),col="gray",bg="gray")
 abline(a=0,b=1,lty=1)
@@ -198,7 +197,7 @@ points(c(rep(target1$temptreat_3,times=6)),c(warm3[,1],warm3[,2],warm3[,3],warm3
 abline(a=0,b=1,lty=1)
 mtext("Observed warming (C)", side=2,line=4.5,adj=14, cex=1.2)
 
-plot(c(target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1),c(yearwarm1[,1],yearwarm1[,2],yearwarm1[,3],yearwarm1[,4],yearwarm1[,5],yearwarm1[,6],yearwarm1[,7],yearwarm1[,8]),pch=rep(c(21,22,24,23), times=6),bg="black",xlab="Target warming (C)", ylab="", bty="l", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
+plot(c(target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1,target1$temptreat_1),c(yearwarm1[,1],yearwarm1[,2],yearwarm1[,3],yearwarm1[,4],yearwarm1[,5],yearwarm1[,6],yearwarm1[,7]),pch=rep(c(21,22,24,23), times=6),bg="black",xlab="Target warming (C)", ylab="", bty="l", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
 points(c(target1$temptreat_2,target1$temptreat_2,target1$temptreat_2,target1$temptreat_2),c(yearwarm2[,1],yearwarm2[,2],yearwarm2[,3],yearwarm2[,4]),pch=rep(c(21,22,24,23), times=4), bg="black")
 points(c(target1$temptreat_3,target1$temptreat_3,target1$temptreat_3,target1$temptreat_3),c(yearwarm3[,1],yearwarm3[,2],yearwarm3[,3],yearwarm3[,4]),pch=rep(c(21,22,24,23), times=4),bg="black")
 abline(a=0,b=1,lty=1)

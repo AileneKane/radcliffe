@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 JAN 2017 09:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 JAN 2017 12:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -498,43 +498,65 @@ ut line 157.
  [16
 
  <../figures/ShamVSAmbient_minmax_wranef.pdf>]
-<../figures/DirIndWarmingEffects.pdf, id=622, 794.97pt x 289.08pt>
-File: ../figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
+<../figures/ShamVSAmbient_mois_wranef.pdf, id=622, 518.87602pt x 399.17883pt>
+File: ../figures/ShamVSAmbient_mois_wranef.pdf Graphic file (type pdf)
 
-<use ../figures/DirIndWarmingEffects.pdf>
-Package pdftex.def Info: ../figures/DirIndWarmingEffects.pdf used on input line
- 164.
-(pdftex.def)             Requested size: 377.62633pt x 137.32324pt.
-File: ../figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
-
-<use ../figures/DirIndWarmingEffects.pdf>
-Package pdftex.def Info: ../figures/DirIndWarmingEffects.pdf used on input line
- 166.
-(pdftex.def)             Requested size: 377.62633pt x 137.32324pt.
+<use ../figures/ShamVSAmbient_mois_wranef.pdf>
+Package pdftex.def Info: ../figures/ShamVSAmbient_mois_wranef.pdf used on input
+ line 165.
+(pdftex.def)             Requested size: 377.62633pt x 290.52711pt.
  [17
+
+ <../figures/ShamVSAmbient_mois_wranef.pdf>]
+<../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png, id=717, 1806.75pt x
+ 1806.75pt>
+File: ../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png Graphic file (t
+ype png)
+ <use ../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png>
+Package pdftex.def Info: ../figures/Exploratory_TimeSeries_SoilMoist_Deviation.
+png used on input line 172.
+(pdftex.def)             Requested size: 377.62633pt x 377.60916pt.
+
+[18
+
+ <../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png>]
+<../figures/DirIndWarmingEffects.pdf, id=724, 794.97pt x 289.08pt>
+File: ../figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
+
+<use ../figures/DirIndWarmingEffects.pdf>
+Package pdftex.def Info: ../figures/DirIndWarmingEffects.pdf used on input line
+ 178.
+(pdftex.def)             Requested size: 377.62633pt x 137.32324pt.
+File: ../figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
+
+<use ../figures/DirIndWarmingEffects.pdf>
+Package pdftex.def Info: ../figures/DirIndWarmingEffects.pdf used on input line
+ 180.
+(pdftex.def)             Requested size: 377.62633pt x 137.32324pt.
+ [19
 
  <../figures/DirIndWarmingEffects.pdf>]
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 172.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 172.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 186.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 186.
 (./expwarm_effects_clim_draft2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 172.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 172.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 186.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 186.
 Package rerunfilecheck Info: File `expwarm_effects_clim_draft2.out' has not cha
 nged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 172.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 186.
  ) 
 Here is how much of TeX's memory you used:
- 8110 strings out of 493089
- 123703 string characters out of 6134842
+ 8124 strings out of 493089
+ 124252 string characters out of 6134842
  209118 words of memory out of 5000000
- 11373 multiletter control sequences out of 15000+600000
+ 11381 multiletter control sequences out of 15000+600000
  34255 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,10n,43p,2021b,527s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,10n,43p,2127b,525s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
@@ -545,10 +567,10 @@ al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/loca
 l/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local
 /texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/t
 exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on expwarm_effects_clim_draft2.pdf (17 pages, 1597031 bytes).
+Output written on expwarm_effects_clim_draft2.pdf (19 pages, 2428748 bytes).
 PDF statistics:
- 707 PDF objects out of 1000 (max. 8388607)
- 594 compressed objects within 6 object streams
- 94 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 812 PDF objects out of 1000 (max. 8388607)
+ 672 compressed objects within 7 object streams
+ 98 named destinations out of 1000 (max. 500000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
