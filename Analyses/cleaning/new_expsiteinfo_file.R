@@ -33,9 +33,10 @@ expclim<-read.csv("analyses/expclim.csv", header=T)
 expclim$siteblockplot<-paste(expclim$site,expclim$block,expclim$plot,sep="")
 expclimplots <- expclim %>% # start with the data frame
   distinct(siteblockplot,.keep_all = TRUE) %>% # establishing grouping variables
-  select(site, block, plot,siteblockplot,temptreat,preciptreat)
+  dplyr::select(site, block, plot,siteblockplot,temptreat,preciptreat)
 colnames(expclimplots)[1]<-"DatasetID"
 expclimplots$preciptreat<-as.character(expclimplots$preciptreat)
+
 ##now merge this with exptreats5 to make new treats file with more detail:
 exptreats_all<-left_join(expclimplots,exptreats5, by = c("DatasetID","temptreat","preciptreat"))
 exptreats_detail<-subset(exptreats_all,select=c(select=c("DatasetID","block","plot","temptreat","target","reported","temptreat_units","preciptreat","preciptreat_amt","preciptreat_units")))
@@ -83,7 +84,7 @@ expphen$site.block.plot<-paste(expphen$site,expphen$block,expphen$plot,sep=".")
 
 expplots <- expphen %>% # start with the data frame
   distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
-  select(site, block, plot,site.block.plot)
+  dplyr::select(site, block, plot,site.block.plot)
 #expplots  <- expplots [apply(expplots , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 #check for missing/nonmatching site/block/plots between these two files
 expphenplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,expclimplots$site.block.plot))),]
@@ -98,7 +99,7 @@ effwarm$site.block.plot<-paste(effwarm$site,effwarm$block,effwarm$plot,sep=".")
 
 effwarmplots <- effwarm %>% # start with the data frame
   distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
-  select(site, block, plot,site.block.plot)
+  dplyr::select(site, block, plot,site.block.plot)
 #check for missing/nonmatching site/block/plots between effective warming and expphen
 exppheneffwarmplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,effwarm$site.block.plot))),]
 ##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
