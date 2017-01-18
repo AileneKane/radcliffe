@@ -12,17 +12,16 @@ options(stringsAsFactors=FALSE)
 library(ggplot2)
 library(rgdal)
 
-setwd("~/GitHub/radcliffe/maps")
-
+setwd("~/git/radcliffe/Analyses")
 ## get the sites
-expsites <- read.csv("input/expsiteinfo.csv", header=TRUE)
-expsites$studylength <- expsites$data_endyear-expsites$data_startyear
+expsites <- read.csv("expsiteinfo.csv", header=TRUE)
+expsites$studylength <- (expsites$data_endyear-expsites$data_startyear)+1
 
 ##
 ## get map shape file (see map_notes.R for details)
 ##
 
-wmap <- readOGR("input/ne_110m_land", layer="ne_110m_land")
+wmap <- readOGR("maps/input/ne_110m_land", layer="ne_110m_land")
 wmap.df <- fortify(wmap)
 
 ##
@@ -38,7 +37,7 @@ theme.tanmap <- list(theme(panel.grid.minor = element_blank(),
                         plot.title = element_text(size=22),
                         legend.position = "left"))
 
-pdf("expsites.pdf", width=9,height=4)
+pdf("maps/expsites.pdf", width=9,height=4)
 
 ggplot() + 
   geom_polygon(dat=wmap.df, aes(long, lat, group=group), fill="grey80") +

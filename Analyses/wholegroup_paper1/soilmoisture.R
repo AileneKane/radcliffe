@@ -1,27 +1,40 @@
-#Soil moisture analyses across treatments
+#Additional analyses for Experimental Climate Paper
+#Analysis of Soil moisture in warmed plotrs
+#By Ailene Ettinger
 #Started 17 January 2017
-#Alternative version of 
+setwd("~/git/radcliffe/Analyses")
 rm(list=ls()) 
-options(stringsAsFactors = FALSE)
+options(stringsAsFactors=FALSE)
 
 library(lme4)
-setwd("~/git/radcliffe/Analyses")
-#expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)
+library(car)
+library(raster)
+library(RColorBrewer)
+library(dplyr)
+library(tidyr)
+
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
-treats$preciptreat<-as.character(treats$preciptreat)
-effwarm.plot$preciptreat<-as.character(effwarm.plot$preciptreat)
-treats$temptreat<-as.character(treats$temptreat)
-effwarm.plot$temptreat<-as.character(effwarm.plot$temptreat)
-treats$site<-as.character(treats$site)
-effwarm.plot$site<-as.character(effwarm.plot$site)
-treats$plot<-as.character(treats$plot)
-effwarm.plot$plot<-as.character(effwarm.plot$plot)
+#want to compare mean soil moisture in control plots and warmed plots in each study
+#using two types structural controls separately
+expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
+#select only rows that do not manipulated precipitation
+expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
+#get one column for above-ground temperature
+expclimt$agtemp_min<-expclimt$airtemp_min
+expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
+expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
+expclimt$agtemp_max<-expclimt$airtemp_max
+expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
+expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
 
-effwarm.plot <- read.csv("EffectiveWarming_Plot.csv", header=TRUE)#i think the treats file and effective warming should have the same number of rows- one per site-plot, right? why aren't they matching up?
-effwarm.plot<-effwarm.plot[,-which(colnames(effwarm.plot)=="block")]
-exp.tarrep <- left_join(treats,effwarm.plot, by=c("site", "plot","temptreat","preciptreat"))
-exp.tarrep[which(is.na(exp.tarrep$AG.type)),]
-
-#  monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
-moismod<-lmer(soilmois1~temptreat + (temptreat|site/year), data=expclim_cont2, REML=FALSE)
+expclimt$temptreat <- relevel(as.factor(expclimt$temptreat), ref = "ambient")
+moismod<-lmer(soilmois1~temptreat + (temptreat|site/year), data=expclimt, REML=FALSE)
+moismod2<-lmer(soilmois1~temptreat + (1|site/year), data=expclimt, REML=FALSE)
+summary(moismod2)
+expclimt$warm<-"warmed"#for actively warmed sites
+expclimt[which(expclimt$temptreat=="0"),]$warm<-"struc_cont"#for structural controls
+expclimt[which(expclimt$temptreat=="ambient"),]$warm<-"amb_cont"#for ambient controls, which will be the reference
+moismod3<-lmer(soilmois1~warm + (1|site/year), data=expclimt, REML=FALSE)
+moismod<-lmer(soilmois1~airtemp_max + (1|site/year), data=expclimt, REML=FALSE)
+summary(moismod)

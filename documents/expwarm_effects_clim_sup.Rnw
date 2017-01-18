@@ -171,7 +171,6 @@ print(xtab6,floating=TRUE, include.rownames = TRUE)
 
 
 \clearpage
-\section* {Supplemental Figures}
 \section*{Supplemental Materials}
 \subsection*{Description of database}
 Search terms used and criteria for selecting the 12 studies that we ended up with. Climate variables included, and where database and metadata are housed.

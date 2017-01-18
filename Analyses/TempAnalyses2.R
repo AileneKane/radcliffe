@@ -37,30 +37,32 @@ expclimt$agtemp_max_k<-expclimt$agtemp_max+273.15
 expclimt$agtemp_min_k<-expclimt$agtemp_min+273.15
 expclimt$soiltemp1_min_k<-expclimt$soiltemp1_min+273.15
 expclimt$soiltemp1_max_k<-expclimt$soiltemp1_max+273.15
+expclimt$date<-strptime(strptime(paste(expclimt$year,expclimt$doy,sep="-"), format = "%Y-%j"),format = "%Y-%m-%d")
+expclimt$month<-substr(expclimt$date,6,7)
 
-cv_agtemp_max<-aggregate(expclimt$agtemp_max_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
-colnames(cv_agtemp_max)<-c("site","plot","year","temptreat","agtemp_max")
-cv_agtemp_max <- cv_agtemp_max[order(cv_agtemp_max$site,cv_agtemp_max$plot,cv_agtemp_max$year),] 
+cv_agtemp_max<-aggregate(expclimt$agtemp_max_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$month,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_agtemp_max)<-c("site","plot","year","month","temptreat","agtemp_max")
+cv_agtemp_max <- cv_agtemp_max[order(cv_agtemp_max$site,cv_agtemp_max$plot,cv_agtemp_max$year,cv_agtemp_max$month),] 
 #now Min AG temp
-cv_agtemp_min<-aggregate(expclimt$agtemp_min_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
-colnames(cv_agtemp_min)<-c("site","plot","year","temptreat","agtemp_min")
-cv_agtemp_min <- cv_agtemp_min[order(cv_agtemp_min$site,cv_agtemp_min$plot,cv_agtemp_min$year),] 
+cv_agtemp_min<-aggregate(expclimt$agtemp_min_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$month,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_agtemp_min)<-c("site","plot","year","month","temptreat","agtemp_min")
+cv_agtemp_min <- cv_agtemp_min[order(cv_agtemp_min$site,cv_agtemp_min$plot,cv_agtemp_min$year,cv_agtemp_min$month),] 
 
 #BG Max Temp
-cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
-colnames(cv_bgtemp_max)<-c("site","plot","year","temptreat","bgtemp_max")
-cv_bgtemp_max <- cv_bgtemp_max[order(cv_bgtemp_max$site,cv_bgtemp_max$plot,cv_bgtemp_max$year),] 
+cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$month,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_bgtemp_max)<-c("site","plot","year","month","temptreat","bgtemp_max")
+cv_bgtemp_max <- cv_bgtemp_max[order(cv_bgtemp_max$site,cv_bgtemp_max$plot,cv_bgtemp_max$year,cv_bgtemp_max$month),] 
 
 #BG Min Temp
-cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
-colnames(cv_bgtemp_min)<-c("site","plot","year","temptreat","bgtemp_min")
-cv_bgtemp_min <- cv_bgtemp_min[order(cv_bgtemp_min$site,cv_bgtemp_min$plot,cv_bgtemp_min$year),] 
+cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$month,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+colnames(cv_bgtemp_min)<-c("site","plot","year","month","temptreat","bgtemp_min")
+cv_bgtemp_min <- cv_bgtemp_min[order(cv_bgtemp_min$site,cv_bgtemp_min$plot,cv_bgtemp_min$year,cv_bgtemp_min$month),] 
 
 #Now combine the four temperature variables
 dim(cv_bgtemp_min);dim(cv_bgtemp_max);dim(cv_agtemp_min);dim(cv_agtemp_max)
 #Add new column for temptreat that can be merged with the files so that it has target warming instead of level
-cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,5],cv_bgtemp_max[,5],cv_bgtemp_min[,5])
-colnames(cv_all)[5:8]<-c("cv_agtemp_max","cv_agtemp_min","cv_bgtemp_max","cv_bgtemp_min")
+cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,6],cv_bgtemp_max[,6],cv_bgtemp_min[,6])
+colnames(cv_all)[6:9]<-c("cv_agtemp_max","cv_agtemp_min","cv_bgtemp_max","cv_bgtemp_min")
 #colnames(cv_all)[4]<-"temptreatx"
 #cv_all$temptreat<-NA
 #cv_all[which(cv_all$temptreatx=="ambient"),]$temptreat<-cv_all[which(cv_all$temptreatx=="ambient"),]$temptreatx
@@ -79,20 +81,34 @@ unique(cv_allt$temptreat)
 #targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
 quartz(height=5,width=10)
 par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
-plot(as.numeric(cv_allt$target),cv_allt$cv_agtemp_max,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Max AG Temp CV",pch = 21)
-mtext(side=2,"Coefficient of Variation (K)", line=3,adj=-2,cex=.9)
+plot(as.numeric(cv_allt$target),cv_allt$cv_agtemp_max,xlab="",xaxt="n",ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Max AG Temp CV",pch = 21)
+mtext(side=2,"Coefficient of Variation (K)", line=2,adj=10,cex=.9)
 axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=FALSE,cex=.9)
-plot(as.numeric(cv_allt$target),cv_allt$cv_agtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Min AG temp",pch = 21)
+plot(as.numeric(cv_allt$target),cv_allt$cv_agtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Min AG temp",pch = 21)
 axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=FALSE,cex=.9)
-plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_max,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Max BG temp",pch = 21)
+mtext(side=2,"Coefficient of Variation (K)", line=2,adj=10,cex=.9)
+
+plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_max,xlab="",xaxt="n",ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Max BG temp",pch = 21)
 axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=FALSE,cex=.9)
 mtext(side=1,"Target warming (degrees C)", line=2.3, adj=.5)
 axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=c("amb","struct","1","2","3","4","5","6","7"),cex=.9)
 
-plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Min BG temp",pch = 21)
+plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Min BG temp",pch = 21)
 axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=c("amb","struct","1","2","3","4","5","6","7"),cex=.9)
 mtext(side=1,"Target warming (degrees C", line=2.3, adj=.5)
 legend(x=,y=100,legend=sort(unique(cv_allt$site)),pch=unique(as.numeric(cv_allt$site)))+20,bty="n",cex=0.7,pt.cex=0.7)
+
+quartz(height=5,width=10)
+par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
+boxplot(cv_allt$cv_agtemp_max~as.factor(cv_allt$target),ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Max. above-ground temperature")
+mtext(side=2,"Coefficient of Variation (K)", line=2,adj=10,cex=.9)
+boxplot(cv_allt$cv_agtemp_min~as.factor(cv_allt$target),ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Min. above-ground temperature")
+mtext(side=2,"Coefficient of Variation (K)", line=2,adj=10,cex=.9)
+boxplot(cv_allt$cv_bgtemp_max~as.factor(cv_allt$target),ylab="",xlab="Target warming (degrees C",ylim=c(0,4), bty="l", cex.axis=.9, main="Max. below-ground temperature")
+mtext(side=1,"Target warming (degrees C)", line=2,adj=.5,cex=.9)
+boxplot(cv_allt$cv_bgtemp_min~as.factor(cv_allt$target),ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Min. below-ground temperature")
+mtext(side=1,"Target warming (degrees C)", line=2,adj=.5,cex=.9)
+
 #Fit models:
 cv_allt$site<-as.factor(cv_allt$site)
 cv_allt$year<-as.factor(cv_allt$year)
@@ -179,7 +195,7 @@ expclimt$airtemp_range<-expclimt$agtemp_max-expclimt$agtemp_min
 atemprange_mod<-lmer(airtemp_range~target + (target|site/year), data=expclimt, REML=FALSE)
 atemprange_mod1<-lmer(airtemp_range~target + (1|site/year), data=expclimt, REML=FALSE)
 AIC(atemprange_mod,atemprange_mod1)
-summary(atemprange_mod)##warms, on average 0.70 degrees per target degree, for soil max
+summary(atemprange_mod)##target temperature has a negative effect on
 expclimt$warm<-"warmed"#for actively warmed sites
 expclimt[which(expclimt$temptreat=="0"),]$warm<-"struc_cont"#for structural controls
 expclimt[which(expclimt$temptreat=="ambient"),]$warm<-"amb_cont"#for ambient controls, which will be the reference
@@ -191,3 +207,81 @@ AIC(arange_mod,arange_mod1)#mod wins
 summary(arange_mod1)
 boxplot(airtemp_range~warm, data=expclimt)
 boxplot(cv_agtemp_min~warm, data=cv_allt)
+## Now try looking at each month to see if the variation has seasonal patterns
+months<-sort(unique(cv_allt$month))
+
+soilcv_all<-data.frame(matrix(NA, nrow = 36, ncol = 7))
+aircv_all<-data.frame(matrix(NA, nrow = 36, ncol = 7))
+for (i in 1:length(months)){
+  monthdat<-cv_allt[cv_allt$month==months[i],]
+  #monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
+  smaxcv_mod<-lmer(cv_bgtemp_max~-1+warm + (1|site/year), data=monthdat, REML=FALSE)
+  smincv_mod<-lmer(cv_bgtemp_min~-1+warm + (1|site/year), data=monthdat, REML=FALSE)
+  amaxcv_mod<-lmer(cv_agtemp_max~-1+warm + (1|site/year), data=monthdat, REML=FALSE)
+  amincv_mod<-lmer(cv_agtemp_min~-1+warm + (1|site/year), data=monthdat, REML=FALSE)
+  coefs_air<-cbind(data.frame(coef(summary(amaxcv_mod))),data.frame(coef(summary(amincv_mod))))
+  coefs_soil<-cbind(data.frame(coef(summary(smaxcv_mod))),data.frame(coef(summary(smincv_mod))))
+  colnames(coefs_air)[1]<-"airtmax_cv";colnames(coefs_air)[4]<-"airtmin_cv"
+  colnames(coefs_soil)[1]<-"soiltmax_cv";colnames(coefs_soil)[4]<-"soiltmin_cv"
+  coefs_air$month<-paste(i);  coefs_soil$month<-paste(i)
+  soilcv_all[((i*3)-2):(i*3),]<-coefs_soil
+  aircv_all[((i*3)-2):(i*3),]<-coefs_air
+}
+colnames(soilcv_all)<-colnames(coefs_soil)
+colnames(aircv_all)<-colnames(coefs_air)
+soilcv_all$coef<-c(rep(rownames(coefs_soil),times=12))
+aircv_all$coef<-c(rep(rownames(coefs_air),times=12))
+rownames(soilcv_all)<-NULL
+rownames(aircv_all)<-NULL
+soil_warmed<-subset(soilcv_all,coef=="warmwarmed")
+air_warmed<-subset(aircv_all,coef=="warmwarmed")
+#
+quartz(height=6,width=7)
+par(mfrow=c(2,2),mai=c(.5,.7,.2,.1), omi=c(.4,.01,.2,.2))
+#airmax
+plot(as.numeric(air_warmed$month),air_warmed$airtmax_cv,type="p", pch=21,bg="gray", xlab="Month", ylab="", ylim=c(-.2,.2),bty="l", main="Max Air Temperature")
+abline(h=0,lty=2)
+for (i in 1:12){
+  arrows(as.numeric(air_warmed$month[i]),air_warmed$airtmax_cv[i]-air_warmed$Std..Error[i],as.numeric(air_warmed$month[i]),air_warmed$airtmax_cv[i]+air_warmed$Std..Error[i],length=0,angle=90,code=0)}
+points(as.numeric(air_warmed$month),air_warmed$airtmax_cv,pch=21,bg="gray")
+#mtext("a)",side=3, line=1, adj=0)
+#airmin
+plot(as.numeric(air_warmed$month),air_warmed$airtmin_cv,type="p", pch=21,bg="gray", xlab="Month", ylab="", ylim=c(-.2,.2),bty="l", main="Min Air Temperature")
+abline(h=0,lty=2)
+for (i in 1:12){
+  arrows(as.numeric(air_warmed$month[i]),air_warmed$airtmin_cv[i]-air_warmed$Std..Error.1[i],as.numeric(air_warmed$month[i]),air_warmed$airtmin_cv[i]+air_warmed$Std..Error.1[i],length=0,angle=90,code=0)}
+points(as.numeric(air_warmed$month),air_warmed$airtmin_cv,pch=21,bg="gray")
+#mtext("a)",side=3, line=1, adj=0)
+#soilmax
+plot(as.numeric(soil_warmed$month),soil_warmed$soiltmax_cv,type="p", pch=21,bg="gray", xlab="Month", ylab="", ylim=c(-.2,.2),bty="l", main="Max Soil Temperature")
+abline(h=0,lty=2)
+for (i in 1:12){
+  arrows(as.numeric(soil_warmed$month[i]),soil_warmed$soiltmax_cv[i]-soil_warmed$Std..Error[i],as.numeric(soil_warmed$month[i]),soil_warmed$soiltmax_cv[i]+soil_warmed$Std..Error[i],length=0,angle=90,code=0)}
+points(as.numeric(soil_warmed$month),soil_warmed$soiltmax_cv,pch=21,bg="gray")
+#soilmin
+plot(as.numeric(soil_warmed$month),soil_warmed$soiltmin_cv,type="p", pch=21,bg="gray", xlab="Month", ylab="", ylim=c(-.2,.2),bty="l", main="Min Soil Temperature")
+abline(h=0,lty=2)
+for (i in 1:12){
+  arrows(as.numeric(soil_warmed$month[i]),soil_warmed$soiltmin_cv[i]-soil_warmed$Std..Error.1[i],as.numeric(soil_warmed$month[i]),soil_warmed$soiltmin_cv[i]+soil_warmed$Std..Error.1[i],length=0,angle=90,code=0)}
+points(as.numeric(soil_warmed$month),soil_warmed$soiltmin_cv,pch=21,bg="gray")
+
+mtext("Month",side=1, line=2, adj=.5)
+#mtext("b)",side=3, line=1, adj=0)
+
+
+#try plotting no-intercept model
+quartz(height=6,width=7)
+par(mfrow=c(2,2),mai=c(.5,.7,.2,.1), omi=c(.4,.01,.2,.2))
+#airmax
+plot(as.numeric(aircv_all$month)+c(0,.2,.4),aircv_all$airtmax_cv,type="p", pch=(as.numeric(as.factor(aircv_all$coef))+20),bg="gray", xlab="Month", ylab="", ylim=c(.5,2.5),bty="l", main="Max Air Temperature")
+mtext("Coefficient of Variation",side=2, line=1, adj=0)
+#airmin
+plot(as.numeric(aircv_all$month)+c(0,.2,.4),aircv_all$airtmin_cv,type="p", pch=(as.numeric(as.factor(aircv_all$coef))+20),bg="gray", xlab="Month", ylab="", ylim=c(.5,2.5),bty="l", main="Max Air Temperature")
+#soilmax
+plot(as.numeric(soilcv_all$month)+c(0,.2,.4),soilcv_all$soiltmax_cv,type="p", pch=(as.numeric(as.factor(soilcv_all$coef))+20),bg="gray", xlab="Month", ylab="", ylim=c(0,1.5),bty="l", main="Max Soil Temperature")
+mtext("Coefficient of Variation",side=2, line=1, adj=0)
+
+#soilmin
+plot(as.numeric(soilcv_all$month)+c(0,.2,.4),soilcv_all$soiltmin_cv,type="p", pch=(as.numeric(as.factor(soilcv_all$coef))+20),bg="gray", xlab="Month", ylab="", ylim=c(0,1.5),bty="l", main="Max Soil Temperature")
+mtext("Month",side=1, line=2, adj=.5)
+#mtext("b)",side=3, line=1, adj=0)
