@@ -31,234 +31,163 @@ expclimt$agtemp_max<-expclimt$airtemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
 
-sites<-sort(unique(expclimt$site))#use data without precipitation manipulation
-temptreats<-sort(unique(expclimt$temptreat))
-alltemp.df <- data.frame(site=character(),temptreat=character(),agtempmax_mn=numeric(),
-                         agtempmax_var=numeric(),agtempmin_mn=numeric(),
-                         agtempmin_var=numeric(),agtempmax_mn=numeric(),
-                         agtempmax_var=numeric(),agtempmin_mn=numeric(),
-                         agtempmin_var=numeric())
-
-for (i in 1:length(sites)){
-  sitedat<-expclimt[expclimt$site==sites[i],]
-  sitedat$agtemp_max.cn<-sitedat$agtemp_max-mean(sitedat$agtemp_max)
-  
-  siteagtempmaxmn<-tapply(sitedat$agtemp_max,sitedat$temptreat,mean,na.rm=TRUE)
-  
-  siteagtempmaxvar<-tapply(sitedat$agtemp_max,sitedat$temptreat,var,na.rm=TRUE)
-  siteagtempminmn<-tapply(sitedat$agtemp_min,sitedat$temptreat,mean,na.rm=TRUE)
-  siteagtempminvar<-tapply(sitedat$agtemp_min,sitedat$temptreat,var,na.rm=TRUE)
-  sitebgtempmaxmn<-tapply(sitedat$soiltemp1_max,sitedat$temptreat,mean,na.rm=TRUE)
-  sitebgtempmaxvar<-tapply(sitedat$soiltemp1_max,sitedat$temptreat,var,na.rm=TRUE)
-  sitebgtempminmn<-tapply(sitedat$soiltemp1_min,sitedat$temptreat,mean,na.rm=TRUE)
-  sitebgtempminvar<-tapply(sitedat$soiltemp1_min,sitedat$temptreat,var,na.rm=TRUE)
-  sitetreats<-length(unique(sitedat$temptreat))
-  sitename<-rep(paste(sites[i]),times=sitetreats)
-  #empties<-rep(NA, times=length(temptreats)-sitetreats)
-  sitetemp<-cbind(sitename,names(siteagtempmaxmn),round(siteagtempmaxmn, digits=3),round(siteagtempmaxvar,digits=3),round(siteagtempminmn,digits=3),round(siteagtempminvar,digits=3),round(sitebgtempmaxmn, digits=3),round(sitebgtempmaxvar,digits=3),round(sitebgtempminmn,digits=3),round(sitebgtempminvar,digits=3))
-  alltemp.df<-rbind(alltemp.df,sitetemp)
-}
-colnames(alltemp.df)<-c("site","temptreat","AGTempMax_Mn","AGTempMax_Var","AGTempMin_Mn","AGTempMin_Var","BGTempMax_Mn","BGTempMax_Var","BGTempMin_Mn","BGTempMin_Var")
-alltemp.df$AGTempMax_Mn<-as.numeric(alltemp.df$AGTempMax_Mn)
-alltemp.df$AGTempMax_Var<-as.numeric(alltemp.df$AGTempMax_Var)
-alltemp.df$AGTempMin_Mn<-as.numeric(alltemp.df$AGTempMin_Mn)
-alltemp.df$AGTempMin_Var<-as.numeric(alltemp.df$AGTempMin_Var)
-alltemp.df$BGTempMax_Mn<-as.numeric(alltemp.df$BGTempMax_Mn)
-alltemp.df$BGTempMax_Var<-as.numeric(alltemp.df$BGTempMax_Var)
-alltemp.df$BGTempMin_Mn<-as.numeric(alltemp.df$BGTempMin_Mn)
-alltemp.df$BGTempMin_Var<-as.numeric(alltemp.df$BGTempMin_Var)
-
-treats2<-subset(treats,select=c("site","temptreat","target","reported"))
-treats2 <- treats %>% # start with the data frame
-  distinct(site, temptreat,.keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(site,temptreat,target,reported)
-
-alltemptarget <- full_join(treats2,alltemp.df, by=c("site","temptreat"), match="first")
-head(alltemptarget)
-#for control plots with structures, use target warming=0
-alltemptarget[which(alltemptarget$temptreat==0),]$target<-0
-#for ambient control plots, use target warming = -1
-alltemptarget[which(alltemptarget$temptreat=="ambient"),]$target<--1
-
-#plot variance by target warming
-#remove exp02 (chuine), as these variances aren't real
-alltemptarget<-alltemptarget[-which(alltemptarget$site=="exp02"),]
-
-sitesymb<-c(21,22,16,24,25,17,3,4,5,10,12)
-symb_site<-sitesymb[factor(alltemptarget$site)]
-
-quartz(height=5,width=10)
-par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
-plot(alltemptarget$target,alltemptarget$AGTempMax_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Max AG temp")
-#mtext(side=2,"Max AG temp", line=2.2, adj=.8, cex=.9)
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(-1,0,1,2,3,4,5), labels=FALSE,cex=.9)
-mtext(side=2,"Variance (C)", line=3,adj=-1,cex=.9)
-plot(alltemptarget$target,alltemptarget$AGTempMin_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l",, cex.axis=.9, main="Min AG temp")
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(-1,0,1,2,3,4,5), labels=FALSE,cex=.9)
-#mtext(side=2,"Min AG temp", line=1, adj=.8, cex=.9)
-plot(alltemptarget$target,alltemptarget$BGTempMax_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9,main="Max BG temp")
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(-1,0,1,2,3,4,5), labels=c("ambient","0","1","2","3","4","5"),cex=.9)
-mtext(side=1,"Target warming (C)", line=2.3, adj=.5)
-plot(alltemptarget$target,alltemptarget$BGTempMin_Var,pch=symb_site,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l",cex.axis=.9, main="Min BG temp")
-axis(side=1,at=c(-1,0,1,2,3,4,5), labels=c("ambient","0","1","2","3","4","5"),cex=.9)
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-mtext(side=1,"Target warming (C)", line=2.3, adj=.5)
-legend(x=4.5,y=195,legend=unique(alltemptarget$site),pch=unique(symb_site),bty="n",cex=0.7,pt.cex=0.7)
-
-#remake figure with site/experiment on x axis, and color coding by target warming
-targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
-
-quartz(height=5,width=10)
-par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
-plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$AGTempMax_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Max AG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
-mtext(side=2,"Variance (C)", line=3,adj=-1,cex=.9)
-plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$AGTempMin_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Min AG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
-plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$BGTempMax_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Max BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
-axis(side=1,at=c(seq(1:11)), labels=substr(sort(unique(alltemptarget$site)),4,5),cex=.9)
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-
-mtext(side=1,"Study/site", line=2.3, adj=.5)
-plot(jitter(as.numeric(as.factor(alltemptarget$site))),alltemptarget$BGTempMin_Var,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(20,180), bty="l", cex.axis=.9, main="Min BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(alltemptarget$target))]))
-axis(side=1,at=c(seq(1:11)), labels=substr(sort(unique(alltemptarget$site)),4,5),cex=.9)
-axis(side=2,at=c(50,100,150), labels=TRUE, las=TRUE, cex=.9)
-mtext(side=1,"Study/site", line=2.3, adj=.5)
-legend(x=10.5,y=195,legend=sort(unique(alltemptarget$target)),pch=21,pt.bg=targetcol,bty="n",cex=0.7,pt.cex=0.7)
-
-alltemptarget$treatcat<-NA
-alltemptarget[which(alltemptarget$temptreat=="ambient"|alltemptarget$temptreat==0),]$treatcat<-"control"
-alltemptarget[which(as.numeric(alltemptarget$temptreat)>0),]$treatcat<-"warmed"
-
-head(alltemptarget)
-library(lme4)
-alltemptarget$site<-as.factor(alltemptarget$site)
-alltemptarget$treatcat<-as.factor(alltemptarget$treatcat)
-
 ####Try coefficient of variation for each plot during each year and treatment and temperature type
-head(expclimt)#may need to aggregate instead,,,
-cv_agtemp_max<-aggregate(expclimt$agtemp_max, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+#convert all temepratures to Kelvin to avoid negative values (CV doesn't work when there is a mix of positive and negative values
+expclimt$agtemp_max_k<-expclimt$agtemp_max+273.15
+expclimt$agtemp_min_k<-expclimt$agtemp_min+273.15
+expclimt$soiltemp1_min_k<-expclimt$soiltemp1_min+273.15
+expclimt$soiltemp1_max_k<-expclimt$soiltemp1_max+273.15
+
+cv_agtemp_max<-aggregate(expclimt$agtemp_max_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
 colnames(cv_agtemp_max)<-c("site","plot","year","temptreat","agtemp_max")
-head(cv_agtemp_max)
+cv_agtemp_max <- cv_agtemp_max[order(cv_agtemp_max$site,cv_agtemp_max$plot,cv_agtemp_max$year),] 
 #now Min AG temp
-cv_agtemp_min<-aggregate(expclimt$agtemp_min, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+cv_agtemp_min<-aggregate(expclimt$agtemp_min_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
 colnames(cv_agtemp_min)<-c("site","plot","year","temptreat","agtemp_min")
+cv_agtemp_min <- cv_agtemp_min[order(cv_agtemp_min$site,cv_agtemp_min$plot,cv_agtemp_min$year),] 
 
 #BG Max Temp
-cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
 colnames(cv_bgtemp_max)<-c("site","plot","year","temptreat","bgtemp_max")
+cv_bgtemp_max <- cv_bgtemp_max[order(cv_bgtemp_max$site,cv_bgtemp_max$plot,cv_bgtemp_max$year),] 
 
 #BG Min Temp
-cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
+cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min_k, by=list(expclimt$site,expclimt$plot,expclimt$year,expclimt$temptreat), FUN=cv,na.rm=TRUE)
 colnames(cv_bgtemp_min)<-c("site","plot","year","temptreat","bgtemp_min")
+cv_bgtemp_min <- cv_bgtemp_min[order(cv_bgtemp_min$site,cv_bgtemp_min$plot,cv_bgtemp_min$year),] 
 
 #Now combine the four temperature variables
 dim(cv_bgtemp_min);dim(cv_bgtemp_max);dim(cv_agtemp_min);dim(cv_agtemp_max)
 #Add new column for temptreat that can be merged with the files so that it has target warming instead of level
-cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,4],cv_bgtemp_max[,4],cv_bgtemp_min[,4])
+cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,5],cv_bgtemp_max[,5],cv_bgtemp_min[,5])
 colnames(cv_all)[5:8]<-c("cv_agtemp_max","cv_agtemp_min","cv_bgtemp_max","cv_bgtemp_min")
-colnames(cv_all)[4]<-"temptreatx"
-cv_all$temptreat<-NA
-cv_all[which(cv_all$temptreatx=="ambient"),]$temptreat<-cv_all[which(cv_all$temptreatx=="ambient"),]$temptreatx
-cv_all[1:130,]$temptreat<-substr(cv_all$temptreatx[1:130],1,2)
+#colnames(cv_all)[4]<-"temptreatx"
+#cv_all$temptreat<-NA
+#cv_all[which(cv_all$temptreatx=="ambient"),]$temptreat<-cv_all[which(cv_all$temptreatx=="ambient"),]$temptreatx
 #now merge target temperatures in
-cv_allt <- left_join(treats2,cv_all, by=c("site","temptreat"), match="all")
-cv_allt[which(cv_allt$temptreatx=="ambient"),]$target<--1
+treats2<-subset(treats,select=c("site","plot","temptreat","target","reported"))
+treats2 <- treats %>% # start with the data frame
+  distinct(site, plot,temptreat,.keep_all = TRUE) %>% # establishing grouping variables
+  dplyr::select(site,plot,temptreat,target,reported)
+cv_allt <- right_join(treats2,cv_all, by=c("site","plot","temptreat"), match="all")
+cv_allt[which(cv_allt$temptreat=="ambient"),]$target<--1
+cv_allt[which(cv_allt$temptreat=="0"),]$target<-0
+
 unique(cv_allt$temptreat)
 #now figure
-#remake figure with site/experiment on x axis, and color coding by target warming
-targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+#remake figure with target temp on x axis, and color coding by target warming
+#targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
 quartz(height=5,width=10)
 par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
-plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_agtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main="Max AG Temp CV",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
-axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
-mtext(side=2,"CV (C)", line=3,adj=-1,cex=.9)
-plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_agtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,400), bty="l", cex.axis=.9, main="Min AG temp",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
-axis(side=2,at=c(0,100,200,300,400), labels=TRUE, las=TRUE, cex=.9)
-axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
-plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_bgtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main="Max BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
-axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_allt$site)),4,5),cex=.9)
-axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
+plot(as.numeric(cv_allt$target),cv_allt$cv_agtemp_max,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Max AG Temp CV",pch = 21)
+mtext(side=2,"Coefficient of Variation (K)", line=3,adj=-2,cex=.9)
+axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=FALSE,cex=.9)
+plot(as.numeric(cv_allt$target),cv_allt$cv_agtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Min AG temp",pch = 21)
+axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=FALSE,cex=.9)
+plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_max,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Max BG temp",pch = 21)
+axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=FALSE,cex=.9)
+mtext(side=1,"Target warming (degrees C)", line=2.3, adj=.5)
+axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=c("amb","struct","1","2","3","4","5","6","7"),cex=.9)
 
-mtext(side=1,"Study/site", line=2.3, adj=.5)
-plot(as.numeric(as.factor(cv_allt$site)),cv_allt$cv_bgtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main="Min BG temp",pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
+plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,7), bty="l", cex.axis=.9, main="Min BG temp",pch = 21)
+axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=c("amb","struct","1","2","3","4","5","6","7"),cex=.9)
+mtext(side=1,"Target warming (degrees C", line=2.3, adj=.5)
+legend(x=,y=100,legend=sort(unique(cv_allt$site)),pch=unique(as.numeric(cv_allt$site)))+20,bty="n",cex=0.7,pt.cex=0.7)
+#Fit models:
+cv_allt$site<-as.factor(cv_allt$site)
+cv_allt$year<-as.factor(cv_allt$year)
+cv_allt$warm<-"warmed"#for actively warmed sites
+cv_allt[which(cv_allt$temptreat=="0"),]$warm<-"struc_cont"#for structural controls
+cv_allt[which(cv_allt$temptreat=="ambient"),]$warm<-"amb_cont"#for ambient controls, which will be the reference
+smincv_mod<-lmer(cv_bgtemp_min~-1+warm+(1|site/year), data=cv_allt, REML=FALSE)
+smincv_mod1<-lmer(cv_bgtemp_min~warm+(warm|site/year), data=cv_allt, REML=FALSE)
+AIC(smincv_mod,smincv_mod1)#1 wins
+summary(smincv_mod)
+#all experiments have reduced variation
+smaxcv_mod<-lmer(cv_bgtemp_max~-1+warm + (1|site/year), data=cv_allt, REML=FALSE)
+smaxcv_mod1<-lmer(cv_bgtemp_max~warm + (warm|site/year), data=cv_allt, REML=FALSE)
+AIC(smaxcv_mod,smaxcv_mod1)#mod wins
+summary(smaxcv_mod)
+cv_allt$warm <- relevel(as.factor( cv_allt$warm), ref = "struc_cont")
 
-axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_allt$site)),4,5),cex=.9)
-axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
-mtext(side=1,"Study/site", line=2.3, adj=.5)
-legend(x=11.5,y=100,legend=sort(unique(cv_allt$target)),pch=21,pt.bg=targetcol,bty="n",cex=0.7,pt.cex=0.7)
+#actively warmed plots have reduced variation in soil temperatures, though it is negligible for minimum temperatures (more pronounced for soil max)
+amaxcv_mod<-lmer(cv_agtemp_max~warm + (1|site/year), data=cv_allt, REML=FALSE)
+amaxcv_mod1<-lmer(cv_agtemp_max~warm + (warm|site/year), data=cv_allt, REML=FALSE)
+AIC(amaxcv_mod,amaxcv_mod1)#mod wins
+summary(amaxcv_mod)
+
+amincv_mod<-lmer(cv_agtemp_min~warm + (1|site/year), data=cv_allt, REML=FALSE)
+#amincv_mod1<-lmer(cv_agtemp_min~warm + (warm|site/year), data=cv_allt, REML=FALSE)
+#AIC(amincv_mod,amincv_mod1)#mod wins
+summary(amincv_mod)
+amincv_coefs<-coef(summary(amincv_mod))
+
+amaxcv_coefs<-coef(summary(amaxcv_mod))
+
+#actively warmed plots have increased variation in air temperatures (both min and max)
+#Make a plot:
+quartz(height=6,width=4)
+par(mfcol=c(2,1),mai=c(.6,.7,.2,.1), omi=c(.7,.01,.2,.2))
+#air, cv_agtemp_max~warm,data=cv_allt
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="black", xlab="", ylab="", ylim=c(-2,2),bty="l", main="Min Air Temp", las=TRUE)
+#add random effects
+minaexp03<-minairranef[which(minairranef$site=="exp03"),]
+minaexp04<-minairranef[which(minairranef$site=="exp04"),]
+minaexp07<-minairranef[which(minairranef$site=="exp07"),]
+minaexp10<-minairranef[which(minairranef$site=="exp10"),]
+points(as.numeric(minaexp03$month),minaexp03$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minaexp04$month),minaexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
+points(as.numeric(minaexp07$month),minaexp07$shamdif,pch=23,bg="lightblue",col="lightblue")
+points(as.numeric(minaexp10$month),minaexp10$shamdif,pch=24,bg="lightsalmon",col="lightsalmon")
+for (i in 1:12){
+  arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.01,angle=90,code=3)}
+abline(h=0,lty=2)
+points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="black")
+mtext("Effect of structural control (difference between sham & ambient, C)",side=2, line=2, adj=.99)
+legend(1,-.3,legend=c("exp03","exp04","exp07","exp10"), pch=c(21,22,23,24),pt.bg=c("lightsalmon","lightblue","lightblue","lightsalmon"),col=c("lightsalmon","lightblue","lightblue","lightsalmon"),bty="n")
 
 
-#Make same plots, but by month for each site
 
-####Try coefficient of variation for each treatment and temperature type
-head(expclimt)#may need to aggregate instead,,,
-expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
-expclimt$agtemp_min<-expclimt$airtemp_min
-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
-expclimt$agtemp_max<-expclimt$airtemp_max
-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
-#add column for month to expclimt
-expclimt$month<-substr(as.Date(paste(expclimt$year, expclimt$doy,sep="-"), format="%Y-%j"),6,7)
-expclimt <- left_join(treats2,expclimt, by=c("site","temptreat"), match="all")
-
-sites<-sort(unique(expclimt$site))#use data without precipitation manipulation
-for(i in i:length(sites))
-{
-  sited<-expclimt[expclimt$site==sites[i],]
-  #Max AG Temp
-  cv_agtemp_max<-aggregate(expclimt$agtemp_max, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
-  colnames(cv_agtemp_max)<-c("month","plot","temptreat","target","agtemp_max")
-  #now Min AG temp
-  cv_agtemp_min<-aggregate(expclimt$agtemp_min, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
-  colnames(cv_agtemp_min)<-c("month","plot","temptreat","target","agtemp_min")
-  
-  #BG Max Temp
-  cv_bgtemp_max<-aggregate(expclimt$soiltemp1_max, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
-  colnames(cv_bgtemp_max)<-c("month","plot","temptreat","target","bgtemp_max")
-  
-  #BG Min Temp
-  cv_bgtemp_min<-aggregate(expclimt$soiltemp1_min, by=list(expclimt$month,expclimt$plot,expclimt$temptreat,expclimt$target.x), FUN=cv,na.rm=TRUE)
-  colnames(cv_bgtemp_min)<-c("month","plot","temptreat","target","bgtemp_min")
-  #Now combine the four temperature variables
-  #Add new column for temptreat that can be merged with the files so that it has target warming instead of level
-  cv_all<-cbind(cv_agtemp_max,cv_agtemp_min[,5],cv_bgtemp_max[,5],cv_bgtemp_min[,5])
-  colnames(cv_all)[5:8]<-c("cv_agtemp_max","cv_agtemp_min","cv_bgtemp_max","cv_bgtemp_min")
-  colnames(cv_all)[3]<-"temptreatx"
-  cv_all$temptreat<-cv_all$temptreatx
-  #now merge target temperatures in
-  if(length(which(cv_all$temptreatx=="ambient"))>0){cv_all[which(cv_all$temptreatx=="ambient"),]$target<--1}
-  #now figures
-  #remake figure with site/experiment on x axis, and color coding by target warming
-  targetcol<-c("black","gray","white","#FFF5F0","#FEE0D2","#FCBBA1","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
-  targetcol<-targetcol[1:length(cvall$)]
-  quartz(height=5,width=10)
-  par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
-  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_agtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main=paste(sites[i],"AG Max"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_all$target))]))
-  axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
-  axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
-  mtext(side=2,"CV (C)", line=3,adj=-1,cex=.9)
-  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_agtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,400), bty="l", cex.axis=.9, main=paste(sites[i],"AG Min"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
-  axis(side=2,at=c(0,100,200,300,400), labels=TRUE, las=TRUE, cex=.9)
-  axis(side=1,at=c(seq(1:11)), labels=FALSE,cex=.9)
-  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_bgtemp_max,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main=paste(sites[i],"BG Max"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
-  axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_all$month)),4,5),cex=.9)
-  axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
-  
-  mtext(side=1,"Month", line=2.3, adj=.5)
-  plot(as.numeric(as.factor(cv_all$month)),cv_all$cv_bgtemp_min,xlab="",xaxt="n",yaxt="n",ylab="",ylim=c(0,100), bty="l", cex.axis=.9, main=paste(sites[i],"BG Min"),pch = 21, bg = c(targetcol[as.factor(as.character(cv_allt$target))]))
-  
-  axis(side=1,at=c(seq(1:12)), labels=substr(sort(unique(cv_all$month)),4,5),cex=.9)
-  axis(side=2,at=c(0,50,100), labels=TRUE, las=TRUE, cex=.9)
-  mtext(side=1,"Month", line=2.3, adj=.5)
-  legend(x=11.5,y=100,legend=sort(unique(cv_all$target)),pch=21,pt.bg=targetcol,bty="n",cex=0.7,pt.cex=0.7)
-}
-
+#Now see if warming increases min and max temp the same magnitude as mean
+expclimt[which(expclimt$temptreat=="0"),]$target<-0#for structural controls
+expclimt[which(expclimt$temptreat=="ambient"),]$target<-0#for ambient controls, which will be the reference
+amin_mod<-lmer(agtemp_min~target + (target|site/year), data=expclimt, REML=FALSE)
+summary(amin_mod)#warms, on average 0.84 degrees per target degree, for air min
+amax_mod<-lmer(agtemp_max~target + (target|site/year), data=expclimt, REML=FALSE)
+summary(amax_mod)#warms, on average 0.51 degrees per target degree, for air min
+smin1_mod<-lmer(soiltemp1_min~target + (target|site/year), data=expclimt, REML=FALSE)
+summary(smin1_mod)#warms, on average 0.68 degrees per target degree, for soil min
+smax1_mod<-lmer(soiltemp1_max~target + (target|site/year), data=expclimt, REML=FALSE)
+summary(smax1_mod)##warms, on average 0.67 degrees per target degree, for soil max
+smean1_mod<-lmer(soiltemp1_mean~target + (target|site/year), data=expclimt, REML=FALSE)
+summary(smean1_mod)##warms, on average 0.70 degrees per target degree, for soil max
+#compare these structures to random intercept only model:
+#amin_mod1<-lmer(agtemp_min~target + (1|site/year), data=expclimt, REML=FALSE)
+#summary(amin_mod1)#warms, on average 0.67 degrees per targert degree, for both min and max
+#amax_mod1<-lmer(agtemp_max~target + (1|site/year), data=expclimt, REML=FALSE)
+#summary(amax_mod1)
+#smin1_mod1<-lmer(soiltemp1_min~target + (1|site/year), data=expclimt, REML=FALSE)
+#summary(smin1_mod1)#warms, on average 0.70 degrees per target degree, for soil min
+#smax1_mod1<-lmer(soiltemp1_max~target + (1|site/year), data=expclimt, REML=FALSE)
+#summary(smax1_mod1)##warms, on average 0.73 degrees per target degree, for soil max
+#AIC(smax1_mod1,smax1_mod)#lower for random slopes in all cases
+#AIC(smin1_mod1,smin1_mod)
+#AIC(amax_mod1,amax_mod)
+#AIC(amin_mod1,amin_mod)
+#Now try temperature range:
+expclimt$airtemp_range<-expclimt$agtemp_max-expclimt$agtemp_min
+atemprange_mod<-lmer(airtemp_range~target + (target|site/year), data=expclimt, REML=FALSE)
+atemprange_mod1<-lmer(airtemp_range~target + (1|site/year), data=expclimt, REML=FALSE)
+AIC(atemprange_mod,atemprange_mod1)
+summary(atemprange_mod)##warms, on average 0.70 degrees per target degree, for soil max
+expclimt$warm<-"warmed"#for actively warmed sites
+expclimt[which(expclimt$temptreat=="0"),]$warm<-"struc_cont"#for structural controls
+expclimt[which(expclimt$temptreat=="ambient"),]$warm<-"amb_cont"#for ambient controls, which will be the reference
+expclimt$warm <- relevel(as.factor( expclimt$warm), ref = "struc_cont")
+#actively warmed plots have reduced variation in soil temperatures, though it is negligible for minimum temperatures (more pronounced for soil max)
+arange_mod<-lmer(airtemp_range~warm + (1|site/year), data=expclimt, REML=FALSE)
+arange_mod1<-lmer(airtemp_range~warm + (warm|site/year), data=expclimt, REML=FALSE)
+AIC(arange_mod,arange_mod1)#mod wins
+summary(arange_mod1)
+boxplot(airtemp_range~warm, data=expclimt)
+boxplot(cv_agtemp_min~warm, data=cv_allt)
