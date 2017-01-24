@@ -31,6 +31,7 @@ expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agt
 expclimt$temptreat <- relevel(as.factor(expclimt$temptreat), ref = "ambient")
 moismod<-lmer(soilmois1~temptreat + (temptreat|site/year), data=expclimt, REML=FALSE)
 moismod2<-lmer(soilmois1~temptreat + (1|site/year), data=expclimt, REML=FALSE)
+AIC(moismod,moismod2)#moismod2 wins
 summary(moismod2)
 expclimt$warm<-"warmed"#for actively warmed sites
 expclimt[which(expclimt$temptreat=="0"),]$warm<-"struc_cont"#for structural controls
