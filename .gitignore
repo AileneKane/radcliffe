@@ -1,5 +1,8 @@
 .DS_Store*
 
+.DS_Store
+.DS_Sto*
+Analyses/.DS_Store
 test/.Rhistory
 .Rhistory
 .history
