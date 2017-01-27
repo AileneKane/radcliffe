@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  26 JAN 2017 20:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  26 JAN 2017 21:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**expwarm_effects_clim_draft2.tex
-(./expwarm_effects_clim_draft2.tex
+**expwarm_effects_clim_draft.tex
+(./expwarm_effects_clim_draft.tex
 LaTeX2e <2015/01/01>
 Babel <3.9l> and hyphenation patterns for 79 languages loaded.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
@@ -353,20 +353,8 @@ Package: setspace 2011/12/19 v6.7a set line spacing
 \f@ncyO@olf=\skip55
 \f@ncyO@orf=\skip56
 )
-(./expwarm_effects_clim_draft2.aux)
-Runaway argument?
-{price1 
-! File ended while scanning use of \bibcite.
-<inserted text> 
-                \par 
-l.47 \begin{document}
-                     
-I suspect you have forgotten a `}', causing me
-to read past where you wanted me to stop.
-I'll try to recover; but if the error is serious,
-you'd better type `E' or `X' now and fix your file.
-
-\openout1 = `expwarm_effects_clim_draft2.aux'.
+(./expwarm_effects_clim_draft.aux)
+\openout1 = `expwarm_effects_clim_draft.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
 LaTeX Font Info:    ... okay on input line 47.
@@ -382,6 +370,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 47.
 LaTeX Font Info:    ... okay on input line 47.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 47.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 47.
+
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
@@ -432,396 +421,115 @@ LaTeX Info: Redefining \ref on input line 47.
 LaTeX Info: Redefining \pageref on input line 47.
 LaTeX Info: Redefining \nameref on input line 47.
 
-(./expwarm_effects_clim_draft2.out) (./expwarm_effects_clim_draft2.out)
+(./expwarm_effects_clim_draft.out) (./expwarm_effects_clim_draft.out)
 \@outlinefile=\write4
-\openout4 = `expwarm_effects_clim_draft2.out'.
+\openout4 = `expwarm_effects_clim_draft.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 58.
+(Font)              <12> on input line 59.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 58.
+(Font)              <8> on input line 59.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 58.
+(Font)              <6> on input line 59.
+ [1
+
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+
+[4] [5]
+
+Package natbib Warning: Citation `pelini2014;diamond2016' on page 6 undefined o
+n input line 179.
+
+[6] [7] (./expwarm_effects_clim_draft.bbl [8] [9]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 259.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 259.
+) [10] [11
+
+] [12]
+<../figures/BothWarmingbyblockyear.pdf, id=253, 469.755pt x 469.755pt>
+File: ../figures/BothWarmingbyblockyear.pdf Graphic file (type pdf)
+
+<use ../figures/BothWarmingbyblockyear.pdf>
+Package pdftex.def Info: ../figures/BothWarmingbyblockyear.pdf used on input li
+ne 337.
+(pdftex.def)             Requested size: 377.62633pt x 377.62515pt.
+ [13
+
+] [14 <../figures/BothWarmingbyblockyear.pdf>]
+<../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png, id=281, 1806.75
+pt x 1806.75pt>
+File: ../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png Graphic fil
+e (type png)
+
+<use ../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png>
+Package pdftex.def Info: ../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviat
+ion.png used on input line 344.
+(pdftex.def)             Requested size: 377.62633pt x 377.60916pt.
+ [15
+
+ <../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png>]
+<../figures/ShamVSAmbient_mean.pdf, id=289, 505.89pt x 433.62pt>
+File: ../figures/ShamVSAmbient_mean.pdf Graphic file (type pdf)
+
+<use ../figures/ShamVSAmbient_mean.pdf>
+Package pdftex.def Info: ../figures/ShamVSAmbient_mean.pdf used on input line 3
+50.
+(pdftex.def)             Requested size: 377.62633pt x 323.68579pt.
+ [16
+
+ <../figures/ShamVSAmbient_mean.pdf>] <../figures/DirIndWarmingEffects.pdf, id=
+417, 794.97pt x 289.08pt>
+File: ../figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
+
+<use ../figures/DirIndWarmingEffects.pdf>
+Package pdftex.def Info: ../figures/DirIndWarmingEffects.pdf used on input line
+ 357.
+(pdftex.def)             Requested size: 377.62633pt x 137.32324pt.
+ [17
+
+ <../figures/DirIndWarmingEffects.pdf>]
+
+Package natbib Warning: There were undefined citations.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 371.
+[18
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 371.
+ (./expwarm_effects_clim_draft.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 371.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 371.
+Package rerunfilecheck Info: File `expwarm_effects_clim_draft.out' has not chan
+ged.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 371.
+ ) 
+Here is how much of TeX's memory you used:
+ 8030 strings out of 493089
+ 122250 string characters out of 6134842
+ 210375 words of memory out of 5000000
+ 11302 multiletter control sequences out of 15000+600000
+ 33766 words of font info for 68 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 37i,10n,43p,1732b,491s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/loca
+l/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/
+texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
+Output written on expwarm_effects_clim_draft.pdf (18 pages, 1418913 bytes).
+PDF statistics:
+ 505 PDF objects out of 1000 (max. 8388607)
+ 421 compressed objects within 5 object streams
+ 90 named destinations out of 1000 (max. 500000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-
-Package natbib Warning: Citation `price1998' on page 1 undefined on input line 
-66.
-
-
-Package natbib Warning: Citation `cleland2006' on page 1 undefined on input lin
-e 66.
-
-
-Package natbib Warning: Citation `sherry2007' on page 1 undefined on input line
- 66.
-
-
-Package natbib Warning: Citation `rollinson2012' on page 1 undefined on input l
-ine 66.
-
-[1
-
-{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-
-Package natbib Warning: Citation `dukes1999' on page 2 undefined on input line 
-67.
-
-
-Package natbib Warning: Citation `hobbie1999' on page 2 undefined on input line
- 67.
-
-
-Package natbib Warning: Citation `reich2015' on page 2 undefined on input line 
-67.
-
-
-Package natbib Warning: Citation `gruner2016' on page 2 undefined on input line
- 67.
-
-
-Package natbib Warning: Citation `kimball2005' on page 2 undefined on input lin
-e 71.
-
-
-Package natbib Warning: Citation `kimball2008' on page 2 undefined on input lin
-e 71.
-
-
-Package natbib Warning: Citation `wolkovich2012' on page 2 undefined on input l
-ine 71.
-
-
-LaTeX Warning: Reference `fig:map' on page 2 undefined on input line 71.
-
-
-Package natbib Warning: Citation `price1998' on page 2 undefined on input line 
-76.
-
-
-Package natbib Warning: Citation `clark2014a' on page 2 undefined on input line
- 76.
-
-
-Package natbib Warning: Citation `clark2014b' on page 2 undefined on input line
- 76.
-
-
-Package natbib Warning: Citation `rollinson2012' on page 2 undefined on input l
-ine 76.
-
-
-LaTeX Warning: Reference `fig:cv' on page 2 undefined on input line 80.
-
-
-Package natbib Warning: Citation `mcdaniel2014' on page 2 undefined on input li
-ne 80.
-
-
-Package natbib Warning: Citation `shen2016' on page 2 undefined on input line 8
-0.
-
-
-Package natbib Warning: Citation `matthews2016' on page 2 undefined on input li
-ne 80.
-
-
-Package natbib Warning: Citation `fu2016' on page 2 undefined on input line 80.
-
-
-
-Package natbib Warning: Citation `piao2015' on page 2 undefined on input line 8
-0.
-
-[2]
-
-Package natbib Warning: Citation `hoeppner2012' on page 3 undefined on input li
-ne 83.
-
-
-LaTeX Warning: Reference `fig:effwarm' on page 3 undefined on input line 86.
-
-
-Package natbib Warning: Citation `clark2014a' on page 3 undefined on input line
- 86.
-
-
-Package natbib Warning: Citation `clark2014b' on page 3 undefined on input line
- 86.
-
-
-Package natbib Warning: Citation `hagedorn2010' on page 3 undefined on input li
-ne 86.
-
-
-Package natbib Warning: Citation `peterjohn1993' on page 3 undefined on input l
-ine 86.
-
-
-Package natbib Warning: Citation `hoeppner2012' on page 3 undefined on input li
-ne 86.
-
-
-Package natbib Warning: Citation `kimball2005' on page 3 undefined on input lin
-e 86.
-
-
-Package natbib Warning: Citation `kimball2008' on page 3 undefined on input lin
-e 86.
-
-
-LaTeX Warning: Reference `fig:blockyear' on page 3 undefined on input line 89.
-
-
-Package natbib Warning: Citation `johnson2008' on page 3 undefined on input lin
-e 92.
-
-
-Package natbib Warning: Citation `jochner2013' on page 3 undefined on input lin
-e 92.
-
-
-LaTeX Warning: Reference `fig:blockyear' on page 3 undefined on input line 92.
-
-
-Package natbib Warning: Citation `peterjohn1993' on page 3 undefined on input l
-ine 94.
-
-
-Package natbib Warning: Citation `kimball2005' on page 3 undefined on input lin
-e 94.
-
-
-Package natbib Warning: Citation `kimball2008' on page 3 undefined on input lin
-e 94.
-
-
-Package natbib Warning: Citation `hoeppner2012' on page 3 undefined on input li
-ne 94.
-
-
-Package natbib Warning: Citation `rollinson2015' on page 3 undefined on input l
-ine 94.
-
-[3]
-
-Package natbib Warning: Citation `farnsworth1995' on page 4 undefined on input 
-line 99.
-
-
-Package natbib Warning: Citation `clark2014a' on page 4 undefined on input line
- 99.
-
-
-Package natbib Warning: Citation `marchin2015' on page 4 undefined on input lin
-e 99.
-
-
-Package natbib Warning: Citation `pelini2011' on page 4 undefined on input line
- 99.
-
-
-LaTeX Warning: Reference `fig:shamamb' on page 4 undefined on input line 102.
-
-
-LaTeX Warning: Reference `fig:shamamb' on page 4 undefined on input line 102.
-
-
-LaTeX Warning: Reference `fig:shamamb_mois' on page 4 undefined on input line 1
-02.
-
-
-Package natbib Warning: Citation `farnsworth1995' on page 4 undefined on input 
-line 103.
-
-
-Package natbib Warning: Citation `pelini2011' on page 4 undefined on input line
- 103.
-
-
-Package natbib Warning: Citation `clark2014a' on page 4 undefined on input line
- 103.
-
-
-Package natbib Warning: Citation `clark2014b' on page 4 undefined on input line
- 103.
-
-
-Package natbib Warning: Citation `kennedy1995' on page 4 undefined on input lin
-e 104.
-
-
-Package natbib Warning: Citation `wolkovich2012' on page 4 undefined on input l
-ine 104.
-
-
-Package natbib Warning: Citation `marchin2015' on page 4 undefined on input lin
-e 104.
-
-
-Package natbib Warning: Citation `hurlbert1984' on page 4 undefined on input li
-ne 104.
-
-[4]
-
-Package natbib Warning: Citation `sherry2007' on page 5 undefined on input line
- 106.
-
-
-Package natbib Warning: Citation `rollinson2012' on page 5 undefined on input l
-ine 106.
-
-
-Package natbib Warning: Citation `mcdaniel2014' on page 5 undefined on input li
-ne 106.
-
-
-LaTeX Warning: Reference `fig:effwarm' on page 5 undefined on input line 106.
-
-
-LaTeX Warning: Reference `fig:mois' on page 5 undefined on input line 107.
-
-
-Package natbib Warning: Citation `sherry2007' on page 5 undefined on input line
- 107.
-
-
-Package natbib Warning: Citation `morin2010' on page 5 undefined on input line 
-107.
-
-
-Package natbib Warning: Citation `templer2016' on page 5 undefined on input lin
-e 107.
-
-
-Package natbib Warning: Citation `rollinson2012' on page 5 undefined on input l
-ine 109.
-
-
-Package natbib Warning: Citation `marchin2015' on page 5 undefined on input lin
-e 112.
-
-
-Package natbib Warning: Citation `pelini2014' on page 5 undefined on input line
- 112.
-
-
-Package natbib Warning: Citation `clark2014b' on page 5 undefined on input line
- 112.
-
-
-Package natbib Warning: Citation `morin2010' on page 5 undefined on input line 
-112.
-
-
-Package natbib Warning: Citation `clark2014b' on page 5 undefined on input line
- 112.
-
-[5]
-
-LaTeX Warning: Reference `fig:biolimp' on page 6 undefined on input line 117.
-
-
-Package natbib Warning: Citation `wolkovich2012' on page 6 undefined on input l
-ine 118.
-
-
-Package natbib Warning: Citation `penuelas2004' on page 6 undefined on input li
-ne 118.
-
-
-Package natbib Warning: Citation `craine2012' on page 6 undefined on input line
- 118.
-
-
-Package natbib Warning: Citation `matthews2016' on page 6 undefined on input li
-ne 118.
-
-
-Package natbib Warning: Citation `wolkovich2012' on page 6 undefined on input l
-ine 119.
-
-
-Package natbib Warning: Citation `morin2010' on page 6 undefined on input line 
-119.
-
-
-Package natbib Warning: Citation `shen2016' on page 6 undefined on input line 1
-19.
-
-
-Package natbib Warning: Citation `fu2016' on page 6 undefined on input line 119
-.
-
-
-Package natbib Warning: Citation `piao2015' on page 6 undefined on input line 1
-19.
-
-
-Package natbib Warning: Citation `shen2016' on page 6 undefined on input line 1
-19.
-
-
-Package natbib Warning: Citation `matthews2016' on page 6 undefined on input li
-ne 119.
-
-
-Package natbib Warning: Citation `templer2016' on page 6 undefined on input lin
-e 120.
-
-
-Package natbib Warning: Citation `berry1980' on page 6 undefined on input line 
-120.
-
-[6]
-
-Package natbib Warning: Citation `deltoro2015' on page 7 undefined on input lin
-e 122.
-
-
-Package natbib Warning: Citation `rustad2001' on page 7 undefined on input line
- 122.
-
-
-Package natbib Warning: Citation `clark2014a' on page 7 undefined on input line
- 122.
-
-
-Package natbib Warning: Citation `clark2014b' on page 7 undefined on input line
- 122.
-
-
-Package natbib Warning: Citation `rivkina2000' on page 7 undefined on input lin
-e 122.
-
-
-Package natbib Warning: Citation `mcdaniel2014' on page 7 undefined on input li
-ne 122.
-
-
-Package natbib Warning: Citation `duran2014' on page 7 undefined on input line 
-122.
-
-
-Package natbib Warning: Citation `millard2010' on page 7 undefined on input lin
-e 122.
-
-
-Package natbib Warning: Citation `du2014' on page 7 undefined on input line 122
-.
-
-
-Package natbib Warning: Citation `kharouba2015' on page 7 undefined on input li
-ne 123.
-
-
-Package natbib Warning: Citation `pelini2014' on page 7 undefined on input line
- 124.
-
-
-Package natbib Warning: Citation `diamond2016' on page 7 undefined on input lin
-e 124.
-
-
-Package natbib Warning: Citation `diamond2013' on page 7 unde

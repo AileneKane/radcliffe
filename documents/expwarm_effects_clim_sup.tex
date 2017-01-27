@@ -1,0 +1,69 @@
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{Sweave}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{natbib}
+%\usepackage[backend=bibtex]{biblatex}
+%Strongly recommended
+  %put your figures in one place
+ 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+
+\setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%Here's how to do that
+ \topmargin -1.5cm        
+ \oddsidemargin -0.04cm   
+ \evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+ \textwidth 16.59cm
+ \textheight 21.94cm 
+ %\pagestyle{empty}       % Uncomment if don't want page numbers
+ \parskip 7.2pt           % sets spacing between paragraphs
+ %\renewcommand{\baselinestretch}{1.5} 	% Uncomment for 1.5 spacing between lines
+\parindent 0pt% sets leading space for paragraphs
+\usepackage{setspace}
+%\doublespacing
+
+%Optional: I like fancy headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[LO]{How do climate change experiments actually change climate}
+\fancyhead[RO]{2016}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
+%Start of the document
+\begin{document}
+
+% \SweaveOpts{concordance=TRUE}
+ \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+\title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
+
+\author{A.K. Ettinger,I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
+%\date{\today}
+\maketitle  %put the fancy title on
+%\tableofcontents      %add a table of contents
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section* {Supplemental Materials}
+
+\par To realize the forecasting potential of climate change experiments, a nuanced understanding of how climate change experiments actually alter climate is critical. Here, we use  plot-level daily  microclimate  data  from  12 climate  change  experiments  that  manipulate temperature and precipitation to demonstrate the direct and indirect ways in which environmental conditions are altered  by active  warming technologies. We then highlight the challenges associated with quantifying and interpreting biological responses to these climate manipulations, and using these interpretations to forecast  more widespread responses to contemporary climate change. Finally,  we use findings from our synthesis to make recommendations for future  climate  change experiments.  We focus on in situ active warming  manipulations, because recent analyses indicate that active warming methods are the most controlled, consistent, and ``true to climate change predictions" \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. The data we use were collected between 1991 and 2014 from North American and European climate change experiments and  have been merged into a new, publicly  available  Climate from Climate Change Experiments (C3E) database (see Supplemental Materials  for details). 
+
+\par We carried out a full literature review to identify all active field warming experiments then obtained daily (or sub-daily) climate data from as many as possible (we obtained data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly. 
+
+\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\clearpage
+\section* {Supplemental Tables}

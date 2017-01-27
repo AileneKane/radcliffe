@@ -49,7 +49,6 @@
 % \SweaveOpts{concordance=TRUE}
 \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts %Aaron suggests "Do climate-change experiments actually change climate?" for a title.
-
 \author{A.K. Ettinger,I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
 %\date{\today}
 \maketitle  %put the fancy title on
@@ -139,6 +138,7 @@ When studying biological implications of a global challenge as large as climate 
 %Ben: Maybe make the recommendation more about reporting all relevant metadata?
 \par Documenting biological impacts of climate change has over a 30-year history in ecology today. During this time, in situ field experiments have been critical in making the mechanistic link between warming and a number of major biological impacts, such as changes in productivity, soil respiration, the phenology of plant and animals, and shifted community and ecosystem dynamics. Yet, as climate change across the globe continues with projected warming likely to exceed 2 degrees Celsius over the next 80 years \citep{ipcc2013}, ecologists are challenged to not only document impacts but make quantitative robust predictions. Our ability to meet this challenge requires building on the data from current and past experiments to best understand how changes in climate alter ecological processes, and to build better experiments in the future. As a first step, we have compiled the first database of fine-scale climate data from multiple warming experiments and shown how time, space and artifacts may hinder simple interpretations of climate change experiments. The next steps require the ecological community to build on these data and their findings to develop and use new approaches in future experiments. This will provide more accurate estimates of altered climate in these experiments and in turn, more accurate estimates of critical biological changes. 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\clearpage
 \clearpage
 \section* {Figures}
 \begin{figure}[p]
