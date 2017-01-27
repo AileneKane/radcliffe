@@ -47,19 +47,17 @@
 \begin{document}
 \SweaveOpts{concordance=FALSE}
 % \SweaveOpts{concordance=TRUE}
- \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
-\title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
-%Aaron suggests "Do climate-change experiments actually change climate?" for a title.
+\bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+\title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts %Aaron suggests "Do climate-change experiments actually change climate?" for a title.
+
 \author{A.K. Ettinger,I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
 %\date{\today}
 \maketitle  %put the fancy title on
-%\tableofcontents      %add a table of contents
+%\tableofcontents %add a table of contents
 %\clearpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \section* {Introduction}
-
 \par Ongoing climatic changes are causing dramatic alterations to Earth's biota, increasingly altering the physiology, distribution, and abundance of organisms, and resulting in cascading community and ecosystem effects \citep{shukla1982,cox2000,thomas2004,parmesan2006,field2007,sheldon2011,urban2012}.  Much uncertainty remains, however, about how particular individuals, populations, species, communities, and ecosystems will respond as shifts in temperature and precipitation regimes become more extreme. Predicting these biological responses to current and future climatic change, and how they will feedback to affect earth's climate and ecosystem services, are among the most significant challenges facing scientists today.%Yann: we may also say facing ‘humans’ today
 \par Researchers have sought to understand and forecast biological responses using a variety of strategies, including observational studies, model-based approaches, and experiments. Much work has focused on temperature because increased greenhouse gas emissions have relatively straightforward effects on it, relative to precipitation \citep{ipcc2013}. Observational studies typically correlate observed biological patterns with trends in climate, but it is challenging to disentangle the causal effect of warming from other factors, such as successional stage or land use, that have also changed. Additionally, future climatic change also is expected to result in conditions that fall outside the range of historical variability \citep{ohlemuller2006,williams2007,williams2007b,ipcc2013}.%Aaron: Is it necessary to define historically? Does it mean since climatic records begin in the 1880s? Or temperature reconstructions through the Holocene? Or when Homo sapiens has existed as a species>
  %Yann:not really because you then simulate plant performances in future climatic conditions where the range of temperatures is outside from the ones used to calibrate models. I would rather mention this critical issue for model projections and claim that in this ragrd experiments are very usefull  
@@ -82,7 +80,7 @@ Climate change experiments often include detailed monitoring of climate variable
 \par Though the published focus is often on shifts in the mean, the imposed climate manipulations actually result in much more complex climatic shifts. First, in addition to shifting mean temperatures, experimental warming treatments often alter the temperature range and variance. Second, the magnitude of change in these manipulations is likely to vary in time and space. Third, environmental conditions are often unintentionally altered by the presence of the eqipment itself. All of these complications challenge our interpretation of how experimental warming studies can be applied to forecast effects of climate change.
 \subsection* {Treatments alter the temperature range and variance, as well as the mean}
 Warming treatments differentially affect minimum and maximum temperatures  and  alter overall temperature variation. In the studies analyzed here, we found that active warming increased minimum air temperature by, on average, 0.84 degrees C per degree of warming target, whereas maximum temperature increased only an average of  0.51 degrees, per degree of target warming. We also found higher coefficients of variation in air temperatures in actively warmed plots, compared with controls at the same sites in the same years. This was true for both minimum and maximum air temperatures (Figure \ref{fig:cv}). These differences in temperature range and variation, appear to be small, but they may be important. For example, even slight changes in temperature can alter critical biological thresholds, such as freeze-thaw cycles \citep{mcdaniel2014}. Other studies corroborate our findings that warming treatments may affect diurnal versus night temperatures differently \citep{shen2016,matthews2016}; these shifts can have critical biological effects. Leaf-out timing of temperate trees, for instance, respond three times more to daytime than to night- time temperature, so that maximum temperatures would have an overwhelming effects on spring phenology over minimum temperatures \citep{fu2016, piao2015}.  (Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): this paragraph needs help! I have had trouble coming up with a good figure to go with this point, and have found relatively small but significant differences in temperature range and coefficient of variation. Alternatively, do you think this paragraph should be cut?) 
-%yann, ben & aaron all think that this paragraph is important. if too short, it could be folded in with the one below it by adding: 'and vary over time' to the end of it. I think this should be done- especially since the begining of the "time" section overlaps quite a bit with the variance section.Ben: Could you maybe add some references highlighting how extremes and variability affect ecological processes different from shifts in the mean? That would drive home the importance of quantifying this.
+%yann, ben and aaron all think that this paragraph is important. if too short, it could be folded in with the one below it by adding: 'and vary over time' to the end of it. I think this should be done- especially since the begining of the "time" section overlaps quite a bit with the variance section.Ben: Could you maybe add some references highlighting how extremes and variability affect ecological processes different from shifts in the mean? That would drive home the importance of quantifying this.
 \subsection* {Treatments vary over time}
 The common practice of reporting only the mean temperature difference, across the duration of the study, may also hide variations in daily, seasonal, and annual temperatures among treatments. For example, as described above, warming treatments can cause decreases in the diurnal temperature range within experimental plots, compared with ambient conditions \citep{hoeppner2012}. %the previous sentence goes- and much of this paragraph- may be redundant with the previous senction on variance...consider merging or rewriting. 
 This may be similar to what is projected for parts of world; however, this will likely vary spatially, as some regions have experienced higher daytime warming than nighttime warming, whereas others have experienced the opposite \citep{ipcc2013}. 
@@ -145,19 +143,19 @@ When studying biological implications of a global challenge as large as climate 
 \section* {Figures}
 \begin{figure}[p]
 \centering
- \includegraphics{../Analyses/maps/expsites.pdf}  
+\includegraphics{../Analyses/maps/expsites.pdf}  
 \caption{DRAFT Map of experimental sites in C3E datbase. Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): Does anyone want to volunteer to make a beautiful new version?} 
 \label{fig:map}
 \end{figure}
- \begin{figure}[p]
- \centering
- \includegraphics{../Analyses/figures/DRAFT_CVBytreatment.pdf} 
- \caption{Ambient controls have reduced variation, compared with structural controls and nearly all warming treatments. I'm not happy with this figure- I've tried so many different ways of showing the (small but) significant differences in temperature range/variance among ambient controls, structural constrols and warming treatments, in addition to the statistical analyses described in the text and supplement. Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): I need help with ideas for other ways to show this, or thoughts on if the point should be dropped, since the differences are minor and hard to see.%Aaron: why not just plot variance? From this figure, the reader has to infer variance. This figure also collapses time into a single box. What about illustrating temporal variance (i.e., the time-series)? Which is what the next figure does very effectively. Yann: or maybe subtract the standard deviation of the ambient control from the structural control and finally all warming treatments ?} 
+\begin{figure}[p]
+\centering
+\includegraphics{../Analyses/figures/DRAFT_CVBytreatment.pdf} 
+\caption{Ambient controls have reduced variation, compared with structural controls and nearly all warming treatments. I'm not happy with this figure- I've tried so many different ways of showing the (small but) significant differences in temperature range/variance among ambient controls, structural constrols and warming treatments, in addition to the statistical analyses described in the text and supplement. Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): I need help with ideas for other ways to show this, or thoughts on if the point should be dropped, since the differences are minor and hard to see.} %Aaron: why not just plot variance? From this figure, the reader has to infer variance. This figure also collapses time into a single box. What about illustrating temporal variance (i.e., the time-series)? Which is what the next figure does very effectively. Yann: or maybe subtract the standard deviation of the ambient control from the structural control and finally all warming treatments?
  \label{fig:cv}
  \end{figure}
 \clearpage
 \begin{figure}[h]
-     \centering
+\centering
  \includegraphics{../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}
  \caption{Time series of deviations from mean soil temperature over one year, in control (black line) and warming treatments with various target warming levels at 10 study sites. Christy: could you add the mean annual temperature somehow to each panel- just so that we can see the variation among sites? Also, I am wondering if you could modify the code to make these estimates for each year of a study, as well as overall. I also was not quite sure if this represents a summary of deviations across all years, if studies were multiple years, or just one year? Please write a brief summary of these analyses- probably for the supplemental.}
   \label{fig:effwarm}
