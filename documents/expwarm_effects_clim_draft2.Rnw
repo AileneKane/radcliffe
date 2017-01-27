@@ -47,15 +47,19 @@
 \begin{document}
 \SweaveOpts{concordance=FALSE}
 % \SweaveOpts{concordance=TRUE}
-\bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+ \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts %Aaron suggests "Do climate-change experiments actually change climate?" for a title.
 \author{A.K. Ettinger,I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
 %\date{\today}
 \maketitle  %put the fancy title on
-%\tableofcontents %add a table of contents
+%\tableofcontents      %add a table of contents
 %\clearpage
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Aim}
+
+The aim is to write a Concept/Synthesis Paper, for Nature Climate Change, about maximizing benefits of field-based climate change experiments. We argue that there is a need to improve our understanding of how climate is actually altered by these experiments, particularly if we wish to use these experiments to forecast biological impacts of climate change. %yann: perhaps also to determine which methods of warming alter the least other climatic variables or to define the most appropriate method regarding the focus of the study (phenology, growth, survival etc)?%annmarie: Somewhere in this paper,  we should discuss that is important that “how” climate variables are modified relative to the predicted change under various emission scenarios is important.  Thus, the “how” should be not only the direction and magnitude of the variable change but also the extent to which the change mirrors change projected for the region in which the experiment took place). build up a discussion of studies that report only mean shifts in temperature in the intro.
+
 \section* {Introduction}
 \par Ongoing climatic changes are causing dramatic alterations to Earth's biota, increasingly altering the physiology, distribution, and abundance of organisms, and resulting in cascading community and ecosystem effects \citep{shukla1982,cox2000,thomas2004,parmesan2006,field2007,sheldon2011,urban2012}.  Much uncertainty remains, however, about how particular individuals, populations, species, communities, and ecosystems will respond as shifts in temperature and precipitation regimes become more extreme. Predicting these biological responses to current and future climatic change, and how they will feedback to affect earth's climate and ecosystem services, are among the most significant challenges facing scientists today.%Yann: we may also say facing ‘humans’ today
 \par Researchers have sought to understand and forecast biological responses using a variety of strategies, including observational studies, model-based approaches, and experiments. Much work has focused on temperature because increased greenhouse gas emissions have relatively straightforward effects on it, relative to precipitation \citep{ipcc2013}. Observational studies typically correlate observed biological patterns with trends in climate, but it is challenging to disentangle the causal effect of warming from other factors, such as successional stage or land use, that have also changed. Additionally, future climatic change also is expected to result in conditions that fall outside the range of historical variability \citep{ohlemuller2006,williams2007,williams2007b,ipcc2013}.%Aaron: Is it necessary to define historically? Does it mean since climatic records begin in the 1880s? Or temperature reconstructions through the Holocene? Or when Homo sapiens has existed as a species>
@@ -73,7 +77,7 @@ Despite these applications, a detailed  assessment of how different types of exp
 
 %Not sure where to put this in: These advantages come at a cost, however.  Experimental in situ active climate  manipulations are logistically challenging  and expensive; it is difficult to design,  implement,  and  monitor  replicated experiments that consistently apply  the intended climate  manipulations \citep{aronson2009}.
 %For supplement: we carried out a full literature review to identify all active field warming experiments then obtained daily (or sub-daily) climate data from as many as possible (we obtained data for 12/XX total identified experiments, see Supplemental Materials for details). We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly. 
-\section* {Complications in extrapolating experimental climatic change}
+\section* {Complications in extrapolating experimental climate change}
 Climate change experiments often include detailed monitoring of climate variables at the plot level, yielding large amounts of data, such as daily or hourly temperature and other climate variables, over the course of the experiment. However, biologists generally are interested primarily in the biological responses associated with each treatment (e.g., community dynamics or species' growth, abundance, or phenology). Not surprisingly, then, authors typically provide detailed information on the observed biological responses, but report only the mean change in climate over the course of the experiment and whether it matched their target level of change \citep[e.g.][]{price1998,clark2014a,clark2014b,rollinson2012}. 
 %CRR: I think it's good that you mention we don't report the climate because we're interested in the organisms and it leads to a publication bias.  I don't know how to phrase it, but we (people that did the experiments) also often don't go into more detail because the experimental application can be very buggy with sensors going out, power outages, etc. and we've had to find that balance between accurately reporting our ecological story without going into the endless pits of study caveats.
 \par Though the published focus is often on shifts in the mean, the imposed climate manipulations actually result in much more complex climatic shifts. First, in addition to shifting mean temperatures, experimental warming treatments often alter the temperature range and variance. Second, the magnitude of change in these manipulations is likely to vary in time and space. Third, environmental conditions are often unintentionally altered by the presence of the eqipment itself. All of these complications challenge our interpretation of how experimental warming studies can be applied to forecast effects of climate change.
@@ -124,7 +128,7 @@ Indeed, these opposing drivers may be responsible for the observed discrepancy b
 These kinds of trophic mismatches may be present in climate change experiments, even if they are not expected to occur under natural warming \citep{kharouba2015}. 
 \par Other biotic interactions are also likely to be affected by direct and indirect effects of climate change treatments. For example, Hoeppner and Dukes (2012) found that rodent disturbance varied by warming treatment (as well as year) in their climate change experiment. Insect diversity and community structure can change with active warming, and may have secondary effects on plants or other interacting organisms\citep{pelini2014,diamond2016}. A critical question is the extent to which these shifts in biotic interactions (and their effects on focal responses) are accurate forecasts of future shifts that are likely to occur with climate change, or due to side-effects that are unlikely to occur outside of experimental systems \citep{diamond2013}.
 
-\section*{Recommendations for future climate change experiments}
+\section* {Recommendations for future climate change experiments}
  \par Climate change experiments provide invaluable information about biological responses to climate change, yet our results highlight that we do not fully explore the ways in which these climate change experiments are actually altering climate. We do not suggest that experimental climate change studies offer little value. Instead, we believe that the complications associated with environmental manipulation yield opportunities to understand complex interactions and should inform future experimental design. Below we describe recommendations to improve implementation, interpretation, and communication of climate change experiments in the future.
 \par\textit{Include both structural and ambient controls} and collect, use, and report data collected within them. Fewer than half of the studies in our C3E database included these two control types and monitored climate and the focal biological response within them (5 out of 12); all experiments showed significant effects of shams. Future consistent monitoring of all climate and biological variables in both control types will enable scientists to tease apart mechanisms due to experimental design from mechanisms due to actual shifts in climate.  
 \par\textit{Maximize the length of climate change experiments} by running them for as long as possible. This will allow study of how inter-annual variations interact with climate change treatments, especially when looking at non-linear and multi-year processes such as phenology. It will also allow us to understand how long-term responses may differ from  transient ones \citep{franklin1989,giasson2013}. %Ben: I agree, obviously, but this leaves us open to criticisms about cost. Is there something we can say along the lines of, "better to allocate resources to more years of experiment rather than X"?
@@ -139,14 +143,16 @@ When studying biological implications of a global challenge as large as climate 
 \par Documenting biological impacts of climate change has over a 30-year history in ecology today. During this time, in situ field experiments have been critical in making the mechanistic link between warming and a number of major biological impacts, such as changes in productivity, soil respiration, the phenology of plant and animals, and shifted community and ecosystem dynamics. Yet, as climate change across the globe continues with projected warming likely to exceed 2 degrees Celsius over the next 80 years \citep{ipcc2013}, ecologists are challenged to not only document impacts but make quantitative robust predictions. Our ability to meet this challenge requires building on the data from current and past experiments to best understand how changes in climate alter ecological processes, and to build better experiments in the future. As a first step, we have compiled the first database of fine-scale climate data from multiple warming experiments and shown how time, space and artifacts may hinder simple interpretations of climate change experiments. The next steps require the ecological community to build on these data and their findings to develop and use new approaches in future experiments. This will provide more accurate estimates of altered climate in these experiments and in turn, more accurate estimates of critical biological changes. 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 \clearpage
-\clearpage
+
 \section* {Figures}
 \begin{figure}[p]
 \centering
-\includegraphics{../Analyses/maps/expsites.pdf}  
+\includegraphics{../Analyses/maps/expsites.pdf} 
 \caption{DRAFT Map of experimental sites in C3E datbase. Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): Does anyone want to volunteer to make a beautiful new version?} 
-\label{fig:map}
-\end{figure}
+ \label{fig:map}
+ \end{figure}
+
+
 \begin{figure}[p]
 \centering
 \includegraphics{../Analyses/figures/DRAFT_CVBytreatment.pdf} 
@@ -161,7 +167,7 @@ When studying biological implications of a global challenge as large as climate 
   \label{fig:effwarm}
 
  \end{figure}
-\begin{figure}[h]
+ \begin{figure}[p]
      \centering
  \includegraphics{../Analyses/figures/BothWarmingbyblockyear.pdf}    
  \caption{The amount of observed warming (i.e. the difference between treatment and control plots, within each block) varies among blocks (left panels), as well as among years (right panels). Black line represents a 1 to 1 ratio (i.e. when observed warming is exactly equal to target warming). See Tables XS and XS for statistical differences.}
@@ -169,37 +175,40 @@ When studying biological implications of a global challenge as large as climate 
 
  \end{figure}
 \clearpage
- \begin{figure}[h]
+
+
+
+
+
+ \begin{figure}[p]
 \centering
  \includegraphics{../Analyses/figures/ShamVSAmbient_minmax_wranef.pdf}    
  \caption{Air temperatures were higher, whereas soil temperatures were lower, in general, in structural controls compared with ambient controls (i.e. with no control chambers or warming infrastructure in place). We show fixed effects (in black) from a mixed effects model that accounts for differences in experimental design and other factors among sites with mixed effects model including site and year (nested within site) as random effects (see Table XS, Supplemental Materials for details). Site-level random effects are shown by symbols in blue (for those at Harvard) and pink (those at Duke).}
  \label{fig:shamamb}
-\end{figure}
-
-\begin{figure}[h]
-     \centering
+ \end{figure}
+\clearpage
+ \begin{figure}[h]
+   \centering
  \includegraphics{../Analyses/figures/ShamVSAmbient_mois_wranef.pdf}    
  \caption{Soil moisture was lower in structural controls compared with ambient controls (i.e. with no control chambers or warming infrastructure in place). We show fixed effects (in black) from a mixed effects model that accounts for differences in experimental design and other factors among sites with mixed effects model including site and year (nested within site) as random effects (see Table XS, Supplemental Materials for details). Site-level random effects are shown by symbols in blue (for those at Harvard) and pink (those at Duke).}
 \label{fig:shamamb_mois}
-\end{figure}
+ \end{figure}
 \clearpage
  \begin{figure}[h]
-     \centering
+        \centering
  \includegraphics{../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png}    
  \caption{Time series of deviations from mean daily soil moisture in control (black line) and warming treatments with various target warming levels at 10 study sites.}
  \label{fig:mois}
  \end{figure}
  \clearpage
  \begin{figure}[h]
- \centering
- \includegraphics{../Analyses/figures/DirIndWarmingEffects.pdf}  
+  \includegraphics{../Analyses/figures/DirIndWarmingEffects.pdf}  
  \caption{Compared to direct responses to temperature alone (a), experimental warming may cause biological responses to be muted (b)or exaggerated (c), when indirect effects of experimental warming are also drivers of focal responses. For example, phenology, such as budburst which usually advances with warming, may appear to be less sensitive to warming in experiments versus observational studies \citep{wolkovich2012} because experimental warming reduces soil moisture and drying often delays phenology.}
 \label{fig:biolimp}
 \includegraphics{../Analyses/figures/DirIndWarmingEffects_bar.pdf}   
 \caption{Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): This is an alternative to the above figure- which do you prefer? Compared to direct responses to temperature alone (a), experimental warming may cause biological responses to be muted (b)or exaggerated (c), when indirect effects of experimental warming are also drivers of focal responses. For example, phenology, such as budburst which usually advances with warming, may appear to be less sensitive to warming in experiments versus observational studies \citep{wolkovich2012} because experimental warming reduces soil moisture and drying often delays phenology.} 
 %Aaron and Yann prefer the line figure (not bar)
-\end{figure}
-
+ \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
