@@ -60,29 +60,35 @@ summary(dat.map)
 
 
 library(raster)
-nat.earth <- stack("~/Desktop/NE1_50M_SR_W/NE1_50M_SR_W.tif")
+# nat.earth <- stack("~/Desktop/NE1_50M_SR_W/NE1_50M_SR_W.tif")
+# nat.earth <- stack("~/Desktop/SpatialData/NaturalEarth/NE1_50M_SR_W/NE1_50M_SR_W.tif")
+nat.earth <- stack("~/Desktop/SpatialData/NaturalEarth/HYP_50M_SR_W/HYP_50M_SR_W.tif")
 nat.crop <- crop(nat.earth, y=c(min(dat.map$Lon, na.rm=T)-5, max(dat.map$Lon, na.rm=T)+5, min(dat.map$Lat, na.rm=T)-10, max(dat.map$Lat, na.rm=T)+10))
-nat.crop <- aggregate(nat.crop, fact=5, fun=mean)
+# nat.crop <- aggregate(nat.crop, fact=5, fun=mean) # Useful for making the testing of the graph quicker
 
 
 rast.table <- data.frame(xyFromCell(nat.crop, 1:ncell(nat.crop)),
                          getValues(nat.crop/255))
 
-rast.table$rgb <- with(rast.table, rgb(NE1_50M_SR_W.1,
-                                       NE1_50M_SR_W.2,
-                                       NE1_50M_SR_W.3,
+rast.table$rgb <- with(rast.table, rgb(HYP_50M_SR_W.1,
+                                       HYP_50M_SR_W.2,
+                                       HYP_50M_SR_W.3,
                                        1))
 
+# There are fewer experiments than observations, so we want those on top to help them pop
+dat.map$type <- factor(dat.map$type, levels=c("Experiment", "Observations"))
 
-# Note: the natural earth data takes quite a while to plot!`
+
+# Note: the natural earth data takes quite a while to plot!
 png("RadcliffeLocations_Experiments_Observations.png", width=10, height=5, units="in", res=220)
 ggplot(data=dat.map) +
   guides(fill="none") +
   geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
   scale_x_continuous(expand=c(0,0), name="Degrees Longitude") +
   scale_y_continuous(expand=c(0,0), name="Degrees Latitude") +
-  geom_point(aes(x=Lon, y=Lat, color=type), size=2.5, alpha=0.75) +
+  geom_point(aes(x=Lon, y=Lat, color=type, shape=type), size=2.5, alpha=0.9) +
   scale_color_manual(values=c("red", "blue"), name="Data Type") +
+  scale_shape_manual(name="Data Type", values=c(19, 18)) +
   theme_bw() +
   theme(legend.position="top") +
   coord_equal()
