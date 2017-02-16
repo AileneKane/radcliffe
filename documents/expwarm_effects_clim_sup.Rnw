@@ -178,6 +178,19 @@ Search terms used and criteria for selecting the 12 studies that we ended up wit
 \par\textit{Statistical methods}
 \par Need description of block and year analyses (see Tables 1 and 2) 
 To account for differences in the type of warming and other unmeasured site/study differences (e.g. forced air for Ellison and Marchin; heating cables for Farnsworth and ??), we fit linear mixed effects models with random effect of study-site. Response variables were daily soil or air temperature (models with daily  mean, minimum, and maximum were all fit) and , and the explanatory variable was control type (infrastructure or ambient). We used a random intercepts structure, so that the mean temperature was allowed to vary across study-sites. We fit models across the entire year, as well as separate models for each month to examine if effects varied seasonally.
+\subsection*{Random stuff moved out of the main text}
+We also found higher coefficients of variation in air temperatures in actively warmed plots, compared with controls at the same sites in the same years. This was true for both minimum and maximum air temperatures (Figure \ref{fig:cv})
+
+
+\begin{figure}[p]
+\centering
+\includegraphics{../Analyses/figures/DRAFT_CVBytreatment.pdf} 
+\caption{Ambient controls have reduced variation, compared with structural controls and nearly all warming treatments. I'm not happy with this figure- I've tried so many different ways of showing the (small but) significant differences in temperature range/variance among ambient controls, structural controls and warming treatments, in addition to the statistical analyses described in the text and supplement. Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): I need help with ideas for other ways to show this, or thoughts on if the point should be dropped, since the differences are minor and hard to see.} %Aaron: why not just plot variance? From this figure, the reader has to infer variance. This figure also collapses time into a single box. What about illustrating temporal variance (i.e., the time-series)? Which is what the next figure does very effectively. Yann: or maybe subtract the standard deviation of the ambient control from the structural control and finally all warming treatments?
+%Christy: I think I’m in favor of dropping this figure… I think part of the problem is that there are just a ton of warming levels and your combining across a bunch of different experiments and it’s not clear what is different.%Jeff: I don’t think I understand what’s going on with this figure.  I am not sure what the individual data points are.  Something like Yann’s suggestion sounds reasonable, though.  But a more descriptive legend would really help.   Do we really want to look at some longer-term CV, or do we want something more like DTR?
+% EW: Fig 2 should be in the supplement and I had some ideas to make it look better.
+
+ \label{fig:cv}
+ \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -31,14 +31,6 @@ sitesymb<-c(21,22,16,24,25,17,3,4,5,10,15,12)
 cols_t1<-treatcol[tempexp2$target]
 symb_site<-sitesymb[factor(tempexp2$site)]
 #plot
-quartz(height=5,width=9)
-par(mfrow=c(1,2),mai=c(.9,.9,.2,.01),omi=c(.3,.3,.2,.3))
-plot(as.numeric(tempexp2$target),as.numeric(tempexp2$reported),pch=sitesymb[as.numeric(as.factor(tempexp2$site))],col=treatcol[as.numeric(tempexp2$target)],xlab="Target temp",ylab="Reported Temp", bty="l", cex.axis=.9)
-abline(a=0,b=1,lty=1)
-plot(as.numeric(tempexp2$target),as.numeric(tempexp2$AGtemp_mean_dev),pch=sitesymb[tempexp2$site],col=treatcol[as.numeric(tempexp2$target)],xlab="Target temp",ylab="AGTemp Mean Dev", bty="l",, cex.axis=.9)
-abline(a=0,b=1,lty=1)
-par(mfrow=c(2,2),mai=c(.9,.9,.2,.01),omi=c(.3,.3,.2,.3))
-
 quartz(height=7,width=9)
 par(mfrow=c(2,2),mai=c(.9,.9,.2,.01),omi=c(.3,.3,.2,.3))
 plot(as.numeric(tempexp2$target),as.numeric(tempexp2$reported),pch=symb_site,col="black",xlab="Target temp difference (C)",ylab="Reported temp difference (C)", bty="l", cex.axis=.9, ylim=c(0,5),xlim=c(0,5))
@@ -52,17 +44,9 @@ plot(as.numeric(tempexp2$target),as.numeric(tempexp2$AGtemp_min_dev ),pch=symb_s
 abline(a=0,b=1,lty=1)
 
 expclim3<-subset(expclim,select=c("site","temptreat","airtemp_min","airtemp_max","cantemp_min", "cantemp_max","surftemp_min","surftemp_max"))
-#want to compare mean and variances of min and max temperatures in control plots and warmed plots in each study
+#want to compare mean, dtr, and variances of min and max temperatures in control plots and warmed plots in each study
 #using two types structural controls separately
 expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
-
-expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
-expclimt$agtemp_min<-expclimt$airtemp_min
-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
-expclimt$agtemp_max<-expclimt$airtemp_max
-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
 
 sites<-sort(unique(expclimt$site))#use data without precipitation manipulation
 temptreats<-sort(unique(expclimt$temptreat))
@@ -104,7 +88,7 @@ alltemp.df$BGTempMin_Var<-as.numeric(alltemp.df$BGTempMin_Var)
 treats2<-subset(treats,select=c("site","temptreat","target","reported"))
 treats2 <- treats %>% # start with the data frame
   distinct(site, temptreat,.keep_all = TRUE) %>% # establishing grouping variables
-  select(site,temptreat,target,reported)
+  dplyr::select(site,temptreat,target,reported)
 
 alltemptarget <- full_join(treats2,alltemp.df, by=c("site","temptreat"), match="first")
 head(alltemptarget)
@@ -181,7 +165,8 @@ test3<-lmer(BGTempMax_Var~treatcat + (1|site), data=alltemptarget,na.action=na.o
 summary(test3)
 test4<-lmer(BGTempMin_Var~treatcat + (1|site), data=alltemptarget,na.action=na.omit)
 summary(test4)#
-#all show a triend toward higher variance in the warmed vs unwarmed but doesn't seem to be
+
+#all show a trend toward higher variance in the warmed vs unwarmed but doesn't seem to be
 #"significant (small t value). BG min is that only one that may be significant
 #But, i realize that Yann was actually interested in comparing the variance of min vs max temp, so i should restructure these models a bit
 #(figures are fine)
@@ -195,6 +180,7 @@ test5<-lmer(AGVar~treatcat*temptype + (1|site), data=newdat,na.action=na.omit)
 summary(test5)
 test6<-lmer(BGVar~treatcat*temptype + (1|site), data=newdat,na.action=na.omit)
 summary(test6)#
+
 
 ####Try coefficient of variation for each treatment and temperature type
 head(expclimt)#may need to aggregate instead,,,

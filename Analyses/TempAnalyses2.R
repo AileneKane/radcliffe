@@ -30,6 +30,21 @@ expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agt
 expclimt$agtemp_max<-expclimt$airtemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
+#Look at daily temperature rabge (dtr)
+#Look at daily temperature range and if this varies with warming treatment
+expclimt$agdtr<- expclimt$agtemp_max-expclimt$agtemp_min
+expclimt$soildtr<- expclimt$soiltemp1_max-expclimt$soiltemp1_min
+expclimt$treatcat<-NA#separate structural from ambient controls
+expclimt[which(expclimt$temptreat==0),]$treatcat<-"struc_cont"
+expclimt[which(expclimt$temptreat=="ambient"),]$treatcat<-"amb_cont"
+expclimt[which(as.numeric(expclimt$temptreat)>0),]$treatcat<-"warmed"
+expclimt$treatcat2<-NA
+expclimt[which(expclimt$temptreat==0|expclimt$temptreat=="ambient"),]$treatcat2<-"control"
+expclimt[which(as.numeric(expclimt$temptreat)>0),]$treatcat2<-"warmed"
+agdtr_mod<-lmer(agdtr~treatcat+(1|site/year), data=expclimt, REML=FALSE)
+summary(agdtr_mod)
+bgdtr_mod<-lmer(soildtr~treatcat+(1|site/year), data=expclimt, REML=FALSE)
+summary(bgdtr_mod)
 
 ####Try coefficient of variation for each plot during each year and treatment and temperature type
 #convert all temepratures to Kelvin to avoid negative values (CV doesn't work when there is a mix of positive and negative values
@@ -96,7 +111,7 @@ axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=c("amb","struct","1","2","3","4","5
 plot(as.numeric(cv_allt$target),cv_allt$cv_bgtemp_min,xlab="",xaxt="n",ylab="",ylim=c(0,4), bty="l", cex.axis=.9, main="Min BG temp",pch = 21)
 axis(side=1,at=c(-1,0,1,2,3,4,5,6,7), labels=c("amb","struct","1","2","3","4","5","6","7"),cex=.9)
 mtext(side=1,"Target warming (degrees C", line=2.3, adj=.5)
-legend(x=,y=100,legend=sort(unique(cv_allt$site)),pch=unique(as.numeric(cv_allt$site)))+20,bty="n",cex=0.7,pt.cex=0.7)
+#legend(x=,y=100,legend=sort(unique(cv_allt$site)),pch=unique(as.numeric(cv_allt$site))+20,bty="n",cex=0.7,pt.cex=0.7)
 
 quartz(height=5,width=10)
 par(mfrow=c(2,2),mai=c(.3,.6,.2,.05),omi=c(.5,.5,.2,.5))
