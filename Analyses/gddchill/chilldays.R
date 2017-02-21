@@ -59,7 +59,7 @@ expclim2$cumchill_air<-ave(expclim2$chday_air,list(expclim2$site,expclim2$block,
 expclim2$numnas_air<-ave(expclim2$chday_air,list(expclim2$site,expclim2$block,expclim2$plot,expclim2$chyr), FUN=countcumna)
 
 expclim2$chdoy_min<-ave(expclim2$chdoy,list(expclim2$site,expclim2$chyr), FUN=min)
-###If no climate measurements taken prior Sept 15, then exclude chilldays (=NA) becuase not enough data to be reliable
+###If no climate measurements taken prior Sept 15, then exclude chilldays (=NA) because not enough data to be reliable
 expclim2[expclim2$chdoy_min>15,]$cumchill_air<-NA
 expclim2[expclim2$chdoy_min>15,]$cumchill_soil<-NA
 ###############

@@ -517,6 +517,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
     if(i<4){colnames(temp)[4]<-"Air.15.cm"}
     if(i<4){colnames(temp)[5]<-"X7.5cm"}
     if(i<4){temp$Year<-2003}
+    if(i==6){temp[which(temp$JULIAN.DAY==239),]$JULIAN.DAY<-273}#for soem reason, two measuring points on day 273 are labeled 239
     if(dim(temp[which(is.na(temp$Y)),])[1]>0){temp1<-temp[-which(is.na(temp$Y)),]}
     if(dim(temp[which(is.na(temp$Y)),])[1]==0){temp1<-temp}
     temp2<-temp1[which(temp1$Plot>=1),]
@@ -863,9 +864,12 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#229269      21
+    dim(expphenclim1)#221947      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#229245     21
+    dim(expphenclim)#221923     21
+    expphenclim<-expphenclim1[-which(is.na(expphenclim1$year)),]
+    expphenclim<-expphenclim1[-which(is.na(expphenclim1$doy)),]
+    dim(expphenclim)#221707
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -879,7 +883,6 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     expphenclim$soilmois1<-as.numeric(expphenclim$soilmois1)
     expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
     soiltemp2_max[which(soiltemp2_max=="Inf")]<-NA
-    
     row.names(expphenclim) <- NULL
     write.csv(expphenclim, "Analyses/expclim.csv", row.names=FALSE, eol="\r\n")
 

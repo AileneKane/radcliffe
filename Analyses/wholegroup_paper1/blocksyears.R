@@ -102,7 +102,7 @@ yeardry3dif<-yeardry3-yearcontrols[,4:7]
 #target warming
 treats<-read.csv("expsiteinfo.csv", header=T)
 target1<-treats[treats$DatasetID=="exp01"|treats$DatasetID=="exp08"|treats$DatasetID=="exp09"|treats$DatasetID=="exp12",27:29]
-
+rownames(target1)<-c("exp01","exp08","exp09","exp12")
 #plot difference between warmed and control, by block and year
 quartz(height=6,width=11)
 par(mfrow=c(1,2))
@@ -183,9 +183,9 @@ abline(a=0,b=1,lty=1)
 #plot difference between warmed and control, by block and year
 quartz(height=6.5,width=6.5)
 par(mfrow=c(2,2),mai=c(.5,.7,.2,.01),omi=c(.7,.3,.2,.7))
-plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agwarm1[,1],agwarm1[,2],agwarm1[,3],agwarm1[,4]),pch=rep(c(21,24,23), times=6),col="gray",bg="gray",xlab="",ylab="Above-ground", bty="l", main="By Block", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.3)
-points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agwarm2[,1],agwarm2[,2],agwarm2[,3],agwarm2[,4]),pch=rep(c(21,24,23), times=6),col="gray",bg="gray")
-points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agwarm3[,1],agwarm3[,2],agwarm3[,3],agwarm3[,4]),pch=rep(c(21,24,23), times=6),col="gray",bg="gray")
+plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agwarm1[,1],agwarm1[,2],agwarm1[,3],agwarm1[,4]),pch=rep(c(21,24,23), times=6),col="black",bg="black",xlab="",ylab="Above-ground", bty="l", main="By Block", xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.3)
+points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agwarm2[,1],agwarm2[,2],agwarm2[,3],agwarm2[,4]),pch=rep(c(21,24,23), times=6),col="black",bg="black")
+points(c(agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3,agtarget1$temptreat_3),c(agwarm3[,1],agwarm3[,2],agwarm3[,3],agwarm3[,4]),pch=rep(c(21,24,23), times=6),col="black",bg="black")
 abline(a=0,b=1,lty=1)
 plot(c(agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1,agtarget1$temptreat_1),c(agyearwarm1[,1],agyearwarm1[,2],agyearwarm1[,3],agyearwarm1[,4],agyearwarm1[,5],agyearwarm1[,6]),pch=rep(c(21,24,23), times=5),col="gray",bg="gray",xlab="",ylab="", bty="l", main="By Year",xlim=c(0,6), ylim=c(0,6), cex.axis=1.2,cex.lab=1.2)
 points(c(agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2,agtarget1$temptreat_2),c(agyearwarm2[,1],agyearwarm2[,2],agyearwarm2[,3],agyearwarm2[,4]),pch=rep(c(21,24,23),times=4),col="gray",bg="gray")
@@ -213,7 +213,7 @@ blockdat2<- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only
 blockdat3<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
 blockdat4<-blockdat3[which(blockdat3$preciptreat==0),]
 
-blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= blockdat4, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 summary(blockmod)
 Anova(blockmod, type="III")
 yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
