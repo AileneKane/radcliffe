@@ -64,12 +64,13 @@ dim(expall)
 #select out just sites that manipulate precip AND temp
 expall_tp<-expall[which(expall$site=="exp01"|expall$site=="exp02"|expall$site=="exp05"|expall$site=="exp09"|expall$site=="exp12"),]#only soil moisture data currently for this site
 
-#for exp02, the only controls are ambient controls. code these as 0s to fascilitate comparisons
+#for exp02 & exp05, the only controls are ambient controls. code these as 0s to fascilitate comparisons
 expall_tp[which(expall_tp$site=="exp02" & expall_tp$temptreat=="ambient"),]$temptreat<-0
+expall_tp[which(expall_tp$site=="exp05" & expall_tp$temptreat=="ambient"),]$temptreat<-0
+
 
 expall_tp$alltreats<-paste(expall_tp$temptreat,expall_tp$preciptreat, sep=".")
 sites<-unique(expall_tp$site)
-
 for(i in 1:length(sites)){
   sitedat<-expall_tp[expall_tp$site==sites[i],]
   quartz()
@@ -83,26 +84,42 @@ for(i in 1:length(sites)){
 }
 table(expall_tp$site,expall_tp$alltreats)
 
-expall$temptreat <- relevel(as.factor( expall$temptreat), ref = "0")
-expall$preciptreat <- relevel(as.factor( expall$preciptreat), ref = "0")
-
-
-
-
-m1_all1<-lmer(cumgdd_air~temptreat*preciptreat + (temptreat*preciptreat|site/genus.species)+ (1|year), data=expall)
-m1_all2<-lmer(cumgdd_air~temptreat*preciptreat + (1|site/genus.species)+ (1|year), data=expall)
-m1_all3<-lmer(cumgdd_air~temptreat + (1|site/genus.species)+ (1|year), data=expall)
-m1_all4<-lmer(cumgdd_air~temptreat + (temptreat|site/genus.species)+ (1|year), data=expall)
+expall_tp$temptreat <- relevel(as.factor( expall_tp$temptreat), ref = "0")
+expall_tp$preciptreat <- relevel(as.factor( expall_tp$preciptreat), ref = "0")
+m1_all1<-lmer(cumgdd_air~temptreat*preciptreat + (temptreat*preciptreat|site/genus.species)+ (1|year), data=expall_tp)
+m1_all2<-lmer(cumgdd_air~temptreat*preciptreat + (1|site/genus.species)+ (1|year), data=expall_tp)
+m1_all3<-lmer(cumgdd_air~temptreat + (1|site/genus.species)+ (1|year), data=expall_tp)
+m1_all4<-lmer(cumgdd_air~temptreat + (temptreat|site/genus.species)+ (1|year), data=expall_tp)
 AIC(m1_all1,m1_all2,m1_all3,m1_all4)
 aictab(list(m1_all1,m1_all2,m1_all3,m1_all4))
 #all_events2 has lowest aic 
 summary(all_events)
 Anova(all_events)
 
-sm_gddmod<-lmer(cumgdd_air~soilmois1 + (soilmois1|site/genus.species)+ (1|year), data=expall)
-summary(sm_gddmod)
-Anova(sm_gddmod)
-coef(sm_gddmod)
+sm_gddmod<-lmer(cumgdd_air~soilmois1 + (soilmois1|site/genus.species)+ (1|year), data=expall_tp)
+expall_tp2<-subset(expall_tp,select=c(doy,soilmois1,agtemp_max,agtemp_min,site,year,genus.species))
+expall_tp2 <- expall_tp2[apply(expall_tp2, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+#scale variables:
+expall_tp2$soilmois1_cent<-scale(expall_tp2$soilmois1, center = TRUE, scale = TRUE)
+expall_tp2$agtemp_min_cent<-scale(expall_tp2$agtemp_min, center = TRUE, scale = TRUE)
+expall_tp2$agtemp_max_cent<-scale(expall_tp2$agtemp_max, center = TRUE, scale = TRUE)
+
+sm_doymod5<-lmer(doy~agtemp_min_cent*soilmois1_cent + (1|site/genus.species)+ (1|year), REML=TRUE, data=expall_tp2)
+sm_doymod6<-lmer(doy~agtemp_min_cent*soilmois1_cent + (agtemp_min_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=TRUE, data=expall_tp2)
+AIC(sm_doymod5,sm_doymod6)#to get random effects, 6 wins
+
+sm_doymod6<-lmer(doy~agtemp_min_cent*soilmois1_cent + (agtemp_min_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_tp2)
+sm_doymod1<-lmer(doy~soilmois1_cent + (soilmois1_cent|site/genus.species)+ (1|year), data=expall_tp2)
+sm_doymod2<-lmer(doy~soilmois1+agtemp_max_cent + (soilmois1_cent+agtemp_max_cent|site/genus.species)+ (1|year), REML=FALSE,data=expall_tp2)
+sm_doymod3<-lmer(doy~soilmois1*agtemp_max_cent + (soilmois1_cent*agtemp_max_cent|site/genus.species)+ (1|year), REML=FALSE,data=expall_tp2)
+sm_doymod4<-lmer(doy~soilmois1+agtemp_min_cent + (soilmois1_cent+agtemp_min_cent|site/genus.species)+ (1|year), REML=FALSE,data=expall_tp2)
+sm_doymod1a<-lmer(doy~agtemp_max_cent + (agtemp_max_cent|site/genus.species)+ (1|year), data=expall_tp2)
+sm_doymod1b<-lmer(doy~agtemp_min_cent + (agtemp_min_cent|site/genus.species)+ (1|year), data=expall_tp2)
+
+AIC(sm_doymod1,sm_doymod1a,sm_doymod1b,sm_doymod2,sm_doymod3,sm_doymod4,sm_doymod6)
+summary(sm_doymod6)
+Anova(sm_doymod6, type="III")
+coef(sm_doymod6)
 
 expall$agtemp_min<-expall$airtemp_min
 expall[which(is.na(expall$agtemp_min) & !is.na(expall$cantemp_min)),]$agtemp_min<-expall[which(is.na(expall$airtemp_min) & !is.na(expall$cantemp_min)),]$cantemp_min
