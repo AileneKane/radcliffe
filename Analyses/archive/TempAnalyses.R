@@ -48,8 +48,8 @@ expclim3<-subset(expclim,select=c("site","temptreat","airtemp_min","airtemp_max"
 #using two types structural controls separately
 expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
 
-sites<-sort(unique(expclimt$site))#use data without precipitation manipulation
-temptreats<-sort(unique(expclimt$temptreat))
+sites<-sort(unique(expclim2$site))#use data without precipitation manipulation
+temptreats<-sort(unique(expclim2$temptreat))
 alltemp.df <- data.frame(site=character(),temptreat=character(),agtempmax_mn=numeric(),
                          agtempmax_var=numeric(),agtempmin_mn=numeric(),
                          agtempmin_var=numeric(),agtempmax_mn=numeric(),
@@ -57,9 +57,7 @@ alltemp.df <- data.frame(site=character(),temptreat=character(),agtempmax_mn=num
                          agtempmin_var=numeric())
 
 for (i in 1:length(sites)){
-  sitedat<-expclimt[expclimt$site==sites[i],]
-  sitedat$agtemp_max.cn<-sitedat$agtemp_max-mean(sitedat$agtemp_max)
-    
+  sitedat<-expclim2[expclim2$site==sites[i],]
   siteagtempmaxmn<-tapply(sitedat$agtemp_max,sitedat$temptreat,mean,na.rm=TRUE)
   
   siteagtempmaxvar<-tapply(sitedat$agtemp_max,sitedat$temptreat,var,na.rm=TRUE)

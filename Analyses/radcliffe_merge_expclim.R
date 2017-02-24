@@ -840,9 +840,13 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   mois$airtemp_min<-NA
   mois$airtemp_max<-NA
   mois$soilmois2<-NA
+  mois<-mois[-which(is.na(mois$year)),]#remove rows that are all NAs- in year, doy, etc
   clelandclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  clelandclim<-clelandclim[-max(which(clelandclim$block==1 & clelandclim$plot=="1-1" & clelandclim$year==2002 & clelandclim$doy==52)),]#remove duplicate day/year- not sure why there are 2 measurements for one plaot on the same day/year
   clelandclim[which(substr(clelandclim$plot,1,2)=="34" & clelandclim$block =="1"),]$block<-"4"
   clelandclim[which(substr(clelandclim$plot,1,2)=="36" & clelandclim$block =="6"),]$block<-"8"
+  clelandclim[which(clelandclim$block==1 & clelandclim$plot=="1-1" & clelandclim$year==2002 & clelandclim$doy==52),]
+  
   row.names(clelandclim)<- NULL
   return(clelandclim)
 } 
@@ -864,12 +868,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#221947      21
+    dim(expphenclim1)#221706      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#221923     21
-    expphenclim<-expphenclim1[-which(is.na(expphenclim1$year)),]
-    expphenclim<-expphenclim1[-which(is.na(expphenclim1$doy)),]
-    dim(expphenclim)#221707
+    dim(expphenclim)#221682     21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -882,7 +883,8 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     expphenclim$soiltemp2_mean<-as.numeric(expphenclim$soiltemp2_mean)
     expphenclim$soilmois1<-as.numeric(expphenclim$soilmois1)
     expphenclim$soilmois2<-as.numeric(expphenclim$soilmois2)
-    soiltemp2_max[which(soiltemp2_max=="Inf")]<-NA
+    expphenclim$soiltemp2_max[which(expphenclim$soiltemp2_max=="Inf")]<-NA
+    expphenclim<-expphenclim[order(expphenclim$site,expphenclim$year,expphenclim$doy,expphenclim$block,expphenclim$plot),]
     row.names(expphenclim) <- NULL
     write.csv(expphenclim, "Analyses/expclim.csv", row.names=FALSE, eol="\r\n")
 
@@ -898,7 +900,7 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     boxplot(soiltemp2_max~site, data=expphenclim)
     boxplot(soiltemp1_mean~temptreat, data=expphenclim)
     boxplot(soilmois2~site, data=expphenclim)
-    
+    unique(expphenclim$site)
     expphenclim$alltreat<-paste(expphenclim$temptreat,expphenclim$preciptreat,sep=".")
     unique(expphenclim$alltreat)
     boxplot(airtemp_min~alltreat, data=expphenclim)
@@ -909,6 +911,4 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     boxplot(soiltemp2_max~alltreat, data=expphenclim)
     boxplot(soiltemp1_mean~alltreat, data=expphenclim)
     boxplot(soilmois1~alltreat, data=expphenclim)
-
-unique(cleanclimdata.raw$chuine$plot)
 

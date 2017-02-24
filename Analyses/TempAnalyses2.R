@@ -46,6 +46,9 @@ summary(agdtr_mod)
 bgdtr_mod<-lmer(soildtr~treatcat+(1|site/year), data=expclimt, REML=FALSE)
 summary(bgdtr_mod)
 
+
+
+
 ####Try coefficient of variation for each plot during each year and treatment and temperature type
 #convert all temepratures to Kelvin to avoid negative values (CV doesn't work when there is a mix of positive and negative values
 expclimt$agtemp_max_k<-expclimt$agtemp_max+273.15

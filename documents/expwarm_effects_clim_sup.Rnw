@@ -67,13 +67,15 @@
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 \clearpage
 \section* {Supplemental Tables}
+We found that the amount of warming varied by more than one degree among blocks (Figure blockyear, (Table 1S); lower warming treatments differed by up to 100\% of their target temperature and higher warming treatments differed by up to 20\%.
 <<label=xtable0, echo=TRUE, results=tex>>=
 library(xtable)
 library(lme4)
 library(car)
-expclim<-read.csv("expclim.csv", header=T)
+expclim<-read.csv("analyses/expclim.csv", header=T)
+
 blockdat<-expclim[which(!is.na(expclim$block)),]
-blockdat2<-subset(blockdat,select=c(site,block,year,temptreat,soiltemp1_mean,temptreat))
+blockdat2<-subset(blockdat,select=c(site,block,plot,year,temptreat,soiltemp1_mean,temptreat))
 blockdat2$block<-as.factor(blockdat2$block)
 blockdat2$year<-as.factor(blockdat2$year)
 blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
@@ -81,22 +83,21 @@ blockdat2<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
 testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
 blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 blocktable<-round(Anova(blockmod, type="III"),digits=3)
-#blocktable2<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=2),blocktable$Df,round(blocktable$Pr,digits=2)))
-#colnames(blocktable2)<-c("Predictor","Chi-squared","df","p")
-#blocktable2$p[which(as.numeric(blocktable2$p)<0.05)]<-"<0.05"
+blocktable2<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=2),blocktable$Df,round(blocktable$Pr,digits=2)))
+colnames(blocktable2)<-c("Predictor","Chi-squared","df","p")
+blocktable2$p[which(as.numeric(blocktable2$p)<0.05)]<-"<0.05"
 testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
 testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
 testdat3$year<-as.factor(testdat3$year)
 yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 yeartable<-Anova(yearmod, type="III")
-#yeartable2<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=2),yeartable$Df,round(yeartable$Pr,digits=4)))
-#colnames(yeartable2)<-c("","Chi-squared","df","p")
-#yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
+yeartable2<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=2),yeartable$Df,round(yeartable$Pr,digits=4)))
+colnames(yeartable2)<-c("","Chi-squared","df","p")
+yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
 @
 
 % EMW all tables should go into supp and give the results parenthetically in main text (sweavedemo has an example of how to do this). Also be SURE TO GIVE ERROR DF throughout. 
 
-%Yann:I know it is the direct output but don't forget for a cleaner version to just write < 0.001, write integer numbers for df and round the Chisq to keep less numbers
 <<xtable1, echo=FALSE,results=tex>>=
 require(xtable)
 xtab<-xtable(blocktable,digits=3,caption="Effects of warming vary by block, as summarized by a linear mixed effects model of mean soil temperatures, with year and site as nested random effects")
