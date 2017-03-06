@@ -352,10 +352,10 @@ summary(expclim.base)
 day.means <- aggregate(expclim.base[,paste0(vars.clim, ".base")],
                            by=expclim.base[,c("site", "doy")],
                            FUN=mean, na.rm=T)
-summary(expclim.means)
+summary(day.means)
 
-site.means <- aggregate(expclim.means[,paste0(vars.clim, ".base")],
-                        by=list(expclim.means[,c("site")]),
+site.means <- aggregate(day.means[,paste0(vars.clim, ".base")],
+                        by=list(day.means[,c("site")]),
                         FUN=mean, na.rm=T)
 names(site.means) <- c("site", paste0(vars.clim, ".ann"))
 summary(site.means)
@@ -409,15 +409,26 @@ agg.dev.graph[agg.dev.graph$soilmois1.dev.lo<= min(agg.dev.graph$soilmois1.dev, 
 agg.dev.graph[agg.dev.graph$soilmois1.dev.hi>= max(agg.dev.graph$soilmois1.dev, na.rm=T) & !is.na(agg.dev.graph$soilmois1.dev.hi),"soilmois1.dev.hi"] <- max(agg.dev.graph$soilmois1.dev, na.rm=T)
 summary(agg.dev.graph)
 
-png("../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png", height=10, width=10, units="in", res=180)
-ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),]) +
-  facet_wrap(~site, scales="fixed") +
+# Ordering things by mean annual soil temp
+site.means
+agg.dev.graph$site <- factor(agg.dev.graph$site, levels=site.means[order(site.means$soilmois1.ann),"site"])
+# identifying which figures we want to graph
+sites.graph<-unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.ann) & !agg.dev.graph$site=="exp08","site"])
+
+# summary(agg.dev.graph[agg.dev.graph$site=="exp05",])
+
+png("../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png", height=4.5, width=9, units="in", res=180)
+ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph & !is.na(agg.dev.graph$soilmois1.dev),]) +
+  facet_wrap(~site, scales="fixed", ncol=5) +
   geom_ribbon(aes(x=doy, ymin=soilmois1.dev.lo, ymax=soilmois1.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=soilmois1.dev, color=target), size=0.5) +
-  scale_y_continuous(expand=c(0,0), name="diff from non-warmed (m3 H2O/mg3 soil ??)") +
+  geom_text(data=site.means[site.means$site %in% sites.graph,], x=325, y=0.12, aes(label=str_pad(round(soilmois1.ann,2), 4,side="right", pad="0")), hjust="right", fontface="bold") +
+  scale_y_continuous(expand=c(0,0), name="diff from non-warmed (m3 H2O/mg3 soil)") +
   ggtitle("Daily Mean Soil Moisture Difference") +
-  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),"target"]), "color"])) + 
-  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),"target"]), "color"])) + 
+  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),"target"]), "color"]), 
+                     name=expression(paste("target warming " ^"o", "C"))) + 
+  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),"target"]), "color"]), 
+                    name=expression(paste("target warming " ^"o", "C"))) + 
   theme_bw()
 dev.off()
 
@@ -438,18 +449,31 @@ agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.lo<= min(agg.dev.graph$BGtemp_mean.d
 agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.hi>= max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)  & !is.na(agg.dev.graph$BGtemp_mean.dev.hi),"BGtemp_mean.dev.hi"] <- max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)
 summary(agg.dev.graph)
 
-png("../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png", height=10, width=10, units="in", res=180)
-ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),]) +
-  facet_wrap(~site, scales="fixed") +
+# Ordering things by mean annual soil temp
+site.means
+agg.dev.graph$site <- factor(agg.dev.graph$site, levels=site.means[order(site.means$BGtemp_mean.ann),"site"])
+# identifying which figures we want to graph
+sites.graph<-unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"site"])
+
+# exp12 has somethign weird with its soil temperature -- maybe a lot of missing days at a certain point, so that may need to get split up
+summary(agg.dev.graph[agg.dev.graph$site=="exp12" & is.na(agg.dev.graph$BGtemp_mean.base),])
+unique(agg.dev.graph[agg.dev.graph$site=="exp12" & is.na(agg.dev.graph$BGtemp_mean.base),"doy"])
+
+
+png("../figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png", height=4.5, width=9, units="in", res=180)
+ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
+  facet_wrap(~site, scales="fixed", ncol=5) +
   geom_ribbon(aes(x=doy, ymin=BGtemp_mean.dev.lo, ymax=BGtemp_mean.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=BGtemp_mean.dev, color=target), size=0.5) +
   geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
-  geom_text(data=site.means[site.means$site %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"site"]),], x=325, y=7, aes(label=round(BGtemp_mean.ann,1)), hjust="right", fontface="bold") +
+  geom_text(data=site.means[site.means$site %in% sites.graph,], x=325, y=7, aes(label=round(BGtemp_mean.ann,1)), hjust="right", fontface="bold") +
   scale_x_continuous(expand=c(0,0), name="day of year") +
   scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("BGtemp_mean.dev.lo", "BGtemp_mean.dev.hi")], na.rm=T), name="diff from non-warmed (degrees C)") +
   ggtitle("Daily Mean Soil Temperature Difference")+
-  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"])) + 
-  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"])) + 
+  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+                     name=expression(paste("target warming " ^"o", "C"))) + 
+  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+                    name=expression(paste("target warming " ^"o", "C"))) + 
   theme_bw()
 dev.off()
 
@@ -462,8 +486,10 @@ ggplot(data=agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),]) +
   scale_x_continuous(expand=c(0,0), name="day of year") +
   scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("BGtemp_mean.dev.lo", "BGtemp_mean.dev.hi")]+agg.dev.graph$BGtemp_mean.ann, na.rm=T), name="diff from non-warmed (degrees C)") +
   ggtitle("Daily Mean Soil Temperature Difference")+
-  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"])) + 
-  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"])) + 
+  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+                     name=expression(paste("target warming " ^"o", "C"))) + 
+  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+                    name=expression(paste("target warming " ^"o", "C"))) + 
   theme_bw()
 dev.off()
 
