@@ -8,6 +8,8 @@
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{natbib}
+\usepackage{xtable}
+
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
   %put your figures in one place
@@ -58,20 +60,51 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section* {Data}
-We developed a new database for our analyses: 
- The data we use were collected between 1991 and 2014 from North American and European climate change experiments (Figure \ref{fig:map}) and have been merged into a new, publicly available Climate from Climate Change Experiments (C3E) database (see Supplemental Materials for details). 
-%For supplement: we carried out a full literature review to identify all active field warming experiments then obtained daily (or sub-daily) climate data from as many as possible (we obtained data for 12/XX total identified experiments, see Supplemental Materials for details). We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly.
-
+\section* {Climate from Climate Change Experiments Database}
+We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure \ref{fig:map}. 
+ \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of Wolkovich et al (2012) for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (available on KNB). We searched the Web of Science (ISI) for Topic=(warm*OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies; combined with 37 warming experiments in the STONE database, there were therefore a total of 314 potential studies. 
+ \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) This restricted list consisted of 95 studies, and we then contacted authors to obtain daily (or sub-daily) climate data, as well as the most accurate phenological data. (STONE received 16.7\% of data directly; we recieved XX of data from contacted authors.)
+We obtained daily climate data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly.
+ 
 C3E database wasWe compiled daily climate data from 12 experimental climate change studies developed a new database 50studies(TableS1,FigureS1)f=
 
-This database is the first to compile daily experimental climate data across multiple climate change experiments,
+This database is the first to compile daily experimental climate data across multiple climate change experiments.
 
 \par We present here a new publicly  available database of temperature and soil moisture data compiled from 12 experiments conducted between 1991 and 2014. This Climate from Climate Change Experiments (C3E) database is available at KNB (add citation). Studies are located primarily in North America, with one European study (Figure \ref{fig:map}).
 
 \par To identify climate change experiments and datasets to include in this database, we carried out a full literature review in Web of Science. We followed search criteria from Wolkovich et al 2012: blah blah...to identify all active field warming experiments then obtained daily (or sub-daily) climate data from as many as possible (we obtained data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly. 
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+
+
+ \begin{figure}[p]
+ \centering
+\clearpage
+\section* {Supplemental Tables}
+
+<<label=sitestable, echo=TRUE, results=tex>>=
+expsites <- read.csv("expsiteinfo.csv", header=TRUE)
+expsites$data_years<-paste(expsites$data_startyear,expsites$data_endyear, sep="-")
+expsites$temptreat_1[which(is.na(expsites$temptreat_1))]<-"";expsites$temptreat_2[which(is.na(expsites$temptreat_2))]<-"";expsites$temptreat_3[which(is.na(expsites$temptreat_3))]<-"";expsites$temptreat_4[which(is.na(expsites$temptreat_4))]<-"";expsites$temptreat_5[which(is.na(expsites$temptreat_5))]<-"";expsites$temptreat_6[which(is.na(expsites$temptreat_6))]<-"";expsites$temptreat_7[which(is.na(expsites$temptreat_7))]<-"";expsites$temptreat_8[which(is.na(expsites$temptreat_8))]<-"";expsites$temptreat_9[which(is.na(expsites$temptreat_9))]<-""
+
+expsites$temptreats<-paste(expsites$temptreat_1,expsites$temptreat_2,expsites$temptreat_3,expsites$temptreat_4,expsites$temptreat_5,expsites$temptreat_6,expsites$temptreat_7,expsites$temptreat_8,expsites$temptreat_9, sep=",")
+expsites$preciptreats<-paste(expsites$preciptreat_1,expsites$preciptreat_.1, sep=",")
+expsites$Tsoildepths<-paste(expsites$Tsoildepth1_cm,expsites$Tsoildepth2_cm, sep=",")
+expsites$Msoildepths<-paste(expsites$Msoildepth1_cm,expsites$Msoildepth2_cm, sep=",")
+expsites$AGtemp<-c("canopy","NA",30
+,30,"air","unknown", 22, "NA","surface",22,"NA",14)
+
+expsites$preciptreats[which(expsites$preciptreats=="NA,NA")]<-""
+expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")],4,5)
+expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")],1,3)
+expsites$temptreats[which(substr(expsites$temptreats,1,nchar(expsites$temptreats))
+sitetable<-subset(expsites,select=c(DatasetID,Location,warming_type, no_spp, data_years,temptreats,preciptreats,AGtemptype,Tsoildepths,Msoildepths,expdesign))
+
+library(xtable)
+print(xtable(sitetable, caption = "Sites included in C3E database",  caption.placement = "top"))
+@
+ \label{table:expsites}
+ \end{figure}
 \clearpage
 \section* {Code for Figures in the manuscript}
 <<label=xtable0, echo=FALSE, results=tex>>=
@@ -294,6 +327,7 @@ We also found higher coefficients of variation in air temperatures in actively w
 
  \label{fig:cv}
  \end{figure}
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

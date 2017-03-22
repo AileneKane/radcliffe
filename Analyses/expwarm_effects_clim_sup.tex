@@ -1,0 +1,89 @@
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{Sweave}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{xtable}
+
+%\usepackage[backend=bibtex]{biblatex}
+%Strongly recommended
+  %put your figures in one place
+%\SweaveOpts{prefix.string=figures/, eps=FALSE} 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+
+\setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%Here's how to do that
+ \topmargin -1.5cm        
+ \oddsidemargin -0.04cm   
+ \evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+ \textwidth 16.59cm
+ \textheight 21.94cm 
+ %\pagestyle{empty}       % Uncomment if don't want page numbers
+ \parskip 7.2pt           % sets spacing between paragraphs
+ %\renewcommand{\baselinestretch}{1.5} 	% Uncomment for 1.5 spacing between lines
+\parindent 0pt% sets leading space for paragraphs
+\usepackage{setspace}
+%\doublespacing
+
+%Optional: I like fancy headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[LO]{How do climate change experiments actually change climate}
+\fancyhead[RO]{2016}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
+%Start of the document
+\begin{document}
+
+%\SweaveOpts{concordance=TRUE}
+ \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+\title{Supplemental materials for: How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
+
+\author{A.K. Ettinger,I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
+%\date{\today}
+\maketitle  %put the fancy title on
+%\tableofcontents      %add a table of contents
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section* {Climate from Climate Change Experiments Database}
+We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure \ref{fig:map}. 
+ \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of Wolkovich et al (2012) for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (available on KNB). We searched the Web of Science (ISI) for Topic=(warm*OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through XXX 2016). This yielded XX new studies; combined with 37 warming experiments in the STONE database, there were therefore a total of XX potential studies. 
+ \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) This restricted list consisted of XX studies, and we then contacted authors to obtain daily (or sub-daily) climate data, as well as the most accurate phenological data. (STONE received 16.7% of data directly; we recieved XX of data from contacted authors.)
+We obtained daily climate data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly.
+ 
+C3E database wasWe compiled daily climate data from 12 experimental climate change studies developed a new database 50studies(TableS1,FigureS1)f=
+
+This database is the first to compile daily experimental climate data across multiple climate change experiments.
+
+\par We present here a new publicly  available database of temperature and soil moisture data compiled from 12 experiments conducted between 1991 and 2014. This Climate from Climate Change Experiments (C3E) database is available at KNB (add citation). Studies are located primarily in North America, with one European study (Figure \ref{fig:map}).
+
+\par To identify climate change experiments and datasets to include in this database, we carried out a full literature review in Web of Science. We followed search criteria from Wolkovich et al 2012: blah blah...to identify all active field warming experiments then obtained daily (or sub-daily) climate data from as many as possible (we obtained data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly. 
+
+\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+
+
+ \begin{figure}[p]
+ \centering
+\clearpage
+\section* {Supplemental Tables}
+
+
+\label{table:expsites}
+ \end{figure}
+\clearpage
+\section* {Code for Figures in the manuscript}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  24 FEB 2017 14:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  6 MAR 2017 13:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -442,24 +442,24 @@ Package gensymb Info: Using \textmu for \micro on input line 48.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 59.
+(Font)              <12> on input line 60.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 59.
+(Font)              <8> on input line 60.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 59.
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 59.
+(Font)              <6> on input line 60.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 60.
 
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <12> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 59.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 60.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <8> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 59.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 60.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <6> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 59.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 60.
 
-Overfull \hbox (15.95668pt too wide) in paragraph at lines 59--59
+Overfull \hbox (15.95668pt too wide) in paragraph at lines 60--60
  [][] 
  []
 
@@ -467,106 +467,116 @@ Overfull \hbox (15.95668pt too wide) in paragraph at lines 59--59
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 82.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 83.
 
-[2] [3] [4] [5] [6] (./expwarm_effects_clim_draft2.bbl [7] [8]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 179.
+[2] [3] [4]
+
+Package natbib Warning: Citation `ourcival2011' on page 5 undefined on input li
+ne 125.
+
+[5] [6] (./expwarm_effects_clim_draft2.bbl [7] [8]
+LaTeX Font Info:    Try loading font information for T1+aett on input line 191.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 179.
+(Font)              <7> on input line 191.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 179.
+(Font)              <5> on input line 191.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <7> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 179.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 191.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <5> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 179.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 191.
  [9] [10]) [11]
-<../Analyses/maps/RadcliffeLocations_Experiments.png, id=375, 722.7pt x 361.35p
+<../Analyses/maps/RadcliffeLocations_Experiments.png, id=376, 722.7pt x 361.35p
 t>
 File: ../Analyses/maps/RadcliffeLocations_Experiments.png Graphic file (type pn
 g)
  <use ../Analyses/maps/RadcliffeLocations_Experiments.png>
 Package pdftex.def Info: ../Analyses/maps/RadcliffeLocations_Experiments.png us
-ed on input line 149.
+ed on input line 153.
 (pdftex.def)             Requested size: 377.62633pt x 188.81285pt.
  [12
 
 ] [13 <../Analyses/maps/RadcliffeLocations_Experiments.png>]
-<../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png, id=389
+<../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png, id=390
 , 1806.75pt x 1806.75pt>
 File: ../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png Gr
 aphic file (type png)
 
 <use ../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png>
 Package pdftex.def Info: ../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Me
-an_Deviation.png used on input line 156.
+an_Deviation.png used on input line 160.
 (pdftex.def)             Requested size: 377.62633pt x 377.60916pt.
 
-<../Analyses/figures/blockyearvar.pdf, id=390, 433.62pt x 433.62pt>
+<../Analyses/figures/blockyearvar.pdf, id=391, 433.62pt x 433.62pt>
 File: ../Analyses/figures/blockyearvar.pdf Graphic file (type pdf)
 
 <use ../Analyses/figures/blockyearvar.pdf>
 Package pdftex.def Info: ../Analyses/figures/blockyearvar.pdf used on input lin
-e 164.
+e 168.
 (pdftex.def)             Requested size: 377.62633pt x 377.64334pt.
  [14
 
  <../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png>] [15 
 <../Analyses/figures/blockyearvar.pdf>] <../Analyses/figures/ShamVSAmbient_all.
-pdf, id=679, 722.7pt x 433.62pt>
+pdf, id=680, 722.7pt x 433.62pt>
 File: ../Analyses/figures/ShamVSAmbient_all.pdf Graphic file (type pdf)
 
 <use ../Analyses/figures/ShamVSAmbient_all.pdf>
 Package pdftex.def Info: ../Analyses/figures/ShamVSAmbient_all.pdf used on inpu
-t line 177.
+t line 181.
 (pdftex.def)             Requested size: 377.62633pt x 226.57542pt.
  [16 <../Analyses/figures/ShamVSAmbient_all.pdf>]
-<../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png, id=1000, 1
+<../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png, id=1001, 1
 806.75pt x 1806.75pt>
 File: ../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png Graphi
 c file (type png)
 
 <use ../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png>
 Package pdftex.def Info: ../Analyses/figures/Exploratory_TimeSeries_SoilMoist_D
-eviation.png used on input line 184.
+eviation.png used on input line 188.
 (pdftex.def)             Requested size: 377.62633pt x 377.60916pt.
 
 [17
 
 
  <../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png>]
-<../Analyses/figures/DirIndWarmingEffects.pdf, id=1006, 794.97pt x 289.08pt>
+<../Analyses/figures/DirIndWarmingEffects.pdf, id=1007, 794.97pt x 289.08pt>
 File: ../Analyses/figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
 
 <use ../Analyses/figures/DirIndWarmingEffects.pdf>
 Package pdftex.def Info: ../Analyses/figures/DirIndWarmingEffects.pdf used on i
-nput line 190.
+nput line 194.
 (pdftex.def)             Requested size: 377.62633pt x 137.32324pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 195.
- [18
+
+
+Package natbib Warning: There were undefined citations.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 201.
+[18
 
  <../Analyses/figures/DirIndWarmingEffects.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 195.
- (./expwarm_effects_clim_draft2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 195.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 195.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 201.
+
+(./expwarm_effects_clim_draft2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 201.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 201.
 Package rerunfilecheck Info: File `expwarm_effects_clim_draft2.out' has not cha
 nged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 195.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 201.
  ) 
 Here is how much of TeX's memory you used:
- 8230 strings out of 493089
- 125967 string characters out of 6134842
- 212258 words of memory out of 5000000
- 11464 multiletter control sequences out of 15000+600000
+ 8234 strings out of 493089
+ 126039 string characters out of 6134842
+ 212617 words of memory out of 5000000
+ 11468 multiletter control sequences out of 15000+600000
  36282 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,10n,43p,1600b,547s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,11n,43p,1612b,553s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><
@@ -579,7 +589,7 @@ l/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local
 texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/tex
 live/2015/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on expwarm_effects_clim_draft2.pdf (18 pages, 8934013 bytes).
+Output written on expwarm_effects_clim_draft2.pdf (18 pages, 8928818 bytes).
 PDF statistics:
  1092 PDF objects out of 1200 (max. 8388607)
  890 compressed objects within 9 object streams

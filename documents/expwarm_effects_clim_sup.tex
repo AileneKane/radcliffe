@@ -45,7 +45,7 @@
 
 %Start of the document
 \begin{document}
-
+\input{expwarm_effects_clim_sup-concordance}
 %\SweaveOpts{concordance=TRUE}
  \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
@@ -67,9 +67,10 @@
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 \clearpage
 \section* {Supplemental Tables}
+We found that the amount of warming varied by more than one degree among blocks (Figure blockyear, (Table 1S); lower warming treatments differed by up to 100\% of their target temperature and higher warming treatments differed by up to 20\%.
 \begin{Schunk}
 \begin{Sinput}
 > library(xtable)
 > library(lme4)
 > library(car)
-> expclim<-read.csv("expclim.csv", header=T)
+> expclim<-read.csv("analyses/expclim.csv", header=T)
