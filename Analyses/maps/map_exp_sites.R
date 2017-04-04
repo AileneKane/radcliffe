@@ -36,7 +36,8 @@ rast.table$rgb <- with(rast.table, rgb(HYP_50M_SR_W.1,
                                        1))
 
 
-# Note: the natural earth data takes quite a while to plot!`
+# Note: the natural earth data takes quite a while to plot!
+set.seed(1134)
 png("RadcliffeLocations_Experiments.png", width=10, height=5, units="in", res=320)
 ggplot(data=expsites) +
   theme_bw() +
@@ -44,7 +45,7 @@ ggplot(data=expsites) +
   geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
   scale_x_continuous(expand=c(0,0), name="Degrees Longitude") +
   scale_y_continuous(expand=c(0,0), name="Degrees Latitude") +
-  geom_point(aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), alpha=0.9) +
+  geom_point(aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), alpha=0.8, position=position_jitter(width=0.5, height=0.5)) +
   scale_shape_manual(values=c(19, 18, 15, 17)) +
   scale_color_manual(values=c("darkorange2", "firebrick3", "purple4", "black")) +
   scale_size(range=c(2.5,5)) +

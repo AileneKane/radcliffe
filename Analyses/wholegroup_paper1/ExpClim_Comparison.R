@@ -419,7 +419,7 @@ sites.graph<-unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.ann) & !agg.dev
 
 png("../figures/Exploratory_TimeSeries_SoilMoist_Deviation.png", height=4.5, width=9, units="in", res=180)
 ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph & !is.na(agg.dev.graph$soilmois1.dev),]) +
-  facet_wrap(~site, scales="fixed", ncol=5) +
+  facet_wrap(~site, scales="fixed", ncol=3) +
   geom_ribbon(aes(x=doy, ymin=soilmois1.dev.lo, ymax=soilmois1.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=soilmois1.dev, color=target), size=0.5) +
   geom_text(data=site.means[site.means$site %in% sites.graph,], x=325, y=0.12, aes(label=str_pad(round(soilmois1.ann,2), 4,side="right", pad="0")), hjust="right", fontface="bold") +
