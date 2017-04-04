@@ -92,11 +92,12 @@ m1_all3<-lmer(cumgdd_air~temptreat + (1|site/genus.species)+ (1|year), data=expa
 m1_all4<-lmer(cumgdd_air~temptreat + (temptreat|site/genus.species)+ (1|year), data=expall_tp)
 AIC(m1_all1,m1_all2,m1_all3,m1_all4)
 aictab(list(m1_all1,m1_all2,m1_all3,m1_all4))
-#all_events2 has lowest aic 
-summary(all_events)
-Anova(all_events)
+#m1_all2 has lowest aic 
+summary(m1_all2)
+Anova(m1_all2)
 
 sm_gddmod<-lmer(cumgdd_air~soilmois1 + (soilmois1|site/genus.species)+ (1|year), data=expall_tp)
+summary(sm_gddmod)
 expall_tp2<-subset(expall_tp,select=c(doy,soilmois1,agtemp_max,agtemp_min,site,year,genus.species))
 expall_tp2 <- expall_tp2[apply(expall_tp2, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 #scale variables:
@@ -117,9 +118,13 @@ sm_doymod1a<-lmer(doy~agtemp_max_cent + (agtemp_max_cent|site/genus.species)+ (1
 sm_doymod1b<-lmer(doy~agtemp_min_cent + (agtemp_min_cent|site/genus.species)+ (1|year), data=expall_tp2)
 
 AIC(sm_doymod1,sm_doymod1a,sm_doymod1b,sm_doymod2,sm_doymod3,sm_doymod4,sm_doymod6)
-summary(sm_doymod6)
+#sm_doymod6 wins
+summary(sm_doymod1a)
 Anova(sm_doymod6, type="III")
 coef(sm_doymod6)
+#Surprising: sil moisture explains more variation than temperature
+cor.test(expall_tp2$agtemp_min_cent, expall_tp2$soilmois1_cent)
+
 
 expall$agtemp_min<-expall$airtemp_min
 expall[which(is.na(expall$agtemp_min) & !is.na(expall$cantemp_min)),]$agtemp_min<-expall[which(is.na(expall$airtemp_min) & !is.na(expall$cantemp_min)),]$cantemp_min

@@ -83,6 +83,14 @@ This database is the first to compile daily experimental climate data across mul
 \section* {Supplemental Tables}
 
 <<label=sitestable, echo=TRUE, results=tex>>=
+rm(list=ls()) 
+options(stringsAsFactors = FALSE)
+
+library(plyr)
+library(dplyr)
+library(car)
+library(lme4)
+library(xtable)
 expsites <- read.csv("expsiteinfo.csv", header=TRUE)
 expsites$data_years<-paste(expsites$data_startyear,expsites$data_endyear, sep="-")
 expsites$temptreat_1[which(is.na(expsites$temptreat_1))]<-"";expsites$temptreat_2[which(is.na(expsites$temptreat_2))]<-"";expsites$temptreat_3[which(is.na(expsites$temptreat_3))]<-"";expsites$temptreat_4[which(is.na(expsites$temptreat_4))]<-"";expsites$temptreat_5[which(is.na(expsites$temptreat_5))]<-"";expsites$temptreat_6[which(is.na(expsites$temptreat_6))]<-"";expsites$temptreat_7[which(is.na(expsites$temptreat_7))]<-"";expsites$temptreat_8[which(is.na(expsites$temptreat_8))]<-"";expsites$temptreat_9[which(is.na(expsites$temptreat_9))]<-""
@@ -97,8 +105,8 @@ expsites$AGtemp<-c("canopy","NA",30
 expsites$preciptreats[which(expsites$preciptreats=="NA,NA")]<-""
 expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")],4,5)
 expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")],1,3)
-expsites$temptreats[which(substr(expsites$temptreats,1,nchar(expsites$temptreats))
-sitetable<-subset(expsites,select=c(DatasetID,Location,warming_type, no_spp, data_years,temptreats,preciptreats,AGtemptype,Tsoildepths,Msoildepths,expdesign))
+#expsites$temptreats[which(substr(expsites$temptreats,1,nchar(expsites$temptreats))
+sitetable<-subset(expsites,select=c(DatasetID,Location,warming_type, no_spp, data_years,temptreats,preciptreats,AGtemp,Tsoildepths,Msoildepths,expdesign))
 
 library(xtable)
 print(xtable(sitetable, caption = "Sites included in C3E database",  caption.placement = "top"))
@@ -108,14 +116,6 @@ print(xtable(sitetable, caption = "Sites included in C3E database",  caption.pla
 \clearpage
 \section* {Code for Figures in the manuscript}
 <<label=xtable0, echo=FALSE, results=tex>>=
-rm(list=ls()) 
-options(stringsAsFactors = FALSE)
-
-library(plyr)
-library(dplyr)
-library(car)
-library(lme4)
-library(xtable)
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
 expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
