@@ -8,7 +8,7 @@
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{natbib}
-\usepackage{xtable}
+%\usepackage{xtable}
 
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
@@ -76,63 +76,6 @@ This database is the first to compile daily experimental climate data across mul
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
-
- \begin{figure}[p]
- \centering
-\clearpage
-\section* {Supplemental Tables}
-
-\begin{Schunk}
-\begin{Sinput}
-> rm(list=ls()) 
-> options(stringsAsFactors = FALSE)
-> library(plyr)
-> library(dplyr)
-> library(car)
-> library(lme4)
-> library(xtable)
-> expsites <- read.csv("expsiteinfo.csv", header=TRUE)
-> expsites$data_years<-paste(expsites$data_startyear,expsites$data_endyear, sep="-")
-> expsites$temptreat_1[which(is.na(expsites$temptreat_1))]<-"";expsites$temptreat_2[which(is.na(expsites$temptreat_2))]<-"";expsites$temptreat_3[which(is.na(expsites$temptreat_3))]<-"";expsites$temptreat_4[which(is.na(expsites$temptreat_4))]<-"";expsites$temptreat_5[which(is.na(expsites$temptreat_5))]<-"";expsites$temptreat_6[which(is.na(expsites$temptreat_6))]<-"";expsites$temptreat_7[which(is.na(expsites$temptreat_7))]<-"";expsites$temptreat_8[which(is.na(expsites$temptreat_8))]<-"";expsites$temptreat_9[which(is.na(expsites$temptreat_9))]<-""
-> expsites$temptreats<-paste(expsites$temptreat_1,expsites$temptreat_2,expsites$temptreat_3,expsites$temptreat_4,expsites$temptreat_5,expsites$temptreat_6,expsites$temptreat_7,expsites$temptreat_8,expsites$temptreat_9, sep=",")
-> expsites$preciptreats<-paste(expsites$preciptreat_1,expsites$preciptreat_.1, sep=",")
-> expsites$Tsoildepths<-paste(expsites$Tsoildepth1_cm,expsites$Tsoildepth2_cm, sep=",")
-> expsites$Msoildepths<-paste(expsites$Msoildepth1_cm,expsites$Msoildepth2_cm, sep=",")
-> expsites$AGtemp<-c("canopy","NA",30
-+ ,30,"air","unknown", 22, "NA","surface",22,"NA",14)
-> expsites$preciptreats[which(expsites$preciptreats=="NA,NA")]<-""
-> expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")],4,5)
-> expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")],1,3)
-> #expsites$temptreats[which(substr(expsites$temptreats,1,nchar(expsites$temptreats))
-> sitetable<-subset(expsites,select=c(DatasetID,Location,warming_type, no_spp, data_years,temptreats,preciptreats,AGtemp,Tsoildepths,Msoildepths,expdesign))
-> library(xtable)
-> print(xtable(sitetable, caption = "Sites included in C3E database",  caption.placement = "top"))
-\end{Sinput}
-% latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Tue Mar 28 22:28:15 2017
-\begin{table}[ht]
-\centering
-\begin{tabular}{rlllrlllllll}
-  \hline
- & DatasetID & Location & warming\_type & no\_spp & data\_years & temptreats & preciptreats & AGtemp & Tsoildepths & Msoildepths & expdesign \\ 
-  \hline
-1 & exp01 & Waltham, Massachusetts & above-canopy (infrared) &  18 & 2010-2014 & 1,2.7,4,,,,,, & 150,50 & canopy & 2,10 & 30,NA & complete block \\ 
-  2 & exp02 & Montpelier, France & above-canopy (infrared) &   3 & 2002-2005 & 1.5,3,,,,,,, & 70 & NA & NA,NA & 15,30 & complete block \\ 
-  3 & exp03 & Duke Forest, Hillsborough, NC & above-canopy \& soil warming &  15 & 2009-2012 & 3,5,,,,,,, &  & 30 & 10,NA & NA,NA & random \\ 
-  4 & exp04 & Harvard Forest, Petersham, MA & above-canopy \& soil warming &  15 & 2009-2012 & 3,5,,,,,,, &  & 30 & 10,NA & NA,NA & random \\ 
-  5 & exp05 & Jasper Ridge & above-canopy (infrared) &   9 & 2000-2002 & 1.5,,,,,,,, & 150 & air & 15,NA & 15,NA & block split-plot, plot includes plot and quad \\ 
-  6 & exp06 & Rocky Mountain Biological Laboratory - & above-canopy (infrared) &  11 & 1995-1998 & 1.5,,,,,,,, &  & unknown & 12,25 & 12,25 & stratified \\ 
-  7 & exp07 & Harvard Forest, Petersham, MA & above-canopy (forced air) &  & 2009-2010 & 1.5,2,2.5,3,3.5,4,4.5,5,5.5 &  & 22 & 2,6 & NA,NA & regression \\ 
-  8 & exp08 & Harvard Forest, Petersham, MA & soil warming &   3 & 1993-1993 & 5,,,,,,,, &  & NA & 5,NA & NA,NA & complete block \\ 
-  9 & exp09 & Pensylvania & above-canopy (infrared) &  & 2009-2010 & 2,,,,,,,, & 120 & surface & 3,NA & 8,NA & complete block \\ 
-  10 & exp10 & Duke Forest, Hillsborough, NC & above-canopy (forced air) &  11 & 2010-2012 & 1.5,2,2.5,3,3.5,4,4.5,5,5.5 &  & 22 & 2,6 & NA,NA & regression \\ 
-  11 & exp11 & Rocky Mountain Biological Laboratory & above-canopy (infrared) &  10 & 1991-1994 & 1,,,,,,,, &  & NA & 12,NA & NA,NA & stratified \\ 
-  12 & exp12 & Oklahoma & above-canopy (infrared) &  12 & 2003-2003 & 4,,,,,,,, & 200 & 14 & 7.5,22.5 & 15,NA & unknown \\ 
-   \hline
-\end{tabular}
-\caption{Sites included in C3E database} 
-\end{table}\end{Schunk}
- \label{table:expsites}
- \end{figure}
-\clearpage
-\section* {Code for Figures in the manuscript}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
