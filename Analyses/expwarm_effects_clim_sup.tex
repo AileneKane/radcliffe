@@ -8,6 +8,7 @@
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{natbib}
+\usepackage{pdflscape}
 %\usepackage{xtable}
 
 %\usepackage[backend=bibtex]{biblatex}
@@ -38,10 +39,10 @@
 %\doublespacing
 
 %Optional: I like fancy headers
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhead[LO]{How do climate change experiments actually change climate}
-\fancyhead[RO]{2016}
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\fancyhead[LO]{How do climate change experiments actually change climate}
+%\fancyhead[RO]{2016}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
 
@@ -61,21 +62,44 @@
 
 
 \section* {Climate from Climate Change Experiments Database}
-We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure \ref{fig:map}. 
- \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of Wolkovich et al (2012) for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (available on KNB). We searched the Web of Science (ISI) for Topic=(warm*OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies; combined with 37 warming experiments in the STONE database, there were therefore a total of 314 potential studies. 
- \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) This restricted list consisted of 95 studies, and we then contacted authors to obtain daily (or sub-daily) climate data, as well as the most accurate phenological data. (STONE received 16.7\% of data directly; we recieved XX of data from contacted authors.)
-We obtained daily climate data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly.
- 
-C3E database wasWe compiled daily climate data from 12 experimental climate change studies developed a new database 50studies(TableS1,FigureS1)f=
+\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure 1 in the main text). 
+ \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citep{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
+ \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
+\section* {Additional Analyses}
 
-This database is the first to compile daily experimental climate data across multiple climate change experiments.
-
-\par We present here a new publicly  available database of temperature and soil moisture data compiled from 12 experiments conducted between 1991 and 2014. This Climate from Climate Change Experiments (C3E) database is available at KNB (add citation). Studies are located primarily in North America, with one European study (Figure \ref{fig:map}).
-
-\par To identify climate change experiments and datasets to include in this database, we carried out a full literature review in Web of Science. We followed search criteria from Wolkovich et al 2012: blah blah...to identify all active field warming experiments then obtained daily (or sub-daily) climate data from as many as possible (we obtained data for 12/XX total identified experiments. We are thus able to show, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly. 
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\clearpage
+\section* {Tables}
 
+\begin{landscape}
+
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Fri Apr 14 15:53:49 2017
+\begin{table}[ht]
+\centering
+\caption{Basic xtable} 
+\label{table:sites}
+\begin{tabular}{rllllllll}
+  \hline
+ & study & location & warming\_type & data\_years & warming\_c & precip\_perc & soiltemp\_depth\_cm & soilmois\_depth\_cm \\ 
+  \hline
+1 & exp01 & Waltham, MA, USA & above-canopy (infrared) & 2010-2014 & 1,2.7,4 & 150,50 & 2,10 & 30 \\ 
+  2 & exp02 & Montpelier, France & above-canopy (infrared) & 2002-2005 & 1.5,3 & 70 & NA & 15,30 \\ 
+  3 & exp03 & Duke Forest, North Carolina, USA & above-canopy \& soil warming & 2009-2012 & 3,5 & none & 10 & NA \\ 
+  4 & exp04 & Harvard Forest, Massachusetts, USA & above-canopy \& soil warming & 2009-2012 & 3,5 & none & 10 & NA \\ 
+  5 & exp05 & Jasper Ridge Biological Reserve, CA, USA & above-canopy (infrared) & 2000-2002 & 1 & 150 & 15 & 15 \\ 
+  6 & exp06 & Rocky Mountain Biological Laboratory, CO, USA & above-canopy (infrared) & 1995-1998 & 1 & none & 12,25 & 12,25 \\ 
+  7 & exp07 & Harvard Forest, MA, USA & above-canopy (forced air) & 2009-2010 & 1.5,2,2.5,3,3.5,4,4.5,5,5.5 & none & 2,6 & NA \\ 
+  8 & exp08 & Harvard Forest, MA, USA & soil warming & 1993-1993 & 5 & none & 5 & NA \\ 
+  9 & exp09 & Stone Valley Forest, PA, USA & above-canopy (infrared) & 2009-2010 & 2 & 120 & 3 & 8 \\ 
+  10 & exp10 & Duke Forest, North Carolina, USA & above-canopy (forced air) & 2010-2012 & 1.5,2,2.5,3,3.5,4,4.5,5,5.5 & none & 2,6 & NA \\ 
+  11 & exp11 & Rocky Mountain Biological Laboratory, CO, USA & above-canopy (infrared) & 1991-1994 & 1 & none & 12 & NA \\ 
+  12 & exp12 & Kessler Farm Field Laboratory, OK, USA & above-canopy (infrared) & 2003-2003 & 4 & 200 & 7.5,22.5 & 15 \\ 
+   \hline
+\end{tabular}
+\end{table}
+\end{landscape}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
