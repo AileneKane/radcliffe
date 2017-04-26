@@ -30,7 +30,10 @@ expclim2[which(is.na(expclim2$agtemp_max) & !is.na(expclim2$cantemp_max)),]$agte
 expclim2[which(is.na(expclim2$agtemp_max) & !is.na(expclim2$surftemp_max)),]$agtemp_max<-expclim2[which(is.na(expclim2$agtemp_max) & !is.na(expclim2$surftemp_max)),]$surftemp_max
 #remove site 2 (chuine) because these are not real temp measurements
 expclim2<-expclim2[-which(expclim2$site=="exp02"),]
+#Replace NAs with more helpful information for block and target warming/precip
 expclim2[which(is.na(expclim2$block)),]$block<-"none"
+expclim2[which(is.na(expclim2$target)),]$target<-0
+expclim2[which(is.na(expclim2$preciptreat_amt)),]$preciptreat_amt<-100
 
 #calculate mean above-ground temp
 expclim2$agtemp_mn<-(expclim2$agtemp_max+expclim2$agtemp_min)/2
@@ -60,12 +63,73 @@ tempsm_month<-tempsm_month[order(tempsm_month$site,tempsm_month$block,tempsm_mon
 ##Compare GDDcrit in different treatments
 exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
 exppheno[which(is.na(exppheno$block)),]$block<-"none"
+expclim[which(is.na(expclim$block)),]$block<-"none"
+
 #merge phenology data with experimental climate to get gdd crit
 exp_gdd<-inner_join(exppheno,expclim, by=c("site", "block", "plot","year","doy"), match="all")
 #select out just columns wanted to fit model with soil moisture and aboveground temp
 exp_gdd2<-subset(exp_gdd,selec=c(site,block,plot,event,year,genus,species,genus.species,doy,temptreat,preciptreat,cumgdd_soil,numnas_soilgdd,cumgdd_air,numnas_airgdd))
 #merge in target temp, precip treatment, and annual ag temp and soil moisture values
-exp_gdd3<-left_join(exp_gdd2,tempsm_plots, by=c("site", "block", "plot","year"), match="all")
+exp_gdd3<-left_join(exp_gdd2,tempsm_plots, by=c("site", "block", "plot","year"))
+#replace controls (=NAs) with 0 for warming treatming and precip treatment
+exp_gdd3[which(is.na(exp_gdd3$warm_treat)),]$warm_treat<-0
+exp_gdd3[which(is.na(exp_gdd3$precip_treat)),]$precip_treat<-100
+exp_gdd3<-exp_gdd3[order(exp_gdd3$site,exp_gdd3$block,exp_gdd3$plot,exp_gdd3$year),]
+tempsm_plots<-tempsm_plots[order(tempsm_plots$site,tempsm_plots$block,tempsm_plots$plot,tempsm_plots$year),]
+###Make boxplot of gddcrit by 
+unique(exp_gdd3$genus.species)#241 species
+###Two questions to address:
+#1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
+#2) How does soil moisture affect GDDcrit?
+
+
+#Start by plotting treatment effects on doy and GDD crit
+exp_gdd3$all_treat<-paste(exp_gdd3$warm_treat,exp_gdd3$precip_treat, sep=".")
+sites<-unique(exp_gdd3$site)
+for(i in 1:length(sites)){
+  sitedat<-exp_gdd3[exp_gdd3$site==sites[i],]
+  quartz()
+  par(mfrow=c(1,2))
+  boxplot(sitedat$doy~sitedat$all_treat, main=paste(sites[i],"doy"))
+  if (length(unique(sitedat$cumgdd_air))>1) {
+    boxplot(sitedat$cumgdd_air~sitedat$all_treat, main=paste(sites[i],"gddcrit-air"))
+  } else if(length(unique(sitedat$cumgdd_soil))>1){
+    boxplot(sitedat$cumgdd_soil~sitedat$all_treat, main=paste(sites[i],"gddcrit-soil"))
+  }else (next)
+}
+
+#Now plottreatment effects on soil moisture
+
+for(i in 1:length(sites)){
+  sitedat<-exp_gdd3[exp_gdd3$site==sites[i],]
+  quartz(height=5, width=8)
+  par(mfrow=c(1,2))
+  if (length(unique(sitedat$sm))>1) {
+  boxplot(sitedat$sm~sitedat$all_treat, main=paste(sites[i],"soilmois"), ylab="sm")
+ }
+  if (length(unique(sitedat$cumgdd_air))>1) {
+    plot(sitedat$sm, sitedat$cumgdd_air,type="p",pch=21,main=paste(sites[i],"gddcrit-air"), ylab="gddcrit")
+  } else if(length(unique(sitedat$cumgdd_soil))>1){
+    plot(sitedat$sm,sitedat$cumgdd_soil, type="p",pch=21,main=paste(sites[i],"gddcrit-soil"), ylab="gddcrit")
+  }else (next)
+}
+###Fit lmer model for soil moisture~warming*preciptreatment
+expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
+expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
+expclim4<-subset(expclim2,select=c(site,year,month,doy,block, plot,reported,target,target_cent,preciptreat_amt,preciptreat_amt_cent,agtemp_max,agtemp_min,soilmois1,cumgdd_soil,numnas_soilgdd,cumgdd_air,numnas_airgdd))
+
+write.csv(expclim4,"expclim2.csv", row.names=FALSE)
+
+sm_mod<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod)
+#now fit in stan
+
+###Fit model of GDDcrit~soil moisture
+write.csv(exp_gdd3,"exphengdd.csv")
+
+
+
+
 
 #Analyses started April 11, 2017
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
@@ -288,3 +352,72 @@ sm_gddmod3<-lmer(doy~soilmois1*agtemp_max + (1|site/genus.species)+ (1|year), da
 summary(sm_gddmod3)
 Anova(sm_gddmod3)
 coef(sm_gddmod3)
+
+
+###Analyses for Stan Meeting
+##Model-fitting for soil moisture and phenology analyses
+##Started Apsil 24, 2017
+## housekeeping
+rm(list=ls()) 
+options(stringsAsFactors = FALSE)
+#install.packages('devtools')
+#devtools::install_github('rmcelreath/glmer2stan')
+#options(mc.cores = parallel::detectCores())
+
+## load packages
+library("rstan") # observe startup messages
+library(lme4)
+library(glmer2stan)
+library(devtools)
+
+##Two main questions to address:
+#1) How do experimental warming and precipitation treatments affect soil moisture?
+#2) How does soil moisture affect GDDcrit?
+
+##We will try to fit models to address these questions in lmer and in stan
+#1)How do experimental warming and precipitation treatments affect soil moisture?
+#read in experimental climate data
+setwd("~/git/gelmanhill/expphen")
+expclim<-read.csv("expclim2.csv", header=T)
+head(expclim)
+expclim2<-subset(expclim,select=c(site,year,doy,target_cent,preciptreat_amt_cent,soilmois1))
+expclim2  <- expclim2 [apply(expclim2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+
+#fit model in lmer
+sm_lme4<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_lme4)
+
+# construct subject index --- glmer2stan forces you to manage your own cluster indices
+expclim2$site_index = as.integer(as.factor(expclim2$site))
+expclim2$year_index = as.integer(as.factor(expclim2$year))
+expclim2$doy_index = as.integer(as.factor(expclim2$doy))
+
+# fit with lmer2stan- this did not work! took a really long time....
+sm_stan = lmer2stan(soilmois1~target_cent + (1|site_index), data=expclim2)
+sm_stan
+
+#2) How does soil moisture affect GDDcrit?
+expphen<-read.csv("exphengdd.csv", header=T)
+head(expphen)
+expphen2<-subset(expphen,select=c(site,year,doy,warm_treat,precip_treat,sm,cumgdd_air,genus.species))
+expphen2  <- expphen2 [apply(expphen2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+gdd_lme4A<-lmer(cumgdd_air~sm + (1|site)+ (1|genus.species), REML=FALSE, data=expphen2)
+summary(gdd_lme4A)
+#OR
+gdd_lme4B<-lmer(cumgdd_air~sm + (sm|site)+ (sm|genus.species), REML=FALSE, data=expphen2)
+summary(gdd_lme4B)
+
+#OR
+gdd_lme4C<-lmer(cumgdd_air~sm + (sm|site/genus.species), REML=FALSE, data=expphen2)
+summary(gdd_lme4C)
+###Notes from meeting and stuff to try next:
+###For soil moisture model, treatment model:
+#1) DOY should be nested within site
+#2) may want to model temporal trend in soil moisture
+#3) Use study year, or center calendar year.
+#For GDDcrit model:
+#1) Add random effect of year (nested within site?)
+#2) Think about soil moisture: using mean across whole year, but should you use mean up to point of the event?
+#3) Center everything- year (or use study year), soil moisutre, GDD crit
+#4) check how much overlap in species there is across sites.
+
