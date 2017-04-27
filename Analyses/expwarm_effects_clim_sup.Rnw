@@ -65,39 +65,34 @@
 \par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure 1 in the main text). 
  \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citep{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
  \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
-\section* {Additional Analyses}
-
+\section* {Supplemental Analyses}
+\subsection* {Effects on local climate vary over time and space}
+To test how treatment effects vary spatially (i.e. among blocks within a study) and temporally (i.e. among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed effect models with soil and air temperature as reponse variables (Figure 3 in the main text). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, %Table\ref{table:blocks}
+).  For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, %Table\ref{table:years}
+). 
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+
 \clearpage
+
 \section* {Tables}
 
 \begin{landscape}
 
 <<label=xtable0, echo=FALSE, results=tex>>=
 library(xtable)
-library(dplyr)
+require(dplyr)
 #treats<-read.csv("treats_detail.csv", header=TRUE)
 expsites2 <- read.csv("expsiteinfo.csv", header=TRUE)
 expsites2$Target<-paste(expsites2$temptreat_1,expsites2$temptreat_2,expsites2$temptreat_3, sep=",")
 expsites2$Target[expsites2$Target=="1.5,2,2.5"]<-"1.5-5.5"
 expsites2$Target[grep("NA,NA",expsites2$Target)]<-substr(expsites2$Target[grep("NA,NA",expsites2$Target)],1,3)
-expsites2$Target[grep(",N",expsites2$Target)]<-substr(expsites2$Target[grep("NA,NA",expsites2$Target)],1,1)
-#expsites2$Target<-paste(expsites2$temptreat_1,expsites2$temptreat_2,expsites2$temptreat_3, expsites2$temptreat_4,expsites2$temptreat_5,expsites2$temptreat_6,expsites2$temptreat_7,expsites2$temptreat_8,expsites2$temptreat_9,sep=",")
-#expsites2$Target[grep(",NA,NA,NA,NA,NA,NA,NA,NA",expsites2$Target)]<-substr(expsites2$Target[grep(",NA,NA,NA,NA,NA,NA,NA,NA",expsites2$Target)],1,1)
-
-#expsites2$Target[grep(",NA,NA,NA,NA,NA,NA",expsites2$Target)]<-substr(expsites2$Target[grep(",NA,NA,NA,NA,NA,NA",expsites2$Target)],1,7)
-
-#expsites2$Target[grep(",NA,NA,NA,NA,NA,NA,NA",expsites2$Target)]<-substr(expsites2$Target[grep(",NA,NA,NA,NA,NA,NA,NA",expsites2$Target)],1,3)
-
-#expsites2$Target[grep(",NA,",expsites2$Target)]<-substr(expsites2$Target[grep(",NA,",expsites2$Target)],1,3)
-
-#expsites2$Target[grep(",N",expsites2$Target)]<-substr(expsites2$Target[grep(",N",expsites2$Target)],1,5)
-
-
+expsites2$Target[grep(",N",expsites2$Target)]<-substr(expsites2$Target[grep(",N",expsites2$Target)],1,5)
+expsites2$Target[grep(",N",expsites2$Target)]<-substr(expsites2$Target[grep(",N",expsites2$Target)],1,3)
+expsites2$Target[grep(",N",expsites2$Target)]<-substr(expsites2$Target[grep(",N",expsites2$Target)],1,1)
 expsites2$ptreat<-paste(expsites2$preciptreat_1,expsites2$preciptreat_.1,sep=",")
 
-expsites2$ptreat[expsites2$ptreat=="NA,NA"]<-"none"
+expsites2$ptreat[expsites2$ptreat=="NA,NA"]<-" "
 expsites2$ptreat[expsites2$ptreat=="NA,70"]<-"70"
 expsites2$ptreat[expsites2$ptreat=="150,NA"]<-"150"
 expsites2$ptreat[expsites2$ptreat=="120,NA"]<-"120"
@@ -106,33 +101,45 @@ expsites2$ptreat[expsites2$ptreat=="200,NA"]<-"200"
 expsites2$Tsoildepths<-paste(expsites2$Tsoildepth1_cm,
                              expsites2$Tsoildepth2_cm, sep=",")
 
-expsites2$Tsoildepths[expsites2$Tsoildepths=="NA,NA"]<-"NA"
+expsites2$Tsoildepths[expsites2$Tsoildepths=="NA,NA"]<-" "
 expsites2$Tsoildepths[expsites2$Tsoildepths=="3,NA"]<-"3"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="15,NA"]<-"15"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="12,NA"]<-"12"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="10,NA"]<-"10"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="5,NA"]<-"5"
 expsites2$Msoildepths<-paste(expsites2$Msoildepth1_cm,expsites2$Msoildepth2_cm, sep=",")
-expsites2$Msoildepths[expsites2$Msoildepths=="NA,NA"]<-"NA"
+expsites2$Msoildepths[expsites2$Msoildepths=="NA,NA"]<-" "
 expsites2$Msoildepths[expsites2$Msoildepths=="30,NA"]<-"30"
 expsites2$Msoildepths[expsites2$Msoildepths=="15,NA"]<-"15"
 expsites2$Msoildepths[expsites2$Msoildepths=="8,NA"]<-"8"
 expsites2$sitetreat<-paste(expsites2$DatasetID,expsites2$target,expsites2$preciptreat)
 expsites2$data_years<-paste(expsites2$data_startyear,expsites2$data_endyear,sep="-")
-sitetable<-expsites2 %>% dplyr::select(DatasetID,Location,warming_type,data_years,Target,ptreat,Tsoildepths,Msoildepths)
+
+sitetable<-expsites2 %>% 
+  dplyr::select(DatasetID,Location,warming_type,data_years,Target,ptreat,Tsoildepths,Msoildepths)
 sitetable<- sitetable[order(sitetable$DatasetID),]
 colnames(sitetable)<-c("study","location","warming_type","data_years","warming_c","precip_perc","soiltemp_depth_cm","soilmois_depth_cm")
 #expsites2$AGtemp<-c("canopy","NA",30,30,"air","unknown", 22, "NA","surface",22,"NA",14)
 
 print(xtable(sitetable,
-             caption="Basic xtable",
+             caption="Study sites in C3E database, and methods.",
              label="table:sites"),
-      include.rownames=TRUE,
+      include.rownames=FALSE,
       caption.placement="top"
       )
 @
+%Lizzie suggests keep it portrait, look at her code for adding S, fix column widths,add above-ground temperature type (canopy, surfance), height measured, 
+
+%One table with  basic information: studyid, warming type, citation, data years, 
+%Second table with climate information: soil depth, c
+%Add why we focus on active warming.
+%
 
 \end{landscape}
+\clearpage
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

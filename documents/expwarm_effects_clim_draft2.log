@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  25 APR 2017 12:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  26 APR 2017 12:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -485,7 +485,7 @@ LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <7> not available
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <5> not available
 (Font)              Font shape `TS1/cmr/m/n' tried instead on input line 191.
  [9] [10]) [11]
-<../Analyses/maps/RadcliffeLocations_Experiments.png, id=382, 3212.0pt x 1606.0
+<../Analyses/maps/RadcliffeLocations_Experiments.png, id=383, 3212.0pt x 1606.0
 pt>
 File: ../Analyses/maps/RadcliffeLocations_Experiments.png Graphic file (type pn
 g)
@@ -496,7 +496,7 @@ ed on input line 136.
  [12
 
 ] [13 <../Analyses/maps/RadcliffeLocations_Experiments.png>]
-<../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png, id=397
+<../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png, id=398
 , 1626.075pt x 813.0375pt>
 File: ../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png Gr
 aphic file (type png)
@@ -506,7 +506,7 @@ Package pdftex.def Info: ../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Me
 an_Deviation.png used on input line 143.
 (pdftex.def)             Requested size: 377.62633pt x 188.80595pt.
 
-<../Analyses/figures/blockyearvar.pdf, id=398, 578.16pt x 433.62pt>
+<../Analyses/figures/blockyearvar.pdf, id=399, 578.16pt x 433.62pt>
 File: ../Analyses/figures/blockyearvar.pdf Graphic file (type pdf)
 
 <use ../Analyses/figures/blockyearvar.pdf>
@@ -517,7 +517,7 @@ e 150.
 
  <../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png>] [15 
 <../Analyses/figures/blockyearvar.pdf>] <../Analyses/figures/ShamVSAmbient_all.
-pdf, id=691, 722.7pt x 433.62pt>
+pdf, id=692, 722.7pt x 433.62pt>
 File: ../Analyses/figures/ShamVSAmbient_all.pdf Graphic file (type pdf)
 
 <use ../Analyses/figures/ShamVSAmbient_all.pdf>
@@ -525,7 +525,7 @@ Package pdftex.def Info: ../Analyses/figures/ShamVSAmbient_all.pdf used on inpu
 t line 159.
 (pdftex.def)             Requested size: 377.62633pt x 226.57542pt.
  [16 <../Analyses/figures/ShamVSAmbient_all.pdf>]
-<../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png, id=1012, 1
+<../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png, id=1013, 1
 626.075pt x 1626.075pt>
 File: ../Analyses/figures/Exploratory_TimeSeries_SoilMoist_Deviation.png Graphi
 c file (type png)
@@ -535,7 +535,7 @@ Package pdftex.def Info: ../Analyses/figures/Exploratory_TimeSeries_SoilMoist_D
 eviation.png used on input line 166.
 (pdftex.def)             Requested size: 377.62633pt x 377.61192pt.
 
-<../Analyses/figures/DirIndWarmingEffects.pdf, id=1013, 794.97pt x 289.08pt>
+<../Analyses/figures/DirIndWarmingEffects.pdf, id=1014, 794.97pt x 289.08pt>
 File: ../Analyses/figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
 
 <use ../Analyses/figures/DirIndWarmingEffects.pdf>
@@ -565,11 +565,11 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 176.
 Here is how much of TeX's memory you used:
  8240 strings out of 493089
  126126 string characters out of 6134842
- 213477 words of memory out of 5000000
+ 213562 words of memory out of 5000000
  11470 multiletter control sequences out of 15000+600000
  36947 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,43p,1635b,557s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,43p,1635b,555s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><
@@ -582,10 +582,10 @@ texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
 exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/tex
 live/2015/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on expwarm_effects_clim_draft2.pdf (18 pages, 8431561 bytes).
+Output written on expwarm_effects_clim_draft2.pdf (18 pages, 8432167 bytes).
 PDF statistics:
- 1098 PDF objects out of 1200 (max. 8388607)
- 897 compressed objects within 9 object streams
+ 1099 PDF objects out of 1200 (max. 8388607)
+ 898 compressed objects within 9 object streams
  108 named destinations out of 1000 (max. 500000)
  31 words of extra memory for PDF output out of 10000 (max. 10000000)
 

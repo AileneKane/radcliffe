@@ -1,47 +1,5 @@
 
 
-\begin{figure}[p]
-\centering
-\clearpage
-\section* {Supplemental Tables}
-
-
-<<label=sitestable, echo=TRUE, results=tex>>=
-  rm(list=ls()) 
-options(stringsAsFactors = FALSE)
-
-library(plyr)
-library(dplyr)
-library(car)
-library(lme4)
-library(xtable)
-require(xtable)
-expsites <- read.csv("expsiteinfo.csv", header=TRUE)
-expsites$data_years<-paste(expsites$data_startyear,expsites$data_endyear, sep="-")
-expsites$temptreat_1[which(is.na(expsites$temptreat_1))]<-"";expsites$temptreat_2[which(is.na(expsites$temptreat_2))]<-"";expsites$temptreat_3[which(is.na(expsites$temptreat_3))]<-"";expsites$temptreat_4[which(is.na(expsites$temptreat_4))]<-"";expsites$temptreat_5[which(is.na(expsites$temptreat_5))]<-"";expsites$temptreat_6[which(is.na(expsites$temptreat_6))]<-"";expsites$temptreat_7[which(is.na(expsites$temptreat_7))]<-"";expsites$temptreat_8[which(is.na(expsites$temptreat_8))]<-"";expsites$temptreat_9[which(is.na(expsites$temptreat_9))]<-""
-
-expsites$temptreats<-paste(expsites$temptreat_1,expsites$temptreat_2,expsites$temptreat_3,expsites$temptreat_4,expsites$temptreat_5,expsites$temptreat_6,expsites$temptreat_7,expsites$temptreat_8,expsites$temptreat_9, sep=",")
-expsites$preciptreats<-paste(expsites$preciptreat_1,expsites$preciptreat_.1, sep=",")
-expsites$Tsoildepths<-paste(expsites$Tsoildepth1_cm,expsites$Tsoildepth2_cm, sep=",")
-expsites$Msoildepths<-paste(expsites$Msoildepth1_cm,expsites$Msoildepth2_cm, sep=",")
-expsites$AGtemp<-c("canopy","NA",30
-                   ,30,"air","unknown", 22, "NA","surface",22,"NA",14)
-
-expsites$preciptreats[which(expsites$preciptreats=="NA,NA")]<-""
-expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,1,2)=="NA")],4,5)
-expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")]<-substr(expsites$preciptreats[which(substr(expsites$preciptreats,nchar(expsites$preciptreats)-1,nchar(expsites$preciptreats))=="NA")],1,3)
-#expsites$temptreats[which(substr(expsites$temptreats,1,nchar(expsites$temptreats))
-sitetable<-subset(expsites,select=c(DatasetID,Location,warming_type, no_spp, data_years,temptreats,preciptreats,AGtemp,Tsoildepths,Msoildepths,expdesign))
-
-require(xtable)
-print(xtable(sitetable, caption = "Sites included in C3E database",  caption.placement = "top"))
-@
-  \label{table:expsites}
-\end{figure}
-\clearpage
-
-\section* {Code for Figures in the manuscript}
-<<label=xtable0, echo=FALSE, results=tex>>=
   expclim<-read.csv("expclim.csv", header=T)
   treats<-read.csv("treats_detail.csv", header=T)
   expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
@@ -102,27 +60,7 @@ print(xtable(sitetable, caption = "Sites included in C3E database",  caption.pla
   mtext("Target warming (C)", side=1,line=3,adj=-2.3, cex=1.2)
   
   
-  #Block and Year modeel for figure showing observed vs target warming by year
-  blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
-  blockdat2$block<-as.factor(blockdat2$block)
-  blockdat2$year<-as.factor(blockdat2$year)
-  blockdat2$site<-as.factor(blockdat2$year)
-  blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-  #blockdat2<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
-  testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
-  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  blocktable<-round(Anova(blockmod, type="III"),digits=3)#significant interaction between block and temptreatment suggests the effect of treamtnet differs among blocks within sites/years
-  blocktable2<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=2),blocktable$Df,round(blocktable$Pr,digits=2)))
-  colnames(blocktable2)<-c("Predictor","Chi-squared","df","p")
-  blocktable2$p[which(as.numeric(blocktable2$p)<0.05)]<-"<0.05"
-  testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
-  testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
-  testdat3$year<-as.factor(testdat3$year)
-  yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  yeartable<-Anova(yearmod, type="III")
-  yeartable2<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=2),yeartable$Df,round(yeartable$Pr,digits=4)))
-  colnames(yeartable2)<-c("","Chi-squared","df","p")
-  yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
+
   @
     \section* {Supplemental Tables}
   <<label=xtable0, echo=FALSE, results=tex>>=
@@ -247,8 +185,114 @@ print(xtable(sitetable, caption = "Sites included in C3E database",  caption.pla
   \centering
   \includegraphics{../Analyses/figures/DRAFT_CVBytreatment.pdf} 
   \caption{Ambient controls have reduced variation, compared with structural controls and nearly all warming treatments. I'm not happy with this figure- I've tried so many different ways of showing the (small but) significant differences in temperature range/variance among ambient controls, structural controls and warming treatments, in addition to the statistical analyses described in the text and supplement. Question for everyone (Lizzie/Ben/Miriam/Ann Marie/Aaron/Yann/Isabelle/Jeff/Christy): I need help with ideas for other ways to show this, or thoughts on if the point should be dropped, since the differences are minor and hard to see.} %Aaron: why not just plot variance? From this figure, the reader has to infer variance. This figure also collapses time into a single box. What about illustrating temporal variance (i.e., the time-series)? Which is what the next figure does very effectively. Yann: or maybe subtract the standard deviation of the ambient control from the structural control and finally all warming treatments?
-  %Christy: I think I’m in favor of dropping this figure… I think part of the problem is that there are just a ton of warming levels and your combining across a bunch of different experiments and it’s not clear what is different.%Jeff: I don’t think I understand what’s going on with this figure.  I am not sure what the individual data points are.  Something like Yann’s suggestion sounds reasonable, though.  But a more descriptive legend would really help.   Do we really want to look at some longer-term CV, or do we want something more like DTR?
+  %Christy: I think I$B!G(Bm in favor of dropping this figure$B!D(B I think part of the problem is that there are just a ton of warming levels and your combining across a bunch of different experiments and it$B!G(Bs not clear what is different.%Jeff: I don$B!G(Bt think I understand what$B!G(Bs going on with this figure.  I am not sure what the individual data points are.  Something like Yann$B!G(Bs suggestion sounds reasonable, though.  But a more descriptive legend would really help.   Do we really want to look at some longer-term CV, or do we want something more like DTR?
   % EW: Fig 2 should be in the supplement and I had some ideas to make it look better.
   
   \label{fig:cv}
   \end{figure}
+
+
+
+
+
+#########
+
+<<label=xtableblocks, echo=FALSE, results=tex>>=
+  library(xtable)
+  require(lme4)
+  require(car)
+  expclim<-read.csv("expclim.csv", header=T)
+  treats<-read.csv("treats_detail.csv", header=T)
+  expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
+  expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]#select only plots with unmanipulated precip
+  expclimt$agtemp_min<-expclimt$airtemp_min
+  expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
+  expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
+  expclimt$agtemp_max<-expclimt$airtemp_max
+  expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
+  expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
+  expclimt$agtemp_mean<-(expclimt$agtemp_min+expclimt$agtemp_max)/2
+  #Block and Year varation Analyses for figure showing observed vs target warming by year
+  blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design
+  #ok, try looking at differences in a few different ways:
+  #First, get daily mean agtemp for each plot, find difference by block
+  blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
+  blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
+  blockdat2$block<-as.factor(blockdat2$block)
+  blockdat2$year<-as.factor(blockdat2$year)
+  blockdat2$site<-as.factor(blockdat2$year)
+  blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+  #blockdat2<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
+  testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
+  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod3<-lmer(agtemp_max~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  
+  blocktable<-round(Anova(blockmod, type="III"),digits=3)#significant
+  round(Anova(blockmod2, type="III"),digits=3)
+  blocktable2<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=3),blocktable$Df,round(blocktable$Pr,digits=3)))
+  colnames(blocktable2)<-c("Predictor","Chi-squared","df","p")
+  blocktable2$p[which(as.numeric(blocktable2$p)<0.05)]<-"<0.05"
+  blocktable2$Predictor<-c("(Intercept)","Temp. treatment","Block","Temp. treatment:Block")
+  
+  print(xtable(blocktable2,
+  caption="Spatial linear mixed-effects model for soil temperature",
+  label="table:blocks"),
+  include.rownames=FALSE,
+  caption.placement="top"
+  )
+  testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
+  testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
+  testdat3$year<-as.factor(testdat3$year)
+  yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yeartable<-Anova(yearmod, type="III")
+  yeartable2<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=4),yeartable$Df,round(yeartable$Pr,digits=4)))
+  colnames(yeartable2)<-c("Predictor","Chi-squared","df","p")
+  yeartable2$p[which(as.numeric(yeartable2$p)<0.05)]<-"<0.05"
+  yeartable2$Predictor[which(yeartable2$Predictor=="temptreat")]<-"Temp. treatment"
+  yeartable2$Predictor[which(yeartable2$Predictor=="temptreat:year")]<-"Temp. treatment:Block"
+  yeartable2$Predictor[which(yeartable2$Predictor=="year")]<-"Year"
+  
+  print(xtable(yeartable2,
+  caption="Temporal linear mixed-effects for mean soil temperature",
+  label="table:years"),
+  include.rownames=TRUE,
+  caption.placement="top"
+  )
+  @
+  
+  
+
+
+##Below not working for some reason:
+
+<<label=xtable1, echo=FALSE, results=tex>>=
+  library(xtable)
+  require(lme4)
+  require(car)
+  expclim<-read.csv("expclim.csv", header=T)
+  treats<-read.csv("treats_detail.csv", header=T)
+  expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
+  expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]#select only plots with unmanipulated precip
+  expclimt$agtemp_min<-expclimt$airtemp_min
+  expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
+  expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
+  expclimt$agtemp_max<-expclimt$airtemp_max
+  expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
+  expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
+  expclimt$agtemp_mean<-(expclimt$agtemp_min+expclimt$agtemp_max)/2
+  blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design  #First, get daily mean agtemp for each plot, find difference by block
+  blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
+  blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
+  blockdat2$block<-as.factor(blockdat2$block)
+  blockdat2$year<-as.factor(blockdat2$year)
+  blockdat2$site<-as.factor(blockdat2$year)
+  blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+  testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
+  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod3<-lmer(agtemp_max~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blocktable<-round(Anova(blockmod, type="III"),digits=3)#significant
+  round(Anova(blockmod2, type="III"),digits=3)
+  
+  @

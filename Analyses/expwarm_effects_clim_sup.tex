@@ -65,41 +65,50 @@
 \par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure 1 in the main text). 
  \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citep{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
  \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
-\section* {Additional Analyses}
-
+\section* {Supplemental Analyses}
+\subsection* {Effects on local climate vary over time and space}
+To test how treatment effects vary spatially (i.e. among blocks within a study) and temporally (i.e. among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed effect models with soil and air temperature as reponse variables (Figure 3 in the main text). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, %Table\ref{table:blocks}
+).  For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, %Table\ref{table:years}
+). 
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+
 \clearpage
+
 \section* {Tables}
 
 \begin{landscape}
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Fri Apr 14 15:53:49 2017
+% Wed Apr 26 13:24:19 2017
 \begin{table}[ht]
 \centering
-\caption{Basic xtable} 
+\caption{Study sites in C3E database, and methods.} 
 \label{table:sites}
-\begin{tabular}{rllllllll}
+\begin{tabular}{llllllll}
   \hline
- & study & location & warming\_type & data\_years & warming\_c & precip\_perc & soiltemp\_depth\_cm & soilmois\_depth\_cm \\ 
+study & location & warming\_type & data\_years & warming\_c & precip\_perc & soiltemp\_depth\_cm & soilmois\_depth\_cm \\ 
   \hline
-1 & exp01 & Waltham, MA, USA & above-canopy (infrared) & 2010-2014 & 1,2.7,4 & 150,50 & 2,10 & 30 \\ 
-  2 & exp02 & Montpelier, France & above-canopy (infrared) & 2002-2005 & 1.5,3 & 70 & NA & 15,30 \\ 
-  3 & exp03 & Duke Forest, North Carolina, USA & above-canopy \& soil warming & 2009-2012 & 3,5 & none & 10 & NA \\ 
-  4 & exp04 & Harvard Forest, Massachusetts, USA & above-canopy \& soil warming & 2009-2012 & 3,5 & none & 10 & NA \\ 
-  5 & exp05 & Jasper Ridge Biological Reserve, CA, USA & above-canopy (infrared) & 2000-2002 & 1 & 150 & 15 & 15 \\ 
-  6 & exp06 & Rocky Mountain Biological Laboratory, CO, USA & above-canopy (infrared) & 1995-1998 & 1 & none & 12,25 & 12,25 \\ 
-  7 & exp07 & Harvard Forest, MA, USA & above-canopy (forced air) & 2009-2010 & 1.5,2,2.5,3,3.5,4,4.5,5,5.5 & none & 2,6 & NA \\ 
-  8 & exp08 & Harvard Forest, MA, USA & soil warming & 1993-1993 & 5 & none & 5 & NA \\ 
-  9 & exp09 & Stone Valley Forest, PA, USA & above-canopy (infrared) & 2009-2010 & 2 & 120 & 3 & 8 \\ 
-  10 & exp10 & Duke Forest, North Carolina, USA & above-canopy (forced air) & 2010-2012 & 1.5,2,2.5,3,3.5,4,4.5,5,5.5 & none & 2,6 & NA \\ 
-  11 & exp11 & Rocky Mountain Biological Laboratory, CO, USA & above-canopy (infrared) & 1991-1994 & 1 & none & 12 & NA \\ 
-  12 & exp12 & Kessler Farm Field Laboratory, OK, USA & above-canopy (infrared) & 2003-2003 & 4 & 200 & 7.5,22.5 & 15 \\ 
+exp01 & Waltham, MA & infrared & 2010-2014 & 1,2.7,4 & 150,50 & 2,10 & 30 \\ 
+  exp02 & Montpelier, France & infrared & 2002-2005 & 1.5,3 & 70 &   & 15,30 \\ 
+  exp03 & Duke Forest, NC & forecd air \& soil warming & 2009-2012 & 3,5 &   & 10 &   \\ 
+  exp04 & Harvard Forest, MA & forecd air \& soil warming & 2009-2012 & 3,5 &   & 10 &   \\ 
+  exp05 & Jasper Ridge, CA & infrared & 2000-2002 & 1.5 & 150 & 15 & 15 \\ 
+  exp06 & RMBL, CO & infrared & 1995-1998 & 1.5 &   & 12,25 & 12,25 \\ 
+  exp07 & Harvard Forest, MA & forecd air & 2009-2010 & 1.5-5.5 &   & 2,6 &   \\ 
+  exp08 & Harvard Forest, MA & soil warming & 1993-1993 & 5 &   & 5 &   \\ 
+  exp09 & Stone Valley Forest, PA & infrared & 2009-2010 & 2 & 120 & 3 & 8 \\ 
+  exp10 & Duke Forest, NC & forecd air & 2010-2012 & 1.5-5.5 &   & 2,6 &   \\ 
+  exp11 & RMBL, CO & infrared & 1991-1994 & 1 &   & 12 &   \\ 
+  exp12 & Kessler Farm, OK & infrared & 2003-2003 & 4 & 200 & 7.5,22.5 & 15 \\ 
    \hline
 \end{tabular}
 \end{table}
 \end{landscape}
+\clearpage
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
