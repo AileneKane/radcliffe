@@ -9,7 +9,7 @@
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage{pdflscape}
-%\usepackage{xtable}
+\usepackage{array}
 
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
@@ -59,30 +59,81 @@
 %\tableofcontents      %add a table of contents
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
 
 
 \section* {Climate from Climate Change Experiments Database}
-\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure 1 in the main text). 
+\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
  \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citep{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
- \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
-\section* {Supplemental Analyses}
-\subsection* {Effects on local climate vary over time and space}
-To test how treatment effects vary spatially (i.e. among blocks within a study) and temporally (i.e. among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed effect models with soil and air temperature as reponse variables (Figure 3 in the main text). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, %Table\ref{table:blocks}
-).  For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, %Table\ref{table:years}
+ \par We wanted to focus on active warming studies only, because recent analyses indicate that active warming methods are the most controlled and consistent \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. We therefore removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
+\section* {Statistical Analyses}
+\subsection* {Analysis of effects of time and space on local experimental climate}
+To test how treatment effects vary spatially (i.e. among blocks within a study) and temporally (i.e. among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as reponse variables (Figure 3 in the main text). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, Table\ref{table:blocks_space}
+).  For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, Table\ref{table:blocks_time}
 ). 
+\subsection* {Analysis of effects of infrastructure on local experimental climate}
+To test how infrastructure affects local climate, we compared temperature and soil moisture data from the studies in our database that
+monitored climate in two types of control plots: structural controls (i.e., `shams' or `disturbance controls,'
+which contained all the warming infrastructure, such as soil cables or infrared heating units but with no heat
+applied) and ambient controls with no infrastructure added. These five studies occurred at two sites: Duke Forest and Harvard Forest (Farnsworth et al., 1995; Clark
+et al., 2014a; Marchin et al., 2015; Pelini et al., 2011).
+We fit linear mixed effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as reponse variables (Figure 3 in the main text).
+We found that experimental structures altered above-ground and soil temperatures in opposing ways: aboveground
+temperatures were higher in the structural controls, compared with ambient conditions with no
+structures installed, whereas soil temperatures were lower in the structural controls compared with ambient
+soil (Figure 4a,b). This general pattern was consistent across the dierent temperature models we t (mean,
+minimum, and maximum temperatures), although the magnitude varied across seasons (Figure 4a,b), as well
+as among studies, years, and with ambient temperature (Table XS). In addition, soil moisture was lower in
+structural controls compared with ambient conditions (Figure 4c).
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
 \clearpage
 
+
 \section* {Tables}
 
-\begin{landscape}
+\begin{table}
+  \caption{{\bf Sites included in the C3E database}. Experimental sites
+    correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
+\begin{footnotesize} 
+   \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
+    \hline
+  study id & location & source & data years & warming type \\ \hline
+    exp01 & Waltham, MA, USA & \cite{hoeppner2012} & 2010-2014 & infrared\\ \hline
+    exp02 & Montpelier, France & \cite{morin2010} & 2002-2005 & infrared\\ \hline
+    exp03 & Duke Forest, NC, USA & \cite{clark2014a} & 2009-2012 & forced air and soil warming\\ \hline
+    exp04 & Harvard Forest, MA, USA & \cite{clark2014a} & 2000-2002 & forced air and soil warming\\ \hline
+    exp05 & Jasper Ridge Biological Preserve, CA, USA & \cite{cleland2007} & 2009-2012 & infrared\\ \hline
+    exp06 & Rocky Mountain Biological Lab, CO, USA & \cite{dunne2003} & 1995-1998 & infrared\\ \hline
+    exp07 & Harvard Forest, MA, USA & \cite{pelini2011} & 2009-2010 & forced air \\ \hline
+    exp08 & Harvard Forest, MA, USA & \cite{farnsworth1995} & 1993 & soil warming \\ \hline
+    exp09 & Stone Valley Forest, PA, USA & \cite{rollinson2012} & 2009-2010 & infrared \\ \hline
+    exp10 & Duke Forest, NC, USA & \cite{marchin2015} & 2010-2012 & forced air \\ \hline
+    exp11 & Rocky Mountain Biological Lab, CO, USA & \cite{price1998} & 1991-1994 & infrared\\ \hline
+    exp12 & Kessler Farm Field Laboratory,OK, USA & \cite{sherry2007} & 2003 & infrared\\ \hline
+     \end{tabular}    
+\end{footnotesize} 
+    \end{table}
+\clearpage
 
-<<label=xtable0, echo=FALSE, results=tex>>=
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
+
+
+<<label=xtable1, echo=FALSE, results=tex>>=
+rm(list=ls()) 
+options(stringsAsFactors = FALSE)
+
 library(xtable)
 require(dplyr)
-#treats<-read.csv("treats_detail.csv", header=TRUE)
+setwd("~/git/radcliffe/Analyses")
 expsites2 <- read.csv("expsiteinfo.csv", header=TRUE)
 expsites2$Target<-paste(expsites2$temptreat_1,expsites2$temptreat_2,expsites2$temptreat_3, sep=",")
 expsites2$Target[expsites2$Target=="1.5,2,2.5"]<-"1.5-5.5"
@@ -93,10 +144,11 @@ expsites2$Target[grep(",N",expsites2$Target)]<-substr(expsites2$Target[grep(",N"
 expsites2$ptreat<-paste(expsites2$preciptreat_1,expsites2$preciptreat_.1,sep=",")
 
 expsites2$ptreat[expsites2$ptreat=="NA,NA"]<-" "
-expsites2$ptreat[expsites2$ptreat=="NA,70"]<-"70"
-expsites2$ptreat[expsites2$ptreat=="150,NA"]<-"150"
-expsites2$ptreat[expsites2$ptreat=="120,NA"]<-"120"
-expsites2$ptreat[expsites2$ptreat=="200,NA"]<-"200"
+expsites2$ptreat[expsites2$ptreat=="NA,70"]<-"70,100"
+expsites2$ptreat[expsites2$ptreat=="150,NA"]<-"100,150"
+expsites2$ptreat[expsites2$ptreat=="120,NA"]<-"100,120"
+expsites2$ptreat[expsites2$ptreat=="200,NA"]<-"100,200"
+expsites2$ptreat[expsites2$ptreat=="150,50"]<-"50,100,150"
 
 expsites2$Tsoildepths<-paste(expsites2$Tsoildepth1_cm,
                              expsites2$Tsoildepth2_cm, sep=",")
@@ -114,31 +166,138 @@ expsites2$Msoildepths[expsites2$Msoildepths=="15,NA"]<-"15"
 expsites2$Msoildepths[expsites2$Msoildepths=="8,NA"]<-"8"
 expsites2$sitetreat<-paste(expsites2$DatasetID,expsites2$target,expsites2$preciptreat)
 expsites2$data_years<-paste(expsites2$data_startyear,expsites2$data_endyear,sep="-")
+expsites2$AGtemp<-c("canopy"," ","air (30)","air (30)"," "," ","air (22)", " ","surface","air (22)"," ","air (14)")
 
 sitetable<-expsites2 %>% 
-  dplyr::select(DatasetID,Location,warming_type,data_years,Target,ptreat,Tsoildepths,Msoildepths)
+  dplyr::select(DatasetID,Target,ptreat,AGtemp,Tsoildepths,Msoildepths)
 sitetable<- sitetable[order(sitetable$DatasetID),]
-colnames(sitetable)<-c("study","location","warming_type","data_years","warming_c","precip_perc","soiltemp_depth_cm","soilmois_depth_cm")
-#expsites2$AGtemp<-c("canopy","NA",30,30,"air","unknown", 22, "NA","surface",22,"NA",14)
+colnames(sitetable)<-c("study","warming treatment","precipitation treatment","above-ground temperature","soil temperature depth","soil moisture depth")
+site.table <- xtable(sitetable, caption="Climate measurement details for sites included in the C3E database. We give the target warming treatment (degrees C), precipitation treatment (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth of soil moisture measurement (cm) used in each study.", 
+        label="tab:methods",align=c(
+               "p{0.01\\textwidth}|",
+                "|p{0.08\\textwidth}|",
+               "p{0.11\\textwidth}|",
+               "p{0.11\\textwidth}|",
+               "p{0.13\\textwidth}|",
+               "p{0.15\\textwidth}|",
+               "p{0.13\\textwidth}|"))
 
-print(xtable(sitetable,
-             caption="Study sites in C3E database, and methods.",
-             label="table:sites"),
-      include.rownames=FALSE,
-      caption.placement="top"
-      )
+print(site.table, include.rownames=FALSE, caption.placement="top")
 @
-%Lizzie suggests keep it portrait, look at her code for adding S, fix column widths,add above-ground temperature type (canopy, surfance), height measured, 
 
-%One table with  basic information: studyid, warming type, citation, data years, 
-%Second table with climate information: soil depth, c
-%Add why we focus on active warming.
-%
-
-\end{landscape}
 \clearpage
 
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
 
+<<label=xtable2, echo=FALSE, results=tex>>=
+library(xtable)
+library(lme4)
+library(car)
+require(dplyr)
+options(stringsAsFactors = FALSE)
+
+expclim<-read.csv("expclim.csv", header=T)
+  treats<-read.csv("treats_detail.csv", header=T)
+  expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
+  expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]#select only plots with unmanipulated precip
+  expclimt$agtemp_min<-expclimt$airtemp_min
+  expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
+  expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
+  expclimt$agtemp_max<-expclimt$airtemp_max
+  expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
+  expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
+  expclimt$agtemp_mean<-(expclimt$agtemp_min+expclimt$agtemp_max)/2
+  #Block and Year varation Analyses for figure showing observed vs target warming by year
+  blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design
+  #ok, try looking at differences in a few different ways:
+  #First, get daily mean agtemp for each plot, find difference by block
+  blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
+  blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
+  blockdat2$block<-as.factor(blockdat2$block)
+  blockdat2$year<-as.factor(blockdat2$year)
+  blockdat2$site<-as.factor(blockdat2$year)
+  blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+  #blockdat2<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
+   testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
+  testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
+  testdat3$year<-as.factor(testdat3$year)
+  yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yearmod2<-lmer(agtemp_min~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yearmod3<-lmer(agtemp_max~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+    yeartable<-round(Anova(yearmod, type="III"),digits=3)#
+  yeartable2<-round(Anova(yearmod2, type="III"),digits=3)#
+  yeartable3<-round(Anova(yearmod3, type="III"),digits=3)#
+  colnames(yeartable)[3]<-colnames(yeartable2)[3]<-colnames(yeartable3)[3]<-"p"
+  yeartable$p<-as.numeric(yeartable$p)
+  yeartable2$p<-as.numeric(yeartable2$p)
+  yeartable3$p<-as.numeric(yeartable3$p)
+  yeartable$p[yeartable$p<0.05]<-"<0.05"
+  yeartable2$p[yeartable2$p<0.05]<-"<0.05"
+  yeartable3$p[yeartable3$p<0.05]<-"<0.05"
+
+  yeartableAll<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=3),yeartable$Df,yeartable$p,round(yeartable2$Chisq,digits=3),yeartable2$Df,yeartable2$p,round(yeartable3$Chisq,digits=3),yeartable3$Df,yeartable3$p))
+  colnames(yeartableAll)<-NULL
+  yeartableAll[,1]<-c("(Intercept)","Temp. treatment","Block","Temp. treatment:Block")
+  yeartableAll<-rbind(c("","Soil   Mean","","","Above-ground","Min","","Above-ground","Max",""),c("Predictor","Chi-sq","df","p","Chi-sq","df","p","Chi-sq.","df","p"),yeartableAll)
+  yearspace.table<-xtable(yeartableAll,
+  caption="Temporal linear mixed-effects model for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.",label="table:blocks_time",align=c(
+               "p{0.01\\textwidth}|",
+                "|p{0.23\\textwidth}",
+               "|p{0.12\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.05\\textwidth}|",
+               "p{0.131\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.05\\textwidth}|",
+               "p{0.131\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.05\\textwidth}|"))
+ 
+  print(yearspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))
+ 
+  testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
+  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod3<-lmer(agtemp_max~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blocktable<-round(Anova(blockmod, type="III"),digits=3)#
+  blocktable2<-round(Anova(blockmod2, type="III"),digits=3)#
+  blocktable3<-round(Anova(blockmod3, type="III"),digits=3)#
+  colnames(blocktable)[3]<-colnames(blocktable2)[3]<-colnames(blocktable3)[3]<-"p"
+  blocktable$p<-as.numeric(blocktable$p)
+  blocktable2$p<-as.numeric(blocktable2$p)
+  blocktable3$p<-as.numeric(blocktable3$p)
+  blocktable$p[blocktable$p<0.05]<-"<0.05"
+  blocktable2$p[blocktable2$p<0.05]<-"<0.05"
+  blocktable3$p[blocktable3$p<0.05]<-"<0.05"
+
+  blocktableAll<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=3),blocktable$Df,blocktable$p,round(blocktable2$Chisq,digits=3),blocktable2$Df,blocktable2$p,round(blocktable3$Chisq,digits=3),blocktable3$Df,blocktable3$p))
+  colnames(blocktableAll)<-NULL
+  blocktableAll[,1]<-c("(Intercept)","Temp. treatment","Block","Temp. treatment:Block")
+  blocktableAll<-rbind(c("","Soil   Mean","","","Above-ground","Min","","Above-ground","Max",""),c("Predictor","Chi-sq","df","p","Chi-sq","df","p","Chi-sq.","df","p"),blocktableAll)
+  blockspace.table<-xtable(blocktableAll,
+  caption="Spatial linear mixed-effects model for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.",label="table:blocks_space",align=c(
+               "p{0.01\\textwidth}|",
+                "|p{0.23\\textwidth}",
+               "|p{0.12\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.05\\textwidth}|",
+               "p{0.131\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.05\\textwidth}|",
+               "p{0.131\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.05\\textwidth}|"))
+ 
+  print(blockspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))
+
+  
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

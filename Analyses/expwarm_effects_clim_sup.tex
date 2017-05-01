@@ -9,7 +9,7 @@
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage{pdflscape}
-%\usepackage{xtable}
+\usepackage{array}
 
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
@@ -59,56 +59,132 @@
 %\tableofcontents      %add a table of contents
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
 
 
 \section* {Climate from Climate Change Experiments Database}
-\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table\ref{table:sites}, Figure 1 in the main text). 
+\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. These database of daily climate data allow us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies.The data in this database were collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
  \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citep{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
- \par We wanted to focus on active warming studies only, so we removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
-\section* {Supplemental Analyses}
+ \par We wanted to focus on active warming studies only, because recent analyses indicate that active warming methods are the most controlled and consistent \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. We therefore removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as one additional site that we knew about through personal connections (BACE).  We recieved data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
+\section* {Statistical Analyses}
 \subsection* {Effects on local climate vary over time and space}
-To test how treatment effects vary spatially (i.e. among blocks within a study) and temporally (i.e. among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed effect models with soil and air temperature as reponse variables (Figure 3 in the main text). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, %Table\ref{table:blocks}
-).  For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, %Table\ref{table:years}
+To test how treatment effects vary spatially (i.e. among blocks within a study) and temporally (i.e. among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as reponse variables (Figure 3 in the main text). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, Table\ref{table:blocks_space}
+).  For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, Table\ref{table:blocks_time}
 ). 
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
 \clearpage
 
+
 \section* {Tables}
 
-\begin{landscape}
+\begin{table}
+  \caption{{\bf Sites included in the C3E database}. Experimental sites
+    correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
+\begin{footnotesize} 
+   \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
+    \hline
+  study id & location & source & data years & warming type \\ \hline
+    exp01 & Waltham, MA, USA & \cite{hoeppner2012} & 2010-2014 & infrared\\ \hline
+    exp02 & Montpelier, France & \cite{morin2010} & 2002-2005 & infrared\\ \hline
+    exp03 & Duke Forest, NC, USA & \cite{clark2014a} & 2009-2012 & forced air and soil warming\\ \hline
+    exp04 & Harvard Forest, MA, USA & \cite{clark2014a} & 2000-2002 & forced air and soil warming\\ \hline
+    exp05 & Jasper Ridge Biological Preserve, CA, USA & \cite{cleland2007} & 2009-2012 & infrared\\ \hline
+    exp06 & Rocky Mountain Biological Lab, CO, USA & \cite{dunne2003} & 1995-1998 & infrared\\ \hline
+    exp07 & Harvard Forest, MA, USA & \cite{pelini2011} & 2009-2010 & forced air \\ \hline
+    exp08 & Harvard Forest, MA, USA & \cite{farnsworth1995} & 1993 & soil warming \\ \hline
+    exp09 & Stone Valley Forest, PA, USA & \cite{rollinson2012} & 2009-2010 & infrared \\ \hline
+    exp10 & Duke Forest, NC, USA & \cite{marchin2015} & 2010-2012 & forced air \\ \hline
+    exp11 & Rocky Mountain Biological Lab, CO, USA & \cite{price1998} & 1991-1994 & infrared\\ \hline
+    exp12 & Kessler Farm Field Laboratory,OK, USA & \cite{sherry2007} & 2003 & infrared\\ \hline
+     \end{tabular}    
+\end{footnotesize} 
+    \end{table}
+\clearpage
+
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
+
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 26 13:24:19 2017
+% Mon May  1 12:50:31 2017
 \begin{table}[ht]
 \centering
-\caption{Study sites in C3E database, and methods.} 
-\label{table:sites}
-\begin{tabular}{llllllll}
+\caption{Climate measurement details for sites included in the C3E database. We give the target warming treatment (degrees C), precipitation treatment (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth of soil moisture measurement (cm) used in each study.} 
+\label{tab:methods}
+\begin{tabular}{|p{0.08\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.13\textwidth}|p{0.15\textwidth}|p{0.13\textwidth}|}
   \hline
-study & location & warming\_type & data\_years & warming\_c & precip\_perc & soiltemp\_depth\_cm & soilmois\_depth\_cm \\ 
+study & warming treatment & precipitation treatment & above-ground temperature & soil temperature depth & soil moisture depth \\ 
   \hline
-exp01 & Waltham, MA & infrared & 2010-2014 & 1,2.7,4 & 150,50 & 2,10 & 30 \\ 
-  exp02 & Montpelier, France & infrared & 2002-2005 & 1.5,3 & 70 &   & 15,30 \\ 
-  exp03 & Duke Forest, NC & forecd air \& soil warming & 2009-2012 & 3,5 &   & 10 &   \\ 
-  exp04 & Harvard Forest, MA & forecd air \& soil warming & 2009-2012 & 3,5 &   & 10 &   \\ 
-  exp05 & Jasper Ridge, CA & infrared & 2000-2002 & 1.5 & 150 & 15 & 15 \\ 
-  exp06 & RMBL, CO & infrared & 1995-1998 & 1.5 &   & 12,25 & 12,25 \\ 
-  exp07 & Harvard Forest, MA & forecd air & 2009-2010 & 1.5-5.5 &   & 2,6 &   \\ 
-  exp08 & Harvard Forest, MA & soil warming & 1993-1993 & 5 &   & 5 &   \\ 
-  exp09 & Stone Valley Forest, PA & infrared & 2009-2010 & 2 & 120 & 3 & 8 \\ 
-  exp10 & Duke Forest, NC & forecd air & 2010-2012 & 1.5-5.5 &   & 2,6 &   \\ 
-  exp11 & RMBL, CO & infrared & 1991-1994 & 1 &   & 12 &   \\ 
-  exp12 & Kessler Farm, OK & infrared & 2003-2003 & 4 & 200 & 7.5,22.5 & 15 \\ 
+exp01 & 1,2.7,4 & 50,100,150 & canopy & 2,10 & 30 \\ 
+  exp02 & 1.5,3 & 70,100 &   &   & 15,30 \\ 
+  exp03 & 3,5 &   & air (30) & 10 &   \\ 
+  exp04 & 3,5 &   & air (30) & 10 &   \\ 
+  exp05 & 1.5 & 100,150 &   & 15 & 15 \\ 
+  exp06 & 1.5 &   &   & 12,25 & 12,25 \\ 
+  exp07 & 1.5-5.5 &   & air (22) & 2,6 &   \\ 
+  exp08 & 5 &   &   & 5 &   \\ 
+  exp09 & 2 & 100,120 & surface & 3 & 8 \\ 
+  exp10 & 1.5-5.5 &   & air (22) & 2,6 &   \\ 
+  exp11 & 1 &   &   & 12 &   \\ 
+  exp12 & 4 & 100,200 & air (14) & 7.5,22.5 & 15 \\ 
    \hline
 \end{tabular}
 \end{table}
-\end{landscape}
 \clearpage
 
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
 
-
+% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Mon May  1 12:50:42 2017
+\begin{table}[ht]
+\centering
+\caption{Temporal linear mixed-effects model for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.} 
+\label{table:blocks_time}
+\begin{tabular}{|p{0.23\textwidth}|p{0.12\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|}
+   \hline
+ & Soil   Mean &  &  & Above-ground & Min &  & Above-ground & Max &  \\ 
+   \hline
+Predictor & Chi-sq & df & p & Chi-sq & df & p & Chi-sq. & df & p \\ 
+   \hline
+(Intercept) & 1848.073 & 1 & $<$0.05 & 587.621 & 1 & $<$0.05 & 1474.646 & 1 & $<$0.05 \\ 
+  Temp. treatment & 7.788 & 2 & $<$0.05 & 22.646 & 2 & $<$0.05 & 4.284 & 2 & 0.117 \\ 
+  Block & 2.232 & 1 & 0.135 & 21.236 & 1 & $<$0.05 & 7.93 & 1 & $<$0.05 \\ 
+  Temp. treatment:Block & 22.792 & 2 & $<$0.05 & 6.405 & 2 & $<$0.05 & 3.72 & 2 & 0.156 \\ 
+   \hline
+\end{tabular}
+\end{table}% latex table generated in R 3.2.4 by xtable 1.8-2 package
+% Mon May  1 12:50:44 2017
+\begin{table}[ht]
+\centering
+\caption{Spatial linear mixed-effects model for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.} 
+\label{table:blocks_space}
+\begin{tabular}{|p{0.23\textwidth}|p{0.12\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|}
+   \hline
+ & Soil   Mean &  &  & Above-ground & Min &  & Above-ground & Max &  \\ 
+   \hline
+Predictor & Chi-sq & df & p & Chi-sq & df & p & Chi-sq. & df & p \\ 
+   \hline
+(Intercept) & 270.143 & 1 & $<$0.05 & 52.622 & 1 & $<$0.05 & 357.848 & 1 & $<$0.05 \\ 
+  Temp. treatment & 93.367 & 2 & $<$0.05 & 64.297 & 2 & $<$0.05 & 33.803 & 2 & $<$0.05 \\ 
+  Block & 0.681 & 2 & 0.711 & 14.727 & 2 & $<$0.05 & 22.014 & 2 & $<$0.05 \\ 
+  Temp. treatment:Block & 51.934 & 4 & $<$0.05 & 9.655 & 4 & $<$0.05 & 95.686 & 4 & $<$0.05 \\ 
+   \hline
+\end{tabular}
+\end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
