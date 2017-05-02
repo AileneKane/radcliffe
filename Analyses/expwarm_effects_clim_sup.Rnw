@@ -76,16 +76,14 @@ To test how treatment effects vary spatially (i.e. among blocks within a study) 
 To test how infrastructure affects local climate, we compared temperature and soil moisture data from the studies in our database that
 monitored climate in two types of control plots: structural controls (i.e., `shams' or `disturbance controls,'
 which contained all the warming infrastructure, such as soil cables or infrared heating units but with no heat
-applied) and ambient controls with no infrastructure added. These five studies occurred at two sites: Duke Forest and Harvard Forest (Farnsworth et al., 1995; Clark
-et al., 2014a; Marchin et al., 2015; Pelini et al., 2011).
-We fit linear mixed effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as reponse variables (Figure 3 in the main text).
+applied) and ambient controls with no infrastructure added. These five studies occurred at two sites: Duke Forest and Harvard Forest (\citep{farnsworth1995,clark20141,marchin2015,pelini2011}). We fit linear mixed effect models by month with mean daily soil temperature, minimum and maximum daily air and soil temperature (\citep{farnsworth1995} did not measure these variables so there are only four different studies in these models), and soil moisture as reponse variables. The fixed explanatory variable was control type (sham or ambient). Random effects were site and year nested within site, modeled with a random slopes and random intercept structure. 
 We found that experimental structures altered above-ground and soil temperatures in opposing ways: aboveground
 temperatures were higher in the structural controls, compared with ambient conditions with no
 structures installed, whereas soil temperatures were lower in the structural controls compared with ambient
-soil (Figure 4a,b). This general pattern was consistent across the dierent temperature models we t (mean,
-minimum, and maximum temperatures), although the magnitude varied across seasons (Figure 4a,b), as well
-as among studies, years, and with ambient temperature (Table XS). In addition, soil moisture was lower in
-structural controls compared with ambient conditions (Figure 4c).
+soil (Figure 4 in the main text).  In addition, soil moisture was lower in
+structural controls compared with ambient conditions. These general patterns were consistent across the different temperature models we fit (mean,
+minimum, and maximum soil and air temperatures), although the magnitude varied across months, as well
+as among studies. We show summaries from models fit to the entire year (Tables \ref{table:shamamb_soiltemp},\ref{table:shamamb_airtemp}, \ref{table:shamamb_soilmois}), as well as summaries from models fit to each month of data, as is shown in Figure 4 in the main text ().
 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
@@ -94,7 +92,7 @@ structural controls compared with ambient conditions (Figure 4c).
 
 \section* {Tables}
 
-\begin{table}
+\begin{table}[b]
   \caption{{\bf Sites included in the C3E database}. Experimental sites
     correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
 \begin{footnotesize} 
@@ -213,10 +211,8 @@ expclim<-read.csv("expclim.csv", header=T)
   expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
   expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
   expclimt$agtemp_mean<-(expclimt$agtemp_min+expclimt$agtemp_max)/2
-  #Block and Year varation Analyses for figure showing observed vs target warming by year
+
   blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design
-  #ok, try looking at differences in a few different ways:
-  #First, get daily mean agtemp for each plot, find difference by block
   blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
   blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
   blockdat2$block<-as.factor(blockdat2$block)
@@ -246,7 +242,7 @@ expclim<-read.csv("expclim.csv", header=T)
   yeartableAll[,1]<-c("(Intercept)","Temp. treatment","Block","Temp. treatment:Block")
   yeartableAll<-rbind(c("","Soil   Mean","","","Above-ground","Min","","Above-ground","Max",""),c("Predictor","Chi-sq","df","p","Chi-sq","df","p","Chi-sq.","df","p"),yeartableAll)
   yearspace.table<-xtable(yeartableAll,
-  caption="Temporal linear mixed-effects model for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.",label="table:blocks_time",align=c(
+  caption="Summaries of temporal linear mixed-effects models for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.",label="table:blocks_time",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.23\\textwidth}",
                "|p{0.12\\textwidth}",
@@ -281,7 +277,7 @@ expclim<-read.csv("expclim.csv", header=T)
   blocktableAll[,1]<-c("(Intercept)","Temp. treatment","Block","Temp. treatment:Block")
   blocktableAll<-rbind(c("","Soil   Mean","","","Above-ground","Min","","Above-ground","Max",""),c("Predictor","Chi-sq","df","p","Chi-sq","df","p","Chi-sq.","df","p"),blocktableAll)
   blockspace.table<-xtable(blocktableAll,
-  caption="Spatial linear mixed-effects model for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.",label="table:blocks_space",align=c(
+  caption="Summaries of spatial linear mixed-effects models for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature.",label="table:blocks_space",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.23\\textwidth}",
                "|p{0.12\\textwidth}",
@@ -295,8 +291,106 @@ expclim<-read.csv("expclim.csv", header=T)
                "p{0.05\\textwidth}|"))
  
   print(blockspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))
+@
 
-  
+
+\begin{footnotesize} 
+<<label=xtable3, echo=FALSE, results=tex>>=
+library(xtable)
+library(lme4)
+library(car)
+require(dplyr)
+options(stringsAsFactors = FALSE)
+expclim_controls<-expclim[expclim$temptreat=="0"|expclim$temptreat=="ambient",]
+expclim_controls$temptreat<-factor(expclim_controls$temptreat)
+expclim_controls$airtemp_mean<-(expclim_controls$airtemp_min+expclim_controls$airtemp_max)/2
+sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
+colnames(sitesums)<-c("sham.control","ambient")
+sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
+expclim_controls$year<-as.factor(expclim_controls$year)
+expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
+#first fit annual models
+expclim_cont$temptreat <- relevel(as.factor( expclim_cont$temptreat), ref = "ambient")
+smod_mn<-lmer(soiltemp1_mean~-1+temptreat + (-1+temptreat|site/year), data=expclim_cont, REML=FALSE)
+smod_max<-lmer(soiltemp1_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+smod_min<-lmer(soiltemp1_min~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+mod_max<-lmer(airtemp_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+mod_min<-lmer(airtemp_min~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+mnstable<-cbind(round(summary(smod_mn)$coeff[,1:2],digits=2),rbind(round(Anova(smod_mn),digits=2),c("","","")))#
+maxstable<-cbind(round(summary(smod_max)$coeff[,1:2],digits=2),rbind(round(Anova(smod_max),digits=2),c("","","")))#
+minstable<-cbind(round(summary(smod_min)$coeff[,1:2],digits=2),rbind(round(Anova(smod_min),digits=2),c("","","")))#
+stableAll<-as.data.frame(cbind(mnstable,minstable,maxstable))
+ 
+ rownames(stableAll)<-c("Ambient (Int.)","Structure effect")
+  stmod.table<-xtable(stableAll,
+  caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments.",label="table:shamamb_soiltemp",align=c(
+               "p{0.10\\textwidth}",
+                "|p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.06\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.03\\textwidth}|",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.06\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.03\\textwidth}|",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.06\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.03\\textwidth}|"))
+ 
+addtorow <- list()
+addtorow$pos <- list(0, 0)
+addtorow$command <- c("&\\multicolumn{5}{c}{Mean Soil Temp.} &\\multicolumn{5}{c}{Min Soil Temp.} &\\multicolumn{5}{c}{Max Soil Temp.}\\\\\n","Variable & Est. & SE & Chisq. & df & p & Est. & SE & Chisq. & df & p & Est. & SE & Chisq. & df & p\\\\\n")
+
+print(stmod.table, add.to.row=addtorow, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
+@
+\end{footnotesize} 
+
+<<label=xtable4, echo=FALSE, results=tex>>=
+maxatable<-cbind(round(summary(mod_max)$coeff[,1:2],digits=2),rbind(round(Anova(mod_max),digits=2),c("","","")))#
+minatable<-cbind(round(summary(mod_min)$coeff[,1:2],digits=2),rbind(round(Anova(mod_min),digits=2),c("","","")))#
+atableAll<-as.data.frame(cbind(minatable,maxatable))
+ rownames(atableAll)<-c("Ambient (Int.)","Structure effect")
+
+atmod.table<-xtable(atableAll,caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments.",label="table:shamamb_airtemp",align=c(
+               "p{0.10\\textwidth}",
+                "|p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.06\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.03\\textwidth}|",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.06\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.03\\textwidth}|"))
+addtorow2 <- list()
+addtorow2$pos <- list(0, 0)
+addtorow2$command <- c("&\\multicolumn{5}{c}{Min Air Temp.} &\\multicolumn{5}{c}{Max Air Temp.}\\\\\n","Variable & Est. & SE & Chisq. & df & p & Est. & SE & Chisq. & df & p\\\\\n")
+
+print(atmod.table, add.to.row=addtorow2, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
+@
+
+<<label=xtable5, echo=FALSE, results=tex>>=
+moismod<-lmer(soilmois1~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+moistable<-cbind(round(summary(moismod)$coeff[,1:2],digits=2),rbind(round(Anova(moismod),digits=2),c("","","")))#
+ rownames(moistable)<-c("Ambient (Int.)","Structure effect")
+
+moismod.table<-xtable(moistable,caption="Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture in climate change experiments",label="table:shamamb_soilmois",align=c(
+               "p{0.10\\textwidth}",
+                "|p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.06\\textwidth}",
+               "p{0.01\\textwidth}",
+               "p{0.03\\textwidth}|"))
+addtorow3 <- list()
+addtorow3$pos <- list(0, 0)
+addtorow3$command <- c("&\\multicolumn{5}{c}{Soil Moisture}\\\\\n","Variable & Est. & SE & Chisq. & df & p\\\\\n")
+
+print(moismod.table, add.to.row=addtorow3, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
