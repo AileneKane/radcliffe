@@ -10,7 +10,7 @@
 \usepackage{natbib}
 \usepackage{pdflscape}
 \usepackage{array}
-
+\usepackage{gensymb}
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
   %put your figures in one place
@@ -95,8 +95,7 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
 \section* {Tables}
 
 \begin{table}[b]
-  \caption{{\bf Sites included in the C3E database}. Experimental sites
-    correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
+  \caption{{\bf Sites included in the C3E database}. Experimental sites correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
 \begin{footnotesize} 
    \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
     \hline
@@ -128,14 +127,14 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
 
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:09:33 2017
+% Thu May  4 21:14:18 2017
 \begin{table}[ht]
 \centering
-\caption{Climate measurement details for sites included in the C3E database. We give the target warming treatment (degrees C), precipitation treatment (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth of soil moisture measurement (cm) used in each study.} 
+\caption{Climate measurement details for sites included in the C3E database. We give the target warming treatment(s) (\degree C), precipitation treatment(s) (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth(s) of soil moisture measurement (cm) used in each study.} 
 \label{tab:methods}
-\begin{tabular}{|p{0.08\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.13\textwidth}|p{0.15\textwidth}|p{0.13\textwidth}|}
+\begin{tabular}{|p{0.08\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.13\textwidth}|p{0.15\textwidth}|p{0.13\textwidth}|}
   \hline
-study & warming treatment & precipitation treatment & above-ground temperature & soil temperature depth & soil moisture depth \\ 
+study & warming treatment(s) & precipitation treatment(s) & above-ground temperature & soil temperature depth(s) & soil moisture depth(s) \\ 
   \hline
 exp01 & 1,2.7,4 & 50,100,150 & canopy & 2,10 & 30 \\ 
   exp02 & 1.5,3 & 70,100 &   &   & 15,30 \\ 
@@ -163,48 +162,30 @@ exp01 & 1,2.7,4 & 50,100,150 & canopy & 2,10 & 30 \\
 \newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:09:46 2017
+% Thu May  4 21:14:32 2017
 \begin{table}[ht]
 \centering
-\caption{Summaries of temporal linear mixed-effects models for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature. We list test statistics, degrees of freedom, and p-values for type III Wald chi-square tests of fixed effects in the models. Random effects were site and block nested within site (intercept-only structure).} 
+\caption{Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and block nested within site (intercept-only structure; n=23); total number of observations=17,177.} 
 \label{table:blocks_time}
-\begin{tabular}{|p{0.23\textwidth}|p{0.12\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|}
+\begin{tabular}{|p{0.23\textwidth}|p{0.01\textwidth}|p{0.10\textwidth}p{0.07\textwidth}|p{0.10\textwidth}p{0.07\textwidth}|p{0.10\textwidth}p{0.07\textwidth}|}
    \hline
- & soil   mean &  &  & above-ground & min &  & above-ground & max &  \\ 
+ & soil & mean & above-ground & min & above-ground & max &  \\ 
    \hline
-predictor & chi-sq & df & p & chi-sq & df & p & chi-sq. & df & p \\ 
+predictor & df & chi-sq & p & chi-sq & p & chi-sq & p \\ 
    \hline
-(intercept) & 1848.07 & 1 & $<$0.05 & 587.62 & 1 & $<$0.05 & 1474.65 & 1 & $<$0.05 \\ 
-  temp. treatment & 7.79 & 2 & $<$0.05 & 22.65 & 2 & $<$0.05 & 4.28 & 2 & 0.12 \\ 
-  block & 2.23 & 1 & 0.14 & 21.24 & 1 & $<$0.05 & 7.93 & 1 & $<$0.05 \\ 
-  temp. treatment:block & 22.79 & 2 & $<$0.05 & 6.4 & 2 & $<$0.05 & 3.72 & 2 & 0.16 \\ 
-   \hline
-\end{tabular}
-\end{table}% latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:09:47 2017
-\begin{table}[ht]
-\centering
-\caption{Summaries of spatial linear mixed-effects models for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature. Random effects were site and year nested within site.} 
-\label{table:blocks_space}
-\begin{tabular}{|p{0.23\textwidth}|p{0.12\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|p{0.131\textwidth}p{0.01\textwidth}p{0.05\textwidth}|}
-   \hline
- & soil   mean &  &  & above-ground & min &  & above-ground & max &  \\ 
-   \hline
-predictor & chi-sq & df & p & chi-sq & df & p & chi-sq. & df & p \\ 
-   \hline
-(intercept) & 270.14 & 1 & $<$0.05 & 52.62 & 1 & $<$0.05 & 357.85 & 1 & $<$0.05 \\ 
-  temp. treatment & 93.37 & 2 & $<$0.05 & 64.3 & 2 & $<$0.05 & 33.8 & 2 & $<$0.05 \\ 
-  block & 0.68 & 2 & 0.71 & 14.73 & 2 & $<$0.05 & 22.01 & 2 & $<$0.05 \\ 
-  temp. treatment:block & 51.93 & 4 & $<$0.05 & 9.66 & 4 & 0.05 & 95.69 & 4 & $<$0.05 \\ 
+(intercept) & 1 & 2874.77 & $<$0.001 & 498.64 & $<$0.001 & 629.52 & $<$0.001 \\ 
+  temp. treatment & 2 & 86.45 & $<$0.001 & 42.24 & $<$0.001 & 41.35 & $<$0.001 \\ 
+  block & 5 & 282.38 & $<$0.001 & 113.25 & $<$0.001 & 36.46 & $<$0.001 \\ 
+  temp. treatment:block & 6 & 39.83 & $<$0.001 & 7.49 & 0.278 & 21.07 & 0.002 \\ 
    \hline
 \end{tabular}
 \end{table}\clearpage
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:10:36 2017
+% Thu May  4 21:15:31 2017
 \begin{table}[ht]
 \centering
-\caption{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments. Estimates are the intercept, and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.} 
+\caption{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments. Estimates are the intercept, and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.} 
 \label{table:shamamb_soiltemp}
 \begin{tabular}{|p{0.13\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|}
   \hline
@@ -217,10 +198,10 @@ ambient (int.) & 11.89 & 1.42 & 5.53 & 1 & 0.02 & 10.81 & 1.48 & 3.87 & 1 & 0.05
 \end{tabular}
 \end{table}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:10:36 2017
+% Thu May  4 21:15:31 2017
 \begin{table}[ht]
 \centering
-\caption{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.} 
+\caption{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.} 
 \label{table:shamamb_airtemp}
 \begin{tabular}{|p{0.13\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|}
   \hline
@@ -233,10 +214,10 @@ ambient (int.) & 6.29 & 1.51 & 1.07 & 1 & 0.3 & 17.74 & 1.81 & 0.01 & 1 & 0.91 \
 \end{tabular}
 \end{table}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:10:46 2017
+% Thu May  4 21:15:42 2017
 \begin{table}[ht]
 \centering
-\caption{Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.} 
+\caption{Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.} 
 \label{table:shamamb_soilmois}
 \begin{tabular}{|p{0.13\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|}
   \hline
@@ -251,10 +232,10 @@ ambient (int.) & 21.20 & 1.86 & 89.95 & 1 & 0 \\
 
 %monthly models
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:11:18 2017
+% Thu May  4 21:16:10 2017
 \begin{table}[ht]
 \centering
-\caption{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.} 
+\caption{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.} 
 \label{table:shamamb_stempm}
 \begin{tabular}{|p{0.03\textwidth}|p{0.10\textwidth}|p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|}
   \hline
@@ -303,10 +284,10 @@ ambient (int.) & 21.20 & 1.86 & 89.95 & 1 & 0 \\
 \clearpage
 %Add monthly soil moisutre models
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:11:28 2017
+% Thu May  4 21:16:19 2017
 \begin{table}[ht]
 \centering
-\caption{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on soil moisture, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.} 
+\caption{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on soil moisture, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.} 
 \label{table:shamamb_soilmoism}
 \begin{tabular}{|p{0.03\textwidth}|p{0.10\textwidth}|p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.03\textwidth}|}
   \hline
@@ -342,10 +323,10 @@ predictor & est. & se & chi-sq & df & p & NA \\
 
 %how soil  moisture is affected by warming treatment
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:12:56 2017
+% Thu May  4 21:17:52 2017
 \begin{table}[ht]
 \centering
-\caption{Summary of a linear mixed-effects model of how target warming treatment affects soil moisture in climate change experiments. We excluded precipitation treatments from this analysis. Estimates are the intercept  and coefficient for target warming from the model; se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a type II Wald chi-square tests of the fixed effect (target warming). Random effects were day of year nested within site, with a random slope and intercept structure.} 
+\caption{Summary of a linear mixed-effects model of how target warming treatment affects soil moisture in climate change experiments. We excluded precipitation treatments from this analysis. Estimates are the intercept  and coefficient for target warming from the model; se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a Type II Wald chi-square tests of the fixed effect (target warming). Random effects were day of year nested within site, with a random slope and intercept structure.} 
 \label{table:targsoilmois}
 \begin{tabular}{|p{0.20\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.04\textwidth}|}
   \hline
@@ -356,10 +337,10 @@ intercept & 20.63 & 1.64 &  &  &  \\
    \hline
 \end{tabular}
 \end{table}% latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed May  3 13:13:18 2017
+% Thu May  4 21:18:17 2017
 \begin{table}[ht]
 \centering
-\caption{Summary of a linear mixed-effects model comparing soil moisture in experimentally warmed plots to two different control types, structural and ambient controls. We excluded precipitation treatments from this analysis. Estimates are the intercept (representing mean moisture in ambient controls)  and coefficients from the from the model(i.e. differences between the ambient) for structural controls and warmed plots (of all target warming levels); se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a type II Wald chi-square tests of the fixed effect (warming type). Random effects were day of year nested within site, with a random intercept structure.} 
+\caption{Summary of a linear mixed-effects model comparing soil moisture in experimentally warmed plots to two different control types, structural and ambient controls. We excluded precipitation treatments from this analysis. Estimates are the intercept (representing mean moisture in ambient controls)  and coefficients from the from the model(i.e. differences between the ambient) for structural controls and warmed plots (of all target warming levels); se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a Type II Wald chi-square tests of the fixed effect (warming type). Random effects were day of year nested within site, with a random intercept structure.} 
 \label{table:warmsoilmois}
 \begin{tabular}{|p{0.2\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.06\textwidth}p{0.01\textwidth}p{0.04\textwidth}|}
   \hline

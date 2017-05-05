@@ -10,7 +10,7 @@
 \usepackage{natbib}
 \usepackage{pdflscape}
 \usepackage{array}
-
+\usepackage{gensymb}
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
   %put your figures in one place
@@ -95,8 +95,7 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
 \section* {Tables}
 
 \begin{table}[b]
-  \caption{{\bf Sites included in the C3E database}. Experimental sites
-    correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
+  \caption{{\bf Sites included in the C3E database}. Experimental sites correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
 \begin{footnotesize} 
    \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
     \hline
@@ -171,13 +170,13 @@ expsites2$AGtemp<-c("canopy"," ","air (30)","air (30)"," "," ","air (22)", " ","
 sitetable<-expsites2 %>% 
   dplyr::select(DatasetID,Target,ptreat,AGtemp,Tsoildepths,Msoildepths)
 sitetable<- sitetable[order(sitetable$DatasetID),]
-colnames(sitetable)<-c("study","warming treatment","precipitation treatment","above-ground temperature","soil temperature depth","soil moisture depth")
-site.table <- xtable(sitetable, caption="Climate measurement details for sites included in the C3E database. We give the target warming treatment (degrees C), precipitation treatment (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth of soil moisture measurement (cm) used in each study.", 
+colnames(sitetable)<-c("study","warming treatment(s)","precipitation treatment(s)","above-ground temperature","soil temperature depth(s)","soil moisture depth(s)")
+site.table <- xtable(sitetable, caption="Climate measurement details for sites included in the C3E database. We give the target warming treatment(s) (\\degree C), precipitation treatment(s) (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth(s) of soil moisture measurement (cm) used in each study.", 
         label="tab:methods",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.08\\textwidth}|",
-               "p{0.11\\textwidth}|",
-               "p{0.11\\textwidth}|",
+               "p{0.12\\textwidth}|",
+               "p{0.12\\textwidth}|",
                "p{0.13\\textwidth}|",
                "p{0.15\\textwidth}|",
                "p{0.13\\textwidth}|"))
@@ -225,74 +224,41 @@ expclim<-read.csv("expclim.csv", header=T)
    testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
   testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
   testdat3$year<-as.factor(testdat3$year)
-  yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  yearmod2<-lmer(agtemp_min~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  yearmod3<-lmer(agtemp_max~temptreat*year + (1|site/block), data= testdat3, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-    yeartable<-round(Anova(yearmod, type="III"),digits=2)#
-  yeartable2<-round(Anova(yearmod2, type="III"),digits=2)#
-  yeartable3<-round(Anova(yearmod3, type="III"),digits=2)#
+  yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yearmod2<-lmer(agtemp_min~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yearmod3<-lmer(agtemp_max~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yeartable<-Anova(yearmod, type="III")
+  yeartable2<-Anova(yearmod2, type="III")
+  yeartable3<-Anova(yearmod3, type="III")
   colnames(yeartable)[3]<-colnames(yeartable2)[3]<-colnames(yeartable3)[3]<-"p"
   yeartable$p<-as.numeric(yeartable$p)
   yeartable2$p<-as.numeric(yeartable2$p)
   yeartable3$p<-as.numeric(yeartable3$p)
-  yeartable$p[yeartable$p<0.05]<-"<0.05"
-  yeartable2$p[yeartable2$p<0.05]<-"<0.05"
-  yeartable3$p[yeartable3$p<0.05]<-"<0.05"
-
-  yeartableAll<-as.data.frame(cbind(rownames(yeartable),round(yeartable$Chisq,digits=2),yeartable$Df,yeartable$p,round(yeartable2$Chisq,digits=2),yeartable2$Df,yeartable2$p,round(yeartable3$Chisq,digits=2),yeartable3$Df,yeartable3$p))
+  yeartable$p[yeartable$p>=0.001]<-round(yeartable$p[yeartable$p>=0.001], digits=3)
+  yeartable2$p[yeartable2$p>=0.001]<-round(yeartable2$p[yeartable2$p>=0.001], digits=3)
+  yeartable3$p[yeartable3$p>=0.001]<-round(yeartable3$p[yeartable3$p>=0.001], digits=3)
+  yeartable$p[yeartable$p<0.001]<-"<0.001"
+  yeartable2$p[yeartable2$p<0.001]<-"<0.001"
+  yeartable3$p[yeartable3$p<0.001]<-"<0.001"
+  yeartableAll<-as.data.frame(cbind(rownames(yeartable),yeartable$Df,round(yeartable$Chisq,digits=2),yeartable$p,round(yeartable2$Chisq,digits=2),yeartable2$p,round(yeartable3$Chisq,digits=2),yeartable3$p))
   colnames(yeartableAll)<-NULL
   yeartableAll[,1]<-c("(intercept)","temp. treatment","block","temp. treatment:block")
-  yeartableAll<-rbind(c("","soil   mean","","","above-ground","min","","above-ground","max",""),c("predictor","chi-sq","df","p","chi-sq","df","p","chi-sq.","df","p"),yeartableAll)
+  yeartableAll<-rbind(c("","soil","mean","above-ground","min","above-ground","max"),c("predictor","df","chi-sq","p","chi-sq","p","chi-sq","p"),yeartableAll)
   yearspace.table<-xtable(yeartableAll,
-  caption="Summaries of temporal linear mixed-effects models for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature. We list test statistics, degrees of freedom, and p-values for type III Wald chi-square tests of fixed effects in the models. Random effects were site and block nested within site (intercept-only structure).",label="table:blocks_time",align=c(
-               "p{0.01\\textwidth}|",
+  caption="Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and block nested within site (intercept-only structure; n=23); total number of observations=17,177.",label="table:blocks_time",align=c(
+                "p{0.01\\textwidth}",
                 "|p{0.23\\textwidth}",
-               "|p{0.12\\textwidth}",
-               "p{0.01\\textwidth}",
-               "p{0.05\\textwidth}|",
-               "p{0.131\\textwidth}",
-               "p{0.01\\textwidth}",
-               "p{0.05\\textwidth}|",
-               "p{0.131\\textwidth}",
-               "p{0.01\\textwidth}",
-               "p{0.05\\textwidth}|"))
+                "|p{0.01\\textwidth}",
+               "|p{0.10\\textwidth}",
+               "p{0.07\\textwidth}|",
+               "p{0.10\\textwidth}",
+               "p{0.07\\textwidth}|",
+               "p{0.10\\textwidth}",
+               "p{0.07\\textwidth}|"))
  
   print(yearspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))
  
-  testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
-  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  blockmod3<-lmer(agtemp_max~temptreat*block + (1|site/year), data= testdat, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  blocktable<-round(Anova(blockmod, type="III"),digits=2)#
-  blocktable2<-round(Anova(blockmod2, type="III"),digits=2)#
-  blocktable3<-round(Anova(blockmod3, type="III"),digits=2)#
-  colnames(blocktable)[3]<-colnames(blocktable2)[3]<-colnames(blocktable3)[3]<-"p"
-  blocktable$p<-as.numeric(blocktable$p)
-  blocktable2$p<-as.numeric(blocktable2$p)
-  blocktable3$p<-as.numeric(blocktable3$p)
-  blocktable$p[blocktable$p<0.05]<-"<0.05"
-  blocktable2$p[blocktable2$p<0.05]<-"<0.05"
-  blocktable3$p[blocktable3$p<0.05]<-"<0.05"
-
-  blocktableAll<-as.data.frame(cbind(rownames(blocktable),round(blocktable$Chisq,digits=2),blocktable$Df,blocktable$p,round(blocktable2$Chisq,digits=2),blocktable2$Df,blocktable2$p,round(blocktable3$Chisq,digits=2),blocktable3$Df,blocktable3$p))
-  colnames(blocktableAll)<-NULL
-  blocktableAll[,1]<-c("(intercept)","temp. treatment","block","temp. treatment:block")
-  blocktableAll<-rbind(c("","soil   mean","","","above-ground","min","","above-ground","max",""),c("predictor","chi-sq","df","p","chi-sq","df","p","chi-sq.","df","p"),blocktableAll)
-  blockspace.table<-xtable(blocktableAll,
-  caption="Summaries of spatial linear mixed-effects models for daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature. Random effects were site and year nested within site.",label="table:blocks_space",align=c(
-               "p{0.01\\textwidth}|",
-                "|p{0.23\\textwidth}",
-               "|p{0.12\\textwidth}",
-               "p{0.01\\textwidth}",
-               "p{0.05\\textwidth}|",
-               "p{0.131\\textwidth}",
-               "p{0.01\\textwidth}",
-               "p{0.05\\textwidth}|",
-               "p{0.131\\textwidth}",
-               "p{0.01\\textwidth}",
-               "p{0.05\\textwidth}|"))
- 
-  print(blockspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))
+  
 @
 \clearpage
 
@@ -324,7 +290,7 @@ stableAll<-as.data.frame(cbind(mnstable,minstable,maxstable))
  
  rownames(stableAll)<-c("ambient (int.)","structure eff.")
   stmod.table<-xtable(stableAll,
-  caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments. Estimates are the intercept, and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.",label="table:shamamb_soiltemp",align=c(
+  caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments. Estimates are the intercept, and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.",label="table:shamamb_soiltemp",align=c(
                "|p{0.13\\textwidth}",
                 "|p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
@@ -355,7 +321,7 @@ minatable<-cbind(round(summary(mod_min)$coeff[,1:2],digits=2),rbind(round(Anova(
 atableAll<-as.data.frame(cbind(minatable,maxatable))
  rownames(atableAll)<-c("ambient (int.)","structure eff.")
 
-atmod.table<-xtable(atableAll,caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.",label="table:shamamb_airtemp",align=c(
+atmod.table<-xtable(atableAll,caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.",label="table:shamamb_airtemp",align=c(
                "|p{0.13\\textwidth}",
                 "|p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
@@ -380,7 +346,7 @@ moismod<-lmer(soilmois_perc~temptreat + (temptreat|site/year), data=expclim_cont
 moistable<-cbind(round(summary(moismod)$coeff[,1:2],digits=2),rbind(round(Anova(moismod),digits=2),c("","","")))#
  rownames(moistable)<-c("ambient (int.)","structure eff.")
 
-moismod.table<-xtable(moistable,caption="Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.",label="table:shamamb_soilmois",align=c(
+moismod.table<-xtable(moistable,caption="Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture in climate change experiments. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.",label="table:shamamb_soilmois",align=c(
                "|p{0.13\\textwidth}|",
                 "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
@@ -413,7 +379,7 @@ coefs_allyear<-rbind(coefs_allyear,coefs)
 }
 
   stmod.table<-xtable(coefs_allyear,
-  caption="Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.",label="table:shamamb_stempm",align=c(
+  caption="Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.",label="table:shamamb_stempm",align=c(
                "|p{0.01\\textwidth}|",
                 "|p{0.03\\textwidth}|",
                 "p{0.10\\textwidth}",
@@ -457,7 +423,7 @@ rownames(coefs)<-NULL
 coefs_allyear2<-rbind(coefs_allyear2,coefs)
 }
 colnames(coefs_allyear2)<-c("predictor","est.","se","chi-sq","df","p")
-moismod.table<-xtable(coefs_allyear2,caption="Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on soil moisture, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for type II Wald chi-square tests of fixed effects.",label="table:shamamb_soilmoism",align=c(
+moismod.table<-xtable(coefs_allyear2,caption="Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on soil moisture, fit to each monthly separately, consistent with Figure 4 in the main text. Estimates are the intercept (representing ambient controls) and coefficient (representing structural effects) from the models; se is the standard error for these estimates. We list test statistics, degrees of freedom, and p-values for Type II Wald chi-square tests of fixed effects.",label="table:shamamb_soilmoism",align=c(
                "|p{0.01\\textwidth}|",
                 "|p{0.03\\textwidth}|",
                 "p{0.10\\textwidth}",
@@ -482,7 +448,7 @@ moismod2<-lmer(soilmois_perc~target + (target|site/doy), data=expclimt, REML=FAL
 moistargtable<-cbind(round(summary(moismod2)$coeff[,1:2],digits=2),rbind(c("","",""),round(Anova(moismod2),digits=2)))#
  rownames(moistargtable)<-c("intercept","target")
  colnames(moistargtable)<-c("est.", "se", "chi-sq","df","p")
- moistarg.table<-xtable(moistargtable,caption="Summary of a linear mixed-effects model of how target warming treatment affects soil moisture in climate change experiments. We excluded precipitation treatments from this analysis. Estimates are the intercept  and coefficient for target warming from the model; se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a type II Wald chi-square tests of the fixed effect (target warming). Random effects were day of year nested within site, with a random slope and intercept structure.",label="table:targsoilmois",align=c(
+ moistarg.table<-xtable(moistargtable,caption="Summary of a linear mixed-effects model of how target warming treatment affects soil moisture in climate change experiments. We excluded precipitation treatments from this analysis. Estimates are the intercept  and coefficient for target warming from the model; se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a Type II Wald chi-square tests of the fixed effect (target warming). Random effects were day of year nested within site, with a random slope and intercept structure.",label="table:targsoilmois",align=c(
                "|p{0.20\\textwidth}|",
                 "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
@@ -500,7 +466,7 @@ moiswarmtable<-cbind(round(summary(moismod3)$coeff[,1:2],digits=2),rbind(c("",""
 rownames(moiswarmtable)<-c("ambient (intercept)","structure effect", "warmed effect")
  colnames(moiswarmtable)<-c("est.", "se", "chi-sq","df","p")
  
-moiswarm.table<-xtable(moiswarmtable,caption="Summary of a linear mixed-effects model comparing soil moisture in experimentally warmed plots to two different control types, structural and ambient controls. We excluded precipitation treatments from this analysis. Estimates are the intercept (representing mean moisture in ambient controls)  and coefficients from the from the model(i.e. differences between the ambient) for structural controls and warmed plots (of all target warming levels); se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a type II Wald chi-square tests of the fixed effect (warming type). Random effects were day of year nested within site, with a random intercept structure.",label="table:warmsoilmois",align=c(
+moiswarm.table<-xtable(moiswarmtable,caption="Summary of a linear mixed-effects model comparing soil moisture in experimentally warmed plots to two different control types, structural and ambient controls. We excluded precipitation treatments from this analysis. Estimates are the intercept (representing mean moisture in ambient controls)  and coefficients from the from the model(i.e. differences between the ambient) for structural controls and warmed plots (of all target warming levels); se is the standard error for these estimates. We list the test statistic, degrees of freedom, and p-value for a Type II Wald chi-square tests of the fixed effect (warming type). Random effects were day of year nested within site, with a random intercept structure.",label="table:warmsoilmois",align=c(
                "|p{0.2\\textwidth}|",
                 "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
@@ -508,8 +474,6 @@ moiswarm.table<-xtable(moiswarmtable,caption="Summary of a linear mixed-effects 
                "p{0.01\\textwidth}",
                "p{0.04\\textwidth}|"))
 print(moiswarm.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top")
-
-
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
