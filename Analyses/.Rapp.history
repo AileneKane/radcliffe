@@ -1,197 +1,1991 @@
-library(rjags)#
-library(jagsUI)#
-library(lattice)#
-library(coda)#
-library(boot)
-setwd("~/GitHub/radcliffe/Analyses")#
-expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=T)#
-head(expclim)#
-unique(expclim$temptreat)#
-##want to plot "0" compared to "ambient" in each site#
-##select out just these two treatments for now#
-expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]#
-unique(expclim_controls$site)#
-sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))#
-colnames(sitesums)<-c("sham.control","ambient")#
-sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]#
-sites_con<-sites_con[-which(sites_con=="chuine")]#
-expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]#
-#make figures of sham controls vs. ambient conditions:#
-#mean soil temp:#
-quartz(height=4, width=8)#
-par(mfrow=c(1,5))#
-for (i in 1:length(sites_con)){#
-  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
-  if(length(unique(dat$soiltemp1_mean))==1){next}#
-  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")#
-}
-dat<-expclim_cont[expclim_cont$site==sites_con[i],]
-if(length(unique(dat$soiltemp1_mean))==1){next}
-boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")
-i
-dat
-sites_con
-expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
-unique(expclim_controls$site)
-sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
-sitesums
-head(expclim)
-unique(expclim$temptreat)
-sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
-sitesums
-expclim$temptreat<-as.factor(expclim$temptreat)
-expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
-sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
-sitesums
-expclim$temptreat<-factor(expclim$temptreat)
-expclim_controls<-expclim[expclim$temptreat=="0" | expclim$temptreat=="ambient", ]
-expclim_controls$temptreat<-factor(expclim_controls$temptreat)
-sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
-sitesums
-colnames(sitesums)<-c("sham.control","ambient")
-sites_con<-rownames(sitesums)[!is.na(sitesums$sham.control) & !is.na(sitesums$ambient)]
-sites_con<-sites_con[-which(sites_con=="chuine")]
-expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
-quartz(height=4, width=8)
-for (i in 1:length(sites_con)){#
-  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
-  if(length(unique(dat$soiltemp1_mean))==1){next}#
-  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")#
-}
-expclim_cont
-sites_con
-sitesums
-expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
-unique(expclim_con$site)
-expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
-unique(expclim_cont$site)
-head(expclim_cont)
-quartz(height=4, width=8)#
-par(mfrow=c(1,5))#
-for (i in 1:length(sites_con)){#
-  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
-  if(length(unique(dat$soiltemp1_mean))==1){next}#
-  boxplot(dat$soiltemp1_mean~dat$temptreat, main=paste(sites_con[i]), ylab="Mean soil temp")#
-}
-mod2<-lmer(soiltemp1_mean~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs2<-data.frame(coef(summary(mod2)))
-library(lme4)
-mod2<-lmer(soiltemp1_mean~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs2<-data.frame(coef(summary(mod2)))
-coefs2
-quartz(height=4, width=8)#
-par(mfrow=c(1,5))#
-for (i in 1:length(sites_con)){#
-  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
-  if(length(unique(dat$soiltemp1_min))==1){next}#
-  boxplot(dat$soiltemp1_minn~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")#
+rm(list=ls()) #
+setwd("/users/kharouba/google drive/UBC/synchrony project/analysis/stan_2016")#
+library(rstan)#
+library(shinyStan)#
+#
+#Needed to create parameters#
+Nspp<-37 #(Old Nj)#
+Nstudy <- 13 # number of studies (old Nk)#
+#
+######################
+# True parameter values#
+#a<-1; a[1:Nspp] <- 121.2615 # mean doy - for intercept (OR MU_A)#
+#mu_b<- -0.349733 # mean slope from lm fits (based on hinge data)#
+#sigma_y <- 42.30465 # sd associated with response, doy#
+#sigma_b_spp<-0.737724 #- sd of mean slopes#
+#sigma_b_study<-0.2 #NEED TO FIX#
+#
+mu_a<- 121.2615 # mean doy - for intercept #
+sigma_a<-5#
+mu_b<- -0.349733 # mean slope from lm fits (based on hinge data) (SAME AS B_YR_0)#
+sigma_b<-0.1 #- sd of mean slopes actual=0.737724#
+sigma_y <- 42.30465 # sd associated with response, doy#
+#
+a<-rnorm(Nspp, mu_a, sigma_a);#
+b<-rnorm(Nspp, mu_b, sigma_b); #generate slopes for each species#
+beta_b_spp<-rnorm(Nspp, mu_b, sigma_b); #generate slopes for each species (OR B)#
+mean(beta_b_spp)#
+#
+# Simulate/create the data#
+year_0 <- 1981 # small numbers (like 0) are better than bigger numbers (like 1976)#
+n_data_per_study<- round(runif(Nstudy, 2, 4)) # how many sp per study?#
+#n_data_per_study<- round(runif(Nk, 2, 8)) # how many sp per study?#
+studyid<- rep(1:Nstudy, n_data_per_study) ## Create a vector of study IDs where j-th element gives studyid ID for spp ID j; length of species, every species gets studyid#
+studyid<-c(1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,6,6,7,8,8,9,9,9,10,10,10,10,11,11,11,12,12,13,13,13)#
+Nspp <- length(studyid) # creates number of species based on data structure for studyid#
+#
+#n_data_per_species <- round(runif(Nj, 5, 40)) # how many years per sp.?#
+n_data_per_species <- round(runif(Nspp, 10, 10)) # how many years per sp.?#
+#
+species <- rep(1:Nspp, n_data_per_species) #adds sppid-HK added#
+N <- length(species) #nrow of 'dataframe'#
+#
+uni<-as.data.frame(studyid)#
+uni$species<-unique(species)#
+uni2<-as.data.frame(species)#
+uni3<-merge(uni2, uni, by=c("species"))#
+studyid<-uni3$studyid #needs to be same length as number of lowest level/observations#
+######################
+year <- rep(NA, N)#
+for (j in 1:Nspp){#
+  year[species==j] <- rev(2009 - 1:(n_data_per_species[j])) - year_0 #assign 'new' year for each year/row for each species; from first year of study, number of years that differ from 1976, rev:like sort in descending order-HK added, series of years for each spp#
 }#
-mod3<-lmer(soiltemp1_min~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)#
-coefs3<-data.frame(coef(summary(mod3)))
-quartz(height=4, width=8)#
-par(mfrow=c(1,5))#
-for (i in 1:length(sites_con)){#
-  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
-  if(length(unique(dat$soiltemp1_min))==1){next}#
-  boxplot(dat$soiltemp1_min~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")#
+ypred <- length(N) # Lizzie added#
+for (i in 1:N){ # actual STAN model#
+	s <- species[i] #sppid for each row#
+   ypred[i] <- a[species[s]] + beta_b_spp[species[s]]*year[i]; #mean? prediction is a function of vairance associated with species, fits slope with species random slope model, n loop, create data #
 }#
-mod3<-lmer(soiltemp1_min~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)#
-coefs3<-data.frame(coef(summary(mod3)))
-coefs3
-quartz(height=4, width=8)#
-par(mfrow=c(1,5))#
-for (i in 1:length(sites_con)){#
-  dat<-expclim_cont[expclim_cont$site==sites_con[i],]#
-  if(length(unique(dat$soiltemp1_max))==1){next}#
-  boxplot(dat$soiltemp1_max~dat$temptreat, main=paste(sites_con[i]), ylab="Min soil temp")#
+y <- rnorm(N, ypred, sigma_y);#
+desMat <- model.matrix(object = ~ 1 + year)#
+p<-ncol(desMat)#
+fit_simple<-stan("~/Desktop/huts/threelevelrandomslope2.stan", data=c("N","Nspp","Nstudy","species", "studyid","y","year"), iter=3000, chains=4)
+launch_shinystan(fit_simple)
+library(shinystan)
+launch_shinystan(fit_simple)
+tolower("THE CHRONOLOGICAL CLASSIFICATION OF GRAPEVINE PHENOLOGY")
+nreps = 30  #replicate observations per plot#
+S = 10     #total number of sites#
+J = 4 * S  #total number of plots (4 per site)#
+N = 3*4*10 #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:10), each=4)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0,1)#
+sig_b_site <- rlnorm(S,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
 }#
-mod4<-lmer(soiltemp1_max~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)#
-coefs4<-data.frame(coef(summary(mod4)))
-coefs4
-dim(coefs4)
-soil_difs<-c(coefs2[2,1]-coefs2[1,1],coefs4[2,1]-coefs4[1,1],coefs3[2,1]-coefs3[1,1])
-soildifs
-soil_difs
-colnames(soildifs<-c("mean","min","max"))
-colnames(soildifs)<-c("mean","min","max"))
-colnames(soildifs)<-c("mean","min","max")
-names(soildifs)<-c("mean","min","max")
-soil_difs
-mod_max<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_max<-data.frame(coef(summary(mod_max)))
-mod_min<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_min<-data.frame(coef(summary(mod_min)))
-coefs_max
-mod_max<-lmer(airtemp_max~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_max<-data.frame(coef(summary(mod_max)))
-mod_min<-lmer(airtemp_min~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_min<-data.frame(coef(summary(mod_min)))
-coefs_max
-coefs_min
-air_difs<-c(coefs_air2[2,1]-coefs_air[1,1], coefs_min[2,1]-coefs_min[1,1], coefs_max[2,1]-coefs_max[1,1])
-air_difs<-c(coefs_air[2,1]-coefs_air[1,1], coefs_min[2,1]-coefs_min[1,1], coefs_max[2,1]-coefs_max[1,1])
-coefs_air<-data.frame(coef(summary(mod_air)))
-mod_air<-lmer(airtemp_mean~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_air<-data.frame(coef(summary(mod_air)))
-mod_max<-lmer(airtemp_max~-1+temptreat + (1|site), data=expclim_cont, REML=FALSE)
-air_difs<-c(coefs_air[2,1]-coefs_air[1,1], coefs_min[2,1]-coefs_min[1,1], coefs_max[2,1]-coefs_max[1,1])
-air_difs
-amb_shamdifs<-rbind(soildifs,airdifs)
-amb_shamdifs<-rbind(soil_difs,air_difs)
-amb_shamdifs
-colnames(amb_shamdifs)<-c("mean","min","max")
-colnames(amb_shamdifs)<-c("mean","min","max")
-amb_shamdifs
-amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
-amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
-colnames(amb_shamdifs)<-c("mean","min","max")
-amb_shamdifs
-rownames(amb_shamdifs)<-c("soil","air")
-amb_shamdifs
-rownames(amb_shamdifs)<-c("soiltemp","airtemp")
-amb_shamdifs
-ranef(mod)
-ranef(mod2)
-fixef(mod2)
-coef(mod2)
-mod2a<-lmer(soiltemp1_mean~-1+temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-summary(mod2a)
-coef(mod2a)
-expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
-mod2a<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-summary(mod2a)
-coef(mod2a)
-expclim_cont$temptreat <- relevel(as.factor(expclim_cont$temptreat), ref = "ambient")
-mod_air<-lmer(airtemp_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-coefs_air<-data.frame(coef(summary(mod_air)))
-summary(mod_air)
-coef(mod_Air)
-coef(mod_air)
-coefs_air
-mod4<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs4<-data.frame(coef(summary(mod4)))
-soil_difs<-c(coefs2[2,1],coefs4[2,1],coefs3[2,1])
-mod2<-lmer(soiltemp1_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)#
-coefs2<-data.frame(coef(summary(mod2)))
-mod3<-lmer(soiltemp1_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)#
-coefs3<-data.frame(coef(summary(mod3)))
-mod4<-lmer(soiltemp1_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)#
-coefs4<-data.frame(coef(summary(mod4)))
-soil_difs<-c(coefs2[2,1],coefs4[2,1],coefs3[2,1])
-mod_air<-lmer(airtemp_mean~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_air<-data.frame(coef(summary(mod_air)))
-mod_min<-lmer(airtemp_min~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_min<-data.frame(coef(summary(mod_min)))
-mod_max<-lmer(airtemp_max~temptreat + (1|site), data=expclim_cont, REML=FALSE)
-coefs_max<-data.frame(coef(summary(mod_max)))
-air_difs<-c(coefs_air[2,1], coefs_min[2,1], coefs_max[2,1])
-amb_shamdifs<-rbind(round(soil_difs, digits=3),round(air_difs, digits=3))
-colnames(amb_shamdifs)<-c("mean","min","max")
-rownames(amb_shamdifs)<-c("soiltemp","airtemp")
-amb_shamdifs
-mod2a<-lmer(soiltemp1_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-summary(mod2a)
-coef(mod2a)
-mod_air<-lmer(airtemp_mean~temptreat + (temptreat|site), data=expclim_cont, REML=FALSE)
-coefs_air<-data.frame(coef(summary(mod_air)))
-coef(mod_air)
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)#
+#
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x) #
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4)
+library(rstan)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4)
+nreps = 30  #replicate observations per plot#
+S = 10     #total number of sites#
+J = 4 * S  #total number of plots (4 per site)#
+N = nreps*4*10 #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:10), each=4)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0,1)#
+sig_b_site <- rlnorm(S,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4)
+launch_shinystan(fit_simple)
+launch_shinystan(fitme)
+library(shinystan)
+launch_shinystan(fitme)
+library(rstan)#
+library(shinystan)#
+#
+nreps = 10  #replicate observations per plot#
+S = 10     #total number of sites#
+jreps <- 8#
+J = jreps * S  #total number of plots (4 per site)#
+N = nreps*jreps*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=jreps)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0,1)#
+sig_b_site <- rlnorm(S,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9))
+launch_shinystan(fitme)
+sig_a_site <- rlnorm(S,0,1)
+sig_a_site
+head(y)
+head(yhat)
+yhat
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}
+plot(y~yhat)
+hist(a_site)
+hist(b_site)
+nreps = 10  #replicate observations per plot#
+S = 10     #total number of sites#
+jreps <- 8#
+J = jreps * S  #total number of plots (4 per site)#
+N = nreps*jreps*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=jreps)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0, sig_a)#
+sig_b_site <- rlnorm(S,0, sig_b)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x) #
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9))
+launch_shinystan(fitme)
+library(rstan)#
+library(shinystan)#
+#
+nreps = 10  #replicate observations per plot#
+S = 10     #total number of sites#
+jreps <- 8#
+J = jreps * S  #total number of plots (4 per site)#
+N = nreps*jreps*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=jreps)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0,1)#
+sig_b_site <- rlnorm(S,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)#
+#
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x)
+nreps = 10  #replicate observations per plot#
+S = 10     #total number of sites#
+jreps <- 8#
+J = jreps * S  #total number of plots (4 per site)#
+N = nreps*jreps*S #
+#
+x <- rgamma(N,5,2)
+x
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=jreps)  #list of site numbers for each plot (length J)
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0,1)#
+sig_b_site <- rlnorm(S,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+yhat <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)
+library(rstan)#
+library(shinystan)#
+#
+nreps = 10  #replicate observations per plot#
+S = 10     #total number of sites#
+jreps <- 8#
+J = jreps * S  #total number of plots (4 per site)#
+N = nreps*jreps*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=jreps)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+#draw S=10 site sds for slope and intercept (variability of plots within sites)#
+sig_a_site <- rlnorm(S,0,1)#
+sig_b_site <- rlnorm(S,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+yhat <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)#
+#
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites_unpooledintercepts.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9))
+launch_shinystan(fitme)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5)))
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))
+launch_shinystan(fitme)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))
+library(rstan)#
+library(shinystan)#
+#
+nreps = 20  #replicate observations per plot#
+S = 10     #total number of sites#
+nplots <- 8#
+J = nplots * S  #total number of plots #
+N = nreps*nplots*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=nplots)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+# draw S=10 site sds for slope and intercept (variability of plots within sites)#
+# sig_a_site <- rlnorm(S,0,1)#
+# sig_b_site <- rlnorm(S,0,1)#
+#OR draw a single sd for all sites#
+sig_a_site <- rlnorm(1,0,1)#
+sig_b_site <- rlnorm(1,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+# for (j in 1:J){#
+#   a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+#   b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+# }#
+# Alternatively, assume same within-site variance for all sites#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[1]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[1]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+yhat <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)#
+#
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x) #
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/new/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))#
+#
+mu_a#
+mu_b#
+sig_a#
+sig_b#
+sig_y#
+a_plot#
+b_plot#
+a_site#
+b_site#
+sig_a_site#
+sig_b_site#
+#
+launch_shinystan(fitme)
+fitme1 <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites_unpooledintercepts.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))
+launch_shinystan(fitme)
+launch_shinystan(fitme1)
+#STAN example - plots in sites#
+#
+library(rstan)#
+library(shinystan)#
+#
+nreps = 20  #replicate observations per plot#
+S = 10     #total number of sites#
+nplots <- 8#
+J = nplots * S  #total number of plots #
+N = nreps*nplots*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=nplots)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+# draw S=10 site sds for slope and intercept (variability of plots within sites)#
+# sig_a_site <- rlnorm(S,0,1)#
+# sig_b_site <- rlnorm(S,0,1)#
+#OR draw a single sd for all sites#
+sig_a_site <- rlnorm(1,0,1)#
+sig_b_site <- rlnorm(1,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+# for (j in 1:J){#
+#   a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+#   b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+# }#
+# Alternatively, assume same within-site variance for all sites#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[1]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[1]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+yhat <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)#
+#
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x) #
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))#
+#
+mu_a#
+mu_b#
+sig_a#
+sig_b#
+sig_y#
+a_plot#
+b_plot#
+a_site#
+b_site#
+sig_a_site#
+sig_b_site#
+#
+launch_shinystan(fitme)
+library(rstan)#
+library(shinystan)#
+#
+nreps = 20  #replicate observations per plot#
+S = 10     #total number of sites#
+nplots <- 8#
+J = nplots * S  #total number of plots #
+N = nreps*nplots*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=nplots)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+# draw S=10 site sds for slope and intercept (variability of plots within sites)#
+# sig_a_site <- rlnorm(S,0,1)#
+# sig_b_site <- rlnorm(S,0,1)#
+#OR draw a single sd for all sites#
+sig_a_site <- rlnorm(1,0,1)#
+sig_b_site <- rlnorm(1,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+# for (j in 1:J){#
+#   a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+#   b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+# }#
+# Alternatively, assume same within-site variance for all sites#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[1]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[1]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+yhat <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)#
+#
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x)
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites_unpooledintercepts.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))
+launch_shinystan(fitme)
+print(fitme)
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x) #
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))
+print(fitme)
+launch_shinystan(fitme)
+#call stan model#
+dat <- list(N=N,S=S,J=J,plotnum=plotnum, sitenum=sitenum,y=y,x=x) #
+fitme <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites_unpooledintercepts.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4, control=list(adapt_delta = 0.9, stepsize = 0.5))
+launch_shinystan(fitme)
+mu_b
+mu_b#
+mu_a#
+mu_b#
+sig_a#
+sig_b#
+sig_y#
+a_plot#
+b_plot#
+a_site#
+b_site#
+sig_a_site#
+sig_b_site
+launch_shinystan(fitme)
+library(rstan)#
+library(shinystan)#
+#
+nreps = 20  #replicate observations per plot#
+S = 10     #total number of sites#
+nplots <- 8#
+J = nplots * S  #total number of plots #
+N = nreps*nplots*S #
+#
+x <- rgamma(N,5,2)#
+#
+plotnum <- rep(c(1:J), each=nreps)   #list of plot numbers for each observation (length N)#
+sitenum <- rep(c(1:S), each=nplots)  #list of site numbers for each plot (length J)#
+#
+#mu_a and sig_a are the mean and variance of the intercept across sites#
+mu_a <- 5#
+sig_a <- 2#
+#mu_b and sig_b are the mean and variance of the slope across sites#
+mu_b <- 4#
+sig_b <- 1#
+#draw S=10 site means for slope and intercept#
+a_site <- rnorm(S,mu_a,sig_a)#
+b_site <- rnorm(S,mu_b,sig_b)#
+# draw S=10 site sds for slope and intercept (variability of plots within sites)#
+# sig_a_site <- rlnorm(S,0,1)#
+# sig_b_site <- rlnorm(S,0,1)#
+#OR draw a single sd for all sites#
+sig_a_site <- rlnorm(1,0,1)#
+sig_b_site <- rlnorm(1,0,1)#
+#
+#for each plot, draw the slope and intercept from the appropriate site mean and sd#
+a_plot <- rep(0,J)#
+b_plot <- rep(0,J)#
+# for (j in 1:J){#
+#   a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[sitenum[j]]);#
+#   b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[sitenum[j]]);#
+# }#
+# Alternatively, assume same within-site variance for all sites#
+for (j in 1:J){#
+  a_plot[j] <- rnorm(1,a_site[sitenum[j]], sig_a_site[1]);#
+  b_plot[j] <- rnorm(1,b_site[sitenum[j]], sig_b_site[1]);#
+}#
+#
+#draw three observations from each plot with sd = sig_y#
+sig_y <- 1#
+y <- rep(0,N)#
+yhat <- rep(0,N)#
+for (n in 1:N){#
+  yhat[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n]#
+  y[n] <- a_plot[plotnum[n]] + b_plot[plotnum[n]]*x[n] + rnorm(1,0,sig_y)#
+}#
+#
+#plot data#
+allsites <- rep(c(1:10),each=12) #for plotting, list of site numbers for each obs#
+plot(y~x,col=allsites,type='n')#
+text(x,y,plotnum, cex=0.5, col=allsites)
+fitme.unpool <- stan("~/Documents/git/teaching/stan/usefulcode/Oahu2017/threelevel_plotsinsites_unpooledintercepts.stan", data=c("N","J","S","plotnum", "sitenum","y","x"), iter=4000, chains=4)
+launch_shinystan(fitme_unpool)
+launch_shinystan(fitme.unpool)
+mu_a#
+mu_b#
+sig_a#
+sig_b#
+sig_y#
+a_plot#
+b_plot#
+a_site#
+b_site#
+sig_a_site#
+sig_b_site
+launch_shinystan(fitme.unpool)
+try<-read.csv("~/Desktop/goo.csv", header=TRUE)
+head(try)
+range(goo$TMAX)
+range(try$TMAX)
+try<-read.csv("~/Desktop/goo.csv", header=TRUE, na.strings=-9999)
+hist(try$TMAX)
+try<-read.csv("~/Desktop/goo.csv", header=TRUE, na.strings=-9999.0)
+hist(try$TMAX)
+df <- subset(try, TMAX>0)
+hist(df$TMAX)
+df <- subset(try, TMAX>-50)
+hist(df$TMAX)
+hist(df$TMAX, xmin="TMAX from Metv4 in Database_v4_05022016_IGCA ")
+hist(df$TMAX, xlab="TMAX from Metv4 in Database_v4_05022016_IGCA")
+hist(df$TMAX, xlab="TMAX from Metv4 in Database_v4_05022016_IGCA", main="")
+goo1 <- read.csv("~/Documents/git/projects/vin/davis/data/ets/2016/juice/ETSLabsReport_10445_10142016.csv", header=TRUE)
+goo2 <- read.csv("ETSLabsReport_10445_11212016.csv", header=TRUE)
+goo2 <- read.csv("~/Documents/git/projects/vin/davis/data/ets/2016/juice/ETSLabsReport_10445_11212016.csv", header=TRUE)
+head(goo2)
+hist(goo2$Result)
+par(mfrow=c(1,2))
+hist(as.numeric(goo2$Result))
+hist(as.numeric(goo1$Result))
+unique(goo1$Analysis.Name)
+unique(goo2$Analysis.Name)
+sort(unique(goo2$Analysis.Name))
+sort(unique(goo1$Analysis.Name))
+subset(goo2, Analysis.name=="Comments")
+subset(goo2, Analysis.Name=="Comments")
+dim(goo1)
+dim(goo2)
+goo2 <- read.csv("~/Documents/git/projects/vin/davis/data/ets/2016/juice/ETSLabsReport_10445_11212016.csv", header=TRUE)
+goo1 <- read.csv("~/Documents/git/projects/vin/davis/data/ets/2016/juice/ETSLabsReport_10445_10142016.csv", header=TRUE)
+goo2 <- read.csv("~/Documents/git/projects/vin/davis/data/ets/2016/juice/ETSLabsReport_10445_11212016.csv", header=TRUE)
+dim(goo2)
+library(car)
+?Anova
+## Started 11 December 0216 ###
+## By Lizzie, on a flight to SFO ###
+## It's AGU time of year! ###
+#
+## This file reads in and cleans up climate data related to Adelaide data ###
+#
+## Updated 17 January 2017 to reference new folder structure ###
+#
+## See also wine.diversity.clim.maps.R ###
+#
+## set working directory#
+setwd("~/Documents/git/projects/vin/climateadelaide/analyses")#
+#
+require(plyr,dplyr,tidyr)#
+#
+# Read in the tmin and tmax data using one cell#
+# cc mean climcell (versus climgrid method)#
+cc.max1 <- read.csv ("input/climate/wine_climcell_tmax_1951-1980.csv", header=TRUE)#
+cc.max1$X <- NULL#
+names(cc.max1) <- c("country", "winelat", "winelon", "crulat", "crulon", "1951", "1952", "1953", "1954",#
+    "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",#
+    "1968", "1969", "1970", "1971", "1972", "1973", "1974","1975", "1976", "1977", "1978", "1979", "1980")#
+#
+cc.min1 <- read.csv ("input/climate/wine_climcell_tmin_1951-1980.csv", header=TRUE)#
+cc.min1$X <- NULL#
+names(cc.min1) <- c("country", "winelat", "winelon", "crulat", "crulon", "1951", "1952", "1953", "1954",#
+    "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",#
+    "1968", "1969", "1970", "1971", "1972", "1973", "1974","1975", "1976", "1977", "1978", "1979", "1980")#
+#
+cc.max2 <- read.csv ("input/climate/wine_climcell_tmax_1986-2015.csv", header=TRUE)#
+cc.max2$X <- NULL#
+names(cc.max2) <- c("country", "winelat", "winelon", "crulat", "crulon", "1986", "1987", "1988", "1989",#
+    "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002",#
+    "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015" )#
+#
+cc.min2 <- read.csv ("input/climate/wine_climcell_tmin_1986-2015.csv", header=TRUE)#
+cc.min2$X <- NULL#
+names(cc.min2) <- c("country", "winelat", "winelon", "crulat", "crulon", "1986", "1987", "1988", "1989",#
+    "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002",#
+    "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015" )#
+#
+cc.min1.long <- gather(cc.min1, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cc.max1.long <- gather(cc.max1, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+cc.min2.long <- gather(cc.min2, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cc.max2.long <- gather(cc.max2, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+#
+cc.1 <- inner_join(cc.min1.long, cc.max1.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cc.1$when <- "1951-1980"#
+cc.2 <- inner_join(cc.min2.long, cc.max2.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cc.2$when <- "1986-2015"#
+#
+cc.minmax <-  rbind(cc.1, cc.2)#
+#
+# Read in the tmin and tmax data using grid method#
+# cg mean climgrid (versus climcell method)#
+#
+cg.max1 <- read.csv ("input/climate/wine_climgrid_tmax_1951-1980.csv", header=TRUE)#
+cg.max1$X <- NULL#
+names(cg.max1) <- c("country", "winelat", "winelon", "crulat", "crulon", "1951", "1952", "1953", "1954",#
+    "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",#
+    "1968", "1969", "1970", "1971", "1972", "1973", "1974","1975", "1976", "1977", "1978", "1979", "1980")#
+#
+cg.min1 <- read.csv ("input/climate/wine_climgrid_tmin_1951-1980.csv", header=TRUE)#
+cg.min1$X <- NULL#
+names(cg.min1) <- c("country", "winelat", "winelon", "crulat", "crulon", "1951", "1952", "1953", "1954",#
+    "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",#
+    "1968", "1969", "1970", "1971", "1972", "1973", "1974","1975", "1976", "1977", "1978", "1979", "1980")#
+#
+cg.max2 <- read.csv ("climate/wine_climgrid_tmax_1986-2015.csv", header=TRUE)#
+cg.max2$X <- NULL#
+names(cg.max2) <- c("country", "winelat", "winelon", "crulat", "crulon", "1986", "1987", "1988", "1989",#
+    "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002",#
+    "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015" )#
+#
+cg.min2 <- read.csv ("input/climate/wine_climgrid_tmin_1986-2015.csv", header=TRUE)#
+cg.min2$X <- NULL#
+names(cg.min2) <- c("country", "winelat", "winelon", "crulat", "crulon", "1986", "1987", "1988", "1989",#
+    "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002",#
+    "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015" )#
+#
+cg.min1.long <- gather(cg.min1, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cg.max1.long <- gather(cg.max1, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+cg.min2.long <- gather(cg.min2, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cg.max2.long <- gather(cg.max2, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+#
+cg.1 <- inner_join(cg.min1.long, cg.max1.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cg.1$when <- "1951-1980"#
+cg.2 <- inner_join(cg.min2.long, cg.max2.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cg.2$when <- "1986-2015"#
+#
+cg.minmax <-  rbind(cg.1, cg.2)
+library(gdata) # for read.xls#
+library(scales) # for alpha#
+#
+d <- read.xls("~/Documents/git/projects/treegarden/budreview/ospree/mergearchive/growthchambers_litreview_2016-06-16.xlsx", sheet=6)
+tapply(d$temp_day, d$datasetID, mean)#
+tapply(d$temp_night, d$datasetID, mean) #
+#
+d.cutt <- d[d$material == "cuttings",]#
+d.cutt <- d.cutt[order(d.cutt$temp_day),]#
+#
+d.seed <- d[d$material != "cuttings",]#
+d.seed <- d.seed[order(d.seed$temp_day),]
+head(d)
+# library(gdata) # for read.xls#
+library(scales) # for alpha#
+#
+d <- read.csv("~/Documents/git/projects/treegarden/budreview/ospree/mergearchive/growthchambers_litreview_2016-06-16.csv", header=TRUE)
+tapply(d$temp_day, d$datasetID, mean)
+head(d)
+tapply(d$forcetemp, d$datasetID, mean) # emw changed from temp_day#
+tapply(d$forcetemp_night, d$datasetID, mean)
+d.cutt <- d[d$material == "cuttings",]#
+d.cutt <- d.cutt[order(d.cutt$temp_day),]#
+#
+d.seed <- d[d$material != "cuttings",]#
+d.seed <- d.seed[order(d.seed$temp_day),]
+par(mfrow = c(2, 1))#
+#
+plot(d.cutt$forcetemp, pch = "-", col = cols[1], cex = 2, #
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")#
+points(d.cutt$forcetemp_night, pch = "-", col = cols[2], cex = 2)#
+abline(h = mean(d.cutt[d.cutt$forcetemp != d.cutt$forcetemp_night,"forcetemp"]), col = cols[1], lty = 2)#
+abline(h = mean(d.cutt[d.cutt$forcetemp != d.cutt$forcetemp_night,"forcetemp_night"]), col = cols[2], lty = 2)#
+#
+title(main = "Day/night temps by study")#
+legend("topleft", bty = "n", "Cuttings")#
+plot(d.seed$forcetemp, pch = "-", col = cols[1], cex = 2,#
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")#
+points(d.seed$forcetemp_night, pch = "-", col = cols[2], cex = 2)#
+abline(h = mean(d.seed[d.seed$forcetemp != d.seed$forcetemp_night,"forcetemp"]), col = cols[1], lty = 2)#
+abline(h = mean(d.seed[d.seed$forcetemp != d.seed$forcetemp_night,"forcetemp_night"]), col = cols[2], lty = 2)#
+legend("topleft", bty = "n", "Seedlings or other material")
+cols = alpha(c("red", "blue"), 0.5)
+tapply(d$forcetemp, d$datasetID, mean)#
+tapply(d$forceforcetemp_night, d$datasetID, mean) #
+#
+d.cutt <- d[d$material == "cuttings",]#
+d.cutt <- d.cutt[order(d.cutt$forcetemp),]#
+#
+d.seed <- d[d$material != "cuttings",]#
+d.seed <- d.seed[order(d.seed$forcetemp),]#
+#
+cols = alpha(c("red", "blue"), 0.5)
+head(d)
+tapply(d$forcetemp_night, d$datasetID, mean)
+d.cutt <- d[d$material == "cuttings",]#
+d.cutt <- d.cutt[order(d.cutt$forcetemp),]#
+#
+d.seed <- d[d$material != "cuttings",]#
+d.seed <- d.seed[order(d.seed$forcetemp),]#
+#
+cols = alpha(c("red", "blue"), 0.5)#
+pdf("Lit review check.pdf", height = 8, width = 6)#
+#
+par(mfrow = c(2, 1))#
+#
+plot(d.cutt$forcetemp, pch = "-", col = cols[1], cex = 2, #
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")#
+points(d.cutt$forcetemp_night, pch = "-", col = cols[2], cex = 2)#
+abline(h = mean(d.cutt[d.cutt$forcetemp != d.cutt$forcetemp_night,"forcetemp"]), col = cols[1], lty = 2)#
+abline(h = mean(d.cutt[d.cutt$forcetemp != d.cutt$forcetemp_night,"forcetemp_night"]), col = cols[2], lty = 2)#
+#
+title(main = "Day/night temps by study")#
+legend("topleft", bty = "n", "Cuttings")#
+plot(d.seed$forcetemp, pch = "-", col = cols[1], cex = 2,#
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")#
+points(d.seed$forcetemp_night, pch = "-", col = cols[2], cex = 2)#
+abline(h = mean(d.seed[d.seed$forcetemp != d.seed$forcetemp_night,"forcetemp"]), col = cols[1], lty = 2)#
+abline(h = mean(d.seed[d.seed$forcetemp != d.seed$forcetemp_night,"forcetemp_night"]), col = cols[2], lty = 2)#
+legend("topleft", bty = "n", "Seedlings or other material")
+head(d.cutt)
+plot(d.cutt$forcetemp, pch = "-", col = cols[1], cex = 2, #
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")
+plot(d.cutt$forcetemp, 	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")
+plot(d.cutt$forcetemp, col = cols[1], cex = 2, #
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")
+plot(d.cutt$forcetemp, pch = "-", col = cols[1], #
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")
+pdf("Lit review check.pdf", height = 8, width = 6)#
+#
+par(mfrow = c(2, 1))#
+#
+plot(d.cutt$forcetemp, pch = "-", col = cols[1],  #
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")#
+points(d.cutt$forcetemp_night, pch = "-", col = cols[2])#
+abline(h = mean(d.cutt[d.cutt$forcetemp != d.cutt$forcetemp_night,"forcetemp"]), col = cols[1], lty = 2)#
+abline(h = mean(d.cutt[d.cutt$forcetemp != d.cutt$forcetemp_night,"forcetemp_night"]), col = cols[2], lty = 2)#
+#
+title(main = "Day/night temps by study")#
+legend("topleft", bty = "n", "Cuttings")#
+plot(d.seed$forcetemp, pch = "-", col = cols[1],#
+	ylim = c(-5, 35),#
+	xlab = "Study",#
+	ylab = "Temp")#
+points(d.seed$forcetemp_night, pch = "-", col = cols[2])#
+abline(h = mean(d.seed[d.seed$forcetemp != d.seed$forcetemp_night,"forcetemp"]), col = cols[1], lty = 2)#
+abline(h = mean(d.seed[d.seed$forcetemp != d.seed$forcetemp_night,"forcetemp_night"]), col = cols[2], lty = 2)#
+legend("topleft", bty = "n", "Seedlings or other material")
+?aggregate
+?as.matrix
+as.dist
+?as.dist
+??as.data.frame
+### Cat - Chapter 11 Exercise 4 - 7 Feb 2017#
+library(arm)#
+library(lme4)#
+library(ggplot2)#
+library(dplyr)#
+library(tidyr)#
+#
+# Clear Workspace#
+rm(list=ls()) #
+options(stringsAsFactors=FALSE)
+try <- gather()
+goo <_ "Acer_rubrum,_stage_09sm"
+goo <- "Acer_rubrum,_stage_09sm"
+spname <- sub("_", " ", strsplit(goo))
+spname <- sub("_", " ", strsplit(goo)[[1]][1])
+goo
+spname <- sub("_", " ", strsplit(goo, ",")[[1]][1])
+spname
+stages <- unlist(lapply(strsplit(goo, ","), function(x)#
+                    x[2]))
+stages
+stages <- unlist(regmatches(stages, gregexpr("[0-9]{2}", stages)))
+stages
+stages <- sort(gsub("^[0]", "", stages))
+stages
+goo <- "Acer_rubrum,_stage_09sm"#
+goo#
+spname <- sub("_", " ", strsplit(goo, ",")[[1]][1])#
+spname#
+stages <- unlist(lapply(strsplit(goo, ","), function(x) x[2]))#
+stages#
+stages <- unlist(regmatches(stages, gregexpr("[0-9]{2}", stages)))#
+stages#
+stages <- sort(gsub("^[0]", "", stages)) # deleted this line!#
+stages
+data(cars)#
+#
+# fit a linear regression of distance on speed#
+m <- lm( dist ~ speed , data=cars )#
+#
+# estimated coefficients from the model#
+coef(m)#
+#
+# plot residuals against speed#
+plot( resid(m) ~ speed , data=cars )
+library(rethinking)
+library(car)
+?Anova
+## R code 5.1#
+# load data#
+library(rethinking)#
+data(WaffleDivorce)#
+d <- WaffleDivorce
+install.packages(c('devtools','coda','mvtnorm','loo'))#
+library(devtools)#
+install_github("rmcelreath/rethinking")
+## R code 5.1#
+# load data#
+library(rethinking)#
+data(WaffleDivorce)#
+d <- WaffleDivorce
+## R code 5.3#
+d$Marriage.s <- (d$Marriage - mean(d$Marriage))/sd(d$Marriage)#
+m5.2 <- map(#
+    alist(#
+        Divorce ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR * Marriage.s ,#
+        a ~ dnorm( 10 , 10 ) ,#
+        bR ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) , data = d )
+prec(m5.3)
+precis(m5.3)
+precis(m5.2)
+## R code 5.4#
+m5.3 <- map(#
+    alist(#
+        Divorce ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR*Marriage.s + bA*MedianAgeMarriage.s ,#
+        a ~ dnorm( 10 , 10 ) ,#
+        bR ~ dnorm( 0 , 1 ) ,#
+        bA ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) ,#
+    data = d )#
+precis( m5.3 )
+# standardize predictor#
+d$MedianAgeMarriage.s <- (d$MedianAgeMarriage-mean(d$MedianAgeMarriage))/#
+    sd(d$MedianAgeMarriage)
+## R code 5.3#
+d$Marriage.s <- (d$Marriage - mean(d$Marriage))/sd(d$Marriage)#
+m5.2 <- map(#
+    alist(#
+        Divorce ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR * Marriage.s ,#
+        a ~ dnorm( 10 , 10 ) ,#
+        bR ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) , data = d )#
+#
+precis(m5.2)
+## R code 5.3#
+d$Marriage.s <- (d$Marriage - mean(d$Marriage))/sd(d$Marriage)#
+m5.2 <- map(#
+    alist(#
+        Divorce ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR * Marriage.s ,#
+        a ~ dnorm( 10 , 10 ) ,#
+        bR ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) , data = d )
+## R code 5.3#
+d$Marriage.s <- (d$Marriage - mean(d$Marriage))/sd(d$Marriage)#
+m5.2 <- map(#
+    alist(#
+        Divorce ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR * Marriage.s ,#
+        a ~ dnorm( 10 , 10 ) ,#
+        bR ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) , data = d )#
+#
+precis(m5.3)
+## R code 5.4#
+m5.3 <- map(#
+    alist(#
+        Divorce ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR*Marriage.s + bA*MedianAgeMarriage.s ,#
+        a ~ dnorm( 10 , 10 ) ,#
+        bR ~ dnorm( 0 , 1 ) ,#
+        bA ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) ,#
+    data = d )#
+precis( m5.3 )
+plot( precis(m5.3) )
+## R code 5.6#
+m5.4 <- map(#
+    alist(#
+        Marriage.s ~ dnorm( mu , sigma ) ,#
+        mu <- a + b*MedianAgeMarriage.s ,#
+        a ~ dnorm( 0 , 10 ) ,#
+        b ~ dnorm( 0 , 1 ) ,#
+        sigma ~ dunif( 0 , 10 )#
+    ) ,#
+    data = d )
+R code 5.7#
+# compute expected value at MAP, for each State#
+mu <- coef(m5.4)['a'] + coef(m5.4)['b']*d$MedianAgeMarriage.s#
+# compute residual for each State#
+m.resid <- d$Marriage.s - mu
+## R code 5.8#
+plot( Marriage.s ~ MedianAgeMarriage.s , d , col=rangi2 )#
+abline( m5.4 )#
+# loop over States#
+for ( i in 1:length(m.resid) ) {#
+    x <- d$MedianAgeMarriage.s[i] # x location of line segment#
+    y <- d$Marriage.s[i] # observed endpoint of line segment#
+    # draw the line segment#
+    lines( c(x,x) , c(mu[i],y) , lwd=0.5 , col=col.alpha("black",0.7) )#
+}
+data(Howell1)#
+d <- Howell1#
+str(d)#
+#
+## R code 5.45#
+m5.15 <- map(#
+  alist(#
+    height ~ dnorm( mu , sigma ) ,#
+    mu <- a + bm*male ,#
+    a ~ dnorm( 178 , 100 ) ,#
+    bm ~ dnorm( 0 , 10 ) ,#
+    sigma ~ dunif( 0 , 50 )#
+  ) ,#
+  data=d )#
+precis(m5.15)#
+#
+## R code 5.46#
+post <- extract.samples(m5.15)#
+mu.male <- post$a + post$bm#
+PI(mu.male)#
+#
+## R code 5.47#
+m5.15b <- map(#
+  alist(#
+    height ~ dnorm( mu , sigma ) ,#
+    mu <- af*(1-male) + am*male ,#
+    af ~ dnorm( 178 , 100 ) ,#
+    am ~ dnorm( 178 , 100 ) ,#
+    sigma ~ dunif( 0 , 50 )#
+  ) ,#
+  data=d )#
+#Check the estimates for this model:#
+postb <- extract.samples(m5.15b)#
+mu.maleb <- postb$am#
+mu.femaleb <- postb$af#
+PI(mu.maleb)#
+PI(mu.femaleb)
+?gl
+nlabgroups = 10#
+nsp = 80#
+#
+nforce== 10 # or make distribution?#
+nphoto = 6#
+nchill = 10#
+#
+rep = 10 # within each combination of treatments. #
+#
+ntot = nlabgroups*nforce*nphoto*nchill*rep # 792 rows; 22k rows across species
+nforce = 10 # or make distribution?
+ntot = nlabgroups*nforce*nphoto*nchill*rep # 792 rows; 22k rows across species
+ntot
+library(rethinking)#
+data(rugged)#
+d <- rugged#
+d$log_gdp <- log(d$rgdppc_2000)#
+dd <- d[ complete.cases(d$rgdppc_2000) , ]
+?map2stan
+## R code 8.5#
+m8.1stan <- map2stan(#
+    alist(#
+        log_gdp ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR*rugged + bA*cont_africa + bAR*rugged*cont_africa ,#
+        a ~ dnorm(0,100),#
+        bR ~ dnorm(0,10),#
+        bA ~ dnorm(0,10),#
+        bAR ~ dnorm(0,10),#
+        sigma ~ dcauchy(0,2)#
+    ) ,#
+    data=dd.trim )
+## R code 8.4#
+dd.trim <- dd[ , c("log_gdp","rugged","cont_africa") ]#
+str(dd.trim)#
+#
+## R code 8.5#
+m8.1stan <- map2stan(#
+    alist(#
+        log_gdp ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR*rugged + bA*cont_africa + bAR*rugged*cont_africa ,#
+        a ~ dnorm(0,100),#
+        bR ~ dnorm(0,10),#
+        bA ~ dnorm(0,10),#
+        bAR ~ dnorm(0,10),#
+        sigma ~ dcauchy(0,2)#
+    ) ,#
+    data=dd.trim )
+stancode(m8.1stan)
+## Quick look at map2stan ###
+## from the Rethinking package ###
+## Taken from rethinking.R with minor edits by Lizzie ###
+#
+## R code 8.2#
+library(rethinking)#
+data(rugged)#
+d <- rugged#
+d$log_gdp <- log(d$rgdppc_2000)#
+dd <- d[ complete.cases(d$rgdppc_2000) , ]#
+#
+## R code 8.4#
+dd.trim <- dd[ , c("log_gdp","rugged","cont_africa") ]#
+str(dd.trim)#
+#
+## R code 8.5#
+m8.1stan <- map2stan(#
+    alist(#
+        log_gdp ~ dnorm( mu , sigma ) ,#
+        mu <- a + bR*rugged + bA*cont_africa + bAR*rugged*cont_africa ,#
+        a ~ dnorm(0,100),#
+        bR ~ dnorm(0,10),#
+        bA ~ dnorm(0,10),#
+        bAR ~ dnorm(0,10),#
+        sigma ~ dcauchy(0,2)#
+    ) ,#
+    data=dd.trim )#
+#
+## magic! See the underlying Stan code#
+stancode(m8.1stan)#
+#
+## R code 8.6#
+precis(m8.1stan)#
+#
+## R code 8.7#
+m8.1stan_4chains <- map2stan( m8.1stan , chains=4 , cores=4 )#
+precis(m8.1stan_4chains)#
+#
+## R code 8.8#
+post <- extract.samples( m8.1stan )#
+str(post)#
+#
+## R code 8.9#
+pairs(post)#
+#
+## R code 8.10#
+pairs(m8.1stan)#
+#
+## R code 8.11#
+show(m8.1stan)#
+#
+## R code 8.12#
+plot(m8.1stan)
+tmp <- installed.packages()#
+installedpkgs <- as.vector(tmp[is.na(tmp[,"Priority"]), 1])#
+save(installedpkgs, file="installed_old.rda")
+load("installed_old.rda")
+tmp <- installed.packages()#
+installedpkgs.new <- as.vector(tmp[is.na(tmp[,"Priority"]), 1])#
+missing <- setdiff(installedpkgs, installedpkgs.new)#
+install.packages(missing)#
+update.packages()
+library(rstan)
+nsite = 2#
+nsp = 28#
+#
+nwarm = 2#
+nphoto = 2#
+nchill = 3#
+#
+rep = 10 # within each combination of treatments. #
+#
+(ntot = nsite*nwarm*nphoto*nchill*rep) # 792 rows; 22k rows across species#
+#
+# Build up the data frame#
+site = gl(nsite, rep, length = ntot)#
+#
+warm = gl(nwarm, rep*nsite, length = ntot)#
+photo = gl(nphoto, rep*nsite*nwarm, length = ntot)#
+chill = gl(nchill, rep*nsite*nwarm*nphoto, length = ntot)#
+#
+chill1 = ifelse(chill == 2, 1, 0) #
+chill2 = ifelse(chill == 3, 1, 0) #
+#
+treatcombo = paste(warm, photo, chill1, chill2, sep = "_")#
+#
+(d <- data_frame(site, warm, photo, chill1, chill2, treatcombo))#
+#
+###### Set up differences for each level#
+sitediff = 2 #
+warmdiff = -20 # days earlier from 1 to 2#
+photodiff = -14#
+chill1diff = -20#
+chill2diff = -19#
+#
+# interactions. 9 two-way interactions#
+sitewarm = 0#
+sitephoto = 0#
+sitechill1 = -1 # similar to stan results#
+sitechill2 = -2#
+warmphoto = 3.5 # positive 3.5. So at the warm level, the effect of longer days is muted by 3.5 days.#
+warmchill1 = 11 # both positive ~ 10. #
+warmchill2 = 9#
+photochill1 = 0.1 # from stan results#
+photochill2 = 1#
+#
+######## SD for each treatment#
+sitediff.sd = 1.5 #
+warmdiff.sd = 1 #
+photodiff.sd = 1#
+chill1diff.sd = 1.5#
+chill2diff.sd = 2#
+#
+# interactions. 9 two-way interactions#
+sitewarm.sd = 1#
+sitephoto.sd = 1#
+sitechill1.sd = 2 #
+sitechill2.sd = 2#
+warmphoto.sd = 1#
+warmchill1.sd = 1.5#
+warmchill2.sd = 1.5#
+photochill1.sd = 1#
+photochill2.sd = 1#
+mm <- model.matrix(~(site+warm+photo+chill1+chill2)^2, data.frame(site, warm, photo))#
+# remove last column, chill1 x chill2, empty#
+mm <- mm[,-grep("chill1:chill2", colnames(mm))]#
+colnames(mm)#
+#
+coeff <- c(1, sitediff, warmdiff, photodiff, chill1diff, chill2diff, #
+           sitewarm, sitephoto, sitechill1, sitechill2,#
+           warmphoto, warmchill1, warmchill2,#
+           photochill1, photochill2#
+)#
+bb <- rnorm(n = length(warm), mean = mm %*% coeff, sd = 1) # should be able to do sd = mm %*% sd.coeff as well, with a different sd for each parameter.#
+#
+(fake <- data_frame(bb, site, warm, photo, chill1, chill2))#
+#
+summary(lm(bb ~ (site+warm+photo+chill1+chill2)^2, data = fake)) # sanity check #
+#
+##### Again, now with species now.#
+#
+baseinter = 35 # baseline intercept across all species #
+spint <- baseinter + c(1:nsp)-mean(1:nsp) # different intercepts by species#
+#
+fake <- vector()#
+#
+for(i in 1:nsp){ # loop over species, as these are the random effect modeled#
+  # Give species different difference values, drawn from normal. Could make dataframe of diffs and diff.sds, and use apply..#
+  coeff <- c(spint[i], #
+             rnorm(1, sitediff, sitediff.sd),#
+             rnorm(1, warmdiff, warmdiff.sd),#
+             rnorm(1, photodiff, photodiff.sd), #
+             rnorm(1, chill1diff, chill1diff.sd),#
+             rnorm(1, chill2diff, chill2diff.sd), #
+             rnorm(1, sitewarm, sitewarm.sd), #
+             rnorm(1, sitephoto, sitephoto.sd),#
+             rnorm(1, sitechill1, sitechill1.sd),#
+             rnorm(1, sitechill2, sitechill2.sd),#
+             rnorm(1, warmphoto, warmphoto.sd),#
+             rnorm(1, warmchill1, warmchill1.sd),#
+             rnorm(1, warmchill2, warmchill2.sd),#
+             rnorm(1, photochill1, photochill1.sd),#
+             rnorm(1, photochill2, photochill2.sd)#
+  )#
+  bb <- rnorm(n = length(warm), mean = mm %*% coeff, sd = 0.1)#
+  fakex <- data.frame(bb, sp = i, site, warm, photo, chill1, chill2)#
+  fake <- rbind(fake, fakex)  #
+  }#
+#
+summary(lm(bb ~ (site+warm+photo+chill1+chill2)^2, data = fake)) # sanity check
+treatcombo
+head(d)
+d <- data_frame(site, warm, photo, chill1, chill2, treatcombo)
+d <- data_frame(site, warm, photo, chill1, chill2, treatcombo)(d <- data_frame(site, warm, photo, chill1, chill2, treatcombo))
+(d <- data_frame(site, warm, photo, chill1, chill2, treatcombo))
+(d <- data.frame(site, warm, photo, chill1, chill2, treatcombo))
+# Build up the data frame#
+site = gl(nsite, rep, length = ntot)#
+#
+warm = gl(nwarm, rep*nsite, length = ntot)#
+photo = gl(nphoto, rep*nsite*nwarm, length = ntot)#
+chill = gl(nchill, rep*nsite*nwarm*nphoto, length = ntot)#
+#
+chill1 = ifelse(chill == 2, 1, 0) #
+chill2 = ifelse(chill == 3, 1, 0) #
+#
+treatcombo = paste(warm, photo, chill1, chill2, sep = "_")#
+#
+(d <- data.frame(site, warm, photo, chill1, chill2, treatcombo))#
+#
+###### Set up differences for each level#
+sitediff = 2 #
+warmdiff = -20 # days earlier from 1 to 2#
+photodiff = -14#
+chill1diff = -20#
+chill2diff = -19#
+#
+# interactions. 9 two-way interactions#
+sitewarm = 0#
+sitephoto = 0#
+sitechill1 = -1 # similar to stan results#
+sitechill2 = -2#
+warmphoto = 3.5 # positive 3.5. So at the warm level, the effect of longer days is muted by 3.5 days.#
+warmchill1 = 11 # both positive ~ 10. #
+warmchill2 = 9#
+photochill1 = 0.1 # from stan results#
+photochill2 = 1#
+#
+######## SD for each treatment#
+sitediff.sd = 1.5 #
+warmdiff.sd = 1 #
+photodiff.sd = 1#
+chill1diff.sd = 1.5#
+chill2diff.sd = 2#
+#
+# interactions. 9 two-way interactions#
+sitewarm.sd = 1#
+sitephoto.sd = 1#
+sitechill1.sd = 2 #
+sitechill2.sd = 2#
+warmphoto.sd = 1#
+warmchill1.sd = 1.5#
+warmchill2.sd = 1.5#
+photochill1.sd = 1#
+photochill2.sd = 1#
+mm <- model.matrix(~(site+warm+photo+chill1+chill2)^2, data.frame(site, warm, photo))#
+# remove last column, chill1 x chill2, empty#
+mm <- mm[,-grep("chill1:chill2", colnames(mm))]#
+colnames(mm)#
+#
+coeff <- c(1, sitediff, warmdiff, photodiff, chill1diff, chill2diff, #
+           sitewarm, sitephoto, sitechill1, sitechill2,#
+           warmphoto, warmchill1, warmchill2,#
+           photochill1, photochill2#
+)#
+bb <- rnorm(n = length(warm), mean = mm %*% coeff, sd = 1) # should be able to do sd = mm %*% sd.coeff as well, with a different sd for each parameter.#
+#
+(fake <- data_frame(bb, site, warm, photo, chill1, chill2))#
+#
+summary(lm(bb ~ (site+warm+photo+chill1+chill2)^2, data = fake)) # sanity check #
+#
+##### Again, now with species now.#
+#
+baseinter = 35 # baseline intercept across all species #
+spint <- baseinter + c(1:nsp)-mean(1:nsp) # different intercepts by species#
+#
+fake <- vector()#
+#
+for(i in 1:nsp){ # loop over species, as these are the random effect modeled#
+  # Give species different difference values, drawn from normal. Could make dataframe of diffs and diff.sds, and use apply..#
+  coeff <- c(spint[i], #
+             rnorm(1, sitediff, sitediff.sd),#
+             rnorm(1, warmdiff, warmdiff.sd),#
+             rnorm(1, photodiff, photodiff.sd), #
+             rnorm(1, chill1diff, chill1diff.sd),#
+             rnorm(1, chill2diff, chill2diff.sd), #
+             rnorm(1, sitewarm, sitewarm.sd), #
+             rnorm(1, sitephoto, sitephoto.sd),#
+             rnorm(1, sitechill1, sitechill1.sd),#
+             rnorm(1, sitechill2, sitechill2.sd),#
+             rnorm(1, warmphoto, warmphoto.sd),#
+             rnorm(1, warmchill1, warmchill1.sd),#
+             rnorm(1, warmchill2, warmchill2.sd),#
+             rnorm(1, photochill1, photochill1.sd),#
+             rnorm(1, photochill2, photochill2.sd)#
+  )#
+  bb <- rnorm(n = length(warm), mean = mm %*% coeff, sd = 0.1)#
+  fakex <- data.frame(bb, sp = i, site, warm, photo, chill1, chill2)#
+  fake <- rbind(fake, fakex)  #
+  }#
+#
+summary(lm(bb ~ (site+warm+photo+chill1+chill2)^2, data = fake)) # sanity check
+summary(lm(bb ~ (site+warm+photo+chill1+chill2)^2, data = fake)) # sanity check #
+#
+#summary(lmer(bb ~ (site|sp) + (warm|sp) + (photo|sp) + (chill1|sp) + (chill2|sp), data = fake)) # too hard for lmer.#
+#
+save(list=c("fake"), file = "Fake Budburst.RData")
+nsite = 2#
+nsp = 28#
+nind = 12#
+nwarm = 2#
+nphoto = 2#
+#nchill = 3#
+#
+rep = 1 # only 1 individual within each combination of treatments. #
+#
+(ntot = nsite*nwarm*nphoto) # 8 rows. But will be looping over individuals and species below#
+#
+# Build up the data frame#
+site = gl(nsite, rep, length = ntot)#
+#
+warm = gl(nwarm, rep*nsite, length = ntot)#
+photo = gl(nphoto, rep*nsite*nwarm, length = ntot)#
+#
+treatcombo = paste(warm, photo, sep = "_")#
+#
+(d <- data_frame(site, warm, photo, treatcombo))#
+#
+###### Set up differences for each level#
+sitediff = 2 #
+warmdiff = -20 # days earlier from 1 to 2#
+photodiff = -14#
+#
+# interactions. 9 two-way interactions#
+sitewarm = 0#
+sitephoto = 0#
+warmphoto = 3.5 # positive 3.5. So at the warm level, the effect of longer days is muted by 3.5 days.
+d <- data.frame(site, warm, photo, treatcombo)
+head(d)
+?gl
+###### Set up differences for each level#
+sitediff = 2 #
+warmdiff = -20 # days earlier from 1 to 2#
+photodiff = -14#
+#
+# interactions. 9 two-way interactions#
+sitewarm = 0#
+sitephoto = 0#
+warmphoto = 3.5 # positive 3.5. So at the warm level, the effect of longer days is muted by 3.5 days.#
+#
+######## SD for each treatment#
+sitediff.sd = 1.5 #
+warmdiff.sd = 1 #
+photodiff.sd = 1#
+sitewarm.sd = 1#
+sitephoto.sd = 1#
+warmphoto.sd = 1#
+mm <- model.matrix(~(site+warm+photo)^2, data.frame(site, warm, photo))#
+colnames(mm)#
+#
+coeff <- c(1, sitediff, warmdiff, photodiff, #
+           sitewarm, sitephoto, #
+           warmphoto#
+           )#
+#
+bb <- rnorm(n = length(warm), mean = mm %*% coeff, sd = 1) # should be able to do sd = mm %*% sd.coeff as well, with a different sd for each parameter.#
+#
+(fake <- data_frame(bb, site, warm, photo))#
+#
+##### Again, now with species now.#
+#
+baseinter = 35 # baseline intercept across all species #
+spint <- baseinter + c(1:nsp)-mean(1:nsp) # different intercepts by species#
+#
+fake <- vector()#
+#
+for(i in 1:nsp){ # loop over species, as these are the random effect modeled#
+  # Give species different difference values, drawn from normal. Could make dataframe of diffs and diff.sds, and use apply..#
+  coeff <- c(spint[i], #
+             rnorm(1, sitediff, sitediff.sd),#
+             rnorm(1, warmdiff, warmdiff.sd),#
+             rnorm(1, photodiff, photodiff.sd), #
+             rnorm(1, sitewarm, sitewarm.sd), #
+             rnorm(1, sitephoto, sitephoto.sd),#
+             rnorm(1, warmphoto, warmphoto.sd)#
+             )#
+  bb <- rnorm(n = length(warm), mean = mm %*% coeff, sd = 0.1)#
+  fakex <- data.frame(bb, sp = i, site, warm, photo)#
+  fake <- rbind(fake, fakex)  #
+  }#
+#
+summary(lm(bb ~ (site+warm+photo)^2, data = fake)) # sanity check
+head(fake)
+fake$site[fake$site==1] <- 0
+goo <- read.csv("~/Desktop/Common Garden List.csv", header=TRUE)
+head(goo)
+?gsub
+gsub("_", BETPAP_GR_5)
+gsub("_", "BETPAP_GR_5")
+gsub("/_", "BETPAP_GR_5")
+substr("BETPAP_GR_5")
+substr("BETPAP_GR_5", 2)
+substr("BETPAP_GR_5", 2, 3)
+?substr
+goo <- read.csv("~/Desktop/CommonGardenList.Updated.csv", header=TRUE)
+head(goo)
+table(goo$Location)
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+#
+setwd("~/Documents/git/projects/treegarden/genetics/analyses")#
+#
+# if(length(grep("danflynn", getwd()))>0){ setwd("~/Documents/git/budgenetics/analyses") }#
+#
+## source#
+source("duplicate.tips.R")#
+#
+## libraries#
+library(caper)#
+library(nlme)#
+library(lme4)#
+library(ape) # for varcomp for nlme#
+# library(HLMdiag) # for varcomp for lme4, which is basically already in lme4 output#
+#
+alldater <- read.csv("output/indforGBS.csv", header=TRUE)#
+dater <- read.csv("output/budsummary.csv", header=TRUE) # see phentissue.R for where this file is created#
+mytree <- read.nexus("input/tree_intra.tre")#
+#
+treat20 <- subset(dater, main.effect=="20" | main.effect=="15")#
+treat20.sm <- subset(treat20, select=c("jolyid", "mean", "sp", "main.effect"))#
+treat20.sm$main.effect <- as.numeric(treat20.sm$main.effect)#
+#
+# wait, check for what's missing#
+#
+treat20[which(!treat20$jolyid %in% mytree$tip.label),]#
+#
+length(unique(treat20$jolyid))#
+mytree$tip.label[which(!mytree$tip.label %in% treat20$jolyid)]#
+#
+# and check what's missing when you consider all treatments#
+#
+mytree$tip.label[which(!mytree$tip.label %in% alldater$ind)]#
+#
+# same, just checking#
+(tissue.no.exp <- data.frame(id = mytree$tip.label[is.na(match(mytree$tip.label, alldater$ind))]) )#
+#
+notes <- c(#
+  "Tissue individual, but not enough material, no terminal bud. Replaced with another one.",  # vacmyr02_HF, from common garden individuals google doc#
+  "Was not on common garden indiv sheet; note from HF_TISSUE: 'On path past nature trail, between 2 swamps, also collected fruit'",#
+  "Notes from Winter sampling 15: 'Tim and Harold searched for an hour, could not locate.'",#
+  "Mostly dead. only 1 semi-alive twig. Didn't clip. 12' tall, sick.",#
+  "Could not find in Winter 15, replaced the a new one",#
+  "Could not find in Winter 15, replaced the a new one",#
+  "Could not find in Winter 15, replaced the a new one",#
+  "Could not find in Winter 15, replaced the a new one",#
+  "Could not find in Winter 15, replaced the a new one")#
+#
+# Additionally, from Dan on 17 Aug 2016:#
+# PRUPEN03_HF: Dead :(#
+# PRUPEN05_HF: Probably Prunus serotina, black cherry#
+#
+tissue.no.exp <- data.frame(tissue.no.exp, notes)#
+write.csv(tissue.no.exp, "output/tissue.no.expnotes.csv", row.names=FALSE)#
+# subset the data #
+daterch0 <- subset(alldater, chill=="chill0")#
+#
+###
+## fit simple mixed-effects models (ignoring the phylogeny)#
+# with and without individual#
+###
+#
+# first I tried nlme package but with this we cannot have site/ind and sp crossed ...#
+# so I just did models with site OR ind (and both with species)#
+lme.mod.sp.ind <- lme(lday~warm*photo, random = list(ind=~1, sp=~1),#
+    data=daterch0, na.action=na.exclude)#
+lme.mod.sp.site <- lme(lday~warm*photo, random = list(site=~1, sp=~1),#
+    data=daterch0, na.action=na.exclude)#
+#
+# interestingly the model comparisons show the model with site better#
+# this is probably because of DF penalties#
+anova(lme.mod.sp.ind, lme.mod.sp.site)#
+#
+# when you look at the varcomp though ...#
+# the model with ind takes half the variance away from sp and gives it to ind#
+varcomp(lme.mod.sp.site, scale=TRUE)#
+varcomp(lme.mod.sp.ind, scale=TRUE) #
+#
+# let's try lme4 to get the exact model I think we have#
+mod.site.sp <- lmer(lday~warm*photo + (1|sp) + (1|site), data=daterch0,#
+    na.action=na.exclude)#
+mod.sp.ind <- lmer(lday~warm*photo + (1|sp) + (1|ind), data=daterch0,#
+    na.action=na.exclude)#
+mod.site.sp.ind <- lmer(lday~warm*photo + (1|sp) + (1|site/ind), data=daterch0,#
+    na.action=na.exclude)#
+#
+summary(mod.site.sp) # site explains nada!#
+# so the below models are identical (wow)#
+summary(mod.sp.ind)#
+summary(mod.site.sp.ind)#
+#
+varcomp.mer(mod.site.sp.ind)#
+#
+###
+## back to the phylogeny, get down the data needed and duplicate tips#
+###
+daterch0$indX <- paste(daterch0$ind, rep(1:4, 102), sep="")#
+daterch0sm <- subset(daterch0, select=c("site", "sp", "ind", "treatcode", "warm",#
+    "photo", "lday", "indX"))#
+#
+mytree.dup <- duplicate.tips.jd(mytree, 4, sep.char="")#
+#
+# now try to run PGLS#
+compdat <- comparative.data(mytree.dup, daterch0sm, indX) #
+pgls(lday~warm*photo, lambda="ML", data=compdat)#
+#
+# why won't it run? Zero branch lengths....#
+# cheap trick: make all branch lengths 1#
+whee <- mytree.dup#
+whee$edge.length <- rep(1, length(whee$edge.length))#
+compdat.whee <-  comparative.data(whee, daterch0sm, indX) #
+mod1 <- pgls(lday~warm*photo, lambda="ML", data=compdat.whee)#
+#
+# better idea ...#
+# resolve tree and set min branch length to depth of tree/1000#
+whee2 <- multi2di(mytree.dup)#
+whee2$edge.length[whee2$edge.length==0] <- max(cophenetic(whee2))/2000#
+compdat2 <- comparative.data(whee2, daterch0sm, indX)#
+mod2 <- pgls(lday~warm*photo, lambda="ML", data=compdat2)#
+summary(mod2)#
+#
+# randomize data within species#
+randat <- c()#
+sphere <- unique(daterch0sm$sp)#
+for (species in c(1:length(sphere))) {#
+    subby <- subset(daterch0sm, sp==sphere[species])#
+    randat <- c(randat, sample(subby$indX, length(subby$indX)))#
+}#
+#
+daterch0sm$randind <- randat#
+#
+compdat2 <- comparative.data(whee2, daterch0sm, indX) #
+compdat3 <- comparative.data(whee2, daterch0sm, randind)#
+#
+# make sure compdat2 and compdat3 are the same length #
+compdat2$data$ind[which(!unique(!compdat3$data$ind)#
+    %in% unique(compdat2$data$ind))]#
+length(compdat3$dropped$unmatched.rows)#
+length(compdat2$dropped$unmatched.rows)#
+#
+# not useful yet but here's the randomized tips model#
+# JD pointed out since the treatments produce big effects#
+# we're forcing a ton of evolution at the tips ....#
+mod2rand <- pgls(lday~warm*photo, lambda="ML", data=compdat3)#
+summary(mod2rand)#
+#
+###
+## Bayes PGLS
+quit)()
+quit()
+load('~/Documents/git/projects/treegarden/budexperiments/analyses/Stan Output 2017-04-29 Inter.RData')
+sumerb <- summary(doym.b)$summary#
+sumerb[grep("mu_", rownames(sumerb)),]
+summary(doym.b)
+doym.b
+sumerb <- doym.b
+sumerb[grep("mu_", rownames(sumerb)),]
+row.names(doym.b)
+str(doym.b)
+doym.l
+quit()
+load('~/Documents/git/projects/treegarden/budexperiments/analyses/Stan Output 2017-04-30 Inter.RData')
+doym.b
+doym.l
+quit()
+R
+load('~/Documents/git/projects/treegarden/budexperiments/analyses/Stan Output 2017-04-29 Inter.RData')
+doym.b
+quit()
+load('~/Documents/git/projects/treegarden/budexperiments/analyses/Stan Output 2017-05-02 Inter.RData')
+library(shinystan)
+launch_shinystan(doym.l)
+quit()
+#################################### #
+## Let's start with the 1 entries ###
+## We'll check if they should be 1 ##
+#####################################
+areone <- d[which(d$response==1),]#
+unique(areone$respvar.simple)#
+#
+areone.rows <- which(d$response==1) # will use for indexing later#
+#
+## Start work to break down into respvar categories, to help with sorting ###
+respvar.time <- c("daystobudburst", "daystoflower", "thermaltime")#
+respvar.perc <- c("percentbudburst", "percentflower", "otherpercents")#
+respvar.other <- c("phenstage", "flowernumber", "growth", "othernums")#
+# Checking respvar.time related issues#
+areone.time <- areone[which(areone$respvar.simple %in% respvar.time),]#
+# hist(as.numeric(areone.time$response.time), breaks=30) # Whoops! Some negative entries?#
+#
+# Dealing with negative entries#
+negative.time <- subset(areone.time, response.time<0)#
+unique(negative.time$datasetID)#
+checkers1 <- unique(negative.time$datasetID)#
+negatives <- negative.time[which(negative.time$datasetID %in% checkers1),]#
+# negatives[,c(1,25:27,31)] #
+#
+# Checking respvar.perc related issues#
+areone.perc <- areone[which(areone$respvar.simple %in% respvar.perc),]#
+# areone.perc[,c(1,25:27,31)]#
+unique(areone.perc$datasetID)
+quit()
+hist(rnorm(1000, 0, 10))
+hist(rnorm(1000, 0, 5))
+## Started 23 Apr 2017 ###
+## By Lizzie ###
+#
+## Making decisions on what to plant in common garden onward ###
+## A bit of a pain but hopefully gets the job done. ###
+#
+# Updated 9 May 2017 ##
+# With new info from Kea ##
+#
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+#
+# Set working directory: #
+#setwd("~/Documents/git/projects/treegarden/wildhellgarden/Planning/planning_2017")#
+setwd("~/Documents/git/wildhellgarden/Planning/planning_2017")#
+#
+# Get files#
+gh <- read.csv("input/GH7 Inventory - Spring 2017.csv", header=TRUE)#
+cg.all <- read.csv("input/CommonGardenList.Updated.csv", header=TRUE)#
+#
+# Some cleanup (note that extra six rows get enetered from gh, they are empty)#
+gh$X <- NULL#
+gh <- subset(gh, id!="")#
+names(cg.all)[names(cg.all)=="Species"] <- "id"#
+gh$spsite <- paste(gh$species, gh$site)#
+#
+# get species out for commonn garden (cg)#
+idx <- strsplit(cg.all$id, "_")#
+cg.all$species <- unlist(lapply(idx, function(x) x[1]))#
+cg.all$spsite <- paste(cg.all$species, cg.all$site)#
+# What's in the garden?#
+cg <- subset(cg.all, Location=="CG")#
+table(cg$species, cg$site)#
+# table(gh$species, gh$site)#
+#
+# What needs to be in the garden but is not?#
+cg.need <- subset(cg.all, Location=="none")#
+using <- gh[which(gh$spsite %in% unique(cg.need$spsite)),]#
+# table(using$spsite)#
+sort(gh$id[which(gh$spsite %in% unique(cg.need$spsite))])#
+#
+# What is needed that we have:#
+# need 3, but happy to have 1: ACESPI GR #
+# need 6, but happy to have 1: ACESPI WM #
+# need 5, but happy to have 3: ACESPI SH#
+# need 6, but happy to have 2: AMECAN SH#
+# need 5, have 6: BETPAP GR#
+# need 6, have 9: BETPAP HF#
+# need 1, have 6: MYRGAL WM#
+# need 6, have 5: MYRGAL GR#
+# need 2, have 37: SAMRAC GR#
+# need 1, have 18: SORAME SH#
+# need 6, have 31: SPITOM GR#
+# need 6, have 8: SPITOM SH#
+# need 6, have 1: VIBCAS HF#
+# need 2, have 30: SPIALB SH (somehow did not show up as none in cg location)#
+# need 4, have 21: SPIALB WM (somehow did not show up as none in cg location)#
+#
+# What are we not planning on needing for garden?#
+notusing <- gh[which(!gh$spsite %in% unique(cg.need$spsite)),]#
+table(notusing$spsite)#
+#
+# What to add to garden?#
+# Bump up to 8 some of the species reps:#
+# 2 x 4 ALNINC (only 1 more at WM so 7 to add total)#
+# 2 x 3 BETALL#
+# 2 x 3 BETPOP#
+# 2 x 3 DIELON#
+# 2 x 4 SPIALB#
+# 2 x 4 SPITOM#
+# 2 x 3 VIBCAS#
+#
+# Add these new species#
+# 2 x 2 QUERUB#
+# 2 x 2 VACMYR#
+#####################
+# Sad, but true, I made up a list by hand in treegarden_2017add.xlsx#
+# Let's see how it looks .... #
+#####################
+#
+addme <- read.csv("input/treegarden_2017add.csv", header=TRUE)#
+addme$spsite <- paste(addme$species, addme$site)#
+table(addme$species, addme$site)#
+table(gh$species, gh$site) # note that 1 WM ALNINC is incorrectly labelled, we really only have 1 at WM to add#
+#
+table(addme$species, addme$site)#
+table(cg$species, cg$site)#
+#
+# Note! This list does not consider death .... we should fill in dead things if possible#
+#
+# What is left?#
+# aggregate by ID to start ...#
+addme.agg <- aggregate(addme["species"], addme["id"], FUN=length)#
+gh.agg <- aggregate(gh["species"], gh["id"], FUN=length)#
+# now merge ...and get diff#
+notusing.take2 <- merge(addme.agg, gh.agg, by="id", suffixes=c(".add", ".tot.gh"), all.y=TRUE)#
+notusing.take2$species.add[is.na(notusing.take2$species.add)==TRUE] <- 0#
+#
+notusing.take2$leftover <- notusing.take2$species.tot.gh-notusing.take2$species.add#
+#
+leftover <- subset(notusing.take2, leftover>0)#
+leftover <- subset(leftover, select=c("id", "leftover"))#
+leftover$species <- substr(leftover$id, 1,6)#
+#
+write.csv(leftover, "output/gh_unusedplants.csv", row.names=FALSE)#
+#
+# What is left empty in common garden? #
+cg.present <- subset(cg, Location=="RB"|Location=="CG")#
+cg.present.bind <- subset(cg.present, select=c("spsite", "species", "site"))#
+addme.bind <- subset(addme, select=c("spsite", "species", "site"))#
+cg.2017 <- rbind(cg.present.bind, addme.bind)#
+table(cg.2017$species, cg.2017$site)#
+#
+## One last issue! Here's what Kea sees in the raised beds as of 9 May 2017 ##
+# I also remembered that there are some new (last season) plants in the raised beds - I assume these will be moving into the common garden:#
+# 3 BETPAP GR#
+# 1 BETPAP SH#
+# 1 ACESPI SH#
+# 1 ACESPI WM#
+# 1 SPIALB WM#
+# 1 SPIALB SH#
+# 2 SORAME SH#
+# 2 AMECAN SH#
+#
+# Which is not quite what we have noted (but similar)#
+subset(cg.all, Location=="RB")
+quit()
+if(length(grep("Lizzie", getwd())>0)) { setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses") #
+} #
+else#
+(setwd("~/git/radcliffe/Analyses"))}#
+}
+if(length(grep("Lizzie", getwd())>0)) { setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses") #
+else#
+(setwd("~/git/radcliffe/Analyses"))#
+}
+if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses")}#
+else#
+{(setwd("~/git/radcliffe/Analyses"))#
+}
+if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses")#
+}#
+else#
+(setwd("~/git/radcliffe/Analyses"))
+setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses")
+if(length(grep("Lizzie", getwd())>0)) {#
+setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses")#
+}#
+else#
+setwd("~/git/radcliffe/Analyses")
+# Set working directory: #
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") #
+} else#
+  setwd("/Users/Nicole/GitHub/heattolerance/analyses/")
+# Set working directory: #
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses") #
+} else#
+  setwd("~/git/radcliffe/Analyses")

@@ -131,7 +131,12 @@ options(stringsAsFactors = FALSE)
 
 library(xtable)
 require(dplyr)
-setwd("~/git/radcliffe/Analyses")
+
+# Set working directory: 
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses") 
+} else
+  setwd("~/git/radcliffe/Analyses")
+
 expsites2 <- read.csv("expsiteinfo.csv", header=TRUE)
 expsites2$Target<-paste(expsites2$temptreat_1,expsites2$temptreat_2,expsites2$temptreat_3, sep=",")
 expsites2$Target[expsites2$Target=="1.5,2,2.5"]<-"1.5-5.5"
@@ -199,6 +204,7 @@ library(lme4)
 library(car)
 require(dplyr)
 options(stringsAsFactors = FALSE)
+# options(xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
 
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
@@ -242,20 +248,21 @@ treats<-read.csv("treats_detail.csv", header=T)
   yeartableAll<-as.data.frame(cbind(rownames(yeartable),yeartable$Df,round(yeartable$Chisq,digits=2),yeartable$p,round(yeartable2$Chisq,digits=2),yeartable2$p,round(yeartable3$Chisq,digits=2),yeartable3$p))
   colnames(yeartableAll)<-NULL
   yeartableAll[,1]<-c("intercept","temp. treatment","year","temp. treatment:year")
-  yeartableAll<-rbind(c("","","soil mean","","above-ground","min","above-ground","max"),c("predictor","df","chi-sq","p","chi-sq","p","chi-sq","p"),yeartableAll)
+  yeartableAll<-rbind(c("","","soil mean","","above-ground","min","above-ground","max"),c("predictor","df","$\\chi^2$","p","$\\chi^{2}$ ","p","$\\chi^{2}$","p"),yeartableAll)
   yearspace.table<-xtable(yeartableAll,
   caption="Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and block nested within site (intercept-only structure; n=23); total number of observations=17,177.",label="table:blocks_time",align=c(
                 "p{0.01\\textwidth}",
                 "|p{0.23\\textwidth}",
                 "|p{0.01\\textwidth}",
-               "|p{0.15\\textwidth}",
+               "|p{0.09\\textwidth}",
                "p{0.07\\textwidth}|",
-               "p{0.15\\textwidth}",
+               "p{0.09\\textwidth}",
                "p{0.07\\textwidth}|",
-               "p{0.15\\textwidth}",
+               "p{0.09\\textwidth}",
                "p{0.07\\textwidth}|"))
  
-  print(yearspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))
+  print.xtable(yearspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+  # Whee! One annoying bits here, you need to add this sanitize f(x) and then (this took me a while) you need to say print part of the command. 
   testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
   blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
   blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/year), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
@@ -276,18 +283,18 @@ blocktable3$p[blocktable3$p<0.001]<-"<0.001"
 blocktableAll<-as.data.frame(cbind(rownames(blocktable),blocktable$Df,round(blocktable$Chisq,digits=2),blocktable$p,round(blocktable2$Chisq,digits=2),blocktable2$p,round(blocktable3$Chisq,digits=2),blocktable3$p))
 colnames(blocktableAll)<-NULL
 blocktableAll[,1]<-c("intercept","temp. treatment","block","temp. treatment:block")
-blocktableAll<-rbind(c("","","soil mean"," ","above-ground","min","above-ground","max"),c("predictor","df","chi-sq","p","chi-sq","p","chi-sq","p"),blocktableAll)
+blocktableAll<-rbind(c("","","soil mean"," ","above-ground","min","above-ground","max"),c("predictor","df","$\\chi^2$","p","$\\chi^2$","p","$\\chi^2$","p"),blocktableAll)
 blockspace.table<-xtable(blocktableAll, caption="Analysis of variance table for spatial linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and year nested within site (intercept-only structure; n=6); total number of observations=17,177.",label="table:blocks_space",align=c(
                 "p{0.01\\textwidth}",
                 "|p{0.23\\textwidth}",
                 "|p{0.01\\textwidth}",
-               "|p{0.15\\textwidth}",
+               "|p{0.09\\textwidth}",
                "p{0.07\\textwidth}|",
-               "p{0.15\\textwidth}",
+               "p{0.09\\textwidth}",
                "p{0.07\\textwidth}|",
-               "p{0.15\\textwidth}",
+               "p{0.09\\textwidth}",
                "p{0.07\\textwidth}|"))
-print(blockspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6))  
+print(blockspace.table, include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(0,1,2,6), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)  
 @
 \clearpage
 
@@ -329,7 +336,7 @@ stableAll<-as.data.frame(cbind(mnstable,minstable,maxstable))
  
 addtorow <- list()
 addtorow$pos <- list(0, 0)
-addtorow$command <- c("&\\multicolumn{2}{c}{mean soil temp.} &\\multicolumn{2}{c}{min soil temp.} &\\multicolumn{2}{c}{max soil temp.}\\\\\n","predictor & est. & se & est. & se & est. & se\\\\\n")
+addtorow$command <- c("&\\multicolumn{2}{c |}{mean soil temp.} &\\multicolumn{2}{c |}{min soil temp.} &\\multicolumn{2}{c |}{max soil temp.}\\\\\n \\hline","predictor & est. & se & est. & se & est. & se\\\\\n") # Trick here is to re-assign that horizontal line in the multicolumn command.
 
 print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
 @
@@ -348,7 +355,7 @@ atmod.table<-xtable(atableAll,caption="Summaries of linear mixed-effects models 
                "p{0.05\\textwidth}|"))
 addtorow2 <- list()
 addtorow2$pos <- list(0, 0)
-addtorow2$command <- c("&\\multicolumn{2}{c}{min air temp.} &\\multicolumn{2}{c}{max air temp.}\\\\\n","predictor & est. & se & est. & se\\\\\n")
+addtorow2$command <- c("&\\multicolumn{2}{c |}{min air temp.} &\\multicolumn{2}{c |}{max air temp.}\\\\\n \\hline","predictor & est. & se & est. & se\\\\\n")
 
 print(atmod.table, add.to.row=addtorow2, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
 @
@@ -365,7 +372,7 @@ moismod.table<-xtable(moistable,caption="Summary of a linear mixed-effects model
                "p{0.05\\textwidth}|"))
 addtorow3 <- list()
 addtorow3$pos <- list(0, 0)
-addtorow3$command <- c("&\\multicolumn{2}{c}{soil moisture}\\\\\n","predictor & est. & se\\\\\n")
+addtorow3$command <- c("&\\multicolumn{2}{c |}{soil moisture}\\\\\n \\hline", "predictor & est. & se\\\\\n")
 
 print(moismod.table, add.to.row=addtorow3, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
 @
