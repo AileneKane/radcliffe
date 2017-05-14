@@ -94,7 +94,7 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
 \section* {Tables}
 
 \begin{table}[b]
-  \caption{{\bf Sites included in the C3E database}. Experimental sites correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
+  \caption{\bf{Sites included in the C3E database}. Experimental sites correspond to map (Fig. 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one.}
 \begin{footnotesize} 
    \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
     \hline
