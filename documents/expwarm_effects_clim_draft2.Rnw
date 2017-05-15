@@ -54,28 +54,29 @@
 \title{How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts %Aaron suggests "Do climate change experiments actually change climate?" for a title.
 %\author{A.K. Ettinger, I. Chuine, B.I. Cook, J.S. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C.R. Rollinson, Y. Vitasse, E.M. Wolkovich}
 
-\author[1]{A.K. Ettinger}
-\author[2]{I. Chuine}
-\author[3][4]{B.I. Cook}
-\author[5]{J.S. Dukes}
-\author[6]{A.M. Ellison}
-\author[7]{M.R. Johnston}
-\author[8]{A.M. Panetta}
-\author[9]{C.R. Rollinson}
-\author[10]{Y. Vitasse}
+\author[1,2]{A.K. Ettinger}
+\author[3]{I. Chuine}
+\author[4,5]{B.I. Cook}
+\author[6]{J.S. Dukes}
+\author[7]{A.M. Ellison}
+\author[8]{M.R. Johnston}
+\author[9]{A.M. Panetta}
+\author[10]{C.R. Rollinson}
+\author[11]{Y. Vitasse}
 \author[1]{E.M. Wolkovich}
 
 \affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts, 02131, USA}
-\affil[2]{CEFE UMR 5175, CNRS, Universit\'e de Montpellier,Universit\'e Paul-Val\'ery Montpellier, EPHE, Montpellier, France}
-\affil[3]{Lamont-Doherty Earth Observatory, Columbia University, Palisades, New York, 10964, USA}
-\affil[4]{NASA Goddard Institute for Space Studies, New York, NY, 10025, USA}
-\affil[5]{Department of Forestry and Natural Resources
+\affil[2]{Tufts University, Medford, Massachusetts, 02155, USA}
+\affil[3]{CEFE UMR 5175, CNRS, Universit\'e de Montpellier,Universit\'e Paul-Val\'ery Montpellier, EPHE, Montpellier, France}
+\affil[4]{Lamont-Doherty Earth Observatory, Columbia University, Palisades, New York, 10964, USA}
+\affil[5]{NASA Goddard Institute for Space Studies, New York, NY, 10025, USA}
+\affil[6]{Department of Forestry and Natural Resources
 and Department of Biological Sciences, Purdue University, West Lafayette, Indiana, 47907, USA}
-\affil[6]{Harvard Forest,Harvard University, Petersham, Massachusetts, 01366 , USA}
-\affil[7]{Department of Organismic and Evolutionary Biology, Cambridge, Massachusetts 02138, USA}
-\affil[8]{Department of Ecology and Evolutionary Biology, University of Colorado, Boulder, Colorado, 80309, USA}
-\affil[9]{The Morton Arboretum, Lisle, Illinois 60532, USA}
-\affil[10]{Institute of Geography, University of Neuch\^atel,Neuch\^atel, Switzerland}
+\affil[7]{Harvard Forest,Harvard University, Petersham, Massachusetts, 01366 , USA}
+\affil[8]{Department of Organismic and Evolutionary Biology, Cambridge, Massachusetts 02138, USA}
+\affil[9]{Department of Ecology and Evolutionary Biology, University of Colorado, Boulder, Colorado, 80309, USA}
+\affil[10]{The Morton Arboretum, Lisle, Illinois 60532, USA}
+\affil[11]{Institute of Geography, University of Neuch\^atel,Neuch\^atel, Switzerland}
 
 %\date{\today}
 \maketitle  %put the fancy title on
@@ -95,7 +96,7 @@ We present several recommendations for future experimental design, analysis, and
 \par Climate change is dramatically altering Earth's biota, shifting the physiology, distribution, and abundance of organisms, with cascading community and ecosystem effects \citep{shukla1982,cox2000,thomas2004,parmesan2006,field2007,sheldon2011,urban2012}. Much uncertainty remains, however, about how particular individuals, populations, species, communities, and ecosystems will respond as shifts in temperature and precipitation regimes become more extreme. Predicting these biological responses to current and future climatic change, and how they will feedback to affect earth's climate and ecosystem services, are among the most significant challenges facing scientists today.
 
 \par Field-based experiments that alter temperature and precipitation are critical for determining mechanistic links between climate change and biological responses \citep[e.g.,][]{box1978,williams2007,gelman2014}. Researchers use a variety of other strategies to understand and forecast biological responses, including observational studies and model-based approaches, but these other strategies alone are insufficient for several reasons. Observational studies, which typically correlate recorded biological patterns with measured trends in climate, cannot disentangle the causal effects of warming from other factors, such as successional stage or land use, that have also changed over time. Performance of process-based models, which rely on explicit empirical relationships between observed phenomena and climate, can be limited because the underlying assumptions of these models may be poorly constrained \citep [e.g.,][]{pearson2004,ibanez2006,swab2012,chuine2016}. 
-In addition, neither approach is well-vetted for predicting future conditions that fall outside the range of historical variability. Climate change has yielded temperatures higher than at any time in the past 11,000 years and much higher temperatures are expected over the next decades \citep{ohlemuller2006,williams2007,williams2007b,ipcc2013}.  
+In addition, neither approach is well-vetted for predicting future conditions that fall outside the range of historical variability. Climate change has yielded warmer temperatures than the previous 150 years, and possibly warmer than at any time in the last 2000 years \citep{ohlemuller2006,williams2007,williams2007b,ipcc2013}.  
 
 \par Experiments can create these ``no-analog" climate scenarios forecasted for the future, particularly when they employ active warming methods, such as gas-powered forced air heaters, electrical-powered soil warming cables, or infrared heaters \citep{shaver2000,williams2007b,aronson2009}. Active warming is often combined with precipitation manipulations (e.g., snow removal, water additions, or water reductions), and can isolate effects of temperature and precipitation from other environmental changes \citep [e.g.,][]{price1998,cleland2006,sherry2007,rollinson2012}. In addition, if regression designs are used \citep[e.g.,][]{pelini2011} and a range of warming and precipitation treatments are applied, non-linear responses can be estimated. Compared with indoor growth-chamber experiments, field-based experiments offer the possibility of preserving important, but unknown or unquantified feedbacks among biotic and abiotic components of ecosystems. 
 \par These experiments are powerful tools, used to draw conclusions about how climate change will affect species' growth, survival, and future distributions \citep{dukes1999,hobbie1999,reich2015,gruner2016}. But is it reasonable to extrapolate findings from these experiments to the real world? Do they actually alter climate in the ways that we think they do? Recent research suggests that climate manipulations do not alter climate in ways that are consistent with observed changes over time \citep{wolkovich2012}. However, a robust assessment of how active warming experiments alter the climate conditions experienced by organisms, and the extent to which these conditions are similar to current field conditions or anticipated climate change, is lacking. 
