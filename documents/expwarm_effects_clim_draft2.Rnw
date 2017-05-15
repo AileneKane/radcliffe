@@ -56,25 +56,26 @@
 
 \author[1]{A.K. Ettinger}
 \author[2]{I. Chuine}
-\author[3]{B.I. Cook}
-\author[4]{ J.S. Dukes}
-\author[5]{A.M. Ellison}
-\author[6]{M.R. Johnston}
-\author[7]{A.M. Panetta}
-\author[8]{C.R. Rollinson}
-\author[9]{Y. Vitasse}
+\author[3][4]{B.I. Cook}
+\author[5]{J.S. Dukes}
+\author[6]{A.M. Ellison}
+\author[7]{M.R. Johnston}
+\author[8]{A.M. Panetta}
+\author[9]{C.R. Rollinson}
+\author[10]{Y. Vitasse}
 \author[1]{E.M. Wolkovich}
 
 \affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts, 02131, USA}
 \affil[2]{CEFE UMR 5175, CNRS, Universit\'e de Montpellier,Universit\'e Paul-Val\'ery Montpellier, EPHE, Montpellier, France}
 \affil[3]{Lamont-Doherty Earth Observatory, Columbia University, Palisades, New York, 10964, USA}
-\affil[4]{Department of Forestry and Natural Resources
+\affil[4]{NASA Goddard Institute for Space Studies, New York, NY, 10025, USA}
+\affil[5]{Department of Forestry and Natural Resources
 and Department of Biological Sciences, Purdue University, West Lafayette, Indiana, 47907, USA}
-\affil[5]{Harvard Forest,Harvard University, Petersham, Massachusetts, 01366 , USA}
-\affil[6]{Department of Organismic and Evolutionary Biology, Cambridge, Massachusetts 02138, USA}
-\affil[7]{Department of Ecology and Evolutionary Biology, University of Colorado, Boulder, Colorado, 80309, USA}
-\affil[8]{The Morton Arboretum, Lisle, Illinois 60532, USA}
-\affil[9]{Institute of Geography, University of Neuch\^atel,Neuch\^atel, Switzerland}
+\affil[6]{Harvard Forest,Harvard University, Petersham, Massachusetts, 01366 , USA}
+\affil[7]{Department of Organismic and Evolutionary Biology, Cambridge, Massachusetts 02138, USA}
+\affil[8]{Department of Ecology and Evolutionary Biology, University of Colorado, Boulder, Colorado, 80309, USA}
+\affil[9]{The Morton Arboretum, Lisle, Illinois 60532, USA}
+\affil[10]{Institute of Geography, University of Neuch\^atel,Neuch\^atel, Switzerland}
 
 %\date{\today}
 \maketitle  %put the fancy title on
@@ -82,9 +83,14 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %We argue that it is critical for scientists to better understand and report climate from climate change experiments.
+%Ben's suggestion: *I just have an overall general comment on the framing of the paper. I think it’s great and would be happy to see it published more or less as is. However, you might consider some rewriting or reorganizing around the two QUESTIONS that I think this paper really gets at:
+%	-Did the experimental warming increase the temperature has much as it was supposed to? If not, how off were the treatments from the target warming and why?
+%	-What other climate variables (e.g., soil moisture) or statistics (e.g., variability, extremes) change along with the warming treatment?
+%Such a reorganization might just make the paper a little more readable and compelling, and give an even firmer narrative hook for the reader to latch onto. Anyway, just my two cents! 
 \section* {Preface}
-\par Experiments that alter temperature and precipitation (e.g., with infrared heaters, rain shields, and supplemental watering) are critical tools that scientists use to understand and forecast the biological effects of climate change. We argue here that these experimental results may be interpreted in misleading ways, however. 
-The common practice of summarizing and analyzing only the mean changes across treatments hides potentially important variation in treatment effects over space and time. Furthermore, there are often unintended secondary treatment effects, such as soil drying in conjunction with warming, which are rarely fully explored and are likely to have important biological consequences. %We demonstrate these points using daily climate data from 12 field-based climate change experiments that use active warming methods. Based on our findings, we make recommendations for future experimental design, analysis, and data sharing that we believe will improve the ability of climate change experiments to accurately identify and forecast species' responses to changes in climate.
+\par Ecological experiments that alter temperature and precipitation (e.g., with infrared heaters, rain shields, and supplemental watering) are critical tools that scientists use to understand and forecast the biological effects of climate change. We argue here that these experimental results may be interpreted in misleading ways, however. 
+The common practice of summarizing and analyzing only the mean changes across treatments hides potentially important variation in treatment effects over space and time. Furthermore, there are often unintended secondary treatment effects, such as soil drying in conjunction with warming, which are rarely fully explored and are likely to have important biological consequences. %We demonstrate these points using daily climate data from 12 field-based climate change experiments that use active warming methods. Based on our findings, 
+We present several recommendations for future experimental design, analysis, and data sharing that we believe will improve the ability of climate change experiments to accurately identify and forecast species' responses to changes in climate.
 \section* {Introduction}
 \par Climate change is dramatically altering Earth's biota, shifting the physiology, distribution, and abundance of organisms, with cascading community and ecosystem effects \citep{shukla1982,cox2000,thomas2004,parmesan2006,field2007,sheldon2011,urban2012}. Much uncertainty remains, however, about how particular individuals, populations, species, communities, and ecosystems will respond as shifts in temperature and precipitation regimes become more extreme. Predicting these biological responses to current and future climatic change, and how they will feedback to affect earth's climate and ecosystem services, are among the most significant challenges facing scientists today.
 
