@@ -1,0 +1,37 @@
+23 May 2017
+Lizzie’s notes from meeting with Andrew Gelman re: causal models for treatments, soil moisture and … phenology!
+
+Space heaters (versus mini-greenhouses)
+
+<><><><><><><><><><><><>
+General mish mash of the conversation
+<><><><><><><><><><><><>
+- Even though it’s an experiment, it’s still observational (see BDA, mentioned below) 
+- Don’t try to find the model with the data for soil moisture and temp, set up some constraints; otherwise you could end up chasing your own tail.
+- Do the simpler model first, then look at the output and see if it shows you ways to improve the model
+- Consider new treatments you might propose researchers do! (Like warming with no associated soil drying …).
+- Causal inference problems, there are whole books on this, but often the statistician is promoting her/his own personal approach too much. 
+	- instrumental variables
+	- selection bias (this is part of what is in the Rubin paper: compliers and non-compliers and modeling the latent variable(s) that separate these groups. 
+	- regressing on intermediate outcomes
+
+<><><><><><><><><><><><>
+What papers to look at?
+<><><><><><><><><><><><>
+
+—> Gilman 2009: A statistician’s perspective on “Mostly Harmless Econometrics: An Empiricist’s Companion”, by Joshua D. Angrist and Jorn-Steffen Pischke … some quotes picked out by Lizzie:
+
+
+This approach also fits in with a more general approach in which you focus on the direct effect of the instrument. Suppose: 
+z is your instrument, 
+T is your treatment, and
+y is your outcome.  
+So the causal model is:
+z → T → y. 
+The trick is to think of (T,y)
+as a joint outcome and to think of the effect of z on each. For example, an increase of 1 in z is associated with an increase of 0.8 in T and an increase of 10 in y.The usual “instrumental variables” summary is just to say the estimated effect of T on y is 10/0.8=12.5, but I would rather just keep it separate and report the effects on T
+and y separately.
+
+If the book does do any harm, then it would be in misleading readers into thinking that causal inference is a bit too cut-and-dried, a misunderstanding that will be avoided as long as a more traditional book on statistical modeling is read at the same time. 
+
+—> BDA, Third Ed., Decision Analysis Chapter: see ‘Data from 39 experiments’ starting on page 240. 
