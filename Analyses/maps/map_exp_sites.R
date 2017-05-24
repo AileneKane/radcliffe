@@ -8,15 +8,15 @@ rm(list=ls())
 
 # Key libraries
 library(ggplot2); library(maps)
+library(car)
 # # library(rworldmap)
 
 # Define our base directory
 # Load in the locations for experimental and observational sites
 expsites <- read.csv("../expsiteinfo.csv")
-
-summary(expsites)
-
+expsites$warming_type <- factor(expsites$warming_type, levels=c("infrared", "forced air", "soil warming", "forced air & soil warming"))
 expsites$studylength <- (expsites$data_endyear-expsites$data_startyear)+1
+summary(expsites)
 
 # Reading in Natural earth data as a backdrop
 # Natural Earth Data can be downloaded here: http://www.naturalearthdata.com/downloads/
@@ -36,24 +36,66 @@ rast.table$rgb <- with(rast.table, rgb(HYP_50M_SR_W.1,
                                        1))
 
 
+levels(expsites$warming_type) <- c("infrared", "forced air", "soil warming", "forced air & \nsoil warming")
+
 # Note: the natural earth data takes quite a while to plot!
-set.seed(1134)
-png("RadcliffeLocations_Experiments.png", width=10, height=5, units="in", res=320)
+# set.seed(1134)
+png("RadcliffeLocations_Experiments_Open.png", width=8, height=4, units="in", res=220)
 ggplot(data=expsites) +
   theme_bw() +
   guides(fill="none") +
   geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
   scale_x_continuous(expand=c(0,0), name="Degrees Longitude") +
   scale_y_continuous(expand=c(0,0), name="Degrees Latitude") +
-  geom_point(aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), alpha=0.8, position=position_jitter(width=0.5, height=0.5)) +
-  scale_shape_manual(values=c(19, 18, 15, 17)) +
-  scale_color_manual(values=c("darkorange2", "firebrick3", "purple4", "black")) +
-  scale_size(range=c(2.5,5)) +
-  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=6)),
-         color=guide_legend(title="Warming Type"),
-         size=guide_legend((title="Study Length"))) +
+  # geom_point(aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1.1, alpha=1, position=position_jitter(width=0.5, height=0.5)) +
+  geom_point(data=expsites[expsites$StudySite!="price"       ,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+0.5, y=Lat+1, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
+  # scale_shape_manual(values=c(18, 19, 17, 15)) +
+  scale_shape_manual(values=c(5, 1, 2, 0)) +
+  scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
+  scale_size(range=c(1.0,5)) +
+  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1),
+         color=guide_legend(title="Warming Type", order=1),
+         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2)) +
   theme(legend.position="right") +
-  theme(legend.title=element_text(face="bold")) +
+  theme(legend.title=element_text(face="bold"),
+        legend.key.size=unit(1.25, units="lines")) +
   coord_equal()
 dev.off()
 
+png("RadcliffeLocations_Experiments_Closed.png", width=8, height=4, units="in", res=220)
+ggplot(data=expsites) +
+  theme_bw() +
+  guides(fill="none") +
+  geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
+  scale_x_continuous(expand=c(0,0), name="Degrees Longitude") +
+  scale_y_continuous(expand=c(0,0), name="Degrees Latitude") +
+  geom_point(data=expsites[expsites$StudySite=="bace"        ,], aes(x=Long, y=Lat), shape=5, size=3.75, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite!="price"       ,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength),alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="dunne"       ,], aes(x=Long, y=Lat), shape=5, size=3.4, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+0.5, y=Lat+1, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+0.5, y=Lat+1), shape=5, size=3.5, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="chuine"      ,], aes(x=Long, y=Lat), shape=5, size=3, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="clarkduke"   ,], aes(x=Long, y=Lat), shape=0, size=4.5, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="clarkharvard",], aes(x=Long, y=Lat), shape=0, size=4.5, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="cleland"     ,], aes(x=Long, y=Lat), shape=5, size=2.75, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="ellison"     ,], aes(x=Long, y=Lat), shape=1, size=3.5, color="black", stroke=0.25, alpha=1) +
+  # geom_point(data=expsites[expsites$StudySite=="farnsworth"  ,], aes(x=Long, y=Lat), shape=5, size=3, color="black", stroke=0.5, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="force"       ,], aes(x=Long, y=Lat), shape=5, size=2, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="marchin"     ,], aes(x=Long, y=Lat), shape=1, size=4.25, color="black", stroke=0.25, alpha=1) +
+  geom_point(data=expsites[expsites$StudySite=="sherry"      ,], aes(x=Long, y=Lat), shape=5, size=1, color="black", stroke=0.25, alpha=1) +
+  
+  scale_shape_manual(values=c(18, 19, 17, 15)) +
+  # scale_shape_manual(values=c(5, 1, 2, 0)) +
+  scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
+  scale_size(range=c(1.0,5)) +
+  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1),
+         color=guide_legend(title="Warming Type", order=1),
+         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2)) +
+  theme(legend.position="right") +
+  theme(legend.title=element_text(face="bold"),
+        legend.key.size=unit(1.25, units="lines")) +
+  coord_equal()
+dev.off()
+
+expsites[,c("StudySite", "warming_type", "Location", "studylength")]

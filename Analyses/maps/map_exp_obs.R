@@ -80,7 +80,7 @@ dat.map$type <- factor(dat.map$type, levels=c("Experiment", "Observations"))
 
 
 # Note: the natural earth data takes quite a while to plot!
-png("RadcliffeLocations_Experiments_Observations.png", width=10, height=5, units="in", res=220)
+png("RadcliffeLocations_Observations_Experiments.png", width=10, height=5, units="in", res=220)
 ggplot(data=dat.map) +
   guides(fill="none") +
   geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
