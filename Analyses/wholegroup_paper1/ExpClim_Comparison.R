@@ -423,7 +423,7 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph & !is.na(agg.dev.g
   geom_ribbon(aes(x=doy, ymin=soilmois1.dev.lo, ymax=soilmois1.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=soilmois1.dev, color=target), size=0.5) +
   geom_text(data=site.means[site.means$site %in% sites.graph,], x=325, y=0.12, aes(label=str_pad(round(soilmois1.ann,2), 4,side="right", pad="0")), hjust="right", fontface="bold") +
-  scale_y_continuous(expand=c(0,0), name="diff from non-warmed (m3 H2O/mg3 soil)") +
+  scale_y_continuous(expand=c(0,0), name="diff from non-warmed (VWC)") +
   ggtitle("Daily Mean Soil Moisture Difference") +
   scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),"target"]), "color"]), 
                      name=expression(paste("target warming " ^"o", "C"))) + 

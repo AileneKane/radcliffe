@@ -99,19 +99,11 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
    \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
     \hline
   study id & location & source & data years & warming type \\ \hline
-<<<<<<< Updated upstream
-    exp01 & Waltham, MA, USA & \cite{hoeppner2012} & 2010-2014 & infrared\\ \hline
-    exp02 & Montpellier, France & \cite{morin2010} & 2002-2005 & infrared\\ \hline
-    exp03 & Duke Forest, NC, USA & \cite{clark2014a} & 2009-2012 & forced air and soil warming\\ \hline
-    exp04 & Harvard Forest, MA, USA & \cite{clark2014a} & 2000-2002 & forced air and soil warming\\ \hline
-    exp05 & Jasper Ridge Biological Preserve, CA, USA & \cite{cleland2007} & 2009-2012 & infrared\\ \hline
-=======
     exp01 & Waltham, MA, USA & \cite{hoeppner2012} & 2009-2011 & infrared\\ \hline
     exp02 & Montpelier, France & \cite{morin2010} & 2004 & infrared\\ \hline
     exp03 & Duke Forest, NC, USA & \cite{clark2014a} & 2009-2014 & forced air and soil warming\\ \hline
     exp04 & Harvard Forest, MA, USA & \cite{clark2014a} & 2009-2012 & forced air and soil warming\\ \hline
     exp05 & Jasper Ridge Biological Preserve, CA, USA & \cite{cleland2007} & 1998-2002 & infrared\\ \hline
->>>>>>> Stashed changes
     exp06 & Rocky Mountain Biological Lab, CO, USA & \cite{dunne2003} & 1995-1998 & infrared\\ \hline
     exp07 & Harvard Forest, MA, USA & \cite{pelini2011} & 2010-2015 & forced air \\ \hline
     exp08 & Harvard Forest, MA, USA & \cite{farnsworth1995} & 1993 & soil warming \\ \hline
@@ -119,9 +111,10 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
     exp10 & Duke Forest, NC, USA & \cite{marchin2015} & 2010-2013 & forced air \\ \hline
     exp11 & Rocky Mountain Biological Lab, CO, USA & \cite{price1998} & 1991-1994 & infrared\\ \hline
     exp12 & Kessler Farm Field Laboratory, OK, USA & \cite{sherry2007} & 2003 & infrared\\ \hline
-     \end{tabular}    
-\end{footnotesize} 
+     \end{tabular} 
+    \end{footnotesize}  
     \end{table}
+  
 \clearpage
 
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\
@@ -178,12 +171,12 @@ expsites2$Msoildepths[expsites2$Msoildepths=="8,NA"]<-"8"
 expsites2$sitetreat<-paste(expsites2$DatasetID,expsites2$target,expsites2$preciptreat)
 expsites2$data_years<-paste(expsites2$data_startyear,expsites2$data_endyear,sep="-")
 expsites2$AGtemp<-c("canopy"," ","air (30)","air (30)"," "," ","air (22)", " ","surface","air (22)"," ","air (14)")
-
+#expsites2$SMmeth<-c("VWC","VWC","VWC","VWC","TDR, VWC"," ","TDR, VWC", " ","VWC"," "," ","VWC")
 sitetable<-expsites2 %>% 
   dplyr::select(DatasetID,Target,ptreat,AGtemp,Tsoildepths,Msoildepths)
 sitetable<- sitetable[order(sitetable$DatasetID),]
 colnames(sitetable)<-c("study","warming treatment(s)","precipitation treatment(s)","above-ground temperature","soil temperature depth(s)","soil moisture depth(s)")
-site.table <- xtable(sitetable, caption="\\textbf{Climate measurement details for sites included in the C3E database.} We give the target warming treatment(s) (\\degree C), precipitation treatment(s) (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), and depth(s) of soil moisture measurement (cm) used in each study.", 
+site.table <- xtable(sitetable, caption="\\textbf{Climate measurement details for sites included in the C3E database.} We give the target warming treatment(s) (\\degree C), precipitation treatment(s) (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth(s) of soil temperature measurement (cm), depth(s) of soil moisture measurement (cm) used in each study.", 
         label="tab:methods",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.08\\textwidth}|",
@@ -576,6 +569,7 @@ moiswarm.table<-xtable(moiswarmtable,caption="Summary of a linear mixed-effects 
                "p{0.04\\textwidth}|"))
 print(moiswarm.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
 @
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
