@@ -20,7 +20,7 @@
 
 \setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
 \setlength{\captionmargin}{30pt}
-\setlength{\abovecaptionskip}{0pt}
+\setlength{\abovecaptionskip}{10pt}
 \setlength{\belowcaptionskip}{10pt}
 % manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
 
@@ -64,7 +64,7 @@
 
 
 \section* {Climate from Climate Change Experiments Database}
-\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB. This database allows us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies. The database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
+\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB (\citep{ettinger2017}). This database allows us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies. The database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
  \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citep{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after their database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
  \par We wanted to focus on active warming studies only, because recent analyses indicate that active warming methods are the most controlled and consistent \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. We therefore removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as two additional datasets offered to us over the course of our literature review.  We received data from authors of 12 of these 18 studies or 67\%. STONE received 16.7\% of data directly.
 \section* {Details of Statistical Analyses and Results}
@@ -186,7 +186,7 @@ site.table <- xtable(sitetable, caption="\\textbf{Climate measurement details fo
                "p{0.15\\textwidth}|",
                "p{0.13\\textwidth}|"))
 
-print(site.table, include.rownames=FALSE, caption.placement="top")
+print(site.table, include.rownames=FALSE, caption.placement="top",size="\\footnotesize")
 @
 
 \clearpage
@@ -218,7 +218,33 @@ treats<-read.csv("treats_detail.csv", header=T)
   expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
   expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
   expclimt$agtemp_mean<-(expclimt$agtemp_min+expclimt$agtemp_max)/2
+#Tables of aboveground min versus max to show that DTR is affected:
+  #Now see if warming increases min and max temp the same magnitude as mean
+expclimt[which(expclimt$temptreat=="0"),]$target<-0#for structural controls
+expclimt[which(expclimt$temptreat=="ambient"),]$target<-0#for ambient controls, which will be the reference
+amin_mod<-lmer(agtemp_min~target + (target|site/year), data=expclimt, REML=FALSE)
+#summary(amin_mod)#warms, on average 0.84 degrees per target degree, for air min
+amax_mod<-lmer(agtemp_max~target + (target|site/year), data=expclimt, REML=FALSE)
+#summary(amax_mod)#warms, on average 0.51 degrees per target degree, for air min
+amintable<-cbind(round(summary(amin_mod)$coeff[,1:2],digits=2))#
+amaxtable<-cbind(round(summary(amax_mod)$coeff[,1:2],digits=2))#
+dtrtable<-as.data.frame(cbind(amintable,amaxtable))
+ rownames(dtrtable)<-c("intercept","target warming effect")
+  stmod.table<-xtable(dtrtable,
+  caption="Summary of linear mixed-effects models of how target warming treatment affects mimumim and maximum above-ground temperature in climate change experiments. We excluded precipitation treatments from these analyses. Estimates are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum air temperature ($\\chi^{2}$=45.25, df=1, p<0.001) and maximum air temperature ($\\chi^{2}$=5.94, df=1, p=0.01).  Random effects were site (n=8) and year nested within site (n=29 year-site combinations), with a random intercept structure.",label="table:dtrtemp",align=c(
+                "|p{0.15\\textwidth}",
+                "|p{0.05\\textwidth}",
+                "p{0.05\\textwidth}",
+               "|p{0.05\\textwidth}",
+               "p{0.05\\textwidth}|"))
+ 
+addtorow <- list()
+addtorow$pos <- list(0, 0)
+addtorow$command <- c("&\\multicolumn{2}{c |}{min air temp.} &\\multicolumn{2}{c |}{max soil temp.} \\\\\n \\hline","predictor & est. & se & est. & se \\\\\n") # Trick here is to re-assign that horizontal line in the multicolumn command.
 
+print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=FALSE,caption.placement="top",size="\\footnotesize")
+
+#Tables of blocks versus years  
   blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design
   blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
   blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
@@ -264,7 +290,7 @@ treats<-read.csv("treats_detail.csv", header=T)
 addtorow <- list()
 addtorow$pos <- list(0, 0)
 addtorow$command <- c("& &\\multicolumn{2}{c |}{mean soil temp.} &\\multicolumn{2}{c |}{min above-ground temp.} &\\multicolumn{2}{c |}{max above-ground temp.}\\\\\n \\hline","predictor & df & $\\chi^{2}$ & p & $\\chi^{2}$ & p & $\\chi^{2}$ & p\\\\\n") # Trick here is to re-assign that horizontal line in the multicolumn command.
-  print.xtable(yearspace.table, add.to.row=addtorow,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(-1,0,4), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+  print.xtable(yearspace.table, add.to.row=addtorow,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(-1,0,4), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
   # Whee! One annoying bits here, you need to add this sanitize f(x) and then (this took me a while) you need to say print part of the command. 
   testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
   blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
@@ -300,7 +326,7 @@ blockspace.table<-xtable(blocktableAll, caption="Analysis of variance table for 
 addtorow <- list()
 addtorow$pos <- list(0, 0)
 addtorow$command <- c("& &\\multicolumn{2}{c |}{mean soil temp.} &\\multicolumn{2}{c |}{min above-ground temp.} &\\multicolumn{2}{c |}{max above-ground temp.}\\\\\n \\hline","predictor & df & $\\chi^{2}$ & p & $\\chi^{2}$ & p & $\\chi^{2}$ & p\\\\\n") # Trick here is to re-assign that horizontal line in the multicolumn command.
-print(blockspace.table, add.to.row=addtorow,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(-1,0,4), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)  
+print(blockspace.table, add.to.row=addtorow,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(-1,0,4), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")  
 @
 \clearpage
 
@@ -344,7 +370,7 @@ addtorow <- list()
 addtorow$pos <- list(0, 0)
 addtorow$command <- c("&\\multicolumn{2}{c |}{mean soil temp.} &\\multicolumn{2}{c |}{min soil temp.} &\\multicolumn{2}{c |}{max soil temp.}\\\\\n \\hline","predictor & est. & se & est. & se & est. & se\\\\\n") # Trick here is to re-assign that horizontal line in the multicolumn command.
 
-print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
+print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=FALSE,caption.placement="top",size="\\footnotesize")
 @
 
 <<label=xtable4, echo=FALSE, results=tex>>=
@@ -363,7 +389,7 @@ addtorow2 <- list()
 addtorow2$pos <- list(0, 0)
 addtorow2$command <- c("&\\multicolumn{2}{c |}{min air temp.} &\\multicolumn{2}{c |}{max air temp.}\\\\\n \\hline","predictor & est. & se & est. & se\\\\\n")
 
-print(atmod.table, add.to.row=addtorow2, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top")
+print(atmod.table, add.to.row=addtorow2, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top",size="\\footnotesize")
 @
 
 <<label=xtable5, echo=FALSE, results=tex>>=
@@ -380,7 +406,7 @@ addtorow3 <- list()
 addtorow3$pos <- list(0, 0)
 addtorow3$command <- c("&\\multicolumn{2}{c |}{soil moisture}\\\\\n \\hline", "predictor & est. & se\\\\\n")
 
-print(moismod.table, add.to.row=addtorow3, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top", )
+print(moismod.table, add.to.row=addtorow3, include.rownames=TRUE, include.colnames=FALSE,caption.placement="top",size="\\footnotesize")
 @
 \clearpage
 
@@ -443,7 +469,7 @@ addtorow4 <- list()
 addtorow4$pos <- list(0, 0)
 addtorow4$command <- c("& &\\multicolumn{4}{c |}{mean soil temp.} &\\multicolumn{4}{c |}{min soil temp.} &\\multicolumn{4}{c |}{max soil temp.}\\\\\n \\hline","mon & predictor & est. & se & $\\chi^{2}$ & p & est. & se & $\\chi^{2}$ & p & est. & se & $\\chi^{2}$ & p\\\\\n")
 
-print(stmod.table, add.to.row=addtorow4,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top", digits=2,hline.after = c(-1,0,2,4,6,8,10,12,14,16,18,20,22,24),xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+print(stmod.table, add.to.row=addtorow4,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top", digits=2,hline.after = c(-1,0,2,4,6,8,10,12,14,16,18,20,22,24),xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
 @
 \clearpage
 
@@ -494,7 +520,7 @@ addtorow4 <- list()
 addtorow4$pos <- list(0, 0)
 addtorow4$command <- c("& &\\multicolumn{4}{c |}{min air temp.} &\\multicolumn{4}{c |}{max air temp.}\\\\\n \\hline","mon & predictor & est. & se & $\\chi^{2}$ & p & est. & se & $\\chi^{2}$ & p\\\\\n")
 
-print(stmod.table, add.to.row=addtorow4,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top", digits=2,hline.after = c(-1,0,2,4,6,8,10,12,14,16,18,20,22,24),xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+print(stmod.table, add.to.row=addtorow4,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top", digits=2,hline.after = c(-1,0,2,4,6,8,10,12,14,16,18,20,22,24),xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
 @
 \clearpage
 
@@ -527,7 +553,7 @@ moismod.table<-xtable(coefs_allyear2,caption="Summaries of linear mixed-effects 
                "p{0.01\\textwidth}",
                "p{0.06\\textwidth}|"))
 
-print(moismod.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",hline.after = c(-1,0,2,4,6,8,10,12,14,16,18,20,22,24),xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+print(moismod.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",hline.after = c(-1,0,2,4,6,8,10,12,14,16,18,20,22,24),xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
 @
 \clearpage
 
@@ -549,7 +575,7 @@ moistargtable<-cbind(round(summary(moismod2)$coeff[,1:2],digits=2),rbind(c("",""
                "p{0.06\\textwidth}",
                "p{0.01\\textwidth}",
                "p{0.04\\textwidth}|"))
-print(moistarg.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+print(moistarg.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
  
 expclimt$warm<-"warmed"#for actively warmed sites
 expclimt[which(expclimt$temptreat=="0"),]$warm<-"struc_cont"#for structural controls
@@ -567,7 +593,7 @@ moiswarm.table<-xtable(moiswarmtable,caption="Summary of a linear mixed-effects 
                "p{0.06\\textwidth}",
                "p{0.01\\textwidth}",
                "p{0.04\\textwidth}|"))
-print(moiswarm.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+print(moiswarm.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
 @
 
 
