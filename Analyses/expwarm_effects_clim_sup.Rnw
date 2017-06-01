@@ -206,7 +206,7 @@ options(stringsAsFactors = FALSE)
 
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
-  expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
+expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
   expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]#select only plots with unmanipulated precip
   expclimt$agtemp_min<-expclimt$airtemp_min
   expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
@@ -215,24 +215,35 @@ treats<-read.csv("treats_detail.csv", header=T)
   expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
   expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
   expclimt$agtemp_mean<-(expclimt$agtemp_min+expclimt$agtemp_max)/2
-#Tables of aboveground min versus max to show that DTR is affected:
-  #Now see if warming increases min and max temp the same magnitude as mean
-expclimt[which(expclimt$temptreat=="0"),]$target<-0#for structural controls
-expclimt[which(expclimt$temptreat=="ambient"),]$target<-0#for ambient controls, which will be the reference
+
+expclimt$dtr<-expclimt$airtemp_max-expclimt$airtemp_min
+expclimt$sdtr<-expclimt$soiltemp1_max-expclimt$soiltemp1_min
+
+  #Tables of aboveground min versus max to show that DTR is affected:
+  #Now see how warming treatment affects dtr, and if warming increases min and max temp the same magnitude as mean
+dtr_mod<-lmer(dtr~target + (target|site/year), data=expclimt, REML=FALSE)#summary(dtr_mod)#reduced dtr -0.3562 per degree of target warming
+sdtr_mod<-lmer(target~target + (target|site/year), data=expclimt, REML=FALSE)#summary(sdtr_mod)#reduces dtr -0.3562 per degree of target warming
 amin_mod<-lmer(agtemp_min~target + (target|site/year), data=expclimt, REML=FALSE)
 #summary(amin_mod)#warms, on average 0.84 degrees per target degree, for air min
-amax_mod<-lmer(agtemp_max~target + (target|site/year), data=expclimt, REML=FALSE)
-#summary(amax_mod)#warms, on average 0.51 degrees per target degree, for air min
+amax_mod<-lmer(airtemp_max~target + (target|site/year), data=expclimt, REML=FALSE)
+#summary(amax_mod)#warms, on average 0.51 degrees per target degree, for air max
+smin_mod<-lmer(soiltemp1_min~target + (target|site/year), data=expclimt, REML=FALSE)
+#summary(smin_mod)#warms, on average 0.84 degrees per target degree, for soil min
+smax_mod<-lmer(soiltemp1_max~target + (target|site/year), data=expclimt, REML=FALSE)
+#summary(smax_mod)#warms, on average 0.66 degrees per target degree, for air max
 amintable<-cbind(round(summary(amin_mod)$coeff[,1:2],digits=2))#
 amaxtable<-cbind(round(summary(amax_mod)$coeff[,1:2],digits=2))#
 dtrtable<-as.data.frame(cbind(amintable,amaxtable))
  rownames(dtrtable)<-c("intercept","target warming effect")
   stmod.table<-xtable(dtrtable,
-  caption="Summary of linear mixed-effects models of how target warming treatment affects mimumim and maximum above-ground temperature in climate change experiments. We excluded precipitation treatments from these analyses. Estimates are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum air temperature ($\\chi^{2}$=45.25, df=1, p<0.001) and maximum air temperature ($\\chi^{2}$=5.94, df=1, p=0.01).  Random effects were site (n=8) and year nested within site (n=29 year-site combinations), with a random intercept structure.",label="table:dtrtemp",align=c(
+  caption="Summary of linear mixed-effects models of how target warming treatment affects daily temperature range (DTR) for soil and above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments. We excluded precipitation treatments from these analyses. Estimates are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum air temperature ($\\chi^{2}$=45.25, df=1, p<0.001) and maximum air temperature ($\\chi^{2}$=5.94, df=1, p=0.01).  Random effects were site (n=8) and year nested within site (n=29 year-site combinations), with a random intercept structure.",label="table:dtrtemp",align=c(
                 "|p{0.19\\textwidth}",
                 "|p{0.05\\textwidth}",
                 "p{0.05\\textwidth}",
                "|p{0.05\\textwidth}",
+               "p{0.05\\textwidth}|",
+               "|p{0.05\\textwidth}",
+                "p{0.05\\textwidth}",
                "p{0.05\\textwidth}|"))
  
 addtorow <- list()
