@@ -51,6 +51,7 @@
 \SweaveOpts{concordance=FALSE}
 % \SweaveOpts{concordance=TRUE}
  \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+\setkeys{Gin}{width=\textwidth}
 \title{How do climate change experiments actually change climate?} 
 \author[1,2,*]{A.K. Ettinger}
 \author[3]{I. Chuine}
@@ -166,27 +167,26 @@ The C3E database will be available at KNB (doi:10.5063/F1MG7MG7), along with all
 
 \end{enumerate}
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
-\clearpage
 
 \section* {Figures}
 \begin{figure}[p]
 \centering
 \includegraphics{../Analyses/maps/RadcliffeLocations_Experiments_Open.png} 
-\caption{\textbf{Climate data from 12 climate change experiments in North America and Europe are included in the C3E database and analyzed here.} See Tables S1, S2 in the Supplemental Materials for details.} 
+\caption{\textbf{Climate data from 12 climate change experiments in North America and Europe are included in the C3E database and analyzed here.} See Supplemental Materials, Tables S1 and S2 for details.} 
  \label{fig:map}
  \end{figure}
 \clearpage
 \begin{figure}[h]
 \centering
  \includegraphics{../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}
- \caption{\textbf{Deviations in daily observed warming from mean soil temperature are shown for 10 study sites.} Black lines represent control plots, and colored, dashed lines represent warming treatments with various target warming levels (two sites not shown here did not monitor soil temperature). The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Daily temperature values were obtained by averaging across years for each day of the year in each plot in each study. We then averaged across plots to get the mean line and 95\% confidence intervals (shaded areas), which therefore represent the variability in treatment effectiveness based on the replicates. Mean annual temperature for the experimental site is shown in the upper right corner of each plot, and plots are arranged by increasing mean annual temperature.}
+ \caption{\textbf{Deviations in daily observed warming from mean soil temperature for 10 study sites.} Black lines represent control plots, and colored, dashed lines represent warming treatments with various target warming levels (two sites not shown here did not monitor soil temperature). The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Daily temperature values were obtained by averaging across years for each day of the year in each temperature treatment in each study. (Different precipitation treatments are included.) We then averaged across plots to get the mean line and 95\% confidence intervals (shaded areas), which therefore represent the variability in treatment effectiveness based on the replicates. Mean annual temperature for the experimental site is shown in the upper right corner of each panel, and panels are arranged by increasing mean annual temperature.}
  \label{fig:effwarm}
 
  \end{figure}
  \begin{figure}[p]
    \centering
  \includegraphics{../Analyses/figures/blockyearvar.pdf}  
- \caption{\textbf{Observed warming (i.e. the difference between treatment and control plots) over space and time, for above-ground and below-ground temperatures.} The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). See Supplemental Materials (especially Tables S4 and S5) for details.}%Lizzie: should I add the slope of the fitted line to this table?
+ \caption{\textbf{Observed warming (i.e. the difference between treatment and control plots) over space and time, for above-ground and below-ground temperatures.} The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). See Supplemental Materials (especially Tables S4 and S5) for details.}
  \label{fig:blockyear}
  \end{figure}
  \clearpage

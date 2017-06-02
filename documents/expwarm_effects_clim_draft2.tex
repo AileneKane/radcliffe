@@ -51,6 +51,7 @@
 
 % \SweaveOpts{concordance=TRUE}
  \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+\setkeys{Gin}{width=\textwidth}
 \title{How do climate change experiments actually change climate?} 
 \author[1,2,*]{A.K. Ettinger}
 \author[3]{I. Chuine}
@@ -156,37 +157,36 @@ The C3E database will be available at KNB (doi:10.5063/F1MG7MG7), along with all
 
 \section* {Box 1: Recommendations for future climate change experiments} 
 \begin{enumerate}
-\item\textit{Collect and analyze fine-scale climate data.} This includes analyzing and interpreting minimum and maximum values, as well as variance and critical thresholds (e.g., the number and duration of freeze-thaw events and accumulated chilling hours, \citet{mcdaniel2014,vasseur2014}). We suggest saving the raw data from data loggers (often collected at hourly or higher resolution) to allow quantification of variance (and other summaries) at different temporal resolutions. In assessing which frequency of measurements is most appropriate for analyses (e.g., hourly, twice daily), it is critical to consider the chronobiology of the event and organisms of interest. For ants, this might mean that temperatures be monitored every minute \citep{shavit2017}; for bacteria, even more frequently. 
-\item\textit{Analyze measured climate variables rather than targets}. There can be substantial variation in the effects of warming and precipitation treatments among plots and across time (Figure \ref{fig:blockyear}). Analyzing measured climate will allow much more in-depth understanding of the drivers and the biological effects of variation in temperature and moisture.
+\item\textit{Collect and analyze fine-scale climate data.} This includes analyzing and interpreting minimum and maximum values, as well as variance and critical thresholds (e.g., the number and duration of freeze-thaw events and accumulated chilling hours) \citep{mcdaniel2014,vasseur2014}. We suggest saving the raw data from data loggers (often collected at hourly or higher resolution) to allow quantification of variance (and other summaries) at different temporal resolutions. In assessing which frequency of measurements is most appropriate for analyses (e.g., hourly, twice daily), it is critical to consider the chronobiology of the event and organisms of interest. For ants, this might mean that temperatures be monitored every minute \citep{shavit2017}; for bacteria, even more frequently. 
+\item\textit{Analyze measured climate variables rather than targets}. There can be substantial variation in the effects of warming and precipitation treatments among plots and across time (Figure \ref{fig:blockyear}). Analyzing measured climate will allow much more in-depth understanding of the drivers and biological effects of variation in temperature and moisture.
 \item\textit{Publish high quality, usable data and metadata}. Given that in situ active climate manipulations are logistically challenging and expensive \citep{aronson2009}, and that they often produce a large volume of fine-scale climate data, good curation and data sharing will ensure wider use and deeper understanding of these valuable data. When studying biological implications of a global challenge as large as climate change, progress will come from designing and reporting experiments in ways that facilitate an eventual global data set. %Studies reported a diverse range of climate variables, collected in different ways (Table S2). It is a challenge to synthesize these diverse data, and to tease apart whether variable findings are due to methodological differences, to measurement error, or to true variation in biological responses. 
-\item\textit{Include both structural and ambient controls} and collect, use, and report data collected within them. Fewer than half of the studies in our C3E database included these two control types (5 out of 12); however, all experiments showed significant effects of infrastructure (\ref{fig:shamamb}). %Future consistent monitoring of all climate and biological variables in both control types will enable scientists to tease apart mechanisms due to experimental design from mechanisms due to shifts in climate. To date, these side effects are rarely reported or interpreted in climate change experiments.%, but our analyses suggest they are ``demonic intrusions" that should be considered, and reduced when possible \citep{hurlbert1984}. 
+\item\textit{Include both structural and ambient controls} and collect, use, and report data collected within them. Fewer than half of the studies in our C3E database included these two control types (5 out of 12); however, all experiments that did include both control types showed significant effects of infrastructure (\ref{fig:shamamb}). %Future consistent monitoring of all climate and biological variables in both control types will enable scientists to tease apart mechanisms due to experimental design from mechanisms due to shifts in climate. To date, these side effects are rarely reported or interpreted in climate change experiments.%, but our analyses suggest they are ``demonic intrusions" that should be considered, and reduced when possible \citep{hurlbert1984}. 
 \item\textit{Design relevant manipulations} by consulting observational records and forecasts, including seasonal and annual variation in projected warming. When it is not possible or desirable to match anticipated changes in climate, studies should report how imposed treatments compare to projected changes and past observations \citep[see, e.g.,][]{hoover2014}. In addition, if continuous treatments are not applied throughout the study, the seasonality and timing of treatments should be explicitly reported and the climate should be monitored throughout.
 
-\item\textit{Maximize the duration of climate change experiments} by running some experiments for as long as possible. Long-term responses of individuals and populations can differ from transient responses \citep{saleska2002,franklin1989,giasson2013,harte2015}. Well-designed and well-supported longer warming experiments will allow study of how inter-annual variations interact with climate change treatments, particularly when combined with process studies and modeling \citep{luo2011}.
+\item\textit{Maximize the duration of climate change experiments} by running some experiments for as long as possible. Long-term responses of individuals and populations can differ from transient responses \citep{saleska2002,franklin1989,giasson2013,harte2015}. Well-designed and well-supported longer warming experiments will allow study of how inter-annual variations interact with climate change treatments, particularly when combined with observational studies and modeling \citep{luo2011}.
 
 \end{enumerate}
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
-\clearpage
 
 \section* {Figures}
 \begin{figure}[p]
 \centering
 \includegraphics{../Analyses/maps/RadcliffeLocations_Experiments_Open.png} 
-\caption{\textbf{Climate data from 12 climate change experiments in North America and Europe are included in the C3E database and analyzed here.} See Tables S1, S2 in the Supplemental Materials for details.} 
+\caption{\textbf{Climate data from 12 climate change experiments in North America and Europe are included in the C3E database and analyzed here.} See Supplemental Materials, Tables S1 and S2 for details.} 
  \label{fig:map}
  \end{figure}
 \clearpage
 \begin{figure}[h]
 \centering
  \includegraphics{../Analyses/figures/Exploratory_TimeSeries_SoilTemp1Mean_Deviation.png}
- \caption{\textbf{Deviations in daily observed warming from mean soil temperature are shown for 10 study sites.} Black lines represent control plots, and colored, dashed lines represent warming treatments with various target warming levels (two sites not shown here did not monitor soil temperature). The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Daily temperature values were obtained by averaging across years for each day of the year in each plot in each study. We then averaged across plots to get the mean line and 95\% confidence intervals (shaded areas), which therefore represent the variability in treatment effectiveness based on the replicates. Mean annual temperature for the experimental site is shown in the upper right corner of each plot, and plots are arranged by increasing mean annual temperature.}
+ \caption{\textbf{Deviations in daily observed warming from mean soil temperature for 10 study sites.} Black lines represent control plots, and colored, dashed lines represent warming treatments with various target warming levels (two sites not shown here did not monitor soil temperature). The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Daily temperature values were obtained by averaging across years for each day of the year in each temperature treatment in each study. (Different precipitation treatments are included.) We then averaged across plots to get the mean line and 95\% confidence intervals (shaded areas), which therefore represent the variability in treatment effectiveness based on the replicates. Mean annual temperature for the experimental site is shown in the upper right corner of each panel, and panels are arranged by increasing mean annual temperature.}
  \label{fig:effwarm}
 
  \end{figure}
  \begin{figure}[p]
    \centering
  \includegraphics{../Analyses/figures/blockyearvar.pdf}  
- \caption{\textbf{Observed warming (i.e. the difference between treatment and control plots) over space and time, for above-ground and below-ground temperatures.} The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). See Supplemental Materials (especially Tables S4 and S5) for details.}%Lizzie: should I add the slope of the fitted line to this table?
+ \caption{\textbf{Observed warming (i.e. the difference between treatment and control plots) over space and time, for above-ground and below-ground temperatures.} The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). See Supplemental Materials (especially Tables S4 and S5) for details.}
  \label{fig:blockyear}
  \end{figure}
  \clearpage
