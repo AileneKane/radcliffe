@@ -64,7 +64,7 @@
 
 
 \section* {Climate from Climate Change Experiments Database}
-\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB (\citep{ettinger2017}). This database allows us to explore, for the first time, the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies. The database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
+\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB \citep{ettinger2017}. This database allows us to explore the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies. The database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
  \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citet{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
  \par We wanted to focus on active warming studies only, because recent analyses indicate that active warming methods are the most controlled and consistent \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. We therefore removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies \citep{wolkovich2012}. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as two additional datasets offered to us over the course of our literature review.  We received data from authors of 12 of these 19 studies or 67\%. STONE received 16.7\% of data directly \citep{wolkovich2012}.
 \section* {Details of Statistical Analyses and Results}
@@ -88,10 +88,7 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
 \clearpage
-
-
 \section* {Tables}
-
 \begin{table}[b]
   \caption{\textbf{Sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one here.}
 \begin{footnotesize} 
@@ -282,7 +279,7 @@ print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=F
   yeartableAll[,1]<-c("intercept","temp. treatment","year","temp. treatment:year")
   #yeartableAll<-rbind(c("predictor","df","$\\chi^2$","p","$\\chi^{2}$ ","p","$\\chi^{2}$","p"),yeartableAll)
   yearspace.table<-xtable(yeartableAll,
-  caption="Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and block nested within site (intercept-only structure; n=23); total number of observations=17,177.",label="table:blocks_time",align=c(
+  caption="Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. We list degrees of freedom (which are identical across response variables), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and block nested within site (intercept-only structure; n=23); total number of observations=17,177.",label="table:blocks_time",align=c(
                 "p{0.01\\textwidth}",
                 "|p{0.20\\textwidth}",
                 "|p{0.01\\textwidth}",
