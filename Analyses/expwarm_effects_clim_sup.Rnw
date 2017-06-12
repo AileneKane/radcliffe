@@ -50,7 +50,7 @@
 \begin{document}
 \SweaveOpts{concordance=FALSE}
 %\SweaveOpts{concordance=TRUE}
- \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/nature.bst}
+ \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/amnat.bst}
 \title{Supplemental materials for: How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
 
 \author{A.K. Ettinger,I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
