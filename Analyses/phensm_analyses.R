@@ -1,6 +1,10 @@
 #Preliminary analyses of experimental phenology, soil moisture, and temperatur data for radcliffe
 #Started March 18, 2016 by Ailene Ettinger
 #Modified/added to by Ailene February-April 2017 for ESA abstract and additional analyses
+###Three questions to address:
+#1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
+#2) How does soil moisture affect GDDcrit?
+#3) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
 
 ## housekeeping
 rm(list=ls()) 
@@ -11,130 +15,105 @@ library(lme4)
 library(car)
 library(dplyr)
 library(AICcmodavg)
-update.packages()
+#update.packages()
 
 ##Read in experimental climate and phenology data
 setwd("~/git/radcliffe")
-
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
-expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
+# sourcing standard wrangling to get expclim2 and expgdd for climate and phenology analyses, respectively
+source("source/standard_mergesandwrangling.R")
 
-#Get one variable for aboveground warming (could be surface, canopy, air)
-expclim2$agtemp_min<-expclim2$airtemp_min
-expclim2[which(is.na(expclim2$agtemp_min) & !is.na(expclim2$cantemp_min)),]$agtemp_min<-expclim2[which(is.na(expclim2$airtemp_min) & !is.na(expclim2$cantemp_min)),]$cantemp_min
-expclim2[which(is.na(expclim2$agtemp_min) & !is.na(expclim2$surftemp_min)),]$agtemp_min<-expclim2[which(is.na(expclim2$agtemp_min) & !is.na(expclim2$surftemp_min)),]$surftemp_min
-expclim2$agtemp_max<-expclim2$airtemp_max
-expclim2[which(is.na(expclim2$agtemp_max) & !is.na(expclim2$cantemp_max)),]$agtemp_max<-expclim2[which(is.na(expclim2$airtemp_max) & !is.na(expclim2$cantemp_max)),]$cantemp_max
-expclim2[which(is.na(expclim2$agtemp_max) & !is.na(expclim2$surftemp_max)),]$agtemp_max<-expclim2[which(is.na(expclim2$agtemp_max) & !is.na(expclim2$surftemp_max)),]$surftemp_max
-#remove site 2 (chuine) because these are not real temp measurements
-expclim2<-expclim2[-which(expclim2$site=="exp02"),]
-#Replace NAs with more helpful information for block and target warming/precip
-expclim2[which(is.na(expclim2$block)),]$block<-"none"
-expclim2[which(is.na(expclim2$target)),]$target<-0
-expclim2[which(is.na(expclim2$preciptreat_amt)),]$preciptreat_amt<-100
-
-#calculate mean above-ground temp
-expclim2$agtemp_mn<-(expclim2$agtemp_max+expclim2$agtemp_min)/2
-#summarize soil moisture and air temperature by plot, seasonally and annually.
+#Need to summarize soil moisture and air temperature by plot, seasonally and annually and merge this in to climate data
 #start by aggregating observed above-ground min and max and soil temperature by plot and year to get annual values
 ag_max_plot<-aggregate(expclim2$agtemp_max, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
 ag_min_plot<-aggregate(expclim2$agtemp_min, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
 soilmois_plot<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
 #combine into one dataframe
 tempsm_plots<-cbind(ag_max_plot,ag_min_plot$x,soilmois_plot$x)
-colnames(tempsm_plots)<-c("site","block","plot","warm_treat","precip_treat","year","agtmax","agtmin","sm")
+colnames(tempsm_plots)<-c("site","block","plot","target","preciptreat_amt","year","agtmax","agtmin","sm")
 tempsm_plots<-tempsm_plots[order(tempsm_plots$site,tempsm_plots$block,tempsm_plots$plot,tempsm_plots$year),]
+dim(tempsm_plots)#894 9
+dim(expclim2)#219493     53
+expclim3<-full_join(expclim2,tempsm_plots,by=c("site", "block", "plot","target","preciptreat_amt","year"), match="all")
+dim(expclim3)#219493     53
+dim(exppheno)#69008      53
 
-##now aggregate monthly too:
-expclim2$date<-strptime(strptime(paste(expclim2$year,expclim2$doy,sep="-"), format = "%Y-%j"),format = "%Y-%m-%d")
-expclim2$month<-substr(expclim2$date,6,7)
-ag_max_month<-aggregate(expclim2$agtemp_max, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year,expclim2$month), FUN=mean,na.rm=TRUE)
-ag_min_month<-aggregate(expclim2$agtemp_min, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year,expclim2$month), FUN=mean,na.rm=TRUE)
-soilmois_month<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year,expclim2$month), FUN=mean,na.rm=TRUE)
-#combine into one dataframe
-tempsm_month<-cbind(ag_max_month,ag_min_month$x,soilmois_month$x)
-colnames(tempsm_month)<-c("site","block","plot","warm_treat","precip_treat","year","month","agtmax","agtmin","sm")
-tempsm_month<-tempsm_month[order(tempsm_month$site,tempsm_month$block,tempsm_month$plot,tempsm_month$year,tempsm_month$month),]
+#Now merge in phenology data to get
+expall<-left_join(exppheno,expclim,by=c("site", "block", "plot","year","doy"), copy=TRUE)
+dim(expall)#69030    55
+head(expall)
+tail(expall)
+length(which(is.na(expall$site)))#0- good
+length(which(is.na(expall$airtemp_min)))#21933 
+length(which(is.na(expall$soilmois1)))#16968 not good!too many
+#for some reason, the merge works much better on expclim than on expclim2, so we'll have to do same manipulations to data
 
-## Fit preliminary models to get estimate of growing degree days at phenological events
-## in each plot/species/site
-##Compare GDDcrit in different treatments
-exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
-exppheno[which(is.na(exppheno$block)),]$block<-"none"
-expclim[which(is.na(expclim$block)),]$block<-"none"
-
-#merge phenology data with experimental climate to get gdd crit
-exp_gdd<-inner_join(exppheno,expclim, by=c("site", "block", "plot","year","doy"), match="all")
-#select out just columns wanted to fit model with soil moisture and aboveground temp
-exp_gdd2<-subset(exp_gdd,selec=c(site,block,plot,event,year,genus,species,genus.species,doy,temptreat,preciptreat,cumgdd_soil,numnas_soilgdd,cumgdd_air,numnas_airgdd))
-#merge in target temp, precip treatment, and annual ag temp and soil moisture values
-exp_gdd3<-left_join(exp_gdd2,tempsm_plots, by=c("site", "block", "plot","year"))
-#replace controls (=NAs) with 0 for warming treatming and precip treatment
-exp_gdd3[which(is.na(exp_gdd3$warm_treat)),]$warm_treat<-0
-exp_gdd3[which(is.na(exp_gdd3$precip_treat)),]$precip_treat<-100
-exp_gdd3<-exp_gdd3[order(exp_gdd3$site,exp_gdd3$block,exp_gdd3$plot,exp_gdd3$year),]
-tempsm_plots<-tempsm_plots[order(tempsm_plots$site,tempsm_plots$block,tempsm_plots$plot,tempsm_plots$year),]
-###Make boxplot of gddcrit by 
-unique(exp_gdd3$genus.species)#241 species
-###Two questions to address:
+#First, 
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
-#2) How does soil moisture affect GDDcrit?
 
-
-#Start by plotting treatment effects on doy and GDD crit
-exp_gdd3$all_treat<-paste(exp_gdd3$warm_treat,exp_gdd3$precip_treat, sep=".")
-sites<-unique(exp_gdd3$site)
-for(i in 1:length(sites)){
-  sitedat<-exp_gdd3[exp_gdd3$site==sites[i],]
-  quartz()
-  par(mfrow=c(1,2))
-  boxplot(sitedat$doy~sitedat$all_treat, main=paste(sites[i],"doy"))
-  if (length(unique(sitedat$cumgdd_air))>1) {
-    boxplot(sitedat$cumgdd_air~sitedat$all_treat, main=paste(sites[i],"gddcrit-air"))
-  } else if(length(unique(sitedat$cumgdd_soil))>1){
-    boxplot(sitedat$cumgdd_soil~sitedat$all_treat, main=paste(sites[i],"gddcrit-soil"))
-  }else (next)
-}
-
-#Now plottreatment effects on soil moisture
-
-for(i in 1:length(sites)){
-  sitedat<-exp_gdd3[exp_gdd3$site==sites[i],]
-  quartz(height=5, width=8)
-  par(mfrow=c(1,2))
-  if (length(unique(sitedat$sm))>1) {
-  boxplot(sitedat$sm~sitedat$all_treat, main=paste(sites[i],"soilmois"), ylab="sm")
- }
-  if (length(unique(sitedat$cumgdd_air))>1) {
-    plot(sitedat$sm, sitedat$cumgdd_air,type="p",pch=21,main=paste(sites[i],"gddcrit-air"), ylab="gddcrit")
-  } else if(length(unique(sitedat$cumgdd_soil))>1){
-    plot(sitedat$sm,sitedat$cumgdd_soil, type="p",pch=21,main=paste(sites[i],"gddcrit-soil"), ylab="gddcrit")
-  }else (next)
-}
+#fit model in lmer
 ###Fit lmer model for soil moisture~warming*preciptreatment
 expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
 expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
-expclim4<-subset(expclim2,select=c(site,year,month,doy,block, plot,reported,target,target_cent,preciptreat_amt,preciptreat_amt_cent,agtemp_max,agtemp_min,soilmois1,cumgdd_soil,numnas_soilgdd,cumgdd_air,numnas_airgdd))
+expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt_cent,soilmois1))
+expclim2a  <- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
-write.csv(expclim4,"expclim2.csv", row.names=FALSE)
+sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod_cent)
 
-sm_mod<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2)
+sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site/year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod_cent)
+
+sm_mod<-lmer(soilmois1~target*preciptreat_amt + (1|site/year/doy), REML=FALSE, data=expclim2)
 summary(sm_mod)
-#now fit in stan
+#sm_mod2<-lmer(soilmois1~target*preciptreat_amt + (target*preciptreat_amt|site/year/doy), REML=FALSE, data=expclim2)
+#summary(sm_mod2)
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(expclim2$target,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Target warming (C)", bty="l", ylim=c(0,0.8))
+abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[2], lwd=2)
+temp_slope=round(fixef(sm_mod)[2], digits=4)
+temp_se=round(summary(sm_mod)$coefficients[2,2], digits=3)
+mtext(paste("coef=",temp_slope), side=3, line=-4, adj=.8)
 
-###Fit model of GDDcrit~soil moisture
-write.csv(exp_gdd3,"exphengdd.csv")
+plot(expclim2$preciptreat_amt,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Precipitation treatment (%)", bty="l", ylim=c(0,0.8))
+abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[3], lwd=2)
+prec_slope=round(fixef(sm_mod)[3], digits=4)
+prec_se=round(summary(sm_mod)$coefficients[3,3], digits=4)
+mtext(paste("coef=",prec_slope), side=3, line=-4, adj=.8)
 
+#Make the above figure but without raw data- just site differences (random effects) plotted
+#plot fitted lines, points, and 1:1 line
 
+sites<-unique(expclim2$site)
+expclim2$target<-as.numeric(expclim2$target)
+soilmois_target<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$target), FUN=mean,na.rm=TRUE)
+soilmois_precip<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$preciptreat_amt), FUN=mean,na.rm=TRUE)
+colnames(soilmois_target)<-c("site","target","soilmois1")
+colnames(soilmois_precip)<-c("site","precip_amt","soilmois1")
 
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(soilmois_target$target,soilmois_target$soilmois1,type="p",pch=as.numeric(as.factor(soilmois_target$site))+14, col="black",bg="black",xlab="Target warming (C)", ylab="Soil moisture (VWC)", bty="l", xlim=c(0,6), ylim=c(0,0.4))
+abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[2], lwd=2)
+temp_slope=round(fixef(sm_mod)[2], digits=4)
+temp_se=round(summary(sm_mod)$coefficients[2,2], digits=3)
+#mtext(paste("coef=",temp_slope), side=3, line=-4, adj=.8)
 
+plot(soilmois_precip$precip,soilmois_precip$soilmois1,type="p",pch=as.numeric(as.factor(soilmois_target$site))+14, col="black",bg="black",xlab="Precipitation treatment (%)", ylab="Soil moisture (VWC)", bty="l", xlim=c(0,200), ylim=c(0,0.4))
+abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[3], lwd=2)
+prec_slope=round(fixef(sm_mod)[3], digits=4)
+prec_se=round(summary(sm_mod)$coefficients[3,3], digits=4)
+#mtext(paste("coef=",prec_slope), side=3, line=-4, adj=.8)
 
 #Analyses started April 11, 2017
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
-#Start by looking at what studies have both SM and AG temp data
-which(tapply(expall$agtemp_max,expall$site,mean,na.rm=T)>0)
+#Start by looking at which studies have both SM and AG temp data
+
+which(tapply(expall$agtemp_mn,expall$site,mean,na.rm=T)>0)
+which(tapply(expall$soiltemp1_min,expall$site,mean,na.rm=T)>0)
 which(tapply(expall$soilmois1,expall$site,mean,na.rm=T)>0)
 #The following sites have both: exp01 exp02 exp03 exp04 exp07 exp09 exp10 exp12 
 expall_subs<-expall[which(expall$site=="exp01"|expall$site=="exp02"|expall$site=="exp03"|expall$site=="exp04"|expall$site=="exp07"|expall$site=="exp09"|expall$site=="exp10"|expall$site=="exp12"),]#
@@ -178,10 +157,10 @@ summary(smludmod)
 
 
 quartz()
-plot(expall_bbd$agtemp_max,expall_bbd$soilmois1,type="p", pch=21,bg="gray", ylab="Soil moisture", xlab="Above-ground temperature (C)", bty="l")
-abline(lm(expall_bbd$soilmois1~expall_bbd$agtemp_max), lwd=2)
+plot(expclim2$agtemp_max,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Above-ground temperature (C)", bty="l")
+abline(lm(expclim2$soilmois1~expclim2$agtemp_max), lwd=2)
 mtext("r=-0.20,p<0.01",side=3, adj=1, line=-1)
-cor(expall_subs$soilmois1,expall_subs$agtemp_max)#they're not correlated for bud burs only!
+cor(expall_subs$soilmois1,expall_subs$agtemp_max)#they're not correlated for bud burst only!
 mod<-lm(soilmois1~agtemp_max, data= expall_subs)
 summary(mod)
 
@@ -420,4 +399,74 @@ summary(gdd_lme4C)
 #2) Think about soil moisture: using mean across whole year, but should you use mean up to point of the event?
 #3) Center everything- year (or use study year), soil moisutre, GDD crit
 #4) check how much overlap in species there is across sites.
+
+
+## Fit preliminary models to get estimate of growing degree days at phenological events
+## in each plot/species/site
+##Compare GDDcrit in different treatments
+exppheno$genus.species<-paste(exppheno$genus,exppheno$species,sep=".")
+exppheno[which(is.na(exppheno$block)),]$block<-"none"
+expclim[which(is.na(expclim$block)),]$block<-"none"
+
+#merge phenology data with experimental climate to get gdd crit
+exp_gdd<-inner_join(exppheno,expclim, by=c("site", "block", "plot","year","doy"), match="all")
+#select out just columns wanted to fit model with soil moisture and aboveground temp
+exp_gdd2<-subset(exp_gdd,selec=c(site,block,plot,event,year,genus,species,genus.species,doy,temptreat,preciptreat,cumgdd_soil,numnas_soilgdd,cumgdd_air,numnas_airgdd))
+#merge in target temp, precip treatment, and annual ag temp and soil moisture values
+exp_gdd3<-left_join(exp_gdd2,tempsm_plots, by=c("site", "block", "plot","year"))
+#replace controls (=NAs) with 0 for warming treatming and precip treatment
+exp_gdd3[which(is.na(exp_gdd3$warm_treat)),]$warm_treat<-0
+exp_gdd3[which(is.na(exp_gdd3$precip_treat)),]$precip_treat<-100
+exp_gdd3<-exp_gdd3[order(exp_gdd3$site,exp_gdd3$block,exp_gdd3$plot,exp_gdd3$year),]
+tempsm_plots<-tempsm_plots[order(tempsm_plots$site,tempsm_plots$block,tempsm_plots$plot,tempsm_plots$year),]
+###Make boxplot of gddcrit by 
+unique(exp_gdd3$genus.species)#241 species
+
+##now aggregate monthly too:
+expclim2$date<-strptime(strptime(paste(expclim2$year,expclim2$doy,sep="-"), format = "%Y-%j"),format = "%Y-%m-%d")
+expclim2$month<-substr(expclim2$date,6,7)
+ag_max_month<-aggregate(expclim2$agtemp_max, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year,expclim2$month), FUN=mean,na.rm=TRUE)
+ag_min_month<-aggregate(expclim2$agtemp_min, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year,expclim2$month), FUN=mean,na.rm=TRUE)
+soilmois_month<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year,expclim2$month), FUN=mean,na.rm=TRUE)
+#combine into one dataframe
+tempsm_month<-cbind(ag_max_month,ag_min_month$x,soilmois_month$x)
+colnames(tempsm_month)<-c("site","block","plot","warm_treat","precip_treat","year","month","agtmax","agtmin","sm")
+tempsm_month<-tempsm_month[order(tempsm_month$site,tempsm_month$block,tempsm_month$plot,tempsm_month$year,tempsm_month$month),]
+
+#Start by plotting treatment effects on doy and GDD crit
+exp_gdd3$all_treat<-paste(exp_gdd3$warm_treat,exp_gdd3$precip_treat, sep=".")
+sites<-unique(exp_gdd3$site)
+for(i in 1:length(sites)){
+  sitedat<-exp_gdd3[exp_gdd3$site==sites[i],]
+  quartz()
+  par(mfrow=c(1,2))
+  boxplot(sitedat$doy~sitedat$all_treat, main=paste(sites[i],"doy"))
+  if (length(unique(sitedat$cumgdd_air))>1) {
+    boxplot(sitedat$cumgdd_air~sitedat$all_treat, main=paste(sites[i],"gddcrit-air"))
+  } else if(length(unique(sitedat$cumgdd_soil))>1){
+    boxplot(sitedat$cumgdd_soil~sitedat$all_treat, main=paste(sites[i],"gddcrit-soil"))
+  }else (next)
+}
+
+#Now plottreatment effects on soil moisture
+
+for(i in 1:length(sites)){
+  sitedat<-exp_gdd3[exp_gdd3$site==sites[i],]
+  quartz(height=5, width=8)
+  par(mfrow=c(1,2))
+  if (length(unique(sitedat$sm))>1) {
+    boxplot(sitedat$sm~sitedat$all_treat, main=paste(sites[i],"soilmois"), ylab="sm")
+  }
+  if (length(unique(sitedat$cumgdd_air))>1) {
+    plot(sitedat$sm, sitedat$cumgdd_air,type="p",pch=21,main=paste(sites[i],"gddcrit-air"), ylab="gddcrit")
+  } else if(length(unique(sitedat$cumgdd_soil))>1){
+    plot(sitedat$sm,sitedat$cumgdd_soil, type="p",pch=21,main=paste(sites[i],"gddcrit-soil"), ylab="gddcrit")
+  }else (next)
+}
+
+###Fit model of GDDcrit~soil moisture
+#write.csv(exp_gdd3,"exphengdd.csv")
+
+
+
 
