@@ -22,33 +22,44 @@ setwd("~/git/radcliffe")
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
-# sourcing standard wrangling to get expclim2 and expgdd for climate and phenology analyses, respectively
-source("source/standard_mergesandwrangling.R")
+# sourcing standard data wrangling to get expclim2 and expgdd for climate and phenology analyses (with gddcrit), respectively
+source("analyses/source/standard_mergesandwrangling.R")
 
 #Need to summarize soil moisture and air temperature by plot, seasonally and annually and merge this in to climate data
 #start by aggregating observed above-ground min and max and soil temperature by plot and year to get annual values
 ag_max_plot<-aggregate(expclim2$agtemp_max, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
 ag_min_plot<-aggregate(expclim2$agtemp_min, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
 soilmois_plot<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
+#Make seasonal summaries as well: Jan-Mar, April-June
+janmar<-expclim2[as.numeric(expclim2$doy)<90,]
+soilmois_janmar<-aggregate(janmar$soilmois1, by=list(janmar$site,janmar$block,janmar$plot,janmar$target,janmar$preciptreat_amt,janmar$year), FUN=mean,na.rm=TRUE)
+ag_min_janmar<-aggregate(janmar$agtemp_min, by=list(janmar$site,janmar$block,janmar$plot,janmar$target,janmar$preciptreat_amt,janmar$year), FUN=mean,na.rm=TRUE)
+tempsm_janmar<-cbind(ag_min_janmar,soilmois_janmar$x)
+
+aprjun<-expclim2[as.numeric(expclim2$doy)>=90 & as.numeric(expclim2$doy)<181,]
+soilmois_aprjun<-aggregate(aprjun$soilmois1, by=list(aprjun$site,aprjun$block,aprjun$plot,aprjun$target,aprjun$preciptreat_amt,aprjun$year), FUN=mean,na.rm=TRUE)
+ag_min_aprjun<-aggregate(aprjun$agtemp_min, by=list(aprjun$site,aprjun$block,aprjun$plot,aprjun$target,aprjun$preciptreat_amt,aprjun$year), FUN=mean,na.rm=TRUE)
+tempsm_aprjun<-cbind(ag_min_aprjun,soilmois_aprjun$x)
+
+colnames(tempsm_janmar)<-c("site","block","plot","target","preciptreat_amt","year","ag_min_janmar","soilmois_janmar")
+
+colnames(tempsm_aprjun)<-c("site","block","plot","target","preciptreat_amt","year","ag_min_aprjun","soilmois_aprjun")
+#tempsm_janmar<-tempsm_janmar[!is.na(tempsm_janmar$soilmois_janmar),]
+#tempsm_aprjun<-tempsm_aprjun[!is.na(tempsm_aprjun$soilmois_aprjun),]
+
 #combine into one dataframe
 tempsm_plots<-cbind(ag_max_plot,ag_min_plot$x,soilmois_plot$x)
 colnames(tempsm_plots)<-c("site","block","plot","target","preciptreat_amt","year","agtmax","agtmin","sm")
 tempsm_plots<-tempsm_plots[order(tempsm_plots$site,tempsm_plots$block,tempsm_plots$plot,tempsm_plots$year),]
-dim(tempsm_plots)#894 9
-dim(expclim2)#219493     53
-expclim3<-full_join(expclim2,tempsm_plots,by=c("site", "block", "plot","target","preciptreat_amt","year"), match="all")
-dim(expclim3)#219493     53
-dim(exppheno)#69008      53
-
-#Now merge in phenology data to get
-expall<-left_join(exppheno,expclim,by=c("site", "block", "plot","year","doy"), copy=TRUE)
-dim(expall)#69030    55
-head(expall)
-tail(expall)
-length(which(is.na(expall$site)))#0- good
-length(which(is.na(expall$airtemp_min)))#21933 
-length(which(is.na(expall$soilmois1)))#16968 not good!too many
-#for some reason, the merge works much better on expclim than on expclim2, so we'll have to do same manipulations to data
+dim(tempsm_plots)#924 9
+#add these to the expgdd file for later analysis
+dim(expgdd)#59675    50
+expgdd2<-left_join(expgdd,tempsm_plots,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
+dim(expgdd2)#59675    53
+expgdd3<-left_join(expgdd2,tempsm_janmar,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
+dim(expgdd3)#59675    54
+expgdd4<-left_join(expgdd3,tempsm_aprjun,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
+dim(expgdd4)#59675    54
 
 #First, 
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
@@ -57,104 +68,355 @@ length(which(is.na(expall$soilmois1)))#16968 not good!too many
 ###Fit lmer model for soil moisture~warming*preciptreatment
 expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
 expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
-expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt_cent,soilmois1))
-expclim2a  <- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1))
+expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
-sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2)
-summary(sm_mod_cent)
+#sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site/year/doy), REML=FALSE, data=expclim2a)
+#summary(sm_mod_cent)
+#sm_mod_cent2<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2a)
+#summary(sm_mod_cent2)#fixed coef results almost identical to other random effects structure and i think nested time effects makes more sense given how far apart sites arestructure 
 
-sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site/year/doy), REML=FALSE, data=expclim2)
-summary(sm_mod_cent)
-
-sm_mod<-lmer(soilmois1~target*preciptreat_amt + (1|site/year/doy), REML=FALSE, data=expclim2)
+sm_mod<-lmer(soilmois1~target*preciptreat_amt + (1|site/year/doy), REML=FALSE, data=expclim2a)
 summary(sm_mod)
-#sm_mod2<-lmer(soilmois1~target*preciptreat_amt + (target*preciptreat_amt|site/year/doy), REML=FALSE, data=expclim2)
-#summary(sm_mod2)
-quartz(height=5, width=9)
-par(mfrow=c(1,2))
-plot(expclim2$target,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Target warming (C)", bty="l", ylim=c(0,0.8))
-abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[2], lwd=2)
-temp_slope=round(fixef(sm_mod)[2], digits=4)
-temp_se=round(summary(sm_mod)$coefficients[2,2], digits=3)
-mtext(paste("coef=",temp_slope), side=3, line=-4, adj=.8)
+#Figurewith all raw points
+#quartz(height=5, width=9)
+#par(mfrow=c(1,2))
+#plot(expclim2$target,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Target warming (C)", bty="l", ylim=c(0,0.8))
+#abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[2], lwd=2)
+#temp_slope=round(fixef(sm_mod)[2], digits=4)
+#temp_se=round(summary(sm_mod)$coefficients[2,2], digits=3)
+#mtext(paste("coef=",temp_slope), side=3, line=-4, adj=.8)
 
-plot(expclim2$preciptreat_amt,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Precipitation treatment (%)", bty="l", ylim=c(0,0.8))
-abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[3], lwd=2)
-prec_slope=round(fixef(sm_mod)[3], digits=4)
-prec_se=round(summary(sm_mod)$coefficients[3,3], digits=4)
-mtext(paste("coef=",prec_slope), side=3, line=-4, adj=.8)
+#plot(expclim2$preciptreat_amt,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Precipitation treatment (%)", bty="l", ylim=c(0,0.8))
+#abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[3], lwd=2)
+#prec_slope=round(fixef(sm_mod)[3], digits=4)
+#prec_se=round(summary(sm_mod)$coefficients[3,3], digits=4)
+#mtext(paste("coef=",prec_slope), side=3, line=-4, adj=.8)
 
 #Make the above figure but without raw data- just site differences (random effects) plotted
 #plot fitted lines, points, and 1:1 line
-
 sites<-unique(expclim2$site)
 expclim2$target<-as.numeric(expclim2$target)
 soilmois_target<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$target), FUN=mean,na.rm=TRUE)
 soilmois_precip<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$preciptreat_amt), FUN=mean,na.rm=TRUE)
 colnames(soilmois_target)<-c("site","target","soilmois1")
 colnames(soilmois_precip)<-c("site","precip_amt","soilmois1")
+soilmois_precip<-soilmois_precip[!soilmois_precip$site=="exp06"|soilmois_precip$site=="exp11",]#no moisture data for these 2 sites
+soilmois_target<-soilmois_target[!soilmois_target$site=="exp06"|soilmois_target$site=="exp11",]
+
+cols <- brewer.pal(10,"Spectral")
+#cols <- colorRampPalette(brewer.pal(11,"Spectral"))(12)#
 
 quartz(height=5, width=9)
 par(mfrow=c(1,2))
-plot(soilmois_target$target,soilmois_target$soilmois1,type="p",pch=as.numeric(as.factor(soilmois_target$site))+14, col="black",bg="black",xlab="Target warming (C)", ylab="Soil moisture (VWC)", bty="l", xlim=c(0,6), ylim=c(0,0.4))
+plot(soilmois_target$target,soilmois_target$soilmois1,type="p",bg=cols[as.numeric(as.factor(soilmois_target$site))], pch=21,xlab="Target warming (C)", ylab="Soil moisture (VWC)", bty="l", xlim=c(0,6), ylim=c(0,0.4))
 abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[2], lwd=2)
 temp_slope=round(fixef(sm_mod)[2], digits=4)
 temp_se=round(summary(sm_mod)$coefficients[2,2], digits=3)
 #mtext(paste("coef=",temp_slope), side=3, line=-4, adj=.8)
 
-plot(soilmois_precip$precip,soilmois_precip$soilmois1,type="p",pch=as.numeric(as.factor(soilmois_target$site))+14, col="black",bg="black",xlab="Precipitation treatment (%)", ylab="Soil moisture (VWC)", bty="l", xlim=c(0,200), ylim=c(0,0.4))
+plot(soilmois_precip$precip,soilmois_precip$soilmois1,type="p",bg=cols[as.numeric(as.factor(soilmois_target$site))], pch=21,xlab="Precipitation treatment (%)", ylab="Soil moisture (VWC)", bty="l", xlim=c(0,200), ylim=c(0,0.4))
 abline(a=fixef(sm_mod)[1],b=fixef(sm_mod)[3], lwd=2)
 prec_slope=round(fixef(sm_mod)[3], digits=4)
 prec_se=round(summary(sm_mod)$coefficients[3,3], digits=4)
 #mtext(paste("coef=",prec_slope), side=3, line=-4, adj=.8)
+legend(158, .19,legend=rownames(ranef(sm_mod)$site),pch=21, pt.bg=cols[as.numeric(as.factor(rownames(ranef(sm_mod)$site)))], cex=0.6)
 
 #Analyses started April 11, 2017
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
 #Start by looking at which studies have both SM and AG temp data
-
-which(tapply(expall$agtemp_mn,expall$site,mean,na.rm=T)>0)
-which(tapply(expall$soiltemp1_min,expall$site,mean,na.rm=T)>0)
-which(tapply(expall$soilmois1,expall$site,mean,na.rm=T)>0)
+which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
+which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
 #The following sites have both: exp01 exp02 exp03 exp04 exp07 exp09 exp10 exp12 
-expall_subs<-expall[which(expall$site=="exp01"|expall$site=="exp02"|expall$site=="exp03"|expall$site=="exp04"|expall$site=="exp07"|expall$site=="exp09"|expall$site=="exp10"|expall$site=="exp12"),]#
-expall_subs<-subset(expall_subs,select=c(doy,soilmois1,agtemp_max,agtemp_min,site,year,genus.species, event))
-expall_subs <- expall_subs[apply(expall_subs, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_subs<-expgdd4[which(expgdd4$site=="exp01"|expgdd4$site=="exp02"|expgdd4$site=="exp03"|expgdd4$site=="exp04"|expgdd4$site=="exp07"|expgdd4$site=="exp09"|expgdd4$site=="exp10"|expgdd4$site=="exp12"),]#
+expgdd_subs<-subset(expgdd_subs,select=c(site,block, plot,year,target,preciptreat_amt,agtmax,agtmin,sm,doy,genus.species,event,cumgdd_air,ag_min_janmar,soilmois_janmar,ag_min_aprjun,soilmois_aprjun))
+expgdd_subs <- expgdd_subs[apply(expgdd_subs, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 #scale variables:
-expall_subs$soilmois1_cent<-scale(expall_subs$soilmois1, center = TRUE, scale = TRUE)
-expall_subs$agtemp_min_cent<-scale(expall_subs$agtemp_min, center = TRUE, scale = TRUE)
-expall_subs$agtemp_max_cent<-scale(expall_subs$agtemp_max, center = TRUE, scale = TRUE)
+expgdd_subs$sm_cent<-scale(expgdd_subs$sm, center = TRUE, scale = TRUE)
+expgdd_subs$smjm_cent<-scale(expgdd_subs$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_subs$smaj_cent<-scale(expgdd_subs$soilmois_aprjun, center = TRUE, scale = TRUE)
+expgdd_subs$agtmin_cent<-scale(expgdd_subs$agtmin, center = TRUE, scale = TRUE)
+expgdd_subs$agtmax_cent<-scale(expgdd_subs$agtmax, center = TRUE, scale = TRUE)
+expgdd_subs$agtminjm_cent<-scale(expgdd_subs$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_subs$agtminaj_cent<-scale(expgdd_subs$ag_min_aprjun, center = TRUE, scale = TRUE)
+
 #Figure out the random effects structure (random slopes vs intecepts:
-sm_doymod1<-lmer(doy~agtemp_max_cent*soilmois1_cent + (1|site/genus.species)+ (1|year), REML=TRUE, data=expall_subs)
-sm_doymod2<-lmer(doy~agtemp_max_cent*soilmois1_cent + (agtemp_max_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=TRUE, data=expall_subs)
-AIC(sm_doymod1,sm_doymod2)#mod2 wins, so this is our working model
-sm_doymod<-lmer(doy~agtemp_max_cent*soilmois1_cent + (agtemp_max_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_bbd)
-sm_doymodA<-lmer(doy~agtemp_max_cent + (agtemp_max_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_bbd)
-sm_doymodS<-lmer(doy~soilmois1_cent + (soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_bbd)
-sm_doymodAS<-lmer(doy~agtemp_max_cent+soilmois1_cent + (agtemp_max_cent+soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_bbd)
-AIC(sm_doymod,sm_doymodA,sm_doymodS,sm_doymodAS)#mod2 wins, so this is our working model
+sm_doymod<-lmer(doy~agtmax_cent*sm_cent + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_subs)
+sm_doymod2<-lmer(doy~agtmax_cent*sm_cent + (agtmax_cent*sm_cent|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_subs, control=lmerControl(optCtrl=list(maxfun=20000)))
+#sm_doymod2 does not converge- something to try in stan!
+
+#Look at trends in seasonal values for soil moisture across all phenological events
+#sm_doymod<-lmer(doy~agtmax_cent*smjm_cent + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_subs)
+#sm_doymod<-lmer(doy~agtmax_cent*smaj_cent + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_subs)
+
+#uncentered explanatory variables
+sm_doymod2<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_subs)
+
+summary(sm_doymod2)#-4.4574=coefficient of uncentered model
+temp_doymod2<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_subs)
+summary(temp_doymod2)#-2.27773=coefficient for temp of uncentered model
+
+#AIC(temp_doymod2,sm_doymod2)#sm mod wins,  wins by 210 AIC units.
+
+#sm_doymodA<-lmer(doy~agtmax_cent + (agtmax_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
+#sm_doymodS<-lmer(doy~sm_cent + (sm_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
+#sm_doymodAS<-lmer(doy~agtmax_cent+sm_cent + (agtmax_cent+sm_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
+#AIC(sm_doymod2,sm_doymodA,sm_doymodS,sm_doymodAS)#mod2 wins, so this is our working model
 summary(sm_doymod)
 
 #I think it only makes sense to fit models for particular events- start with bbd, lod and lud since these are the most common.
-expall_bbd<-expall_subs[which(expall_subs$event=="bbd"),]#
-expall_bbd$soilmois1_cent<-scale(expall_bbd$soilmois1, center = TRUE, scale = TRUE)
-expall_bbd$agtemp_min_cent<-scale(expall_bbd$agtemp_min, center = TRUE, scale = TRUE)
-expall_bbd$agtemp_max_cent<-scale(expall_bbd$agtemp_max, center = TRUE, scale = TRUE)
-expall_lod<-expall_subs[which(expall_subs$event=="lod"),]#
-expall_lod$soilmois1_cent<-scale(expall_lod$soilmois1, center = TRUE, scale = TRUE)
-expall_lod$agtemp_min_cent<-scale(expall_lod$agtemp_min, center = TRUE, scale = TRUE)
-expall_lod$agtemp_max_cent<-scale(expall_lod$agtemp_max, center = TRUE, scale = TRUE)
-expall_lud<-expall_subs[which(expall_subs$event=="lud"),]#
-expall_lud$soilmois1_cent<-scale(expall_lud$soilmois1, center = TRUE, scale = TRUE)
-expall_lud$agtemp_min_cent<-scale(expall_lud$agtemp_min, center = TRUE, scale = TRUE)
-expall_lud$agtemp_max_cent<-scale(expall_lud$agtemp_max, center = TRUE, scale = TRUE)
+expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#
+expgdd_bbd$sm_cent<-scale(expgdd_bbd$sm, center = TRUE, scale = TRUE)
+expgdd_bbd$smjm_cent<-scale(expgdd_bbd$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd$ag_min_jm_cent<-scale(expgdd_bbd$ag_min_janmar, center = TRUE, scale = TRUE)
+#expgdd_bbd$agtmax_cent<-scale(expgdd_bbd$agtmax, center = TRUE, scale = TRUE)
 
-smbbdmod<-lmer(doy~agtemp_max_cent*soilmois1_cent + (agtemp_max_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_bbd)
-smlodmod<-lmer(doy~agtemp_max_cent*soilmois1_cent + (agtemp_max_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_lod)
-smludmod<-lmer(doy~agtemp_max_cent*soilmois1_cent + (agtemp_max_cent*soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_lud)
+expgdd_lod<-expgdd_subs[which(expgdd_subs$event=="lod"),]#
+expgdd_lod$sm_cent<-scale(expgdd_lod$sm, center = TRUE, scale = TRUE)
+expgdd_lod$agtmin_cent<-scale(expgdd_lod$agtmin, center = TRUE, scale = TRUE)
+expgdd_lod$agtmax_cent<-scale(expgdd_lod$agtmax, center = TRUE, scale = TRUE)
+expgdd_lod$smaj_cent<-scale(expgdd_lod$soilmois_aprjun, center = TRUE, scale = TRUE)
+expgdd_lod$ag_min_aj_cent<-scale(expgdd_lod$ag_min_aprjun, center = TRUE, scale = TRUE)
+
+
+expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#
+expgdd_lud$sm_cent<-scale(expgdd_lud$sm, center = TRUE, scale = TRUE)
+expgdd_lud$agtmin_cent<-scale(expgdd_lud$agtmin, center = TRUE, scale = TRUE)
+expgdd_lud$agtmax_cent<-scale(expgdd_lud$agtmax, center = TRUE, scale = TRUE)
+expgdd_lud$smaj_cent<-scale(expgdd_lud$soilmois_aprjun, center = TRUE, scale = TRUE)
+expgdd_lud$ag_min_aj_cent<-scale(expgdd_lud$ag_min_aprjun, center = TRUE, scale = TRUE)
+
+
+#smbbdmod<-lmer(doy~agtmax_cent*sm_cent + (1|genus.species)+ (1|site/year)+ (1|year), REML=FALSE, data=expgdd_bbd)
+smbbdmod_cent<-lmer(doy~ag_min_jm_cent*smjm_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_bbd)
+smbbdmod<-lmer(doy~ag_min_janmar*soilmois_janmar + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_bbd)
+
+#summary(smbbdmod)
 summary(smbbdmod)
+smlodmod_cent<-lmer(doy~ag_min_aj_cent*smaj_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_lod)
+smlodmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_lod)
 summary(smlodmod)
-summary(smludmod)
 
+smludmod_cent<-lmer(doy~ag_min_aj_cent*smaj_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_lud)
+smludmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_lud)
+
+summary(smludmod)
+#What about flowering?
+expgdd_ffd<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#
+min(expgdd_ffd$doy); max(expgdd_ffd$doy);mean(expgdd_ffd$doy)
+min(expgdd_ffd$ag_min_aprjun); max(expgdd_ffd$ag_min_aprjun);mean(expgdd_ffd$ag_min_aprjun)
+
+#mean agmin-13.01533
+smffdmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_ffd)
+summary(smffdmod)
+
+
+
+#What about senescence? only one site measured sensence
+expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]#
+smsenmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species), REML=FALSE, data=expgdd_sen)
+summary(smsenmod)#soil moisture has minimal effect on senescence
+#What about leaf drop? only one site measured sensence
+expgdd_drop<-expgdd_subs[which(expgdd_subs$event=="drop"),]#
+smdropmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species), REML=FALSE, data=expgdd_drop)
+summary(smsenmod)#soil moisture has minimal effect on senescence
+
+#What about fruiting? only one site measured fruiting
+expgdd_ffrd<-expgdd_subs[which(expgdd_subs$event=="ffrd"),]#
+smffrdmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species), REML=FALSE, data=expgdd_ffrd)
+summary(smffrdmod)
+
+#Make plots of these two models
+cols <- brewer.pal(6,"Spectral")
+##ACross all events, centered
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+#sm_doymod<-lmer(doy~agtmax_cent*sm_cent , expgdd_subs
+plot(expgdd_subs$agtmax_cent,expgdd_subs$doy,type="p",bg=cols[as.numeric(as.factor(expgdd_subs$site))], pch=21,xlab="Mean annual temperature, centered", ylab="Day of year", bty="l")
+plot(1, type="n", xlab="", ylab="", xlim=c(0, 10), ylim=c(0, 10))
+abline(a=fixef(sm_doymod)[1],b=fixef(sm_doymod)[2], lwd=2)
+
+plot(expgdd_subs$sm_cent,expgdd_subs$doy,type="p",bg=cols[as.numeric(as.factor(expgdd_subs$site))], pch=21,xlab="Mean annual soil moisture, centered", ylab="Day of year", bty="l")
+abline(a=fixef(sm_doymod)[1],b=fixef(sm_doymod)[3], lwd=2)
+legend(2.5, 300,legend=unique(expgdd_subs$site),pch=21, pt.bg=cols[as.numeric(as.factor(unique(expgdd_subs$site)))], cex=0.6)
+
+#plot with fitted lines only (no points)
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+#sm_doymod<-lmer(doy~agtmax_cent*sm_cent , expgdd_subs
+#plot(expgdd_subs$agtmax_cent,expgdd_subs$doy,type="p",col="white", pch=21,xlab="Mean annual temperature, centered", ylab="Day of year", bty="l")
+plot(1,type="n",xlab="Mean annual temperature, centered", ylab="Day of year", bty="l", xlim=c(min(expgdd_subs$agtmax_cent),max(expgdd_subs$agtmax_cent)),ylim=c(50,250))
+
+for(i in 1:dim(ranef(sm_doymod)$site)[1]){
+  abline(a=coef(sm_doymod)$site[i,1],b=fixef(sm_doymod)[2], lwd=1, col=cols[i])
+}
+abline(a=fixef(sm_doymod)[1],b=fixef(sm_doymod)[2], lwd=2)
+
+plot(1,type="n",xlab="Mean annual soil moisture, centered", ylab="Day of year", bty="l",xlim=c(min(expgdd_subs$sm_cent),max(expgdd_subs$sm_cent)),ylim=c(50,250))
+for(i in 1:dim(ranef(sm_doymod)$site)[1]){
+  abline(a=coef(sm_doymod)$site[i,1],b=fixef(sm_doymod)[3], lwd=1, col=cols[i])
+}
+abline(a=fixef(sm_doymod)[1],b=fixef(sm_doymod)[3], lwd=2)
+
+legend(2.1, 250,legend=unique(expgdd_subs$site),lty=1, col=cols[as.numeric(as.factor(unique(expgdd_subs$site)))], cex=0.6)
+
+#Uncentered plot with fitted lines only (no points)
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+#sm_doymod<-lmer(doy~agtmax_cent*sm_cent , expgdd_subs
+#plot(expgdd_subs$agtmax_cent,expgdd_subs$doy,type="p",col="white", pch=21,xlab="Mean annual temperature, centered", ylab="Day of year", bty="l")
+plot(1,type="n",xlab="Mean annual temperature", ylab="Day of year", bty="l", xlim=c(0,max(expgdd_subs$agtmax)),ylim=c(50,250))
+
+for(i in 1:dim(ranef(sm_doymod2)$site)[1]){
+  abline(a=coef(sm_doymod2)$site[i,1],b=fixef(sm_doymod2)[2], lwd=1, col=cols[i])
+}
+abline(a=fixef(sm_doymod2)[1],b=fixef(sm_doymod2)[2], lwd=2)
+
+plot(1,type="n",xlab="Mean annual soil moisture", ylab="Day of year", bty="l",xlim=c(0,max(expgdd_subs$sm)),ylim=c(50,250))
+for(i in 1:dim(ranef(sm_doymod)$site)[1]){
+  abline(a=coef(sm_doymod2)$site[i,1],b=fixef(sm_doymod2)[3], lwd=1, col=cols[i])
+}
+abline(a=fixef(sm_doymod2)[1],b=fixef(sm_doymod2)[3], lwd=2)
+
+legend(.24, 110,legend=unique(expgdd_subs$site),lty=1, col=cols[as.numeric(as.factor(unique(expgdd_subs$site)))], cex=0.6)
+
+
+#Uncentered plot to show interaction effect: effect of soil moisture at high and low temperatures
+#with fitted lines only (no points)
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(1,type="n",xlab="Mean annual soil moisture", ylab="Day of year", bty="l",xlim=c(0,max(expgdd_subs$sm)),ylim=c(50,250))
+abline(a=fixef(sm_doymod2)[1],b=fixef(sm_doymod2)[3], lwd=2, col="blue")#main effect of soil moisture, so this is when temp=0
+#what about when temp=10
+abline(a=fixef(sm_doymod2)[1],b=(fixef(sm_doymod2)[3]+(fixef(sm_doymod2)[4]*10)), lwd=2, col="yellow")#effect of soil moisture when temp=10
+abline(a=fixef(sm_doymod2)[1],b=(fixef(sm_doymod2)[3]+(fixef(sm_doymod2)[4]*20)), lwd=2, col="red")#effect of soil moisture when temp=2 0
+
+
+
+#BBD- uncentered, without points
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(1,type="n",xlab="Above-ground Temperature (Jan-Mar)", ylab="Day of year", bty="l", xlim=c(0,max(expgdd_bbd$agtmin)),ylim=c(20,150))
+
+for(i in 1:dim(ranef(smbbdmod)$site)[1]){
+  abline(a=coef(smbbdmod)$site[i,1],b=fixef(smbbdmod)[2], lwd=1, col=cols[i])
+}
+abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[2], lwd=2)
+
+plot(1,type="n",xlab="Mean soil moisture (Jan-Mar)", ylab="Day of year", bty="l",xlim=c(0,max(expgdd_bbd$sm)),ylim=c(20,150))
+for(i in 1:dim(ranef(smbbdmod)$site)[1]){
+  abline(a=coef(smbbdmod)$site[i,1],b=fixef(smbbdmod)[3], lwd=1, col=cols[i])
+}
+abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[3], lwd=2)
+
+legend(.24, 80,legend=unique(expgdd_bbd$site),lty=1, col=cols[as.numeric(as.factor(unique(expgdd_bbd$site)))], cex=0.6)
+
+
+
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(expgdd_bbd$ag_min_janmar,expgdd_bbd$doy,type="p",bg=cols[as.numeric(as.factor(expgdd_bbd$site))], pch=21,xlab="Above-ground Temperature (Jan-Mar)", ylab="Day of year", bty="l")
+abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[2], lwd=2)
+plot(expgdd_bbd$soilmois_janmar,expgdd_bbd$doy,type="p",bg=cols[as.numeric(as.factor(expgdd_bbd$site))], pch=21,xlab="Soil Moisture (Jan-Mar)", ylab="Day of year", bty="l")
+abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[3], lwd=2)
+
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(1,type="n",xlab="Above-ground Temperature (Jan-Mar)", ylab="Day of year", bty="l")
+
+for(i in 1:dim(ranef(sm_doymod)$site)[1]){
+  abline(a=coef(sm_doymod)$site[i,1],b=fixef(sm_doymod)[2], lwd=1, col=cols[i])
+}
+abline(a=fixef(sm_doymod)[1],b=fixef(sm_doymod)[2], lwd=2)
+
+plot(1,type="n",xlab="Mean annual soil moisture, centered", ylab="Day of year", bty="l",xlim=c(min(expgdd_subs$sm_cent),max(expgdd_subs$sm_cent)),ylim=c(min(expgdd_subs$doy),max(expgdd_subs$doy)))
+for(i in 1:dim(ranef(sm_doymod)$site)[1]){
+  abline(a=coef(sm_doymod)$site[i,1],b=fixef(sm_doymod)[3], lwd=1, col=cols[i])
+}
+abline(a=fixef(mbbdmod)[1],b=fixef(sm_doymod)[3], lwd=2)
+mbbdmod
+
+##LOD
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(expgdd_lod$ag_min_aj_cent,expgdd_lod$doy,type="p",bg=cols[as.numeric(as.factor(expgdd_lod$site))], pch=21,xlab="Above-ground Temperature (Apr-Jun), centered", ylab="Day of year", bty="l")
+abline(a=fixef(smlodmod)[1],b=fixef(smlodmod)[2], lwd=2)
+plot(expgdd_lod$smjm_cent,expgdd_lod$doy,type="p",bg=cols[as.numeric(as.factor(expgdd_lod$site))], pch=21,xlab="Soil Moisture (Apr-Jun), centered", ylab="Day of year", bty="l")
+abline(a=fixef(smlodmod)[1],b=fixef(smlodmod)[3], lwd=2)
+
+#Make plots of soil moisture effects on BBD and FFD:
+#BBD- uncentered, without points
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+
+plot(1,type="n",xlab="Mean soil moisture (Jan-Mar)", ylab="Day of year", bty="l",xlim=c(0,max(expgdd_bbd$sm)),ylim=c(20,150))
+for(i in 1:dim(ranef(smbbdmod)$site)[1]){
+  abline(a=coef(smbbdmod)$site[i,1],b=fixef(smbbdmod)[3], lwd=1, col=cols[i])
+}
+abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[3], lwd=2)
+legend(.24, 60,legend=unique(expgdd_bbd$site),lty=1, col=cols[as.numeric(as.factor(unique(expgdd_bbd$site)))], cex=0.6)
+
+#Flowering
+plot(1,type="n",xlab="Mean soil moisture (Apr-Jun)", ylab="Day of year", bty="l",xlim=c(0,max(expgdd_ffd$sm)),ylim=c(100,230))
+for(i in 1:dim(ranef(smffdmod)$site)[1]){
+  abline(a=coef(smffdmod)$site[i,1],b=fixef(smffdmod)[3], lwd=1, col=cols[i])
+}
+abline(a=fixef(smffdmod)[1],b=fixef(smffdmod)[3], lwd=2)
+
+legend(.24, 140,legend=unique(expgdd_ffd$site),lty=1, col=cols[as.numeric(as.factor(unique(expgdd_ffd$site)))], cex=0.6)
+
+
+
+
+
+#Make plot, showing random effects for each site
+#Budburst data
+sitesbb<-unique(expgdd_bbd$site)
+soilmois_sitsbb<-aggregate(expgdd_bbd$smjm, by=list(expgdd_bbd$site,expgdd_bbd$year), FUN=mean,na.rm=TRUE)
+soilmois_precip<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$preciptreat_amt), FUN=mean,na.rm=TRUE)
+colnames(soilmois_target)<-c("site","target","soilmois1")
+colnames(soilmois_precip)<-c("site","precip_amt","soilmois1")
+soilmois_precip<-soilmois_precip[!soilmois_precip$site=="exp06"|soilmois_precip$site=="exp11",]#no moisture data for these 2 sites
+soilmois_target<-soilmois_target[!soilmois_target$site=="exp06"|soilmois_target$site=="exp11",]
+
+
+#Now gdd models
+gddmod_bbd<-lmer(cumgdd_air~smjm_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_bbd)
+summary(gddmod_bbd)
+quartz(height=5, width=4.5)
+plot(expgdd_bbd$smjm_cent,expgdd_bbd$cumgdd_air,type="p",bg=cols[as.numeric(as.factor(expgdd_bbd$site))], pch=21,xlab="Soil moisture (Jan-Mar)", ylab="GDDcrit", bty="l")
+abline(a=fixef(gddmod_bbd)[1],b=fixef(gddmod_bbd)[2], lwd=2)
+
+
+
+gddmod_lod<-lmer(cumgdd_air~smaj_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_lod)
+summary(gddmod_lod)
+quartz(height=5, width=4.5)
+plot(expgdd_lod$smaj_cent,expgdd_lod$cumgdd_air,type="p",bg=cols[as.numeric(as.factor(expgdd_lod$site))], pch=21,xlab="Soil moisture (Apr-Jun)", ylab="GDDcrit", bty="l")
+abline(a=fixef(gddmod_lod)[1],b=fixef(gddmod_lod)[2], lwd=2)
+
+gddmod_lud<-lmer(cumgdd_air~smaj_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_lud)
+summary(gddmod_lud)
+quartz(height=5, width=4.5)
+plot(expgdd_lud$smaj_cent,expgdd_lod$cumgdd_air,type="p",bg=cols[as.numeric(as.factor(expgdd_lod$site))], pch=21,xlab="Soil moisture (Apr-Jun)", ylab="GDDcrit", bty="l")
+abline(a=fixef(gddmod_lod)[1],b=fixef(gddmod_lod)[2], lwd=2)
+
+#Make figure of phenology DOY vs. agtemp and soilmois
+quartz(height=6,width=10)
+par(mfrow=c(1,2))
+plot(expall_lud$agtemp_max,expall_lud$doy,type="p", pch=21,bg="gray", ylab="Leaf unfolding DOY", xlab="Above-ground temperature (C)", bty="l")
+plot(expall_lud$soilmois1,expall_lud$doy,type="p", pch=21,bg="gray", ylab="Leaf unfolding DOY", xlab="Soil moisture", bty="l")
+
+#Look at relationship between agtemp and soilmoisture in controls versus warming treatments
+expclim_noprecip<-expclim2
+expall_cont<-expclim2[which(expclim2$temptreat=="ambient"|expclim2$temptreat=="0"),]#select controls
+expall_cont<-expall_cont[!expall_cont$preciptreat=="-1",]#remove precip treatments
+expall_cont<-expall_cont[!expall_cont$preciptreat=="1",]#remove precip treatments
+#Now fit relationhip between agtemp and soil moisture for controls
+quartz()
+plot(expall_cont$agtemp_max,expall_cont$soilmois1,type="p", pch=21,bg="gray", ylab="Soil moisture", xlab="Above-ground temperature (C)", bty="l")
+r=round(cor.test(expall_cont$soilmois1,expall_cont$agtemp_max)$estimate,digits=2)
+p=round(cor.test(expall_cont$soilmois1,expall_cont$agtemp_max)$p.value,digits=3)
 
 quartz()
 plot(expclim2$agtemp_max,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Above-ground temperature (C)", bty="l")
@@ -174,27 +436,6 @@ par(mfrow=c(1,2))
 plot(expall_lod$agtemp_max,expall_lod$doy,type="p", pch=21,bg="gray", ylab="Leafout DOY", xlab="Above-ground temperature (C)", bty="l")
 plot(expall_lod$soilmois1,expall_lod$doy,type="p", pch=21,bg="gray", ylab="Leafout DOY", xlab="Soil moisture", bty="l")
 
-quartz(height=6,width=10)
-par(mfrow=c(1,2))
-plot(expall_lud$agtemp_max,expall_lud$doy,type="p", pch=21,bg="gray", ylab="Leaf unfolding DOY", xlab="Above-ground temperature (C)", bty="l")
-plot(expall_lud$soilmois1,expall_lud$doy,type="p", pch=21,bg="gray", ylab="Leaf unfolding DOY", xlab="Soil moisture", bty="l")
-
-#Ok, so the problem is that there are natural pattersn in soil moisture and air temperature throughout the year so this will not work.
-#First, look at relationahip between soil moisture and aboveground temperature in control plots
-#Just use climate data for this, not phenology data
-head(expclim2)
-unique(expclim2$target)
-tail(expclim2[which(is.na(expclim2$target)),])
-table(expclim2$temptreat,expclim2$target)
-expclim_noprecip<-expclim2
-expall_cont<-expclim2[which(expclim2$temptreat=="ambient"|expclim2$temptreat=="0"),]#select controls
-expall_cont<-expall_cont[!expall_cont$preciptreat=="-1",]#remove precip treatments
-expall_cont<-expall_cont[!expall_cont$preciptreat=="1",]#remove precip treatments
-#Now fit relationhip between agtemp and soil moisture for controls
-quartz()
-plot(expall_cont$agtemp_max,expall_cont$soilmois1,type="p", pch=21,bg="gray", ylab="Soil moisture", xlab="Above-ground temperature (C)", bty="l")
-r=round(cor.test(expall_cont$soilmois1,expall_cont$agtemp_max)$estimate,digits=2)
-p=round(cor.test(expall_cont$soilmois1,expall_cont$agtemp_max)$p.value,digits=3)
 mtext(paste("controls: r=",r,"p=",p),side=3, adj=1, line=-1)
 
 ###Now add warmed plots to this figure
@@ -208,19 +449,6 @@ r=round(cor.test(expall_treats$soilmois1,expall_treats$agtemp_max)$estimate,digi
 p=round(cor.test(expall_treats$soilmois1,expall_treats$agtemp_max)$p.value,digits=3)
 mtext(paste("warmed: r=",r,"p=",p),side=3, adj=1, line=-2, col="red")
 
-###Try fitting a growing degree day model for bbd
-expall_subs2<-expall[which(expall$site=="exp01"|expall$site=="exp02"|expall$site=="exp03"|expall$site=="exp04"|expall$site=="exp07"|expall$site=="exp09"|expall$site=="exp10"|expall$site=="exp12"),]#
-expall_subs2<-subset(expall_subs2,select=c(doy,soilmois1,agtemp_max,agtemp_min,cumgdd_air,site,year,genus.species, event))
-expall_subs2 <- expall_subs2[apply(expall_subs2, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-#scale variables:
-expall_subs2$soilmois1_cent<-scale(expall_subs2$soilmois1, center = TRUE, scale = TRUE)
-expall_subs2$agtemp_min_cent<-scale(expall_subs2$agtemp_min, center = TRUE, scale = TRUE)
-expall_subs2$agtemp_max_cent<-scale(expall_subs2$agtemp_max, center = TRUE, scale = TRUE)
-expall_bbd2<-expall_subs2[which(expall_subs2$event=="bbd"),]#
-expall_bbd2$soilmois1_cent<-scale(expall_bbd2$soilmois1, center = TRUE, scale = TRUE)
-
-gddbbdmod<-lmer(cumgdd_air~soilmois1_cent + (soilmois1_cent|site/genus.species)+ (1|year), REML=FALSE, data=expall_bbd2)
-summary(gddbbdmod)
 
 quartz()
 plot(expall_bbd2$soilmois1,expall_bbd2$cumgdd_air,type="p", pch=21,bg="lightgreen", ylab="BudBurst GDDcrit", xlab="Soil moisture", bty="l")

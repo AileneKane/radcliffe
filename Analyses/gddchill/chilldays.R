@@ -101,6 +101,15 @@ expclim3[expclim3$mindoy>15,]$cumgdd_soil<-NA
 
 expclim3[expclim3$site==noblocksites[1]|expclim3$site==noblocksites[2]|expclim3$site==noblocksites[3]|expclim3$site==noblocksites[4]|expclim3$site==noblocksites[5]|expclim3$site==noblocksites[6],]$block<-NA
 
+#Add cumulative mean soil moisture
+cummean <- function(x){(cumsum(ifelse(is.na(x), 0, x)) + x*0)/seq_along(ifelse(is.na(x), 0, x))}
+cummean2<-function(x){cumsum(x)/ seq_along(x)}
+#expclim3<-expclim3[order(expclim3$site,expclim3$block,expclim3$plot,expclim3$year,expclim3$doy),]
+
+#expclim3$cummean_sm<-NA
+#expclim3$cummean_sm<-ave(expclim3$soilmois1,list(expclim3$site,expclim3$block,expclim3$plot,expclim3$year), FUN=cummean)
+cbind(expclim3$year,expclim3$doy,expclim3$soilmois1,expclim3$cummean_sm)[30:100,]
 write.csv(expclim3,"Analyses/gddchill/expclim.wchillgdd.csv", row.names=FALSE)
 
 head(expclim3)
+seq_along(expclim3$soilmois1)
