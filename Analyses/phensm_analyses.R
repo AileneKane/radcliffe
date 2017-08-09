@@ -158,6 +158,18 @@ summary(temp_doymod2)#-2.27773=coefficient for temp of uncentered model
 
 #AIC(temp_doymod2,sm_doymod2)#sm mod wins,  wins by 210 AIC units.
 
+expgdd_leaf<-expgdd_subs[which(expgdd_subs$event=="bbd"|expgdd_subs$event=="lod"|expgdd_subs$event=="lod"|expgdd_subs$event=="fgn"|expgdd_subs$event=="fnb"|expgdd_subs$event=="fyn"),]#
+expgdd_flow<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#
+sm_doymod2_leaf<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_leaf)
+sm_doymod2_flow<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_flow)
+summary(sm_doymod2_leaf)#-4.5472=coefficient for temp of leaf events
+summary(sm_doymod2_flow)#3.1448=coefficient for temp of flow events
+temp_doymod2_leaf<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_leaf)
+temp_doymod2_flow<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_flow)
+summary(temp_doymod2_leaf)#2.609=coef of temp only of leaf events
+summary(temp_doymod2_flow)#0.1427=coef of temp only of flow events
+
+
 #sm_doymodA<-lmer(doy~agtmax_cent + (agtmax_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
 #sm_doymodS<-lmer(doy~sm_cent + (sm_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
 #sm_doymodAS<-lmer(doy~agtmax_cent+sm_cent + (agtmax_cent+sm_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
@@ -210,6 +222,13 @@ min(expgdd_ffd$ag_min_aprjun); max(expgdd_ffd$ag_min_aprjun);mean(expgdd_ffd$ag_
 smffdmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_ffd)
 summary(smffdmod)
 
+#now bbd and ffd for just matching sites (exp01 and exp10)
+expgdd_bbdexp0110<-expgdd_bbd[which(expgdd_bbd$site=="exp01"|expgdd_bbd$site=="exp10"),]#
+expgdd_ffddexp0110<-expgdd_ffd[which(expgdd_ffd$site=="exp01"|expgdd_ffd$site=="exp10"),]#
+smffdmod<-lmer(doy~ag_min_aprjun*soilmois_aprjun + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_ffddexp0110)
+smbbdmod<-lmer(doy~ag_min_janmar*soilmois_janmar + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_bbdexp0110)
+summary(smffdmod)
+summary(smbbdmod)
 
 
 #What about senescence? only one site measured sensence
