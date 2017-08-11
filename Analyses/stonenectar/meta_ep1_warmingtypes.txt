@@ -1,0 +1,49 @@
+Started 9 August 2017
+Getting some numbers from the Wolkovich et al. 2012 Nature paper analysis
+
+See timingmeta_analysis.R in /Documents/R/NCEAS/Phenology/WorkingGroup/Experiments/Meta (Lizzie’s computer)
+
+Analysis in question is towards the end of the file. Look for: ## One more model of warming types
+
+Here are the models:
+
+onemoreWarmTypemodelf <- lme(sens~warmingStudytype, random=~1|site/latbi,
+    data=subset(phenffdtmeanmWarmType, phentype=="flo"))
+
+onemoreWarmTypemodelv <- lme(sens~warmingStudytype, random=~1|site/latbi,
+    data=subset(phenffdtmeanmWarmType, phentype=="veg"))
+
+And the results:
+
+flowering:
+
+Fixed effects: sens ~ warmingStudytype 
+                            Value Std.Error DF   t-value p-value
+(Intercept)             -2.957417  1.125224 76 -2.628291  0.0104
+warmingStudytypeopentop  2.957417  1.125224 22  2.628291  0.0154
+warmingStudytypeother    7.621166  2.039642 22  3.736521  0.0011
+
+leafing:
+Fixed effects: sens ~ warmingStudytype 
+                            Value Std.Error DF    t-value p-value
+(Intercept)             -5.076646  17.10055 19 -0.2968704  0.7698
+warmingStudytypeopentop  3.937855  19.77801 12  0.1991027  0.8455
+warmingStudytypeother    8.857078  17.87919 12  0.4953848  0.6293
+
+Unfortunately ‘other’ included heating cables and related stuff so they best analysis of this would re-code these out of ‘other’ … (see meta_ep1_warmingtypes.R) and then you get:
+
+
+flowering:
+
+Fixed effects: sens ~ warmingStudytype 
+                            Value Std.Error DF   t-value p-value
+(Intercept)             -1.632495  1.130962 76 -1.443458  0.1530
+warmingStudytypeopentop  1.632494  1.130962 22  1.443456  0.1630
+warmingStudytypeother    4.159086  2.312759 22  1.798322  0.0859
+
+leafing:
+Fixed effects: sens ~ warmingStudytype 
+                            Value Std.Error DF     t-value p-value
+(Intercept)              2.460635  10.04263 19  0.24501887  0.8091
+warmingStudytypeopentop -3.599301  14.19709 12 -0.25352389  0.8042
+warmingStudytypeother    0.757598  11.61105 12  0.06524805  0.9491
