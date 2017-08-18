@@ -1,0 +1,41 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[top=1.00in, bottom=1.0in, left=1in, right=1in]{geometry}
+\usepackage{amsmath}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\noindent I think this is what I was thinking; I show an example assuming a base temp of 20C and base soil moisture of 0.10 and a warming treatment of 5C that dries soil moisture by 0.3:
+
+With no warming treatment applied:
+\begin{equation}
+y_{Z}=\alpha + \beta_1(20)+\beta_2(0.10)
+\end{equation}
+
+With the warming treatment applied, but soil moisture not affected by warming (aka, what is generally assumed):
+\begin{equation}
+y_{Y}=\alpha + \beta_1(25)+\beta_2(0.10)
+\end{equation}
+
+With the warming treatment applied, but with soil moisture effect included:
+\begin{equation}
+y_{W}=\alpha + \beta_1(25)+\beta_2(0.07)
+\end{equation}
+
+Then you can calculate two sensitivities. This first one assuming soil moisture is not affected by warming:
+\begin{equation}
+\frac{y_{Y}-y_{Z}}{5}
+\end{equation}
+
+This next one includes the effect of soil moisture due to warming:
+\begin{equation}
+\frac{y_{W}-y_{Z}}{5}
+\end{equation}
+
+All this said and done, I wonder if it is mathematically equivalent to what you did ... just a different way of showing it/thinking about it. 
+
+\end{document}
+
+\begin{equation}
+\end{equation}
