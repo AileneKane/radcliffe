@@ -580,6 +580,7 @@ Anova(sm_gddmod3)
 coef(sm_gddmod3)
 
 
+
 ###Analyses for Stan Meeting
 ##Model-fitting for soil moisture and phenology analyses
 ##Started Apsil 24, 2017
@@ -710,10 +711,5 @@ for(i in 1:length(sites)){
     plot(sitedat$sm,sitedat$cumgdd_soil, type="p",pch=21,main=paste(sites[i],"gddcrit-soil"), ylab="gddcrit")
   }else (next)
 }
-
-###Fit model of GDDcrit~soil moisture
-#write.csv(exp_gdd3,"exphengdd.csv")
-
-
 
 
