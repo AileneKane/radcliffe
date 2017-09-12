@@ -9,6 +9,7 @@ rm(list=ls())
 options(stringsAsFactors = FALSE)
 #load libraries:
 library(dplyr)
+library(lme4)
 
 ##Read in harvard soil and phenology data
 setwd("~/git/radcliffe")
@@ -25,18 +26,33 @@ colnames(harvagmin)<-c("year","month","doy","airTmin")
 #Now get annual values of air temperature (no precip data for HF i think....)
 harvagmax.yr<-aggregate(harvagmax$airTmax, by=list(harvagmax$year), FUN=mean,na.rm=TRUE)
 harvagmin.yr<-aggregate(harvagmin$airTmin, by=list(harvagmin$year), FUN=mean,na.rm=TRUE)
+harvagt.yr<-cbind(harvagmax.yr,harvagmin.yr[,2])
+colnames(harvagt.yr)<-c("year","tmax","tmin")
+#Get annual values of soil moisture (no precip data for HF i think....)
+harvsoil$year<-substr(strptime(as.Date(harvsoil$date,format = "%M/%d/%y"),format = "%Y"),1,4)
+harvsoil$year<-as.integer(harvsoil$year)
 
-#add year column to harvsoil so that i can merge them
-harvsoil$year<-strptime(as.Date(harvsoil$date,format = "%M/%d/%y"),format = "%Y")
-as.Date("01/01/2009", format = "%m/%d/%Y"); lubridate::year(x). – Roman Luštrik Apr 12 '16 at 8:57 
-#Look at effect of air on soil moisture. Add annual temp values to soil data
-harvsoil2<-left_join(harvsoil,harvagmax.yr,by=c("year"), copy=TRUE)
+harvsoil.yr<-aggregate(harvsoil$vsm, by=list(harvsoil$year), FUN=mean,na.rm=TRUE)
+colnames(harvsoil.yr)<-c("year","vsm")
+harvsoil.yr$year<-as.integer(harvsoil.yr$year)
+harvagt.yr$year<-as.integer(harvagt.yr$year)
+#Merge daily soil moisture and with daily airtemp valuesLook at effect of air on soil moisture. Add annual temp values to soil data
+harvsoil2<-left_join(harvsoil,harvair,by=c("year","doy"))
+dim(harvsoil2)
+#Merge daily soil moisture and with annual airtemp valuesLook at effect of air on soil moisture. Add annual temp values to soil data
+harvsoil3<-left_join(harvsoil,harvagt.yr,by=c("year"), copy=TRUE)
 
+#Annual climate data for soil moisture and temperature, to be used in phenology model
+harvclim<-left_join(harvagt.yr,harvsoil.yr,by=c("year"), copy=TRUE)
 
-dim(expgdd2)#59675    53
-
-harvsoil2<-join(harvsoil,harvagmax.yr,by=year)
 #Fit model. Want model to be as analagous as possible to experimental model, which was:
-#sm_mod<-lmer(soilmois1~target + (1|site/year/doy), REML=FALSE, data=expclim2a)
+#sm_mod<-lmer(soilmois1~target*preciptreat_amt + (1|site/year/doy), REML=FALSE, data=expclim2a)
+harvsoil2$site<-as.factor(harvsoil2$site)
+harvsoil2$doy<-as.factor(harvsoil2$doy)#
+
+harvsm_mod<-lmer(vsm~tmax + (1|site)+ (1|year/doy), REML=FALSE, data=harvsoil2)
+summary(harvsm_mod)#temp coef: tmax: -0.02893 
+#experimental model: target -3.517e-03
+
 #To do this, get annual average temperature and use this in place of "target" then get total annual precipitation, and use this in place of "preciptreat_amt
 #

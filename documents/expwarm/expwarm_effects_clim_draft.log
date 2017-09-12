@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  12 JUN 2017 20:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  22 AUG 2017 15:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**expwarm_effects_clim_draft2.tex
-(./expwarm_effects_clim_draft2.tex
+**expwarm_effects_clim_draft.tex
+(./expwarm_effects_clim_draft.tex
 LaTeX2e <2015/01/01>
 Babel <3.9l> and hyphenation patterns for 79 languages loaded.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
@@ -382,8 +382,8 @@ Package: setspace 2011/12/19 v6.7a set line spacing
 \f@ncyO@olf=\skip57
 \f@ncyO@orf=\skip58
 )
-(./expwarm_effects_clim_draft2.aux)
-\openout1 = `expwarm_effects_clim_draft2.aux'.
+(./expwarm_effects_clim_draft.aux)
+\openout1 = `expwarm_effects_clim_draft.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
 LaTeX Font Info:    ... okay on input line 51.
@@ -450,9 +450,9 @@ LaTeX Info: Redefining \ref on input line 51.
 LaTeX Info: Redefining \pageref on input line 51.
 LaTeX Info: Redefining \nameref on input line 51.
 
-(./expwarm_effects_clim_draft2.out) (./expwarm_effects_clim_draft2.out)
+(./expwarm_effects_clim_draft.out) (./expwarm_effects_clim_draft.out)
 \@outlinefile=\write4
-\openout4 = `expwarm_effects_clim_draft2.out'.
+\openout4 = `expwarm_effects_clim_draft.out'.
 
 \symgns@font=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `gns@font' in version `bold'
@@ -496,7 +496,7 @@ File: t1aess.fd 1997/11/16 Font definitions for T1/aess.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10> not available
 (Font)              Font shape `TS1/cmr/m/n' tried instead on input line 115.
  [4]
-[5] [6] [7] [8] [9] [10] (./expwarm_effects_clim_draft2.bbl [11] [12] [13]
+[5] [6] [7] [8] [9] [10] (./expwarm_effects_clim_draft.bbl [11] [12] [13]
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 229.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -507,93 +507,109 @@ LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <5> not available
 (Font)              Font shape `TS1/cmr/m/n' tried instead on input line 229.
 
 [14] [15] [16] [17]) [18]
-<../Analyses/maps/RadcliffeLocations_Experiments_Open.png, id=443, 1766.6pt x 8
-83.3pt>
-File: ../Analyses/maps/RadcliffeLocations_Experiments_Open.png Graphic file (ty
-pe png)
- <use ../Analyses/maps/RadcliffeLocations_Experiments_Open.png>
-Package pdftex.def Info: ../Analyses/maps/RadcliffeLocations_Experiments_Open.p
-ng used on input line 175.
+</Users/aileneettinger/git/radcliffe/Analyses/maps/RadcliffeLocations_Experimen
+ts_Open.png, id=443, 1766.6pt x 883.3pt>
+File: /Users/aileneettinger/git/radcliffe/Analyses/maps/RadcliffeLocations_Expe
+riments_Open.png Graphic file (type png)
+
+<use /Users/aileneettinger/git/radcliffe/Analyses/maps/RadcliffeLocations_Exper
+iments_Open.png>
+Package pdftex.def Info: /Users/aileneettinger/git/radcliffe/Analyses/maps/Radc
+liffeLocations_Experiments_Open.png used on input line 175.
 (pdftex.def)             Requested size: 472.03111pt x 236.01422pt.
  [19
 
-]
-[20 <../Analyses/maps/RadcliffeLocations_Experiments_Open.png>]
-<../Analyses/figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPrecip
-.png, id=458, 1626.075pt x 813.0375pt>
-File: ../Analyses/figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoP
-recip.png Graphic file (type png)
+] [20 </Users/aileneettinger/git/radcliffe/Analyses/maps/RadcliffeLocations_Exp
+eriments_Open.png>]
+</Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSeries
+_SoilTemp1Mean_Deviation_NoPrecip.png, id=458, 1626.075pt x 813.0375pt>
+File: /Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeS
+eries_SoilTemp1Mean_Deviation_NoPrecip.png Graphic file (type png)
 
-<use ../Analyses/figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPr
-ecip.png>
-Package pdftex.def Info: ../Analyses/figures/WarmingEffects_TimeSeries_SoilTemp
-1Mean_Deviation_NoPrecip.png used on input line 182.
+<use /Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSe
+ries_SoilTemp1Mean_Deviation_NoPrecip.png>
+Package pdftex.def Info: /Users/aileneettinger/git/radcliffe/Analyses/figures/W
+armingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPrecip.png used on input lin
+e 182.
 (pdftex.def)             Requested size: 472.03111pt x 236.01054pt.
- <../Analyses/figures/blockyearvar.pdf, id=459, 578.16pt x 433.62pt>
-File: ../Analyses/figures/blockyearvar.pdf Graphic file (type pdf)
 
-<use ../Analyses/figures/blockyearvar.pdf>
-Package pdftex.def Info: ../Analyses/figures/blockyearvar.pdf used on input lin
-e 189.
+</Users/aileneettinger/git/radcliffe/Analyses/figures/blockyearvar.pdf, id=459,
+ 578.16pt x 433.62pt>
+File: /Users/aileneettinger/git/radcliffe/Analyses/figures/blockyearvar.pdf Gra
+phic file (type pdf)
+
+<use /Users/aileneettinger/git/radcliffe/Analyses/figures/blockyearvar.pdf>
+Package pdftex.def Info: /Users/aileneettinger/git/radcliffe/Analyses/figures/b
+lockyearvar.pdf used on input line 188.
 (pdftex.def)             Requested size: 472.03111pt x 354.02245pt.
+
+</Users/aileneettinger/git/radcliffe/Analyses/figures/ShamVSAmbient_all.pdf, id
+=460, 722.7pt x 433.62pt>
+File: /Users/aileneettinger/git/radcliffe/Analyses/figures/ShamVSAmbient_all.pd
+f Graphic file (type pdf)
+
+<use /Users/aileneettinger/git/radcliffe/Analyses/figures/ShamVSAmbient_all.pdf
+>
+Package pdftex.def Info: /Users/aileneettinger/git/radcliffe/Analyses/figures/S
+hamVSAmbient_all.pdf used on input line 195.
+(pdftex.def)             Requested size: 472.03111pt x 283.21927pt.
  [21
 
- <../Analyses/figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPreci
-p.png>] [22 <../Analyses/figures/blockyearvar.pdf>]
-<../Analyses/figures/ShamVSAmbient_all.pdf, id=496, 722.7pt x 433.62pt>
-File: ../Analyses/figures/ShamVSAmbient_all.pdf Graphic file (type pdf)
+ </Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSerie
+s_SoilTemp1Mean_Deviation_NoPrecip.png>] [22 </Users/aileneettinger/git/radclif
+fe/Analyses/figures/blockyearvar.pdf>] [23 </Users/aileneettinger/git/radcliffe
+/Analyses/figures/ShamVSAmbient_all.pdf>]
+</Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSeries
+_SoilMoist_Deviation_NoPrecip.png, id=539, 1626.075pt x 1626.075pt>
+File: /Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeS
+eries_SoilMoist_Deviation_NoPrecip.png Graphic file (type png)
 
-<use ../Analyses/figures/ShamVSAmbient_all.pdf>
-Package pdftex.def Info: ../Analyses/figures/ShamVSAmbient_all.pdf used on inpu
-t line 198.
-(pdftex.def)             Requested size: 472.03111pt x 283.21927pt.
- [23 <../Analyses/figures/ShamVSAmbient_all.pdf>]
-<../Analyses/figures/WarmingEffects_TimeSeries_SoilMoist_Deviation_NoPrecip.png
-, id=539, 1626.075pt x 1626.075pt>
-File: ../Analyses/figures/WarmingEffects_TimeSeries_SoilMoist_Deviation_NoPreci
-p.png Graphic file (type png)
-
-<use ../Analyses/figures/WarmingEffects_TimeSeries_SoilMoist_Deviation_NoPrecip
-.png>
-Package pdftex.def Info: ../Analyses/figures/WarmingEffects_TimeSeries_SoilMois
-t_Deviation_NoPrecip.png used on input line 205.
+<use /Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSe
+ries_SoilMoist_Deviation_NoPrecip.png>
+Package pdftex.def Info: /Users/aileneettinger/git/radcliffe/Analyses/figures/W
+armingEffects_TimeSeries_SoilMoist_Deviation_NoPrecip.png used on input line 20
+2.
 (pdftex.def)             Requested size: 472.03111pt x 472.0211pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<../Analyses/figures/DirIndWarmingEffects.pdf, id=540, 794.97pt x 289.08pt>
-File: ../Analyses/figures/DirIndWarmingEffects.pdf Graphic file (type pdf)
 
-<use ../Analyses/figures/DirIndWarmingEffects.pdf>
-Package pdftex.def Info: ../Analyses/figures/DirIndWarmingEffects.pdf used on i
-nput line 210.
+</Users/aileneettinger/git/radcliffe/Analyses/figures/DirIndWarmingEffects.pdf,
+ id=540, 794.97pt x 289.08pt>
+File: /Users/aileneettinger/git/radcliffe/Analyses/figures/DirIndWarmingEffects
+.pdf Graphic file (type pdf)
+
+<use /Users/aileneettinger/git/radcliffe/Analyses/figures/DirIndWarmingEffects.
+pdf>
+Package pdftex.def Info: /Users/aileneettinger/git/radcliffe/Analyses/figures/D
+irIndWarmingEffects.pdf used on input line 207.
 (pdftex.def)             Requested size: 472.03111pt x 171.65405pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 215.
-[24 <../Analyses/figures/WarmingEffects_TimeSeries_SoilMoist_Deviation_NoPrecip
-.png>] [25 <../Analyses/figures/DirIndWarmingEffects.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 215.
-
-(./expwarm_effects_clim_draft2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 215.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 215.
-Package rerunfilecheck Info: File `expwarm_effects_clim_draft2.out' has not cha
-nged.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 212.
+[24 </Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSe
+ries_SoilMoist_Deviation_NoPrecip.png>] [25 </Users/aileneettinger/git/radcliff
+e/Analyses/figures/DirIndWarmingEffects.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 212.
+ (./expwarm_effects_clim_draft.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 212.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 212.
+Package rerunfilecheck Info: File `expwarm_effects_clim_draft.out' has not chan
+ged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 215.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 212.
  ) 
 Here is how much of TeX's memory you used:
  8554 strings out of 493089
- 130641 string characters out of 6134842
+ 131484 string characters out of 6134842
  216953 words of memory out of 5000000
  11761 multiletter control sequences out of 15000+600000
  39585 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,43p,1336b,570s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,43p,1335b,570s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></
@@ -606,7 +622,7 @@ xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texl
 ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texli
 ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texliv
 e/2015/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on expwarm_effects_clim_draft2.pdf (25 pages, 3437273 bytes).
+Output written on expwarm_effects_clim_draft.pdf (25 pages, 3437367 bytes).
 PDF statistics:
  632 PDF objects out of 1000 (max. 8388607)
  545 compressed objects within 6 object streams

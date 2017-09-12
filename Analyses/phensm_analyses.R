@@ -78,6 +78,10 @@ expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only
 
 sm_mod<-lmer(soilmois1~target*preciptreat_amt + (1|site/year/doy), REML=FALSE, data=expclim2a)
 summary(sm_mod)
+
+sm_tempmod<-lmer(soilmois1~target + (1|site/year/doy), REML=FALSE, data=expclim2a)
+summary(sm_tempmod)
+
 #Figurewith all raw points
 #quartz(height=5, width=9)
 #par(mfrow=c(1,2))
@@ -427,10 +431,20 @@ plot(expall_lud$agtemp_max,expall_lud$doy,type="p", pch=21,bg="gray", ylab="Leaf
 plot(expall_lud$soilmois1,expall_lud$doy,type="p", pch=21,bg="gray", ylab="Leaf unfolding DOY", xlab="Soil moisture", bty="l")
 
 #Look at relationship between agtemp and soilmoisture in controls versus warming treatments
-expclim_noprecip<-expclim2
-expall_cont<-expclim2[which(expclim2$temptreat=="ambient"|expclim2$temptreat=="0"),]#select controls
-expall_cont<-expall_cont[!expall_cont$preciptreat=="-1",]#remove precip treatments
-expall_cont<-expall_cont[!expall_cont$preciptreat=="1",]#remove precip treatments
+expclim_noprecip<-expclim2[!expclim2$preciptreat=="-1",]#remove precip treatments
+expclim_noprecip<-expclim_noprecip[!expclim_noprecip$preciptreat=="1",]#remove precip treatments
+
+expclim_cont<-expclim_noprecip[which(expclim_noprecip$temptreat=="ambient"|expclim_noprecip$temptreat=="0"),]#select controls
+expclim_treat<-expclim_noprecip[-which(expclim_noprecip$temptreat=="ambient"|expclim_noprecip$temptreat=="0"),]#select only trmeatns
+
+#Now fit relationhip between agtemp and soil moisture for controls
+sm_agtempmod<-lmer(soilmois1~agtemp_max + (1|site/year/doy), REML=FALSE, data=expclim_cont)
+summary(sm_agtempmod)
+fixef(sm_agtempmod)
+sm_agtempmod_treats<-lmer(soilmois1~agtemp_max + (1|site/year/doy), REML=FALSE, data=expclim_treat)
+summary(sm_agtempmod_treats)
+fixef(sm_agtempmod_treats)
+
 #Now fit relationhip between agtemp and soil moisture for controls
 quartz()
 plot(expall_cont$agtemp_max,expall_cont$soilmois1,type="p", pch=21,bg="gray", ylab="Soil moisture", xlab="Above-ground temperature (C)", bty="l")
