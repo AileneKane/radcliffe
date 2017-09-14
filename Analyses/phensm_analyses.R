@@ -1,4 +1,4 @@
-#Preliminary analyses of experimental phenology, soil moisture, and temperatur data for radcliffe
+#Preliminary analyses of experimental phenology, soil moisture, and temperature data for radcliffe
 #Started March 18, 2016 by Ailene Ettinger
 #Modified/added to by Ailene February-April 2017 for ESA abstract and additional analyses
 ###Three questions to address:
