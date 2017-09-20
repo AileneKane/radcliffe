@@ -1,7 +1,7 @@
 #Preliminary analyses of experimental phenology, soil moisture, and temperature data for radcliffe
 #Started March 18, 2016 by Ailene Ettinger
 #Modified/added to by Ailene February-April 2017 for ESA abstract and additional analyses
-###Three questions to address:
+#Three questions to address:
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 #2) How does soil moisture affect GDDcrit?
 #3) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
@@ -17,60 +17,27 @@ library(dplyr)
 library(AICcmodavg)
 #update.packages()
 
-##Read in experimental climate and phenology data
+#Read in experimental climate and phenology data
 setwd("~/git/radcliffe")
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
-# sourcing standard data wrangling to get expclim2 and expgdd for climate and phenology analyses (with gddcrit), respectively
+
+#standard data wrangling to get expclim2 for climate analyses and  expgdd for phenology analyses (with gddcrit)
 source("analyses/source/standard_mergesandwrangling.R")
 
-#Need to summarize soil moisture and air temperature by plot, seasonally and annually and merge this in to climate data
-#start by aggregating observed above-ground min and max and soil temperature by plot and year to get annual values
-ag_max_plot<-aggregate(expclim2$agtemp_max, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
-ag_min_plot<-aggregate(expclim2$agtemp_min, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
-soilmois_plot<-aggregate(expclim2$soilmois1, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
-#Make seasonal summaries as well: Jan-Mar, April-June
-janmar<-expclim2[as.numeric(expclim2$doy)<90,]
-soilmois_janmar<-aggregate(janmar$soilmois1, by=list(janmar$site,janmar$block,janmar$plot,janmar$target,janmar$preciptreat_amt,janmar$year), FUN=mean,na.rm=TRUE)
-ag_min_janmar<-aggregate(janmar$agtemp_min, by=list(janmar$site,janmar$block,janmar$plot,janmar$target,janmar$preciptreat_amt,janmar$year), FUN=mean,na.rm=TRUE)
-tempsm_janmar<-cbind(ag_min_janmar,soilmois_janmar$x)
+#summarize climate data by plot (annual and seasonal temp, soil mois) and merge in with expgdd file
+source("analyses/source/climsum_byplot.R")
 
-aprjun<-expclim2[as.numeric(expclim2$doy)>=90 & as.numeric(expclim2$doy)<181,]
-soilmois_aprjun<-aggregate(aprjun$soilmois1, by=list(aprjun$site,aprjun$block,aprjun$plot,aprjun$target,aprjun$preciptreat_amt,aprjun$year), FUN=mean,na.rm=TRUE)
-ag_min_aprjun<-aggregate(aprjun$agtemp_min, by=list(aprjun$site,aprjun$block,aprjun$plot,aprjun$target,aprjun$preciptreat_amt,aprjun$year), FUN=mean,na.rm=TRUE)
-tempsm_aprjun<-cbind(ag_min_aprjun,soilmois_aprjun$x)
-
-colnames(tempsm_janmar)<-c("site","block","plot","target","preciptreat_amt","year","ag_min_janmar","soilmois_janmar")
-
-colnames(tempsm_aprjun)<-c("site","block","plot","target","preciptreat_amt","year","ag_min_aprjun","soilmois_aprjun")
-#tempsm_janmar<-tempsm_janmar[!is.na(tempsm_janmar$soilmois_janmar),]
-#tempsm_aprjun<-tempsm_aprjun[!is.na(tempsm_aprjun$soilmois_aprjun),]
-
-#combine into one dataframe
-tempsm_plots<-cbind(ag_max_plot,ag_min_plot$x,soilmois_plot$x)
-colnames(tempsm_plots)<-c("site","block","plot","target","preciptreat_amt","year","agtmax","agtmin","sm")
-tempsm_plots<-tempsm_plots[order(tempsm_plots$site,tempsm_plots$block,tempsm_plots$plot,tempsm_plots$year),]
-dim(tempsm_plots)#924 9
-#add these to the expgdd file for later analysis
-dim(expgdd)#59675    50
-expgdd2<-left_join(expgdd,tempsm_plots,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
-dim(expgdd2)#59675    53
-expgdd3<-left_join(expgdd2,tempsm_janmar,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
-dim(expgdd3)#59675    54
-expgdd4<-left_join(expgdd3,tempsm_aprjun,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
-dim(expgdd4)#59675    54
-
+expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
+expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
+expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1))
+expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 #First, 
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 
 #fit model in lmer
 ###Fit lmer model for soil moisture~warming*preciptreatment
-expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
-expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
-expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1))
-expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-
 #sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site/year/doy), REML=FALSE, data=expclim2a)
 #summary(sm_mod_cent)
 #sm_mod_cent2<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (1|site)+ (1|year/doy), REML=FALSE, data=expclim2a)
@@ -129,8 +96,8 @@ legend(158, .19,legend=rownames(ranef(sm_mod)$site),pch=21, pt.bg=cols[as.numeri
 #Analyses started April 11, 2017
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
 #Start by looking at which studies have both SM and AG temp data
-which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
-which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
+#which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
+#which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
 #The following sites have both: exp01 exp02 exp03 exp04 exp07 exp09 exp10 exp12 
 expgdd_subs<-expgdd4[which(expgdd4$site=="exp01"|expgdd4$site=="exp02"|expgdd4$site=="exp03"|expgdd4$site=="exp04"|expgdd4$site=="exp07"|expgdd4$site=="exp09"|expgdd4$site=="exp10"|expgdd4$site=="exp12"),]#
 expgdd_subs<-subset(expgdd_subs,select=c(site,block, plot,year,target,preciptreat_amt,agtmax,agtmin,sm,doy,genus.species,event,cumgdd_air,ag_min_janmar,soilmois_janmar,ag_min_aprjun,soilmois_aprjun))
@@ -162,18 +129,16 @@ summary(temp_doymod2)#-2.27773=coefficient for temp of uncentered model
 
 #AIC(temp_doymod2,sm_doymod2)#sm mod wins,  wins by 210 AIC units.
 
-expgdd_leaf<-expgdd_subs[which(expgdd_subs$event=="bbd"|expgdd_subs$event=="lod"|expgdd_subs$event=="lod"|expgdd_subs$event=="fgn"|expgdd_subs$event=="fnb"|expgdd_subs$event=="fyn"),]#
-expgdd_flow<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#
-sm_doymod2_leaf<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_leaf)
-sm_doymod2_flow<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_flow)
-summary(sm_doymod2_leaf)#-4.5472=coefficient for temp of leaf events
-summary(sm_doymod2_flow)#3.1448=coefficient for temp of flow events
-temp_doymod2_leaf<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_leaf)
-temp_doymod2_flow<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_flow)
-summary(temp_doymod2_leaf)#2.609=coef of temp only of leaf events
-summary(temp_doymod2_flow)#0.1427=coef of temp only of flow events
-
-
+#expgdd_leaf<-expgdd_subs[which(expgdd_subs$event=="bbd"|expgdd_subs$event=="lod"|expgdd_subs$event=="lod"|expgdd_subs$event=="fgn"|expgdd_subs$event=="fnb"|expgdd_subs$event=="fyn"),]#
+#expgdd_flow<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#
+#sm_doymod2_leaf<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_leaf)
+#sm_doymod2_flow<-lmer(doy~agtmax*sm + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_flow)
+#summary(sm_doymod2_leaf)#-4.5472=coefficient for temp of leaf events
+#summary(sm_doymod2_flow)#3.1448=coefficient for temp of flow events
+#temp_doymod2_leaf<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_leaf)
+#temp_doymod2_flow<-lmer(doy~agtmax + (1|genus.species)+ (1|site/year), REML=TRUE, data=expgdd_flow)
+#summary(temp_doymod2_leaf)#2.609=coef of temp only of leaf events
+#summary(temp_doymod2_flow)#0.1427=coef of temp only of flow events
 #sm_doymodA<-lmer(doy~agtmax_cent + (agtmax_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
 #sm_doymodS<-lmer(doy~sm_cent + (sm_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
 #sm_doymodAS<-lmer(doy~agtmax_cent+sm_cent + (agtmax_cent+sm_cent|site/genus.species)+ (1|year), REML=FALSE, data=expgdd_subs)
