@@ -106,11 +106,15 @@ abline(a=fixef(smbbdmod_targt)[1],b=fixef(smbbdmod_targt)[2], lwd=3)
 #summary(smmod)
 par(new=TRUE)
 
-plot(1, xlab="", xlim=c(0,0.5),ylim=c(50,150), axes=FALSE, type="b")
+plot(1, xlab="", xlim=c(0.5,0),ylim=c(50,150), axes=FALSE, type="b")
 ## a little farther out (line=4) to make room for labels
 #mtext("Soil moisture",side=4,line=3) 
 #axis(4, ylim=c(0,.3), las=1)
 #abline(a=fixef(smmod)[1],b=fixef(smmod)[2], lwd=3, col="blue")#mois coef
 #axis(4, ylim=c(0.0,0.5), las=1)
-abline(a=fixef(smbbdmod2)[1],b=fixef(smbbdmod2)[2], lwd=3, col="blue", lty=2)#soil moisture coef
+abline(a=fixef(smbbdmod2)[1],b=fixef(smbbdmod2)[2], lwd=3, col="blue", lty=2)#soil moisture coef 
 legend("bottomright",legend=c("Effect of temperature", "Effect of soil moisture"), lty=2, lwd=2, col=c("darkred","blue"), bty="n", cex=.8)
+
+###To do:
+##Add actual temperature to second panel, add "intensitty of treatment" to both panels; add soil moisture and actual temperature to x axis of second panel
+#Add to supplement: relationship between sm~target warming figure. 
