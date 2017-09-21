@@ -17,3 +17,11 @@ Analyses/radcliffe_merge_expclim2.R
 *.shx
 
 *.history
+
+*.rda
+
+*.rds
+
+*.stan~
+
+documents/expwarm/Inquiry_EL.pdf
