@@ -14,11 +14,11 @@ library(ggplot2)
 library(shinystan)
 library(bayesplot)
 library(rstanarm)
-update.packages()
+#update.packages()
 # Setting working directory. Add in your own path in an if statement for your file structure
  if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliffe")}
 
-source('savestan.R')
+source('Analyses/soilmoisture/savestan.R')
 
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
@@ -39,12 +39,12 @@ source("Analyses/soilmoisture/climsum_byplot.R")
 #source("Analyses/soilmoisture/stanprep.R")
 
 #Prep the data for Stan model
-expgdd_subs$genus.species<-as.numeric(as.factor(expgdd_subs$genus.species))
 
 #1) Divide by phenophase:
 
 expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#bud burst data
 expgdd_bbd <- expgdd_bbd[apply(expgdd_bbd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_bbd$genus.species<-as.numeric(as.factor(expgdd_bbd$genus.species))
 
 expgdd_lod<-expgdd_subs[which(expgdd_subs$event=="lod"),]#leaf out data
 
@@ -58,13 +58,6 @@ expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
 
 
 #2) Make a list out of the processed data. It will be input for the model.
-
-#budburst
-datalist.bbd <- with(expgdd_bbd, 
-                     list(y = doy, 
-                          N = nrow(expgdd_bbd)
-                     )
-)
 
 #Expecting a single string value: [type=character; extent=6].
 datalist.bbd <- with(expgdd_bbd, 
