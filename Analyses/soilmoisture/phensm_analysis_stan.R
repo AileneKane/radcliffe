@@ -114,17 +114,17 @@ m2.sum[grep("b_tm", rownames(m2.sum)),]
 
 
 ###fake data
-N=100#sample size
-t<-rnorm(N,20,1)#temperature
-m<-rnorm(N,.2,.1)#moisture
-a<-150#mean day of year for bb
-b_t<--2#effect of temp
-b_m<-2#effect of soil moisture
-sigma<-.5
-doy<-a+b_t*t+b_m*m+sigma*rnorm(N)
-plot(t,doy)
-plot(m,doy)
-hist(m)
+#N=100#sample size
+#t<-rnorm(N,20,1)#temperature
+#m<-rnorm(N,.2,.1)#moisture
+#a<-150#mean day of year for bb
+#b_t<--2#effect of temp
+#b_m<-2#effect of soil moisture
+#sigma<-.5
+#doy<-a+b_t*t+b_m*m+sigma*rnorm(N)
+#plot(t,doy)
+#plot(m,doy)
+#hist(m)
 
 #add species intercept
 ###set up data parameters
@@ -138,12 +138,13 @@ mu_a<-150#grand mean mean of bb doy
 sigma_a<-20
 mu_b_temp_sp<--2
 sigma_b_temp_sp<-.1
-mu_b_mois_sp<-1
-sigma_b_mois_sp<-.05
+mu_b_mois_sp<-.2
+sigma_b_mois_sp<-.005
 mu_b_tm_sp<-.1
 sigma_b_tm_sp<-.05
 
 a_sp<-as.integer(rnorm(n_sp,mu_a,sigma_a))#species specific day of year for bb
+
 b_temp<-rnorm(n_sp,mu_b_temp_sp,sigma_b_temp_sp)#species specific effects of temp
 b_mois<-rnorm(n_sp,mu_b_mois_sp,sigma_b_mois_sp)#species specific effects of mois
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
@@ -167,7 +168,7 @@ for(i in 1:n_sp){
 sigma_y<-.5
 ypred<-c()
 for(i in 1:N){
-  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]
+  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] #+ b_mois[sp[i]] * mois[i]
 }
 #model with interaction
 #for(i in 1:N){
@@ -179,14 +180,15 @@ plot(temp,y)
 plot(mois,y)
 hist(m)
 #try model in lmer
-fakem1.lmer<-lmer(y~mois+temp + (mois+temp|sp))
+fakem1.lmer<-lmer(y~temp + (temp|sp))
+summary(fakem1.lmer)
 tail(cbind(y,sp,mois,temp))
 
 #now fit the model in stan
-fakem1 = stan('Analyses/soilmoisture/M1_bbd.stan', data=list(y=y,sp=sp,mois=mois, temp=temp, n_sp=n_sp,N=N),
+fakem1 = stan('Analyses/soilmoisture/M1_bbd.stan', data=list(y=y,sp=sp,temp=temp, n_sp=n_sp,N=N),
           iter = 2500, warmup=1500) # 
 #launch_shinystan(fakem1)#not working need to update!
-beta_draws<-as.matrix(fakem1,pars=c("b_temp","b_mois","sigma_y"))
+beta_draws<-as.matrix(fakem1,pars=c("b_temp","sigma_y"))
 mcmc_intervals(beta_draws)
 summary(fakem1)$summary
 head(summary(fakem1)$summary)
