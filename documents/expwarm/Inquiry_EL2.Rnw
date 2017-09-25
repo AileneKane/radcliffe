@@ -1,0 +1,62 @@
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{authblk}
+
+\renewcommand{\baselinestretch}{1.8}
+\usepackage{lineno}
+%\usepackage[backend=bibtex]{biblatex}
+%Strongly recommended
+ %put your figures in one place
+\SweaveOpts{prefix.string=figures/, eps=FALSE} 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+
+\setkeys{Gin}{width=0.8\textwidth} %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{10pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%\doublespacing
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
+%Start of the document
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+% \SweaveOpts{concordance=TRUE}
+
+
+We propose an Ideas \& Perspectives piece for \emph{Ecology Letters} on experimental climate change. 
+%The biological impacts of climate change have been widely observed around the world \citep{ipcc2013}, from shifting species' distributions to altered timing of important life events, and remain a hot area of ecological research \citep{goring2017}. With growing evidence and interest in these impacts, ecologists today are challenged to make quantitative, robust predictions of the ecological effects of climate change. One of the most important methods to achieve this goal is field climate change experiments \citep{harte1995,cleland2006,Hoeppner2012}.  
+
+For over three decades, ecologists have relied on field climate change experiments to understand and forecast ecological impacts of climate change. These experiments are still a prevalent current method, used across diverse subdisciplines from ecophysiology \citep{reich2015} to foodweb ecology \citep{barton2009}, for cutting-edge climate change research. They critically offer the ability to create ``no-analog'' climate scenarios forecasted for the future, to isolate effects of temperature and precipitation from other environmental changes, and to examine non-linear responses to climatic changes. Yet, increasingly these experiments have been shown to estimate effects much smaller than those seen in long-term observational studies \citep{wolkovich2012}. Despite calls for improved methods \citep{beier2012,kreyling2014}, even sophisticated approaches appear to suffer from this discrepancy \citep{menke2014}. Such results highlight the need for new perspectives and assessments of how realistically experiments can alter climate conditions, as well as novel approaches for applying experimental results to forecasting biological impacts of global climate change. 
+% We believe there is a need to rethink the design and interpretation of climate change experiments. 
+
+Thus, we propose an Ideas \& Perspectives piece that highlights the limitations of how climate change experiments can actually alter soil and air climate and what new conceptual and statistical leaps are needed to usefully extrapolate from such experiments. We review how results from these experiments are frequently interpreted in misleading ways, in part because the common practice of summarizing and analyzing only the mean changes across treatments hides variation in treatment effects over space and time. In addition, we highlight how secondary, unintended treatment effects, which are rarely described or interpreted (e.g. soil drying with warming treatments), may under- or over-estimate climate change impacts. To support this, we would present the first meta-analysis of high-resolution climate data from some of the most advanced field-based climate change experiments, assembling daily climate data from 12 active warming experiments (containing an estimated 44 study years and 11594 study days of air and soil temperature and soil moisture data). % All of these complications challenge our interpretation of how experimental warming studies can be applied to forecast effects of climate change. 
+
+%  .... move beyond specific recommendations for future experimental design, to
+Our proposed paper would highlight how new analyses of high-resolution data could allow researchers to use climate change experiments to more accurately identify and forecast species' responses to changes in climate. A case-study using some of our proposed statistical methods shows that improved analysis can even remove much of the previously noted discrepancies between long-term data and experimental results. 
+
+Our author team brings together an international and interdisciplinary team of researchers, which bridges perspectives from ecology, climatology, and land surface modeling. It is comprised of many of the scientists who execute major warming experiments, as well as those who have raised concerns over the findings of such experiments.  We expect our proposed Ideas \& Perspectives piece will lead to improved mechanistic understanding of climatic drivers of biological responses, and inspire innovative experimental design and analysis and hope you will consider it for \emph{Ecology Letters}.
+
+Sincerely,\\
+
+\includegraphics[scale=1]{/Users/aileneettinger/Dropbox/Documents/Work/AileneEttingerSignature.png} \\
+Ailene Ettinger
+Postdoctoral Fellow, Arnold Arboretum of Harvard University \& Biology Department, Tufts University
+ \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/amnat.bst}
+
+\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
