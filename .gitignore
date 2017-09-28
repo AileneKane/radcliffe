@@ -25,3 +25,7 @@ Analyses/radcliffe_merge_expclim2.R
 *.stan~
 
 documents/expwarm/Inquiry_EL.pdf
+
+*.log
+
+*.aux
