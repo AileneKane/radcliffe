@@ -29,8 +29,8 @@ parameters {
   real<lower=0> sigma_b_temp_sp; 
   real<lower=0> sigma_b_mois_sp;
   real mu_a_site;
-  real mu_b_temp_site;   
-  real mu_b_mois_site;
+  //real mu_b_temp_site;   
+  //real mu_b_mois_site;
   real<lower=0> sigma_a_site;
   real<lower=0> sigma_y; 
 
