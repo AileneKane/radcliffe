@@ -65,7 +65,7 @@ clean.raw$marchin <- function(filename="Budburst_Marchin.csv", path="./Data/Expe
 clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path="./Data/Experiments/bace") {  
   ##BACE ##
   ## Data type: BBD,LOD,LUD ##
-  ## Notes: Jeff Dukes##
+  ## Notes: Jeff Dukes = contact, years 2010,2011,2013
   ##Decided to follow NPN's definitios: >3 of observations of each event needed to count
   file <- file.path(path, filename)
   bace1 <- read.csv(file, check.names=FALSE, header=TRUE,na.strings = ".")
@@ -79,114 +79,220 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace1a$event <- "bbd"
   bace1a$year <- 2010
   bace1a$site <- "exp01"
-  head(bace1a)
   names(bace1a)[3]<-"doy"
-  bace2a<- subset(bace1, select=c("genusspecies","plot", "doy_lo"))
-  bace2a$event <- "lod"
+  bace1b<- subset(bace1, select=c("genusspecies","plot", "doy_lo"))
+  bace1b$event <- "lod"
+  bace1b$year <- 2010
+  bace1b$site <- "exp01"
+  names(bace1b)[3]<-"doy"
+  bace1c<- subset(bace1, select=c("genusspecies","plot", "doy_lunf"))
+  bace1c$event <- "lud"
+  bace1c$year <- 2010
+  bace1c$site <- "exp01"
+  names(bace1c)[3]<-"doy"
+  file2 <- file.path(path, "BACE_pinustrobus2010_originaltrees.csv")
+  bace2 <- read.csv(file2, check.names=FALSE, header=TRUE,na.strings = ".")
+  names(bace2)[5] <- "genusspecies"
+  names(bace2)[1] <- "plot"
+  names(bace2)[6] <- "doy_bbd"
+  names(bace2)[8] <- "doy_fgn"
+  names(bace2)[10] <- "doy_fnb"
+  names(bace2)[12] <- "doy_fyn"
+  bace2a<-subset(bace2, select=c("genusspecies","plot", "doy_bbd"))
+  bace2a$event <- "bbd"
   bace2a$year <- 2010
   bace2a$site <- "exp01"
   names(bace2a)[3]<-"doy"
-  bace2b<- subset(bace1, select=c("genusspecies","plot", "doy_lunf"))
-  bace2b$event <- "lud"
+  bace2b<- subset(bace2, select=c("genusspecies","plot", "doy_fgn"))
+  bace2b$event <- "fgn"
   bace2b$year <- 2010
   bace2b$site <- "exp01"
   names(bace2b)[3]<-"doy"
-  file2 <- file.path(path, "BACE_pinustrobus2010_originaltrees.csv")
-  bace4 <- read.csv(file2, check.names=FALSE, header=TRUE,na.strings = ".")
+  bace2c<- subset(bace2, select=c("genusspecies","plot", "doy_fnb"))
+  bace2c$event <- "fnb"
+  bace2c$year <- 2010
+  bace2c$site <- "exp01"
+  names(bace2c)[3]<-"doy"
+  bace2c<- subset(bace2, select=c("genusspecies","plot", "doy_fnb"))
+  bace2c$event <- "fnb"
+  bace2c$year <- 2010
+  bace2c$site <- "exp01"
+  names(bace2c)[3]<-"doy"
+  bace2d<- subset(bace2, select=c("genusspecies","plot", "doy_fyn"))
+  bace2d$event <- "fyn"
+  bace2d$year <- 2010
+  bace2d$site <- "exp01"
+  names(bace2d)[3]<-"doy"
+  #2011
+  file3 <- file.path(path, "2011BACEherbaceousphenologydata11_11CEG.csv")
+  bace3 <- read.csv(file3, skip=1, header=TRUE)
+  bace3<-bace3[1:min(which(bace3$Plot=="")),]
+  names(bace3)[2] <- "genusspecies"
+  names(bace3)[1] <- "plot"
+  bace3$doy_ffd<-bace3[,6]
+  bace3[which(bace3$doy_ffd=="" & bace3$open.flowers>0),]$doy_ffd<-bace3[which(bace3$doy_ffd=="" & bace3$open.flowers>0),]$open.flowers
+  bace3a<- subset(bace3, select=c("genusspecies","plot", "doy_ffd"))
+  bace3a$event <- "ffd"
+  bace3a$year <- 2011
+  bace3a$site <- "exp01"
+  names(bace3a)[3]<-"doy"
+  #2012
+  file4 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_EW.csv")
+  bace4 <- read.csv(file4, skip=1, header=TRUE,na.strings=".")
+  bace4<-bace4[1:468,]#remove blank rows at bottom
   names(bace4)[5] <- "genusspecies"
   names(bace4)[1] <- "plot"
-  names(bace4)[6] <- "doy_bbd"
-  names(bace4)[8] <- "doy_fgn"
-  names(bace4)[10] <- "doy_fnb"
-  names(bace4)[12] <- "doy_fyn"
-  bace4a<-subset(bace4, select=c("genusspecies","plot", "doy_bbd"))
+  names(bace4)[6] <- "doy_bbd"#use first bbd (not >3)
+  names(bace4)[8] <- "doy_lud"#leaf unfolding date
+  names(bace4)[10] <- "doy_lod"#leaf out date
+  bace4a<- subset(bace4, select=c("genusspecies","plot", "doy_bbd"))
   bace4a$event <- "bbd"
-  bace4a$year <- 2010
+  bace4a$year <- 2012
   bace4a$site <- "exp01"
   names(bace4a)[3]<-"doy"
-  bace4b<- subset(bace4, select=c("genusspecies","plot", "doy_fgn"))
-  bace4b$event <- "fgn"
-  bace4b$year <- 2010
+  bace4b<- subset(bace4, select=c("genusspecies","plot", "doy_lud"))
+  bace4b$event <- "lud"
+  bace4b$year <- 2012
   bace4b$site <- "exp01"
   names(bace4b)[3]<-"doy"
-  bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_fnb"))
-  bace4c$event <- "fnb"
-  bace4c$year <- 2010
+  bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_lod"))
+  bace4c$event <- "lod"
+  bace4c$year <- 2012
   bace4c$site <- "exp01"
   names(bace4c)[3]<-"doy"
-  bace4c<- subset(bace4, select=c("genusspecies","plot", "doy_fnb"))
-  bace4c$event <- "fnb"
-  bace4c$year <- 2010
-  bace4c$site <- "exp01"
-  names(bace4c)[3]<-"doy"
-  bace4d<- subset(bace4, select=c("genusspecies","plot", "doy_fyn"))
-  bace4d$event <- "fyn"
-  bace4d$year <- 2010
-  bace4d$site <- "exp01"
-  names(bace4d)[3]<-"doy"
-  file3 <- file.path(path, "2011BACEherbaceousphenologydata11_11CEG.csv")
-  bace5 <- read.csv(file3, skip=1, header=TRUE)
-  bace5<-bace5[1:min(which(bace5$Plot=="")),]
-  names(bace5)[2] <- "genusspecies"
+  file5 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_NS.csv")
+  bace5 <- read.csv(file5, skip=1, header=TRUE,na.strings=".")
+  bace5<-bace5[1:624,]#remove blank rows ar bottom, if there are any
+  names(bace5)[5] <- "genusspecies"
   names(bace5)[1] <- "plot"
-  bace5$doy_ffd<-bace5[,6]
-  bace5[which(bace5$doy_ffd=="" & bace5$open.flowers>0),]$doy_ffd<-bace5[which(bace5$doy_ffd=="" & bace5$open.flowers>0),]$open.flowers
-  bace5a<- subset(bace5, select=c("genusspecies","plot", "doy_ffd"))
-  bace5a$event <- "ffd"
-  bace5a$year <- 2011
+  names(bace5)[6] <- "doy_bbd"#use first bbd (not >3)
+  names(bace5)[8] <- "doy_lud"#leaf unfolding date
+  names(bace5)[10] <- "doy_lod"#leaf out date
+  bace5a<- subset(bace5, select=c("genusspecies","plot", "doy_bbd"))
+  bace5a$event <- "bbd"
+  bace5a$year <- 2012
   bace5a$site <- "exp01"
   names(bace5a)[3]<-"doy"
-  file4 <- file.path(path, "2013BACEherbaceousphenologydatasheet.csv")
-  bace6 <- read.csv(file4, skip=1, header=TRUE)
-  bace6<-bace6[1:min(which(bace6$Plot=="")),]
-  names(bace6)[2] <- "genusspecies"
+  bace5b<- subset(bace5, select=c("genusspecies","plot", "doy_lud"))
+  bace5b$event <- "lud"
+  bace5b$year <- 2012
+  bace5b$site <- "exp01"
+  names(bace5b)[3]<-"doy"
+  bace5c<- subset(bace5, select=c("genusspecies","plot", "doy_lod"))
+  bace5c$event <- "lod"
+  bace5c$year <- 2012
+  bace5c$site <- "exp01"
+  names(bace5c)[3]<-"doy"
+  file6 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_Outer.csv")
+  bace6 <- read.csv(file6, skip=1, header=TRUE,na.strings=".")
+  bace6<-bace6[1:576,]#remove blank rows at bottom
+  names(bace6)[4] <- "genusspecies"
   names(bace6)[1] <- "plot"
-  bace6$doy_ffd<-bace6[,6]
-  bace6[which(bace6$doy_ffd=="" & bace6$open.flowers>0),]$doy_ffd<-bace6[which(bace6$doy_ffd=="" & bace6$open.flowers>0),]$open.flowers
-  bace6a<- subset(bace6, select=c("genusspecies","plot", "doy_ffd"))
-  bace6a$event <- "ffd"
-  bace6a$year <- 2013
+  names(bace6)[5] <- "doy_bbd"#use first bbd (not >3)
+  names(bace6)[7] <- "doy_lud"#leaf unfolding date
+  names(bace6)[9] <- "doy_lod"#leaf out date
+  bace6a<- subset(bace6, select=c("genusspecies","plot", "doy_bbd"))
+  bace6a$event <- "bbd"
+  bace6a$year <- 2012
   bace6a$site <- "exp01"
   names(bace6a)[3]<-"doy"
-  bace3a<-rbind(bace1a,bace2a,bace2b,bace4a,bace4b,bace4c,bace4d,bace5a,bace6a)
-  bace3a<-bace3a[-which(bace3a$genusspecies==""),]
-  bace3a<-bace3a[-which(bace3a$genusspecies=="Genus sp."),]
-  bace3a<-bace3a[-which(bace3a$genusspecies=="moss"),]
-  bace3a<-bace3a[-which(bace3a$genusspecies=="Oregano"),]
-  bace3a[bace3a$genusspecies=="Giant fox tail",]$genusspecies<-"Setaria faberi"
-  bace3a[bace3a$genusspecies=="Setarir glauca",]$genusspecies<-"Setaria glauca"
-  bace3a[bace3a$genusspecies=="Setaria viridens",]$genusspecies<-"Setaria viridis"
-  bace3a[bace3a$genusspecies=="conyza canadensis",]$genusspecies<-"Conyza canadensis"
-  bace3a[bace3a$genusspecies=="linnaria vulgaris"|bace3a$genusspecies=="Linneria vulgaris",]$genusspecies<-"Linaria vulgaris"
-  bace3a[bace3a$genusspecies=="A. rubrum "|bace3a$genusspecies=="A. rubrum  "|bace3a$genusspecies=="A. rubrum (main stem)",]$genusspecies <- "Acer rubrum"
-  bace3a[bace3a$genusspecies=="B. lenta  "|bace3a$genusspecies=="B. lenta   "|bace3a$genusspecies=="B. lenta (main stem)",]$genusspecies <- "Betula lenta"
-  bace3a[bace3a$genusspecies=="Q. rubra  "|bace3a$genusspecies=="Q. rubra   ",]$genusspecies <- "Quercus rubra"
-  bace3a[bace3a$genusspecies=="P. strobus"|bace3a$genusspecies=="P. strobus ",]$genusspecies <- "Pinus strobus"
-  bace3a[bace3a$genusspecies=="Asclepias syriaca ",]$genusspecies<-"Asclepias syriaca"
-  bace3a[bace3a$genusspecies=="Capsella bursa-pastoris ",]$genusspecies<-"Capsella bursa-pastoris"
-  bace3a[bace3a$genusspecies=="Cerastium fontanum ",]$genusspecies<-"Cerastium fontanum"
-  bace3a[bace3a$genusspecies=="Dactylis glomerata ",]$genusspecies<-"Dactylis glomerata"
-  bace3a[bace3a$genusspecies=="Draba verna ",]$genusspecies<-"Draba verna"
-  bace3a[bace3a$genusspecies=="Elymus repens ",]$genusspecies<-"Elymus repens"
-  bace3a[bace3a$genusspecies=="Erigeron annuus ",]$genusspecies<-"Erigeron annuus"
-  bace3a[bace3a$genusspecies=="Festuca spp. ",]$genusspecies<-"Festuca sp."
-  bace3a[bace3a$genusspecies=="lepidium virginicum",]$genusspecies<-"Lepidium virginicum"
-  bace3a[bace3a$genusspecies=="Oxalis stricta ",]$genusspecies<-"Oxalis stricta"
-  bace3a[bace3a$genusspecies=="Rumex crispus ",]$genusspecies<-"Rumex crispus"
-  bace3a[bace3a$genusspecies=="Silene alba ",]$genusspecies<-"Silene alba"
-  bace3a[bace3a$genusspecies=="Tanacetum vulgare ",]$genusspecies<-"Tanacetum vulgare"
-  bace3a[bace3a$genusspecies=="Taraxacum officinale ",]$genusspecies<-"Taraxacum officinale"
-  bace3a[bace3a$genusspecies=="Trifolium pratense ",]$genusspecies<-"Trifolium pratense"
-  bace3a[bace3a$genusspecies=="Trifolium repens ",]$genusspecies<-"Trifolium repens"
-  bace3a[bace3a$genusspecies=="Veronica arvensis ",]$genusspecies<-"Veronica arvensis"
-  bace3<-bace3a %>% separate(genusspecies, c("genus", "species"), sep=" ", remove=F)
-  bace3$block<-NA
-  #bace3[bace3$plot=="C1"|bace3$plot=="C2"|bace3$plot=="C3",]$block<-NA
-  bace3[which(as.numeric(bace3$plot)<13),]$block<-1
-  bace3[which(as.numeric(bace3$plot)<25 & as.numeric(bace3$plot)>12),]$block<-2
-  bace3[which(as.numeric(bace3$plot)<37 & as.numeric(bace3$plot)>24),]$block<-3
-  bace3[which(as.numeric(bace3$plot)>36),]$block<-0# for some reason there are a few plots  less than 36 that show up as block= 0. fix this
-  bace<-subset(bace3, select=c("site","block","plot","event","year","genus","species", "doy"))
+  bace6b<- subset(bace6, select=c("genusspecies","plot", "doy_lud"))
+  bace6b$event <- "lud"
+  bace6b$year <- 2012
+  bace6b$site <- "exp01"
+  names(bace6b)[3]<-"doy"
+  bace6c<- subset(bace6, select=c("genusspecies","plot", "doy_lod"))
+  bace6c$event <- "lod"
+  bace6c$year <- 2012
+  bace6c$site <- "exp01"
+  names(bace6c)[3]<-"doy"
+  file7 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_pinus.csv")
+  bace7 <- read.csv(file7, skip=1, header=TRUE,na.strings=".")
+  bace7<-bace7[1:156,]#remove blank rows at bottom
+  names(bace7)[5] <- "genusspecies"
+  names(bace7)[1] <- "plot"
+  names(bace7)[6] <- "doy_bbd"#first bud bolted
+  names(bace7)[8] <- "doy_fgn"#first green needles
+  names(bace7)[10] <- "doy_fnb"#first needle bundles
+  names(bace7)[12] <- "doy_fyn"#first young needles
+  bace7a<- subset(bace7, select=c("genusspecies","plot", "doy_bbd"))
+  bace7a$event <- "bbd"
+  bace7a$year <- 2012
+  bace7a$site <- "exp01"
+  names(bace7a)[3]<-"doy"
+  bace7b<- subset(bace7, select=c("genusspecies","plot", "doy_fgn"))
+  bace7b$event <- "fgn"
+  bace7b$year <- 2012
+  bace7b$site <- "exp01"
+  names(bace7b)[3]<-"doy"
+  bace7c<- subset(bace7, select=c("genusspecies","plot", "doy_fnb"))
+  bace7c$event <- "fnb"
+  bace7c$year <- 2012
+  bace7c$site <- "exp01"
+  names(bace7c)[3]<-"doy"
+  bace7d<- subset(bace7, select=c("genusspecies","plot", "doy_fyn"))
+  bace7d$event <- "fyn"
+  bace7d$year <- 2012
+  bace7d$site <- "exp01"
+  names(bace7d)[3]<-"doy"
+  #2009
+  
+  #2013
+  file9 <- file.path(path, "2013BACEherbaceousphenologydatasheet.csv")
+  bace9 <- read.csv(file9, skip=1, header=TRUE)
+  bace9<-bace9[1:min(which(bace9$Plot=="")),]
+  names(bace9)[2] <- "genusspecies"
+  names(bace9)[1] <- "plot"
+  bace9$doy_ffd<-bace9[,6]
+  bace9[which(bace9$doy_ffd=="" & bace9$open.flowers>0),]$doy_ffd<-bace9[which(bace9$doy_ffd=="" & bace9$open.flowers>0),]$open.flowers
+  bace9a<- subset(bace9, select=c("genusspecies","plot", "doy_ffd"))
+  bace9a$event <- "ffd"
+  bace9a$year <- 2013
+  bace9a$site <- "exp01"
+  names(bace9a)[3]<-"doy"
+  #put them all together
+  baceall<-rbind(bace1a,bace1b,bace1c,bace2a,bace2b,bace2c,bace2d,bace3a,bace4a,bace4b,bace4c,bace5a,bace5b,bace5c,bace6a,bace6b,bace6c,bace7a,bace7b,bace7c,bace7d,bace9a)
+  baceall<-baceall[-which(baceall$genusspecies==""),]
+  baceall<-baceall[-which(baceall$genusspecies=="Genus sp."),]
+  baceall<-baceall[-which(baceall$genusspecies=="moss"),]
+  baceall<-baceall[-which(baceall$genusspecies=="Oregano"),]
+  baceall[baceall$genusspecies=="Giant fox tail",]$genusspecies<-"Setaria faberi"
+  baceall[baceall$genusspecies=="Setarir glauca",]$genusspecies<-"Setaria glauca"
+  baceall[baceall$genusspecies=="Setaria viridens",]$genusspecies<-"Setaria viridis"
+  baceall[baceall$genusspecies=="conyza canadensis",]$genusspecies<-"Conyza canadensis"
+  baceall[baceall$genusspecies=="linnaria vulgaris"|baceall$genusspecies=="Linneria vulgaris",]$genusspecies<-"Linaria vulgaris"
+  baceall[baceall$genusspecies=="A. rubrum "|baceall$genusspecies=="A. rubrum  "|baceall$genusspecies=="A. rubrum (main stem)",]$genusspecies <- "Acer rubrum"
+  baceall[baceall$genusspecies=="B. lenta  "|baceall$genusspecies=="B. lenta   "|baceall$genusspecies=="B. lenta (main stem)",]$genusspecies <- "Betula lenta"
+  baceall[baceall$genusspecies=="Q. rubra  "|baceall$genusspecies=="Q. rubra   ",]$genusspecies <- "Quercus rubra"
+  baceall[baceall$genusspecies=="P. strobus"|baceall$genusspecies=="P. strobus ",]$genusspecies <- "Pinus strobus"
+  baceall[baceall$genusspecies=="B. popul  " <- "Betula populifolia"
+  baceall[baceall$genusspecies=="U. americana  " <- "Ulmus americana"
+                
+  baceall[baceall$genusspecies=="Asclepias syriaca ",]$genusspecies<-"Asclepias syriaca"
+  baceall[baceall$genusspecies=="Capsella bursa-pastoris ",]$genusspecies<-"Capsella bursa-pastoris"
+  baceall[baceall$genusspecies=="Cerastium fontanum ",]$genusspecies<-"Cerastium fontanum"
+  baceall[baceall$genusspecies=="Dactylis glomerata ",]$genusspecies<-"Dactylis glomerata"
+  baceall[baceall$genusspecies=="Draba verna ",]$genusspecies<-"Draba verna"
+  baceall[baceall$genusspecies=="Elymus repens ",]$genusspecies<-"Elymus repens"
+  baceall[baceall$genusspecies=="Erigeron annuus ",]$genusspecies<-"Erigeron annuus"
+  baceall[baceall$genusspecies=="Festuca spp. ",]$genusspecies<-"Festuca sp."
+  baceall[baceall$genusspecies=="lepidium virginicum",]$genusspecies<-"Lepidium virginicum"
+  baceall[baceall$genusspecies=="Oxalis stricta ",]$genusspecies<-"Oxalis stricta"
+  baceall[baceall$genusspecies=="Rumex crispus ",]$genusspecies<-"Rumex crispus"
+  baceall[baceall$genusspecies=="Silene alba ",]$genusspecies<-"Silene alba"
+  baceall[baceall$genusspecies=="Tanacetum vulgare ",]$genusspecies<-"Tanacetum vulgare"
+  baceall[baceall$genusspecies=="Taraxacum officinale ",]$genusspecies<-"Taraxacum officinale"
+  baceall[baceall$genusspecies=="Trifolium pratense ",]$genusspecies<-"Trifolium pratense"
+  baceall[baceall$genusspecies=="Trifolium repens ",]$genusspecies<-"Trifolium repens"
+  baceall[baceall$genusspecies=="Veronica arvensis ",]$genusspecies<-"Veronica arvensis"
+  baceALL<-baceall %>% separate(genusspecies, c("genus", "species"), sep=" ", remove=F)
+  baceALL$block<-NA
+  #baceALL[baceALL$plot=="C1"|baceALL$plot=="C2"|baceALL$plot=="C3",]$block<-NA
+  baceALL[which(as.numeric(baceALL$plot)<13),]$block<-1
+  baceALL[which(as.numeric(baceALL$plot)<25 & as.numeric(baceALL$plot)>12),]$block<-2
+  baceALL[which(as.numeric(baceALL$plot)<37 & as.numeric(baceALL$plot)>24),]$block<-3
+  baceALL[which(as.numeric(baceALL$plot)>36),]$block<-0# for some reason there are a few plots  less than 36 that show up as block= 0. fix this
+  bace<-subset(baceALL, select=c("site","block","plot","event","year","genus","species", "doy"))
   #bace$variety <- NA
   #bace$cult <- NA
   bace<-bace[!is.na(bace$doy),]

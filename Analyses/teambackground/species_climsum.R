@@ -112,4 +112,32 @@ for(i in 1:length(spfiles)){ # i = 19
   }
   #these two methods are also generally correlated but not always linearly
   
+#Alternatively, we had talked about using all the climate data to estimate a centroid for each species home range
+#This seems like a strange thing to do with the 9 derived climate variables, but i will try to do it
+
+# for each species for which we have climate data 
+spfiles<-list.files(path="input/ClimRanges",pattern = ".nc", full.names = FALSE, ignore.case = TRUE)
+  input.folder="/Users/aileneettinger/git/radcliffe/Analyses/teambackground/input/ClimRanges"
+  
+#climate variables included
+climvars<-c("clim_gdd0_JFM","clim_gdd5_JFM","clim_gdd0_JanMay","clim_gdd5_JanMay","clim_prec_OctMar", "clim_prec_AprSep", "clim_tmean_warm","clim_tmean_cold","clim_chill_SOND") 
+  
+#1) create a dataframe that that is species x climvars for every cell in the range of the species
+climdat.range<- as.data.frame(matrix(ncol=length(climvars), nrow=length(spfiles)))
+  colnames(climdat.range)<-climvars
+  for(i in 1:length(spfiles)){ # i = 19
+    file <- file.path(input.folder,spfiles[grep(spfiles[i], spfiles)])
+    # Open the file
+    jx <- nc_open(file)
+    #list climate variables
+    climvars<-names(jx$var)
+    
+    for(j in 1:length(climvars)){#j=1
+      clim<- c(ncvar_get(jx,climvars[j]))#get all the cells with climate data for which we have data
+      climdat.cent[i,j]<- mean(cclim, na.rm=TRUE)
+    }     
+    rownames(climdat.cent)[i]<-substr(spfiles[i],1,8)
+    nc_close(jx)
+  }
+  write.csv(climdat.cent,"output/clim_centroid.csv",row.names=TRUE)
   

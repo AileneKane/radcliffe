@@ -13,6 +13,12 @@ treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
 expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
 dim(expclim2)#221683     46
 head(expclim2)
+#make a column for styear (study year, as opposed to calendar year)
+expclim2$styear<-1#start by giving all studies year 1 (exp2 and exp8 had only 1 year each),then adjust each study by hand
+expclim2$styear[expclim2$site=="exp01" & expclim2$year==2011]<-2#exp1 had 2 study years (2010 & 2011)
+expclim2$styear[expgdd$site=="exp03" & expclim2$year==2011]<-2#exp1 had 2 study years (2010 & 2011)
+
+
 #merge phenology data with experimental climate to get gdd crit
 dim(exppheno)#69008 rows
 expgdd<-inner_join(exppheno,expclim2, by=c("site", "block", "plot","year","doy"), match="all", copy=TRUE)
@@ -33,3 +39,4 @@ expgdd[which(is.na(expgdd$block)),]$block<-"none"
 
 #make a column for combined genus species
 expgdd$genus.species<-paste(expgdd$genus,expgdd$species,sep=".")
+

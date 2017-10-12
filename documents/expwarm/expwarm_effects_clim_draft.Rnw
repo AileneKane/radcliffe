@@ -83,6 +83,8 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 %\tableofcontents      %add a table of contents
 %\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%The latest plan is to submit to Ecology Letters sa a Reviews and Synthesis: maximum of 7500 words (main text), and 10 figures, tables or boxes. 
+%SOme other random throughts:
 %We argue that it is critical for scientists to better understand and report climate from climate change experiments.
 %Ben's suggestion: *I just have an overall general comment on the framing of the paper. I think it’s great and would be happy to see it published more or less as is. However, you might consider some rewriting or reorganizing around the two QUESTIONS that I think this paper really gets at:
 %	-Did the experimental warming increase the temperature has much as it was supposed to? If not, how off were the treatments from the target warming and why?
@@ -95,7 +97,6 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 %2.	Get maximum variability/amount in temperature
 %3.	Passive warming doesn’t warm as much 
 %4.	Say how many datasets looked at
-%5.	Say who declined in supplement
 %6.	Change the wording
 %7.	Two or three full sentences on why we’re not looking at passive warming. We do not include passive worming because they have the following problems (that are generally unique to OTCs). OTCs have to be analyzed on their own. Set of issues that apply mostly to them.
 %ii.	Include models/figure for phenology? Then suggest that we need to study how widespread this is.
@@ -251,6 +252,13 @@ The C3E database will be available at KNB \citep{ettinger2017}, along with all R
  \caption{\textbf{Possible biological responses to experimental climate change and their interpretation}. Direct responses to temperature alone (a) can be easily understood. Complications arise when biological responses are a mix of the direct and indirect effects of experimental warming. Then experimental warming may cause biological responses to be muted (b) or exaggerated (c). Slopes of these example lines assume a linear response with additive direct and indirect effects. The relationship between these effects could be more complex (e.g., nonlinear; antagonistic, multiplicative, or otherwise interactive).} 
 \label{fig:biolimp}
   \end{figure}
+
+\begin{figure}[h]
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/DirIndWarmingEffects_ExBBSM.pdf} 
+ \caption{\textbf{Response of budburst day of year to experimental climate change} is an example of a muted response (a): the observed response to target warming temperature (i.e., the coefficient of a model fit with only target temperature as the explanatory variable, black line) is weaker than the effect of temperature in a more biologically meaningful model that includes both measured above-ground temperature (dashed red line) and soil moisture (dotted blue line). This is because both temperature and soil moisture affect the timing of plant budburst, and experimental warming dries out the soil (b) in addition to increasing temperatures. Or could say "This is because experimental warming dries out the soil (b) in addition to increasing temperatures, and both climate variables affect the timing of budburst. Whereas increasing temperatures advance budburst decreasing soil moisture has a delaying effect." See Tables S14 \& S15 for statistical details.} 
+\label{fig:biolimp}
+  \end{figure}
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
