@@ -29,3 +29,5 @@ documents/expwarm/Inquiry_EL.pdf
 *.log
 
 *.aux
+
+Data/Experiments/.DS_Store
