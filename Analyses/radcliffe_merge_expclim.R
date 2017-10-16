@@ -383,7 +383,21 @@ colnames(soilmois)[3]<-"doy"
 soilmois<-soilmois[,1:7]
 allsoilmois<-rbind(allsoilmois,soilmois)
 }
-allclim<-merge(soilcantemp,allsoilmois,by=c("year","doy","plot"),all.x=TRUE) 
+allsoilmois$block<-NA
+allsoilmois[as.numeric(allsoilmois$plot)<13,]$block<-1
+allsoilmois[as.numeric(allsoilmois$plot)<25 & as.numeric(allsoilmois$plot)>12,]$block<-2
+allsoilmois[as.numeric(allsoilmois$plot)<37 & as.numeric(allsoilmois$plot)>24,]$block<-3
+if(length(unique(allsoilmois$plot))>36){allsoilmois[allsoilmois$plot>36,]$block<-0}
+#add temptreat and precip treat to soil moisture, 
+allsoilmois$preciptreat<-NA
+allsoilmois[as.numeric(allsoilmois$plot)<5|as.numeric(allsoilmois$plot)<25 & as.numeric(allsoilmois$plot)>20|as.numeric(allsoilmois$plot)<37 & as.numeric(allsoilmois$plot)>32,]$preciptreat=-1
+allsoilmois[as.numeric(allsoilmois$plot)<9 & as.numeric(allsoilmois$plot)>4|as.numeric(allsoilmois$plot)<17 & as.numeric(allsoilmois$plot)>12|as.numeric(allsoilmois$plot)<33 & as.numeric(allsoilmois$plot)>28,]$preciptreat=0
+allsoilmois[as.numeric(allsoilmois$plot)<13 & as.numeric(allsoilmois$plot)>8|as.numeric(allsoilmois$plot)<21 & as.numeric(allsoilmois$plot)>16|as.numeric(allsoilmois$plot)<29 & as.numeric(allsoilmois$plot)>24,]$preciptreat=1
+allsoilmois$temptreat<-0
+allsoilmois[as.numeric(allsoilmois$plot)==2|as.numeric(allsoilmois$plot)==7|as.numeric(allsoilmois$plot)==11|as.numeric(allsoilmois$plot)==15|as.numeric(allsoilmois$plot)==18|as.numeric(allsoilmois$plot)==23|as.numeric(allsoilmois$plot)==26|as.numeric(allsoilmois$plot)==31|as.numeric(allsoilmois$plot)==34,]$temptreat=1
+allsoilmois[as.numeric(allsoilmois$plot)==3|as.numeric(allsoilmois$plot)==6|as.numeric(allsoilmois$plot)==10|as.numeric(allsoilmois$plot)==14|as.numeric(allsoilmois$plot)==19|as.numeric(allsoilmois$plot)==22|as.numeric(allsoilmois$plot)==27|as.numeric(allsoilmois$plot)==30|as.numeric(allsoilmois$plot)==35,]$temptreat=2
+allsoilmois[as.numeric(allsoilmois$plot)==4|as.numeric(allsoilmois$plot)==5|as.numeric(allsoilmois$plot)==9|as.numeric(allsoilmois$plot)==13|as.numeric(allsoilmois$plot)==20|as.numeric(allsoilmois$plot)==21|as.numeric(allsoilmois$plot)==28|as.numeric(allsoilmois$plot)==29|as.numeric(allsoilmois$plot)==36,]$temptreat=3
+allclim<-merge(soilcantemp,allsoilmois,by=c("year","doy","block","plot","temptreat","preciptreat"),all=TRUE) 
 colnames(allclim)[29]<-"soilmois1"
 allclim[which(allclim$soilmois1==209),]$soilmois1<-NA#remove weird values for soil moisture, which should be between 0 and 1 (209, 1.87)
 allclim[which(allclim$soilmois1==1.87),]$soilmois1<-NA
@@ -395,7 +409,6 @@ allclim$surftemp_min<-NA
 allclim$surftemp_max<-NA
 allclim$site<-"exp01"
 baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
-baceclim<-baceclim[which(baceclim$cantemp_max<203),]#remove weird value
 row.names(baceclim) <- NULL
 return(baceclim) 
  }
