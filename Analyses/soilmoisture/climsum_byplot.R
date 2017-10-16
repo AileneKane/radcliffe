@@ -39,6 +39,6 @@ expgdd4<-left_join(expgdd3,tempsm_aprjun,by=c("site", "block", "plot","target","
 
 #The following sites have both soil moisture and air temperature data so just use these temperature data: exp01 exp02 exp03 exp04 exp07 exp09 exp10 exp12 
 expgdd_subs<-expgdd4[which(expgdd4$site=="exp01"|expgdd4$site=="exp02"|expgdd4$site=="exp03"|expgdd4$site=="exp04"|expgdd4$site=="exp07"|expgdd4$site=="exp09"|expgdd4$site=="exp10"|expgdd4$site=="exp12"),]#
-expgdd_subs<-subset(expgdd_subs,select=c(site,block, plot,year,target,preciptreat_amt,agtmax,agtmin,sm,doy,genus.species,event,cumgdd_air,ag_max_janmar,ag_min_janmar,soilmois_janmar,ag_max_aprjun,ag_min_aprjun,soilmois_aprjun))
+expgdd_subs<-subset(expgdd_subs,select=c(site,block, plot,year,styear,target,preciptreat_amt,agtmax,agtmin,sm,doy,genus.species,event,cumgdd_air,ag_max_janmar,ag_min_janmar,soilmois_janmar,ag_max_aprjun,ag_min_aprjun,soilmois_aprjun))
 expgdd_subs <- expgdd_subs[apply(expgdd_subs, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
