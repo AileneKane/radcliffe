@@ -236,6 +236,28 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace7d$site <- "exp01"
   names(bace7d)[3]<-"doy"
   #2009
+  file8 <- file.path(path, "2009BACEdeciduoustreespringphenology.csv")
+  bace8 <- read.csv(file8, header=TRUE)
+  names(bace8)[9] <- "genusspecies"
+  names(bace8)[4] <- "plot"
+  names(bace8)[17] <- "doy_bbd"#use first bbd (not >3)
+  names(bace8)[19] <- "doy_lud"#leaf unfolding date
+  names(bace8)[21] <- "doy_lod"#leaf out date
+  bace8a<- subset(bace8, select=c("genusspecies","plot", "doy_bbd"))
+  bace8a$event <- "bbd"
+  bace8a$year <- 2012
+  bace8a$site <- "exp01"
+  names(bace8a)[3]<-"doy"
+  bace8b<- subset(bace8, select=c("genusspecies","plot", "doy_lud"))
+  bace8b$event <- "lud"
+  bace8b$year <- 2012
+  bace8b$site <- "exp01"
+  names(bace8b)[3]<-"doy"
+  bace8c<- subset(bace8, select=c("genusspecies","plot", "doy_lod"))
+  bace8c$event <- "lod"
+  bace8c$year <- 2012
+  bace8c$site <- "exp01"
+  names(bace8c)[3]<-"doy"
   
   #2013
   file9 <- file.path(path, "2013BACEherbaceousphenologydatasheet.csv")
@@ -251,7 +273,7 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace9a$site <- "exp01"
   names(bace9a)[3]<-"doy"
   #put them all together
-  baceall<-rbind(bace1a,bace1b,bace1c,bace2a,bace2b,bace2c,bace2d,bace3a,bace4a,bace4b,bace4c,bace5a,bace5b,bace5c,bace6a,bace6b,bace6c,bace7a,bace7b,bace7c,bace7d,bace9a)
+  baceall<-rbind(bace1a,bace1b,bace1c,bace2a,bace2b,bace2c,bace2d,bace3a,bace4a,bace4b,bace4c,bace5a,bace5b,bace5c,bace6a,bace6b,bace6c,bace7a,bace7b,bace7c,bace7d,bace8a,bace8b,bace8c,bace9a)
   baceall<-baceall[-which(baceall$genusspecies==""),]
   baceall<-baceall[-which(baceall$genusspecies=="Genus sp."),]
   baceall<-baceall[-which(baceall$genusspecies=="moss"),]
@@ -261,13 +283,15 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   baceall[baceall$genusspecies=="Setaria viridens",]$genusspecies<-"Setaria viridis"
   baceall[baceall$genusspecies=="conyza canadensis",]$genusspecies<-"Conyza canadensis"
   baceall[baceall$genusspecies=="linnaria vulgaris"|baceall$genusspecies=="Linneria vulgaris",]$genusspecies<-"Linaria vulgaris"
-  baceall[baceall$genusspecies=="A. rubrum "|baceall$genusspecies=="A. rubrum  "|baceall$genusspecies=="A. rubrum (main stem)",]$genusspecies <- "Acer rubrum"
-  baceall[baceall$genusspecies=="B. lenta  "|baceall$genusspecies=="B. lenta   "|baceall$genusspecies=="B. lenta (main stem)",]$genusspecies <- "Betula lenta"
-  baceall[baceall$genusspecies=="Q. rubra  "|baceall$genusspecies=="Q. rubra   ",]$genusspecies <- "Quercus rubra"
+  baceall[baceall$genusspecies=="A. rubrum "|baceall$genusspecies=="A. rubrum  "|baceall$genusspecies=="A. rubrum"|baceall$genusspecies=="A. rubrum (main stem)",]$genusspecies <- "Acer rubrum"
+  baceall[baceall$genusspecies=="B. lenta  "|baceall$genusspecies=="B. lenta   "|baceall$genusspecies=="B. lenta"|baceall$genusspecies=="B. lenta (main stem)",]$genusspecies <- "Betula lenta"
+  baceall[baceall$genusspecies=="Q. rubra  "|baceall$genusspecies=="Q. rubra"|baceall$genusspecies=="Q. rubra   ",]$genusspecies <- "Quercus rubra"
   baceall[baceall$genusspecies=="P. strobus"|baceall$genusspecies=="P. strobus ",]$genusspecies <- "Pinus strobus"
-  baceall[baceall$genusspecies=="B. popul  " <- "Betula populifolia"
-  baceall[baceall$genusspecies=="U. americana  " <- "Ulmus americana"
-                
+  baceall[baceall$genusspecies=="B. popul" ,]$genusspecies<- "Betula populifolia"
+  baceall[baceall$genusspecies=="U. americana" ,]$genusspecies<- "Ulmus americana"
+  baceall[baceall$genusspecies=="P. grand" ,]$genusspecies<- "Populus grandidentata"
+  baceall[baceall$genusspecies=="P. serotina" ,]$genusspecies<- "Prunus serotina"
+  baceall[baceall$genusspecies=="Polygonum" ,]$genusspecies<- "Polygonum sp."
   baceall[baceall$genusspecies=="Asclepias syriaca ",]$genusspecies<-"Asclepias syriaca"
   baceall[baceall$genusspecies=="Capsella bursa-pastoris ",]$genusspecies<-"Capsella bursa-pastoris"
   baceall[baceall$genusspecies=="Cerastium fontanum ",]$genusspecies<-"Cerastium fontanum"
@@ -285,6 +309,10 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   baceall[baceall$genusspecies=="Trifolium pratense ",]$genusspecies<-"Trifolium pratense"
   baceall[baceall$genusspecies=="Trifolium repens ",]$genusspecies<-"Trifolium repens"
   baceall[baceall$genusspecies=="Veronica arvensis ",]$genusspecies<-"Veronica arvensis"
+  baceall[baceall$genusspecies=="Phleum pratense " ,]$genusspecies<-"Phleum pratense" 
+  baceall[baceall$genusspecies=="Plantago lanceolata ",]$genusspecies<-"Plantago lanceolata"
+  baceall[baceall$genusspecies=="Potentilla argentea ",]$genusspecies<-"Potentilla argentea"
+  
   baceALL<-baceall %>% separate(genusspecies, c("genus", "species"), sep=" ", remove=F)
   baceALL$block<-NA
   #baceALL[baceALL$plot=="C1"|baceALL$plot=="C2"|baceALL$plot=="C3",]$block<-NA
@@ -1048,11 +1076,11 @@ expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#70384 rows,    8 columns
+#75779 rows,    8 columns
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#69810  rows,8 columns
+dim(expphendb)#75205  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -1069,15 +1097,19 @@ expphendb[which(expphendb$species=="quiquefolia"),]$species<-"quinquefolia"#forc
 expphendb[which(expphendb$species=="fusiformes"),]$species<-"fusiformis"#price
 expphendb[which(expphendb$genus=="Mertensiana"),]$genus<-"Mertensia"#price
 expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
+expphendb[which(expphendb$genus=="Avena"),]$species<-"sp"#JAsper ridge- could be multiple spp
+expphendb[which(expphendb$species==""),]$species<-"sp"#all galiums at force
 
-dim(expphendb)#69008 rows,8 columns
+dim(expphendb)#74403 rows,8 columns
 head(expphendb)
+expphendb <- expphendb[order(expphendb$site,expphendb$block,expphendb$plot,expphendb$year,expphendb$doy,expphendb$genus),] 
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 
 unique(expphendb$site)#12 experiments across 9 sites
 sort(unique(expphendb$genus))#147 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
-sort(unique(expphendb$genus.species))#248 species
+sort(unique(expphendb$genus.species))#249 species
+
 unique(expphendb$event)#13 phenological events
 #Do species cleaning with Miriam's new file
 #sites<-unique(expphendb$site)

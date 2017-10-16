@@ -33,19 +33,33 @@ source("Analyses/soilmoisture/climsum_byplot.R")
 
 #select out only bbd
 expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#
-
+expgdd_bbd$styear<-as.factor(expgdd_bbd$styear)
 #model with actual temp/soil mois data
-smbbdmod<-lmer(doy~ag_max_janmar*soilmois_janmar + (1|genus.species)+ (1|site/year)+ (1|year), REML=FALSE, data=expgdd_bbd)
+smbbdmod<-lmer(doy~ag_max_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod)
+#subtract minimum agtmax to get it close to 0 warming to make scale more comparable to "target wamring"
+expgdd_bbd$agtmax_rel<-expgdd_bbd$agtmax-min(expgdd_bbd$agtmax)
+expgdd_bbd$agtmin_rel<-expgdd_bbd$agtmin-min(expgdd_bbd$agtmin)
 
-smbbdmod2<-lmer(doy~target*soilmois_janmar + (1|genus.species)+ (1|site/year)+ (1|year), REML=FALSE, data=expgdd_bbd)
+smbbdmod1<-lmer(doy~agtmax_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+summary(smbbdmod1)
+smbbdmod1a<-lmer(doy~agtmin_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+summary(smbbdmod1a)
+smbbdmod2<-lmer(doy~target*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod2)
 
-smbbdmod_targt<-lmer(doy~target + (1|genus.species)+ (1|site/year)+ (1|year), REML=FALSE, data=expgdd_bbd)
+smbbdmod_targt<-lmer(doy~target + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod_targt)
 
-smbbdmod_agtmax<-lmer(doy~ag_max_janmar + (1|genus.species)+ (1|site/year)+ (1|year), REML=FALSE, data=expgdd_bbd)
+smbbdmod_agtmax<-lmer(doy~ag_max_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod_agtmax)
+#try to figure out why intercept changes so much in the measured variables versus target temp
+min(expgdd_bbd$target); max(expgdd_bbd$target) #range is from 0 to 5.5
+min(expgdd_bbd$agtmax); max(expgdd_bbd$agtmax) #range is from 12.43226 to 28.30171
+#Aha! the intercept changes so much because the range of the explanatory variable switches from being amount of warming to above0ground temperature.
+#Should we do anything about this? or just explain it!
+#tried make relative column above. look at range:
+min(expgdd_bbd$agtmin_rel); max(expgdd_bbd$agtmin_rel)
 
 #Make plots of these two models
 cols <- brewer.pal(6,"Greys")
@@ -53,8 +67,8 @@ cols <- brewer.pal(6,"Greys")
 #quartz(height=5, width=8)
 #par(mfrow=c(1,2), omi=c(.4,.4,.2,.5))
 #mean bbdoy by plot, year, and site
-bbdoy_plot<-aggregate(expgdd_bbd$doy, by=list(expgdd_bbd$site,expgdd_bbd$block,expgdd_bbd$plot,expgdd_bbd$target,expgdd_bbd$preciptreat_amt,expgdd_bbd$year), FUN=mean,na.rm=TRUE)
-colnames(bbdoy_plot)<-c("site","block","plot","target","preciptreat_amt","year","bbdoy")
+#bbdoy_plot<-aggregate(expgdd_bbd$doy, by=list(expgdd_bbd$site,expgdd_bbd$block,expgdd_bbd$plot,expgdd_bbd$target,expgdd_bbd$preciptreat_amt,expgdd_bbd$year), FUN=mean,na.rm=TRUE)
+#colnames(bbdoy_plot)<-c("site","block","plot","target","preciptreat_amt","year","bbdoy")
 #plot(bbdoy_plot$target,bbdoy_plot$bbdoy,type="p",bg=cols[as.numeric(as.factor(bbdoy_plot$site))], pch=21,xlab="Target warming", ylab="Day of year", bty="l", main="Target Temp Mod", xlim=c(0,6))
 #abline(a=fixef(smbbdmod_targt)[1],b=fixef(smbbdmod_targt)[2], lwd=2)
 
@@ -70,27 +84,26 @@ colnames(bbdoy_plot)<-c("site","block","plot","target","preciptreat_amt","year",
 
 #plot with fitted lines only (no points) and with soil moisture as well
 
-quartz(height=5, width=9)
-par(mfrow=c(1,2), oma=c(.5,.5,.5,2))
+quartz(height=5, width=5)
+#par(mfrow=c(1,2), oma=c(.5,.5,.5,2))
 #no need to have the target warming plotted on its own- just plot it on the same figure as the measured climate data
 #plot(1,type="n",xlab="(Target warming, C)", ylab="Day of year", bty="l", xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(80,180),main="Target warming model",las=1)
 
 #mtext("Treatment intensity",side=1, line=2, cex=1.1)
-plot(1,type="n",xlab="(Target warming, C)", ylab="Day of year", bty="l",xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(80,180), las=1)
+plot(1,type="n",xlab="Treatment intensity", ylab="Day of year", bty="l",xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(60,160), las=1)
 #for(i in 1:dim(ranef(smbbdmod2)$site)[1]){
 #  abline(a=coef(smbbdmod2)$site[i,1],b=fixef(smbbdmod2)[2], lwd=1, lty=2,col=cols2[i])#temp ranef
 #}
-abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[2], lwd=3, col="darkred", lty=2)#actual ag temp coef
+abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="darkred", lty=2)#actual ag temp coef
 abline(a=fixef(smbbdmod_targt)[1],b=fixef(smbbdmod_targt)[2], lwd=3)
-mtext("Treatment intensity",side=1, line=2, cex=1.1)
 mtext("Increasing above-ground temperature",side=1, line=4, cex=.9)
 mtext("Decreasing soil moisture",side=1, line=4.5, cex=.9)
 
 #now add soil moisture  
 par(new=TRUE)
 
-plot(1, xlab="", xlim=c(0.5,0),ylim=c(80,180), axes=FALSE, type="b")
-abline(a=fixef(smbbdmod)[1],b=fixef(smbbdmod)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
+plot(1, xlab="", xlim=c(0.5,0),ylim=c(60,160), axes=FALSE, type="b")
+abline(a=fixef(smbbdmod1)[1],b=fixef(smbbdmod1)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
 legend("bottomright",legend=c("Effect of temperature", "Effect of soil moisture","Observed response to target warming"), lty=c(2,3,1), lwd=2, col=c("darkred","blue","black"), bty="n", cex=.8)
 mtext("a)",side=3, line=1, adj=-.25,cex=.9)
 
@@ -112,3 +125,29 @@ for(i in 1:dim(ranef(smmod)$site)[1]){
 }
 mtext("b)",side=3, line=1, adj=-.25,cex=.9)
 
+#check the aic and predicted vs observed for the different models (smbbdmod1 has lowest AIC, highest R2 for pred vs observed)
+quartz(height=5, width=10)
+par(mfrow=c(1,4), oma=c(.5,.5,.5,2))
+plot(expgdd_bbd$doy,predict(smbbdmod),main="Jan-mar temp mod")
+abline(lm(predict(smbbdmod)~expgdd_bbd$doy), col="red")
+abline(a=0, b=1, lwd=2)
+
+summary(lm(predict(smbbdmod)~expgdd_bbd$doy))
+
+plot(expgdd_bbd$doy,predict(smbbdmod1),main="Mean ann. max temp mod")
+abline(lm(predict(smbbdmod1)~expgdd_bbd$doy), col="red")
+abline(a=0, b=1, lwd=2)
+summary(lm(predict(smbbdmod1)~expgdd_bbd$doy))
+
+plot(expgdd_bbd$doy,predict(smbbdmod1a),main="Mean ann. min temp mod")
+abline(lm(predict(smbbdmod1a)~expgdd_bbd$doy), col="red")
+abline(a=0, b=1, lwd=2)
+summary(lm(predict(smbbdmod1a)~expgdd_bbd$doy))
+
+plot(expgdd_bbd$doy,predict(smbbdmod_targt), main="Target warming mod")
+abline(lm(predict(smbbdmod_targt)~expgdd_bbd$doy), col="red")
+abline(a=0, b=1, lwd=2)
+summary(lm(predict(smbbdmod_targt)~expgdd_bbd$doy))
+mean(expgdd_bbd$doy)
+AIC(smbbdmod,smbbdmod_targt,smbbdmod_agtmax,smbbdmod2,smbbdmod1,smbbdmod1a)
+#smbbdmod1a has lowest aic, highset r2 in pred vs obs. use this model in figure
