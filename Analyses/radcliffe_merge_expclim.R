@@ -409,6 +409,7 @@ allclim$surftemp_min<-NA
 allclim$surftemp_max<-NA
 allclim$site<-"exp01"
 baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+baceclim<-baceclim[-which(as.numeric(baceclim$cantemp_max)>203),]#remove weird value
 row.names(baceclim) <- NULL
 return(baceclim) 
  }
@@ -881,9 +882,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#221706      21
+    dim(expphenclim1)#223582      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#221682     21
+    dim(expphenclim)#223558     21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -924,4 +925,5 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     boxplot(soiltemp2_max~alltreat, data=expphenclim)
     boxplot(soiltemp1_mean~alltreat, data=expphenclim)
     boxplot(soilmois1~alltreat, data=expphenclim)
-
+    boxplot(cantemp_min~alltreat, data=expphenclim)
+    boxplot(cantemp_max~alltreat, data=expphenclim)

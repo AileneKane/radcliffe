@@ -13,7 +13,7 @@ File Name
 
 expclim.wchillgdd.csv 
  - Description: this file contains all the microclimate data in “expclim.csv” (obtained from experiments) and adds chilling days, calculated using both air and soil temperature, and cumulative growing degree days, calculated using both air and soil temperature. 
- - Script to Generate: chilldays.R
+ - Script to Generate: chilldays_and_gdd.R
   - Column Descriptions:
 #  Name		units		Description  
 - Description: daily climate data measured* from experiments that manipulated temperature via active warming treatments  (and in some cases precipitation as well) and monitored phenology. 

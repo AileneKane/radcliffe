@@ -35,9 +35,6 @@ source("Analyses/source/standard_mergesandwrangling.R")
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 source("Analyses/soilmoisture/climsum_byplot.R")
 
-#make things numbers that need to be for stan
-#source("Analyses/soilmoisture/stanprep.R")
-
 #Prep the data for Stan model
 
 #1) Divide by phenophase:
@@ -62,7 +59,7 @@ expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
 datalist.bbd <- with(expgdd_bbd, 
                     list(y = doy, 
                          temp = ag_min_janmar, #above-ground minimum air temp
-                         mois = soilmois_janmar, #soil moisture
+                         mois = soilmois_janmar*100, #soil moisture as a percentage
                          sp = genus.species,
                          N = nrow(expgdd_bbd),
                          n_sp = length(unique(expgdd_bbd$genus.species))
@@ -83,12 +80,12 @@ m1.sum[grep("mu_a_sp", rownames(m1.sum)),]
 m1.sum[grep("b_temp", rownames(m1.sum)),]
 m1.sum[grep("b_mois", rownames(m1.sum)),]
 m1.sum[grep("b_tm", rownames(m1.sum)),]
-
+launch_shinystan(m1)
 #################################################################
 # m2: a(sp) +a(site)+ t(sp) + m(sp) + t*m(sp) (crossed ran eff of species and site) #
 #################################################################
 #2) Make a list out of the processed data. It will be input for the model.
-
+####The below model is not ready yet!!!!
 datalist2.bbd <- with(expgdd_bbd, 
                      list(y = doy, 
                           temp = ag_min_janmar, #above-ground minimum air temp

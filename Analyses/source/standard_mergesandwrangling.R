@@ -4,14 +4,14 @@
 #1) experimental climate with one variable for above ground warming and all treatments added in
 #2) exppgdd database with climate data (gddcrit,etc)
 #First add treatment information to expclim
-dim(expclim)#221683
-dim(treats)#258
+#dim(expclim)#223558
+#dim(treats)#258
 #replace NA with "none" for blocks in treats file
 treats[which(is.na(treats$target)),]$target<-0
 treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
 expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
-dim(expclim2)#221683     46
-head(expclim2)
+#dim(expclim2)#221683     46
+#head(expclim2)
 #make a column for styear (study year, as opposed to calendar year)
 expclim2$styear<-NA#start by giving all studies year 1 (exp2 and exp8 had only 1 year each),then adjust each study by hand
 #make a column for styear (study year, as opposed to calendar year)
@@ -26,9 +26,9 @@ for (i in 1:length(sites)){
 }
 
 #merge phenology data with experimental climate to get gdd crit
-dim(exppheno)#69008 rows
+dim(exppheno)#74403 rows
 expgdd<-inner_join(exppheno,expclim2, by=c("site", "block", "plot","year","doy"), match="all", copy=TRUE)
-dim(expgdd)#59675   rows
+dim(expgdd)#63768   rows
 
 #Get one variable for aboveground warming (could be surface, canopy, air) expclim2
 expclim2$agtemp_min<-expclim2$airtemp_min
