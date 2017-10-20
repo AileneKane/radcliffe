@@ -136,7 +136,7 @@ The C3E database will be available at KNB \citep{ettinger2017}, along with all R
 
 \textbf{Running title} Experimental climate change
 
-\textbf{Key words}  
+\textbf{Key words}  global warming, warming experiment, microclimate, budburst, soil moisture, 
 
 \textbf{Type of article} Review and Synthesis
 

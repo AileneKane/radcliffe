@@ -90,7 +90,7 @@ quartz(height=5, width=5)
 #plot(1,type="n",xlab="(Target warming, C)", ylab="Day of year", bty="l", xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(80,180),main="Target warming model",las=1)
 
 #mtext("Treatment intensity",side=1, line=2, cex=1.1)
-plot(1,type="n",xlab="Treatment intensity", ylab="Day of year", bty="l",xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(60,160), las=1)
+plot(1,type="n",xlab="Treatment intensity", ylab="Day of year", bty="l",xlim=c(min(expgdd_bbd$target),max(expgdd_bbd$target)),ylim=c(60,160), las=1)
 #for(i in 1:dim(ranef(smbbdmod2)$site)[1]){
 #  abline(a=coef(smbbdmod2)$site[i,1],b=fixef(smbbdmod2)[2], lwd=1, lty=2,col=cols2[i])#temp ranef
 #}
@@ -103,11 +103,44 @@ mtext("Decreasing soil moisture",side=1, line=4.5, cex=.9)
 par(new=TRUE)
 
 plot(1, xlab="", xlim=c(0.5,0),ylim=c(60,160), axes=FALSE, type="b")
-abline(a=fixef(smbbdmod1)[1],b=fixef(smbbdmod1)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
-legend("bottomright",legend=c("Effect of temperature", "Effect of soil moisture","Observed response to target warming"), lty=c(2,3,1), lwd=2, col=c("darkred","blue","black"), bty="n", cex=.8)
-mtext("a)",side=3, line=1, adj=-.25,cex=.9)
+abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
+legend("bottomleft",legend=c("Effect of temperature", "Effect of soil moisture","Observed response to target warming"), lty=c(2,3,1), lwd=2, col=c("darkred","blue","black"), bty="n", cex=.8)
 
-#Add relationship between sm~target warming figure. 
+
+###Same figure but using different axis for true temp
+quartz(height=5, width=5)
+#par(mfrow=c(1,2), oma=c(.5,.5,.5,2))
+#no need to have the target warming plotted on its own- just plot it on the same figure as the measured climate data
+#plot(1,type="n",xlab="(Target warming, C)", ylab="Day of year", bty="l", xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(80,180),main="Target warming model",las=1)
+
+#mtext("Treatment intensity",side=1, line=2, cex=1.1)
+plot(1,type="n",xlab="Treatment intensity", ylab="Day of year", bty="l",xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(60,160), las=1)
+#for(i in 1:dim(ranef(smbbdmod2)$site)[1]){
+#  abline(a=coef(smbbdmod2)$site[i,1],b=fixef(smbbdmod2)[2], lwd=1, lty=2,col=cols2[i])#temp ranef
+#}
+abline(a=fixef(smbbdmod_targt)[1],b=fixef(smbbdmod_targt)[2], lwd=3)
+mtext("Increasing above-ground temperature",side=1, line=4, cex=.9)
+mtext("Decreasing soil moisture",side=1, line=4.5, cex=.9)
+#now add measured temp effect 
+par(new=TRUE)
+
+plot(1, xlab="", xlim=c(min(expgdd_bbd$agtmax_rel),max(expgdd_bbd$agtmax_rel)),ylim=c(60,160), axes=FALSE, type="b")
+abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="darkred", lty=2)#actual ag temp coef
+
+#now add soil moisture  
+par(new=TRUE)
+
+plot(1, xlab="", xlim=c(0.5,0),ylim=c(60,160), axes=FALSE, type="b")
+abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
+legend("bottomleft",legend=c("Effect of temperature", "Effect of soil moisture","Observed response to target warming"), lty=c(2,3,1), lwd=2, col=c("darkred","blue","black"), bty="n", cex=.8)
+
+
+
+
+
+
+###Not usingfor now:
+###Add relationship between sm~target warming figure. 
 plot(1,type="n",xlab="(Target warming, C)", ylab="Soil moisture (VWC)", bty="l",xlim=c(min(bbdoy_plot$target),max(bbdoy_plot$target)),ylim=c(0,.5), las=1)
 expclim_sm<-subset(expclim2,select=c(site,year,doy,target,preciptreat,soilmois1))
 expclim_sm<-expclim_sm[which(expclim_sm$site=="exp01"|expclim_sm$site=="exp02"|expclim_sm$site=="exp03"|expclim_sm$site=="exp04"|expclim_sm$site=="exp07"|expclim_sm$site=="exp09"|expclim_sm$site=="exp10"|expclim_sm$site=="exp12"),]#
