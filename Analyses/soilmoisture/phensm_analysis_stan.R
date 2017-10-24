@@ -34,7 +34,7 @@ mu_a<-150#grand mean mean of bb doy
 sigma_a<-20
 mu_b_temp_sp<--2
 sigma_b_temp_sp<-.1
-mu_b_mois_sp<-2
+mu_b_mois_sp<--1
 sigma_b_mois_sp<-.1
 
 
@@ -46,7 +46,7 @@ b_mois<-rnorm(n_sp,mu_b_mois_sp,sigma_b_mois_sp)#species specific effects of moi
 #create explanatory variables
 temp<-rep(NA, N)
 for(i in 1:n_sp){
-  temp[which(sp==i)]<-rnorm(obs_sp,25,5)
+  temp[which(sp==i)]<-rnorm(obs_sp,25,5)#right now this is set up for each species but it doesn't need to be right?
 }
 mois<-rep(NA, N)
 for(i in 1:n_sp){
@@ -77,7 +77,7 @@ testm1.lmer<-lmer(y~temp + mois +(temp+mois|sp))
 summary(testm1.lmer)#looks good!
 
 #now fit the model in stan
-testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, n_sp=n_sp,N=N),
+testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
               iter = 2500, warmup=1500) # 
 beta_draws<-as.matrix(testm1,pars=c("b_temp","b_mois","sigma_y"))
 mcmc_intervals(beta_draws)
@@ -95,13 +95,6 @@ for(i in 1:N){
   ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
 }
 
-sigma_y<-.5
-
-ypred<-c()
-for(i in 1:N){
-  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]
-}
-
 y<-rnorm(N,ypred,sigma_y)
 #check that test data look ok
 plot(temp,y)
@@ -112,7 +105,7 @@ testm2.lmer<-lmer(y~temp * mois +(temp*mois|sp))
 summary(testm2.lmer)#interaction is too small
 
 #now fit the model in stan
-testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, n_sp=n_sp,N=N),
+testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
               iter = 2500, warmup=1500) # 
 
 

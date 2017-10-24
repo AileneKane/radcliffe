@@ -83,7 +83,6 @@ cols <- brewer.pal(6,"Greys")
 
 
 #plot with fitted lines only (no points) and with soil moisture as well
-
 quartz(height=5, width=5)
 #par(mfrow=c(1,2), oma=c(.5,.5,.5,2))
 #no need to have the target warming plotted on its own- just plot it on the same figure as the measured climate data

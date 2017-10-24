@@ -62,11 +62,6 @@
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 
-
-\section* {Climate from Climate Change Experiments Database}
-\par We developed a new, publicly available database for our analyses: the Climate from Climate Change Experiments (C3E) database, which is available at KNB \citep{ettinger2017}. This database allows us to explore the complex ways that climate is altered by active warming treatments, both directly and indirectly, across multiple studies. The database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure 1 in the main text). 
- \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citet{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database (also available on KNB). We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. 
- \par We wanted to focus on active warming studies only, because recent analyses indicate that active warming methods are the most controlled and consistent \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. We therefore removed all passive warming studies from this list. In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies \citep{wolkovich2012}. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) These additional restrictions constrained the list to 11 new studies, as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as two additional datasets offered to us over the course of our literature review.  We received data from authors of 12 of these 17 studies or 70.5\%. STONE received 16.7\% of data directly \citep{wolkovich2012}.(We were unable to include the following studies because authors declined to share their data with us: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}).%AKE:should we include this last sentence? it is in response to a reviewer comment from NCC 
 \section* {Details of Statistical Analyses and Results}
 \subsection* {Analysis of effects of time and space on local experimental climate}
 To test how treatment effects vary spatially (i.e., among blocks within a study) and temporally (i.e., among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed-effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as response predictors (Figure 3 in the main text). For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, Table \ref{table:blocks_time}). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, Table \ref{table:blocks_space}). Both of these models excluded data from plots with precipitation treatments. 
@@ -202,7 +197,22 @@ require(dplyr)
 
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
-expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="all")
+treats[which(is.na(treats$target)),]$target<-0
+treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
+expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
+#make a column for styear (study year, as opposed to calendar year)
+expclim2$styear<-NA#start by giving all studies year 1 (exp2 and exp8 had only 1 year each),then adjust each study by hand
+#make a column for styear (study year, as opposed to calendar year)
+sites<-unique(expclim2$site)
+for (i in 1:length(sites)){
+  sitedat<-expclim2[expclim2$site==sites[i],]
+  styears<-unique(sitedat$year)
+  print(styears)
+  for (j in 1:length(styears)){
+    expclim2$styear[expclim2$site==sites[i] & expclim2$year==styears[j]]<-j
+  }
+}
+
   expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]#select only plots with unmanipulated precip
   expclimt$agtemp_min<-expclimt$airtemp_min
   expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
@@ -602,6 +612,60 @@ moiswarm.table<-xtable(moiswarmtable,caption="Summary of a linear mixed-effects 
                 "p{0.05\\textwidth}",
                "p{0.05\\textwidth}|"))
 print(moiswarm.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
+@
+
+%budburst analyses
+<<label=bbtable, echo=FALSE, results=tex>>=
+expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=TRUE)
+exppheno<-read.csv("exppheno.csv", header=TRUE)
+treats<-read.csv("treats_detail.csv", header=T)
+
+#standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
+source("source/standard_mergesandwrangling.R")
+
+#summarize climate data by plot (annual and seasonal temp, soil mois), 
+#merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
+source("soilmoisture/climsum_byplot.R")
+
+expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#
+expgdd_bbd$styear<-as.factor(expgdd_bbd$styear)
+#Fit target warming model
+smbbdmod_targt<-lmer(doy~target + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+#Fit a few other models and compare fit
+#First, make temperature a more comparable scale to warming by relativising it to minimum agmin temp (or min agmax temp) across all studies
+#subtract minimum agtmax to get it close to 0 warming to make scale more comparable to "target warming"
+expgdd_bbd$agtmin_rel<-expgdd_bbd$agtmin-min(expgdd_bbd$agtmin)
+#above-ground temp model
+smbbdmod_agtsm<-lmer(doy~agtmin_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod_agtsm2<-lmer(doy~agtmin_rel+soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod_agt<-lmer(doy~agtmin_rel + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+
+
+bbmodstable<-rbind(round(summary(smbbdmod_targt)$coeff[,1:2],digits=2),round(summary(smbbdmod_agtsm)$coeff[,1:2],digits=2))
+bbmodstable<-cbind(rownames(bbmodstable),bbmodstable)
+ rownames(bbmodstable)<-c("target warming model","","tmin*soilmois model","","","")
+ colnames(bbmodstable)<-c("fixed effect","est.","se")
+bbmods.table<-xtable(bbmodstable,caption="Comparison of linear mixed-effects models for budburst day of year that contain either target warming treatment only as a fixed effect or measured mean annual minimum temperature (degrees C), mean soil moisture (in percent volumentric water content), and their interaction as fixed effects. Estimates (est.) are the intercept and coefficients from the models; se is the standard error for these estimates. Both models include random effects of site (n=5), year of study nested within site (n=13 day year-site combinations), and plant species (n=54), each with a random intercept structure. Total number of observations was 12839",label="table:bbmods",align=c(
+               
+          "|p{0.20\\textwidth}|",
+               "p{0.20\\textwidth}|",
+               "p{0.10\\textwidth}|",
+               "p{0.10\\textwidth}|"))
+print(bbmods.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize", hline.after = c(-1,0,3,5))
+ 
+aictable<-as.data.frame(AIC(smbbdmod_targt,smbbdmod_agt,smbbdmod_agtsm,smbbdmod_agtsm2))
+aictable<-aictable[order(aictable$AIC),]
+aictable$deltaAIC<-round(aictable$AIC-aictable$AIC[1], digits=1)
+aictable<-cbind(c("tmin*soilmois","tmin+soilmois","target","tmin"),aictable)
+colnames(aictable)<-c("model","df","aic","deltaaic")
+rownames(aictable)<-NULL
+ 
+aic.table<-xtable(aictable,caption="Comparison of model fits from four models with different fixed effects: 1) target warming only, 2) measured mean annual minimum temperature (tmin) only, minimum temperature and soil moisture (soilmois), and minimum tempertaure, soil moisture, and their interaction. We additionally compared models with mean annual maximum temperature, and seasonal temperature variables; we present only minimum annual temperature because this variable provided the best model fit (i.e. lowest AIC).",label="table:bbaic",align=c(
+               "|p{0.2\\textwidth}|",
+                "p{0.05\\textwidth}",
+               "p{0.1\\textwidth}",
+               "p{0.05\\textwidth}|"))
+print(moiswarm.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
 @
 
 

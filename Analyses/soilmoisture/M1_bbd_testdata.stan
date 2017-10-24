@@ -1,5 +1,5 @@
 // soil moisture phenology  analysis
-// fake data
+// test data
 
 // 2 level model for budburst day (or other phenophase)  as a function of above-ground temperature, soil moisture, and their interaction
 // Levels: just Species for now and just intercept
