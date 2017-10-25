@@ -183,29 +183,29 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace5c$year <- 2012
   bace5c$site <- "exp01"
   names(bace5c)[3]<-"doy"
-  file6 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_Outer.csv")
-  bace6 <- read.csv(file6, skip=1, header=TRUE,na.strings=".")
-  bace6<-bace6[1:576,]#remove blank rows at bottom
-  names(bace6)[4] <- "genusspecies"
-  names(bace6)[1] <- "plot"
-  names(bace6)[5] <- "doy_bbd"#use first bbd (not >3)
-  names(bace6)[7] <- "doy_lud"#leaf unfolding date
-  names(bace6)[9] <- "doy_lod"#leaf out date
-  bace6a<- subset(bace6, select=c("genusspecies","plot", "doy_bbd"))
-  bace6a$event <- "bbd"
-  bace6a$year <- 2012
-  bace6a$site <- "exp01"
-  names(bace6a)[3]<-"doy"
-  bace6b<- subset(bace6, select=c("genusspecies","plot", "doy_lud"))
-  bace6b$event <- "lud"
-  bace6b$year <- 2012
-  bace6b$site <- "exp01"
-  names(bace6b)[3]<-"doy"
-  bace6c<- subset(bace6, select=c("genusspecies","plot", "doy_lod"))
-  bace6c$event <- "lod"
-  bace6c$year <- 2012
-  bace6c$site <- "exp01"
-  names(bace6c)[3]<-"doy"
+  #file6 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_Outer.csv")#leave these out since they were just outside the main treatment area, were caged, and did not get all treatments
+  #bace6 <- read.csv(file6, skip=1, header=TRUE,na.strings=".")
+  #bace6<-bace6[1:576,]#remove blank rows at bottom
+  #names(bace6)[4] <- "genusspecies"
+  #names(bace6)[1] <- "plot"
+  #names(bace6)[5] <- "doy_bbd"#use first bbd (not >3)
+  #names(bace6)[7] <- "doy_lud"#leaf unfolding date
+  #names(bace6)[9] <- "doy_lod"#leaf out date
+  #bace6a<- subset(bace6, select=c("genusspecies","plot", "doy_bbd"))
+  #bace6a$event <- "bbd"
+  #bace6a$year <- 2012
+  #bace6a$site <- "exp01"
+  #names(bace6a)[3]<-"doy"
+  #bace6b<- subset(bace6, select=c("genusspecies","plot", "doy_lud"))
+  #bace6b$event <- "lud"
+  #bace6b$year <- 2012
+  #bace6b$site <- "exp01"
+  #names(bace6b)[3]<-"doy"
+  #bace6c<- subset(bace6, select=c("genusspecies","plot", "doy_lod"))
+  #bace6c$event <- "lod"
+  #bace6c$year <- 2012
+  #bace6c$site <- "exp01"
+  #names(bace6c)[3]<-"doy"
   file7 <- file.path(path, "2012_BACESpringTreePhenology_04_04_2013_CEG_pinus.csv")
   bace7 <- read.csv(file7, skip=1, header=TRUE,na.strings=".")
   bace7<-bace7[1:156,]#remove blank rows at bottom
@@ -273,7 +273,7 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace9a$site <- "exp01"
   names(bace9a)[3]<-"doy"
   #put them all together
-  baceall<-rbind(bace1a,bace1b,bace1c,bace2a,bace2b,bace2c,bace2d,bace3a,bace4a,bace4b,bace4c,bace5a,bace5b,bace5c,bace6a,bace6b,bace6c,bace7a,bace7b,bace7c,bace7d,bace8a,bace8b,bace8c,bace9a)
+  baceall<-rbind(bace1a,bace1b,bace1c,bace2a,bace2b,bace2c,bace2d,bace3a,bace4a,bace4b,bace4c,bace5a,bace5b,bace5c,bace7a,bace7b,bace7c,bace7d,bace8a,bace8b,bace8c,bace9a)
   baceall<-baceall[-which(baceall$genusspecies==""),]
   baceall<-baceall[-which(baceall$genusspecies=="Genus sp."),]
   baceall<-baceall[-which(baceall$genusspecies=="moss"),]
@@ -326,6 +326,8 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   bace<-bace[!is.na(bace$doy),]
   bace<-bace[-which(bace$doy==""),]
   bace<-bace[-which(substr(bace$doy,1,1)=="<"),]
+  bace<-bace[-which(bace$plot=="C1"|bace$plot=="C2"|bace$plot=="C3"|bace$plot=="40"|bace$plot=="41"|bace$plot=="42"),]#outside treatment area
+  
   return(bace)
 }
 
@@ -1076,11 +1078,11 @@ expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#75779 rows,    8 columns
+#73844 rows,    8 columns
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#75205  rows,8 columns
+dim(expphendb)#73270  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -1100,7 +1102,7 @@ expphendb[which(expphendb$species=="caepitosum"),]$species<-"caespitosum"#force
 expphendb[which(expphendb$genus=="Avena"),]$species<-"sp"#JAsper ridge- could be multiple spp
 expphendb[which(expphendb$species==""),]$species<-"sp"#all galiums at force
 
-dim(expphendb)#74403 rows,8 columns
+dim(expphendb)#72468 rows,8 columns
 head(expphendb)
 expphendb <- expphendb[order(expphendb$site,expphendb$block,expphendb$plot,expphendb$year,expphendb$doy,expphendb$genus),] 
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")

@@ -311,22 +311,22 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
 ## Notes: data shared by Jeff Dukes (jsdukes@purdue.edu)
 ##updated April 5, 2016 with more years of soil data, and adding air data
 clean.clim$bace <- function(path="./Data/Experiments/bace") {
-bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv")
+bacesoiltempfiles<-c("2009SoilTempDaily.csv","2010SoilTempDaily.csv","2011SoilTempDaily.csv","2012SoilTempDaily.csv","2013SoilTempDaily012417RM.csv")
 bacesoilmoisfiles<-c("2009_0_30cmTDR12_29_09CEG.csv","bace_soilmoisture2010.csv","bace_soilmoisture2011.csv",
     "2012_0_30cmTDR_1_23_13_CEG.csv","2013_30cmTDR3_7_15SWW.csv","2014_30cmTDR3_7_15SWW.csv")
 bacecantempfiles<-c("2009PlotTempDaily12_02_11CEG.csv","2010PlotTempDaily01_25_11CEG.csv",
-"2011PlotTempDaily1_06_12CEG.csv","2012PlotTempDaily1_30_13CEG.csv")
+"2011PlotTempDaily1_06_12CEG.csv","2012PlotTempDaily1_30_13CEG.csv","2013PlotTempDaily020317RM.csv")
 allsoiltemp<-c()
 for (i in 1:length(bacesoiltempfiles)){
   file <- file.path(path, paste(bacesoiltempfiles[i]))
   soiltemp <- read.csv(file, header=TRUE,na.strings = ".")
-  colnames(soiltemp) [3:5]<-c("doy","plot","temptreat")
-  colnames(soiltemp) [7:12]<-c("soiltemp1_mean","soiltemp2_mean","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
+  colnames(soiltemp)[3:5]<-c("doy","plot","temptreat")
+  colnames(soiltemp)[7:12]<-c("soiltemp1_mean","soiltemp2_mean","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max")
   soiltemp<-soiltemp[,1:12]
-  if(i==4){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
+  if(i==4|i==5){soiltemp<-soiltemp[1:min(which(is.na(soiltemp$year)))-1,1:12]}
   soiltemp$preciptreat<-NA
   soiltemp[soiltemp$precip.treatment==1,]$preciptreat<-0#ambient precip
-  soiltemp[soiltemp$precip.treatment==0,]$preciptreat<--1#50% precip
+  soiltemp[soiltemp$precip.treatment==0,]$preciptreat<- -1#50% precip
   soiltemp[soiltemp$precip.treatment==2,]$preciptreat<-1#150% ambient precip
   soiltemp$block<-NA
   soiltemp[as.numeric(soiltemp$plot)<13,]$block<-1
@@ -347,6 +347,7 @@ for (j in 1:length(bacecantempfiles)){
  colnames(cantemp) [3:5]<-c("doy","plot","temptreat")
  colnames(cantemp) [7:9]<-c("cantemp_mean","cantemp_min","cantemp_max")
  cantemp<-cantemp[,1:9]
+ if(j==5){cantemp<-cantemp[1:min(which(is.na(cantemp$year)))-1,1:9]}
   cantemp$preciptreat<-NA
  cantemp[cantemp$precip.treatment==1,]$preciptreat<-0#ambient precip
   cantemp[cantemp$precip.treatment==0,]$preciptreat<--1#50% precip
@@ -356,8 +357,9 @@ for (j in 1:length(bacecantempfiles)){
   cantemp[cantemp$plot<25 & cantemp$plot>12,]$block<-2
   cantemp[cantemp$plot<37 & cantemp$plot>24,]$block<-3
   if(length(unique(cantemp$plot))>36){cantemp[cantemp$plot>36,]$block<-0}
-  #measured canopy temps (for control (0) and high warming treatment (3)):
+  #measured canopy temps (only for for control (0) and high warming treatment (3)):
   cantemp<-cantemp[order(cantemp$temptreat,cantemp$preciptreat,cantemp$year,cantemp$doy),]
+  #use the control plot as the reference temperature
   cantemp$canmaxreftemp<-c(cantemp$cantemp_max[1:(dim(cantemp)[1]/2)],cantemp$cantemp_max[1:(dim(cantemp)[1]/2)])
   cantemp$canmaxdelta<-cantemp$cantemp_max-cantemp$canmaxreftemp
   cantemp$canminreftemp<-c(cantemp$cantemp_min[1:(dim(cantemp)[1]/2)],cantemp$cantemp_min[1:(dim(cantemp)[1]/2)])
@@ -365,11 +367,25 @@ for (j in 1:length(bacecantempfiles)){
   rownames(cantemp)<-NULL
   allcantemp<-rbind(allcantemp,cantemp)
 }#j
-  soilcantemp<-merge(allsoiltemp,allcantemp,by=c("year","doy","month","block","plot","temptreat","preciptreat","precip.treatment"),all=TRUE)
-  soilcantemp<-soilcantemp[order(soilcantemp$temptreat,soilcantemp$preciptreat,soilcantemp$year,soilcantemp$doy),]
-  Cmin<-soilcantemp[soilcantemp$temptreat==0,]$canminreftemp
-  Cmax<-soilcantemp[soilcantemp$temptreat==0,]$canmaxreftemp
-  DImin<-mean(soilcantemp[soilcantemp$temptreat==3,]$canmindelta, na.rm=T)
+#allsoiltemp is missing data for the following days for which there are cantemp data: 184 266 in year 2013 so remove these dates from the canopy temp too 
+#in addition, allcantemp is missing data for the following day(s) for which there are soiltemp data: 189 in year 2013 so remove this date from the soil temp too 
+#note: the interpolation code to estimate cantemps for temptreats 1 and 2 only works if there are data for both canopy and soil temps on same days, and for all plots
+allcantemp<-allcantemp[-which(allcantemp$year==2013 & allcantemp$doy==266),]
+allcantemp<-allcantemp[-which(allcantemp$year==2013 & allcantemp$doy==184),]
+allsoiltemp<-allsoiltemp[-which(allsoiltemp$year==2013 & allsoiltemp$doy==189),]
+
+soilcantemp<-merge(allsoiltemp,allcantemp,by=c("year","doy","month","block","plot","temptreat","preciptreat","precip.treatment"),all=TRUE)
+soilcantemp<-soilcantemp[order(soilcantemp$temptreat,soilcantemp$preciptreat,soilcantemp$year,soilcantemp$doy),]
+  #use canopy temps in control and high warming treatment, along with soil temperature, to estimate canopy temperatures in other warming treatments
+Cmin<-soilcantemp[soilcantemp$temptreat==0,]$canminreftemp
+  #Cmin_year<-soilcantemp[soilcantemp$temptreat==0,]$year
+  #tapply(Cmin,Cmin_year,length)
+  #Cmin_doy<-soilcantemp[soilcantemp$temptreat==0,]$doy
+Cmax<-soilcantemp[soilcantemp$temptreat==0,]$canmaxreftemp
+  #Cmax_year<-soilcantemp[soilcantemp$temptreat==0,]$year
+  #tapply(Cmax,Cmax_year,length)
+Cmax_doy<-soilcantemp[soilcantemp$temptreat==0,]$doy
+DImin<-mean(soilcantemp[soilcantemp$temptreat==3,]$canmindelta, na.rm=T)
   DImax<-mean(soilcantemp[soilcantemp$temptreat==3,]$canmaxdelta, na.rm=T)
   DHmin<-mean(soilcantemp[soilcantemp$temptreat==3,]$soilmindelta, na.rm=T)
   DHmax<-mean(soilcantemp[soilcantemp$temptreat==3,]$soilmaxdelta, na.rm=T)
@@ -882,9 +898,9 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#223582      21
+    dim(expphenclim1)#230998      21
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#223558     21
+    dim(expphenclim)#230974      21
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
@@ -908,6 +924,10 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     quartz()
     boxplot(airtemp_min~site, data=expphenclim)
     boxplot(airtemp_max~site, data=expphenclim)
+    boxplot(cantemp_min~site, data=expphenclim)
+    boxplot(cantemp_max~site, data=expphenclim)
+    boxplot(surftemp_min~site, data=expphenclim)
+    boxplot(surftemp_max~site, data=expphenclim)
     boxplot(soiltemp1_max~site, data=expphenclim)
     boxplot(soiltemp2_min~site, data=expphenclim)
     boxplot(soiltemp1_mean~site, data=expphenclim)
@@ -927,3 +947,14 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     boxplot(soilmois1~alltreat, data=expphenclim)
     boxplot(cantemp_min~alltreat, data=expphenclim)
     boxplot(cantemp_max~alltreat, data=expphenclim)
+    bace<-expphenclim[expphenclim$site=="exp01",]
+    years<-unique(bace$year)
+    for(i in 1:length(years)){
+    dat<-bace[bace$year==years[i],]
+    quartz()  
+    plot(dat$doy, dat$cantemp_max,pch=as.character(dat$plot),col="white", xlim=c(240,300), main=paste(years[i]))
+    text(dat$doy,dat$cantemp_max,pch=as.character(dat$plot),col=as.numeric(as.factor(dat$temptreat)))
+    }
+    #There are many plots in the 2013 soil temp data that have constant values for temperature from doy 248-299. I assume this is an error in the temperature loggers, but just wanted to check!
+    #Remove these data?
+    
