@@ -124,11 +124,11 @@ library(xtable)
 require(dplyr)
 
 # Set working directory: 
-if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/analyses") 
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/documents/expwarm") 
 } else
-  setwd("/Users/aileneettinger/git/radcliffe/Analyses")
+  setwd("/Users/aileneettinger/git/radcliffe/documents/expwarm")
 
-expsites2 <- read.csv("expsiteinfo.csv", header=TRUE)
+expsites2 <- read.csv("../../Analyses/expsiteinfo.csv", header=TRUE)
 expsites2$Target<-paste(expsites2$temptreat_1,expsites2$temptreat_2,expsites2$temptreat_3, sep=", ")
 expsites2$Target[expsites2$Target=="1.5, 2, 2.5"]<-"1.5-5.5"
 expsites2$Target[grep("NA, NA",expsites2$Target)]<-substr(expsites2$Target[grep("NA, NA",expsites2$Target)],1,3)
@@ -195,8 +195,8 @@ library(car)
 require(dplyr)
 # options(xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
 
-expclim<-read.csv("expclim.csv", header=T)
-treats<-read.csv("treats_detail.csv", header=T)
+expclim<-read.csv("../../Analyses/expclim.csv", header=T)
+treats<-read.csv("../../Analyses/treats_detail.csv", header=T)
 treats[which(is.na(treats$target)),]$target<-0
 treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
 expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
@@ -227,24 +227,28 @@ expclimt$sdtr<-expclimt$soiltemp1_max-expclimt$soiltemp1_min
 #remove site 2 (chuine) because these are not real temp measurements
 #remove site 5 (cleland) because only soil moisutre measured (no temp)
 expclimt<-expclimt[-which(expclimt$site=="exp02"|expclimt$site=="exp05"),]
+expclimt$styear<-as.factor(expclimt$styear)
 expclimt$year<-as.factor(expclimt$year)
 expclimt$site<-as.factor(expclimt$site)
+expclimt$target<-as.numeric(expclimt$target)
 expclimt[which(expclimt$temptreat=="0"),]$target<-0#for structural controls
 expclimt[which(expclimt$temptreat=="ambient"),]$target<-0#for ambient controls, which will be the reference
  #Tables of aboveground min versus max to show that DTR is affected:
   #Now see how warming treatment affects dtr, and if warming increases min and max temp the same magnitude as mean
-dtr_mod<-lmer(dtr~target + (target|site/year), data=expclimt, REML=FALSE)#summary(dtr_mod)#reduced dtr -0.3366 per degree of target warming
+dtr_mod<-lmer(dtr~target + (target|site/styear), data=expclimt, REML=FALSE)#this is the model structure supported by deltaAIC
+#summary(dtr_mod2)#reduced dtr -0.3833 per degree of target warming
 #Anova(dtr_mod)
-#sdtr_mod<-lmer(target~target + (target|site/year), data=expclimt, REML=FALSE)#summary(sdtr_mod)#reduces dtr -0.3562 per degree of target warming
+#sdtr_mod<-lmer(sdtr~target + (target|site/styear), data=expclimt, REML=FALSE)
+#summary(sdtr_mod)#reduces dtr -0.01262 per degree of target warming
 
-amin_mod<-lmer(agtemp_min~target + (target|site/year), data=expclimt, REML=FALSE)
+amin_mod<-lmer(agtemp_min~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(amin_mod)#warms, on average 0.84 degrees per target degree, for air min
 #Anova(amin_mod)
-amax_mod<-lmer(agtemp_max~target + (target|site/year), data=expclimt, REML=FALSE)
-#summary(amax_mod)#warms, on average 0.51 degrees per target degree, for air max
-#smin_mod<-lmer(soiltemp1_min~target + (target|site/year), data=expclimt, REML=FALSE)
+amax_mod<-lmer(agtemp_max~target + (target|site/styear), data=expclimt, REML=FALSE)
+#summary(amax_mod)#warms, on average 0.50 degrees per target degree, for air max
+#smin_mod<-lmer(soiltemp1_min~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(smin_mod)#warms, on average 0.84 degrees per target degree, for soil min
-#smax_mod<-lmer(soiltemp1_max~target + (target|site/year), data=expclimt, REML=FALSE)
+#smax_mod<-lmer(soiltemp1_max~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(smax_mod)#warms, on average 0.66 degrees per target degree, for air max
 amintable<-cbind(round(summary(amin_mod)$coeff[,1:2],digits=2))#
 amaxtable<-cbind(round(summary(amax_mod)$coeff[,1:2],digits=2))#
@@ -253,7 +257,7 @@ dtrtable<-cbind(round(summary(dtr_mod)$coeff[,1:2],digits=2))#
 dtrtable<-as.data.frame(cbind(dtrtable,amintable,amaxtable))
  rownames(dtrtable)<-c("intercept","target warming effect")
   stmod.table<-xtable(dtrtable,
-  caption="Summary of linear mixed-effects models of how target warming treatment affects daily temperature range (DTR) for above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments. We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum above-ground temperature ($\\chi^{2}$=45.25, df=1, p<0.001) and maximum above-ground temperature ($\\chi^{2}$=5.94, df=1, p=0.01), but not for DTR ($\\chi^{2}$=1.14, df=1, p=0.29).  Random effects were site (n=8) and year nested within site (n=29 year-site combinations), with a random intercept structure. Total number of observations=134,045, and units are degrees Celsius for all three models.",label="table:dtrtemp",align=c(
+  caption="Summary of linear mixed-effects models of how target warming treatment affects daily temperature range (DTR) for above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments. We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum above-ground temperature ($\\chi^{2}$=40.95, df=1, p<0.001) and maximum above-ground temperature ($\\chi^{2}$=4.63, df=1, p=0.03), but not for DTR ($\\chi^{2}$=1.18, df=1, p=0.28).  Random effects were site (n=7) and year nested within site (n=29 year-site combinations), with a random intercept structure. Total number of observations=135,943, and units are degrees Celsius for all three models.",label="table:dtrtemp",align=c(
                 "|p{0.19\\textwidth}",
                 "|p{0.05\\textwidth}",
                 "p{0.05\\textwidth}",
@@ -269,20 +273,22 @@ addtorow$command <- c("&\\multicolumn{2}{c |}{DTR} &\\multicolumn{2}{c |}{min ab
 print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=FALSE,caption.placement="top",size="\\footnotesize")
 
 #Tables of blocks versus years  
+#try doing the below with target warming instead of temp treat....
   blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design
   blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
-  blockdat2<-subset(blockdat,select=c(site,block,year,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
+  blockdat2<-subset(blockdat,select=c(site,block,year,styear,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
   blockdat2$block<-as.factor(blockdat2$block)
   blockdat2$year<-as.factor(blockdat2$year)
-  blockdat2$site<-as.factor(blockdat2$year)
-  blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+  blockdat2$site<-as.factor(blockdat2$site)
+    blockdat2$styear<-as.factor(blockdat2$styear)
+
+  #blockdat2  <- blockdat2 [apply(blockdat2 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
   #blockdat2<-blockdat2[-which(blockdat2$temptreat=="ambient"),]
-   testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
-  testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
-  testdat3$year<-as.factor(testdat3$year)
-  yearmod<-lmer(soiltemp1_mean~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  yearmod2<-lmer(agtemp_min~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  yearmod3<-lmer(agtemp_max~temptreat*year + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+   #testdat2<-blockdat2[which(as.numeric(as.character(blockdat2$year))<2011),]
+  #testdat3<-testdat2[which(as.numeric(as.character(testdat2$year))>2008),]
+  yearmod<-lmer(soiltemp1_mean~temptreat*styear + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yearmod2<-lmer(agtemp_min~temptreat*styear + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  yearmod3<-lmer(agtemp_max~temptreat*styear + (1|site/block), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
   yeartable<-Anova(yearmod, type="III")
   yeartable2<-Anova(yearmod2, type="III")
   yeartable3<-Anova(yearmod3, type="III")
@@ -301,7 +307,7 @@ print(stmod.table, add.to.row=addtorow,include.rownames=TRUE, include.colnames=F
   yeartableAll[,1]<-c("intercept","temp. treatment","year","temp. treatment:year")
   #yeartableAll<-rbind(c("predictor","df","$\\chi^2$","p","$\\chi^{2}$ ","p","$\\chi^{2}$","p"),yeartableAll)
   yearspace.table<-xtable(yeartableAll,
-  caption="Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. We list degrees of freedom (which are identical across response variables), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and block nested within site (intercept-only structure; n=23); total number of observations=17,177; units are degrees Celsius",label="table:blocks_time",align=c(
+  caption="Analysis of variance table for temporal linear mixed-effects models of daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. We list degrees of freedom (which are identical across response variables), test statistics, and p-values for Type III Wald $\\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=4 for soil temperature model, n=3 for above-ground temperature models) and block nested within site (intercept-only structure; n=18 for soil, n=12 for above-ground); total number of observations=36,813 for soil and 28,875 for above-ground; units are degrees Celsius",label="table:blocks_time",align=c(
                 "p{0.01\\textwidth}",
                 "|p{0.20\\textwidth}",
                 "|p{0.01\\textwidth}",
@@ -316,10 +322,10 @@ addtorow$pos <- list(0, 0)
 addtorow$command <- c("& &\\multicolumn{2}{c |}{mean soil temp.} &\\multicolumn{2}{c |}{min above-ground temp.} &\\multicolumn{2}{c |}{max above-ground temp.}\\\\\n \\hline","predictor & df & $\\chi^{2}$ & p & $\\chi^{2}$ & p & $\\chi^{2}$ & p\\\\\n") # Trick here is to re-assign that horizontal line in the multicolumn command.
   print.xtable(yearspace.table, add.to.row=addtorow,include.rownames=FALSE, include.colnames=FALSE,caption.placement="top",hline.after = c(-1,0,4), xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
   # Whee! One annoying bits here, you need to add this sanitize f(x) and then (this took me a while) you need to say print part of the command. 
-  testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
-  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/year), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-  blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/year), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-blockmod3<-lmer(agtemp_max~temptreat*block + (1|site/year), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  #testdat<-blockdat2[as.numeric(as.character(blockdat2$block))<4,]
+  blockmod<-lmer(soiltemp1_mean~temptreat*block + (1|site/styear), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+  blockmod2<-lmer(agtemp_min~temptreat*block + (1|site/styear), data=blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+blockmod3<-lmer(agtemp_max~temptreat*block + (1|site/styear), data= blockdat2, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 blocktable<-Anova(blockmod, type="III")
 blocktable2<-Anova(blockmod2, type="III")
 blocktable3<-Anova(blockmod3, type="III")
@@ -360,8 +366,10 @@ library(lme4)
 library(car)
 require(dplyr)
 options(stringsAsFactors = FALSE)
-expclim_controls<-expclim[expclim$temptreat=="0"|expclim$temptreat=="ambient",]
+expclim_controls<-expclim2[expclim2$temptreat=="0"|expclim$temptreat=="ambient",]
 expclim_controls$temptreat<-factor(expclim_controls$temptreat)
+expclim_controls$styear<-factor(expclim_controls$styear)
+
 expclim_controls$airtemp_mean<-(expclim_controls$airtemp_min+expclim_controls$airtemp_max)/2
 sitesums<-data.frame(tapply(expclim_controls$soiltemp1_mean,list(expclim_controls$site,expclim_controls$temptreat),length))
 colnames(sitesums)<-c("sham.control","ambient")
@@ -370,10 +378,10 @@ expclim_controls$year<-as.factor(expclim_controls$year)
 expclim_cont<-expclim_controls[expclim_controls$site %in% sites_con,]
 #first fit annual models
 expclim_cont$temptreat <- relevel(as.factor( expclim_cont$temptreat), ref = "ambient")
-smod_mn<-lmer(soiltemp1_mean~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
-smod_max<-lmer(soiltemp1_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
-smod_min<-lmer(soiltemp1_min~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
-mod_max<-lmer(airtemp_max~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+smod_mn<-lmer(soiltemp1_mean~temptreat + (temptreat|site/styear), data=expclim_cont, REML=FALSE)
+smod_max<-lmer(soiltemp1_max~temptreat + (temptreat|site/styear), data=expclim_cont, REML=FALSE)
+smod_min<-lmer(soiltemp1_min~temptreat + (temptreat|site/styear), data=expclim_cont, REML=FALSE)
+mod_max<-lmer(airtemp_max~temptreat + (temptreat|site/styear), data=expclim_cont, REML=FALSE)
 mod_min<-lmer(airtemp_min~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
 mnstable<-cbind(round(summary(smod_mn)$coeff[,1:2],digits=2))#
 maxstable<-cbind(round(summary(smod_max)$coeff[,1:2],digits=2))#
@@ -381,7 +389,7 @@ minstable<-cbind(round(summary(smod_min)$coeff[,1:2],digits=2))#
 stableAll<-as.data.frame(cbind(mnstable,minstable,maxstable))
  rownames(stableAll)<-c("intercept","structure effect")
   stmod.table<-xtable(stableAll,
-  caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments across the year. Estimates (est.) are the intercept (representing ambient controls) and coefficient (representing structure effects) from the models; se is the standard error for these estimates. For these annual models, differences between control types were significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for mean soil temperature ($\\chi^{2}$=5,53, df=1, p=0.01) and minimum soil temperature ($\\chi^{2}$=3.87, df=1, p=0.05), but not for maximum soil temperature ($\\chi^{2}$=2.07, df=1, p=0.15). For all models, random effects of site (n=5 for mean model, n=4 for min and max models) and year nested within site (n=21 for mean model, n=20 for min and max models) were fit with a random slope and intercept structure; total number of observations= 48,860 for the mean model and 44,530 for the min and max models; units are degrees Celsius.",label="table:shamamb_soiltemp",align=c(
+  caption="Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments across the year. Estimates (est.) are the intercept (representing ambient controls) and coefficient (representing structure effects) from the models; se is the standard error for these estimates. For these annual models, differences between control types were significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for mean soil temperature ($\\chi^{2}$=5,53, df=1, p=0.01) and minimum soil temperature ($\\chi^{2}$=3.87, df=1, p=0.05), but not for maximum soil temperature ($\\chi^{2}$=2.07, df=1, p=0.15). For all models, random effects of site (n=5 for mean model, n=4 for min and max models) and year nested within site (n=21 for mean model, n=20 for min and max models) were fit with a random slope and intercept structure; total number of observations= 48,860 for the mean model and 44,085 for the min and max models; units are degrees Celsius.",label="table:shamamb_soiltemp",align=c(
                 "|p{0.15\\textwidth}",
                 "|p{0.05\\textwidth}",
                 "p{0.05\\textwidth}",
@@ -418,7 +426,7 @@ print(atmod.table, add.to.row=addtorow2, include.rownames=TRUE, include.colnames
 
 <<label=xtable5, echo=FALSE, results=tex>>=
 expclim_cont$soilmois_perc<-expclim_cont$soilmois1*100
-moismod<-lmer(soilmois_perc~temptreat + (temptreat|site/year), data=expclim_cont, REML=FALSE)
+moismod<-lmer(soilmois_perc~temptreat + (temptreat|site/styear), data=expclim_cont, REML=FALSE)
 moistable<-cbind(round(summary(moismod)$coeff[,1:2],digits=2))#
 rownames(moistable)<-c("intercept","structure effect")
 
@@ -443,9 +451,9 @@ coefs_allyear<-c()
 for (i in 1:length(months)){
   monthdat<-expclim_cont[expclim_cont$month==months[i],]
   monthdat$temptreat <- relevel(as.factor( monthdat$temptreat), ref = "ambient")
-smod_mn<-lmer(soiltemp1_mean~temptreat + (temptreat|site/year), data=monthdat, REML=FALSE)
-smod_max<-lmer(soiltemp1_max~temptreat + (temptreat|site/year), data=monthdat, REML=FALSE)
-smod_min<-lmer(soiltemp1_min~temptreat + (temptreat|site/year), data=monthdat, REML=FALSE)
+smod_mn<-lmer(soiltemp1_mean~temptreat + (temptreat|site/styear), data=monthdat, REML=FALSE)
+smod_max<-lmer(soiltemp1_max~temptreat + (temptreat|site/styear), data=monthdat, REML=FALSE)
+smod_min<-lmer(soiltemp1_min~temptreat + (temptreat|site/styear), data=monthdat, REML=FALSE)
   coefs<-cbind(c(months[i]," "),c("intercept","structure effect"),round(summary(smod_mn)$coeff[,1:2],digits=2),rbind(Anova(smod_mn),c("","","")),round(summary(smod_min)$coeff[,1:2],digits=4),rbind(Anova(smod_min),c("","","")),round(summary(smod_max)$coeff[,1:2],digits=2),rbind(Anova(smod_max),c("","","")))#
 rownames(coefs)<-NULL
 coefs_allyear<-rbind(coefs_allyear,coefs)
@@ -616,16 +624,16 @@ print(moiswarm.table, include.rownames=TRUE, include.colnames=TRUE,caption.place
 
 %budburst analyses
 <<label=bbtable, echo=FALSE, results=tex>>=
-expclim<-read.csv("gddchill/expclim.wchillgdd.csv", header=TRUE)
-exppheno<-read.csv("exppheno.csv", header=TRUE)
-treats<-read.csv("treats_detail.csv", header=T)
+expclim<-read.csv("../../Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
+exppheno<-read.csv("../../Analyses/exppheno.csv", header=TRUE)
+treats<-read.csv("../../Analyses/treats_detail.csv", header=T)
 
 #standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
-source("source/standard_mergesandwrangling.R")
+source("../../Analyses/source/standard_mergesandwrangling.R")
 
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
 #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
-source("soilmoisture/climsum_byplot.R")
+source("../../Analyses/soilmoisture/climsum_byplot.R")
 
 expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#
 expgdd_bbd$styear<-as.factor(expgdd_bbd$styear)
@@ -651,7 +659,7 @@ bbmods.table<-xtable(bbmodstable,caption="Comparison of linear mixed-effects mod
                "p{0.20\\textwidth}|",
                "p{0.10\\textwidth}|",
                "p{0.10\\textwidth}|"))
-print(bbmods.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize", hline.after = c(-1,0,3,5))
+print(bbmods.table, include.rownames=TRUE, include.colnames=TRUE,caption.placement="top", size="\\footnotesize", hline.after = c(-1,0,3,6))
  
 aictable<-as.data.frame(AIC(smbbdmod_targt,smbbdmod_agt,smbbdmod_agtsm,smbbdmod_agtsm2))
 aictable<-aictable[order(aictable$AIC),]
@@ -661,11 +669,12 @@ colnames(aictable)<-c("model","df","aic","deltaaic")
 rownames(aictable)<-NULL
  
 aic.table<-xtable(aictable,caption="Comparison of model fits from four models with different fixed effects: 1) target warming only, 2) measured mean annual minimum temperature (tmin) only, minimum temperature and soil moisture (soilmois), and minimum tempertaure, soil moisture, and their interaction. We additionally compared models with mean annual maximum temperature, and seasonal temperature variables; we present only minimum annual temperature because this variable provided the best model fit (i.e. lowest AIC).",label="table:bbaic",align=c(
-               "|p{0.2\\textwidth}|",
+              "p{0.01\\textwidth}|", 
+              "|p{0.2\\textwidth}|",
                 "p{0.05\\textwidth}",
                "p{0.1\\textwidth}",
                "p{0.05\\textwidth}|"))
-print(moiswarm.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,size="\\footnotesize")
+print(moiswarm.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",sanitize.text.function=identity,size="\\footnotesize")
 @
 
 

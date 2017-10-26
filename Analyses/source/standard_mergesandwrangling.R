@@ -19,7 +19,7 @@ sites<-unique(expclim2$site)
 for (i in 1:length(sites)){
   sitedat<-expclim2[expclim2$site==sites[i],]
   styears<-unique(sitedat$year)
-  print(styears)
+  #print(styears)
   for (j in 1:length(styears)){
     expclim2$styear[expclim2$site==sites[i] & expclim2$year==styears[j]]<-j
   }
