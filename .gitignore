@@ -31,3 +31,5 @@ documents/expwarm/Inquiry_EL.pdf
 *.aux
 
 Data/Experiments/.DS_Store
+
+*.blg

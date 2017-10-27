@@ -85,7 +85,7 @@ Of the twelve experiments in the C3E database, ten measured and reported soil mo
 We wanted to investigate how using measured plot-level climate variables, as opposed to target warming, alters estimates of temperature sensitivity. To do this, we fit models to data from the five study sites in the C3E database that recorded above-ground temperature and soil moisture, as well as phenology data (day of year of budburst). We first fit a model of target warming only to these data, accounting for non-independence by including species, site, and study year nested within site as intercept-only random effects (Table \ref{table:bbmods}). We compared this to a model with measured above-ground temperature, mean winter soil moisture, and their interaction as explanatory variables (with the same random effects structure). To determine which specific above-ground temperature variable to include, we compared AICs of models for with four different temperature variables (mean annual minimum and maximum temperatures, mean January-March minimum and maximum temperatures). The model with mean annual minimum temperature, mean January-March soil moisture, and their interaction provided the best model fit (lowest AIC, highest explained variation, Table \ref{table:bbaic}), so we discuss and interpret that model in the main text, summarize it in Table \ref{table:bbmods}, and present its coefficients in Figure 7. 
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
-\section* {Tables}
+\section* {Suppelemental Tables}
 \begin{table}[b]
   \caption{\textbf{Sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one here.}
 \begin{footnotesize} 
@@ -686,13 +686,14 @@ aic.table<-xtable(aictable,caption="Comparison of model fits from four models wi
                "p{0.05\\textwidth}|"))
 print(aic.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",sanitize.text.function=identity,size="\\footnotesize")
 @
+\clearpage
 
-\section* {Figures}
+\clearpage
+\section* {Supplemenetal Figures}
 \begin{figure}[p]
 \centering
-\includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/targetvsobs_stduration
-.pdf} 
-\caption{\textbf{Mean warming across the study duration.}Reporting only the mean temperature difference across the duration of the study, as is commonly done in publications of climate change experiments, hides potentially important variations in daily, seasonal, and annual temperatures among treatments. Compare the above figure to Figure } 
+\includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/targetvsobs_stduration.pdf} 
+\caption{\textbf{Mean warming across the study duration.}Reporting only the mean temperature difference across the duration of the study, as is commonly done in publications of climate change experiments, hides potentially important variations in daily, seasonal, and annual temperatures among treatments. Compare to Figure 3 in the main text.} 
  \label{fig:targetvsobs}
  \end{figure}
 
