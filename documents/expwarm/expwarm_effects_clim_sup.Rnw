@@ -62,6 +62,11 @@
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 
+\section* {Additional methods for database development}
+
+We searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. We removed all passive warming studies from the list.  .%should we include this last sentence or not? it seems a bit tattle-tale-y but it is in response to a reviewer comment from NCC. Yann's comment:shall we really point out who were reluctant to share the data... or only say how many dataset we've got?
+% In addition, a secondary goal of this database was to test hypotheses about mechanisms for the mismatch in sensitivities between observational and experimental phenological studies \citep{wolkovich2012}. Because of this secondary goal, studies included in the database had to either 1) include more than one level of warming, or 2) manipulate both temperature and precipitation. (Some studies met both of these criteria.) 
+
 \section* {Details of Statistical Analyses and Results}
 \subsection* {Analysis of effects of time and space on local experimental climate}
 To test how treatment effects vary spatially (i.e., among blocks within a study) and temporally (i.e., among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed-effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as response predictors (Figure 3 in the main text). For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, Table \ref{table:blocks_time}). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, Table \ref{table:blocks_space}). Both of these models excluded data from plots with precipitation treatments. 
@@ -87,7 +92,7 @@ We wanted to investigate how using measured plot-level climate variables, as opp
 
 \section* {Suppelemental Tables}
 \begin{table}[b]
-  \caption{\textbf{Sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one here.}
+  \caption{\textbf{Sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one here. Note that we were unable to include the following studies because authors declined to share their data or did not respond: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}.}
 \begin{footnotesize} 
    \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
     \hline
