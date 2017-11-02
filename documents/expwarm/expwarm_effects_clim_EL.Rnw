@@ -295,7 +295,7 @@ We are grateful to those who shared their experimental climate data with us and 
 \begin{figure}[h]
 \centering
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPrecip.png}
- \caption{\textbf{Deviations in daily observed warming from mean soil temperature for 10 study sites.} We show mean soil, rather than above-ground, temperature, as this was the most frequently recorded temperature variable in the C3E database. Solid lines show observed difference between warming treatment (colors) and control (black) plots, averaged across replicates and years; shading shows 95\% confidence intervals. Dashed lines represent target warming levels. Two sites not shown here did not monitor soil temperature; we also excluded data from plots that manipulated precipitation. Mean annual temperature for experimental sites are shown in the upper right corner of each panel; panels are arranged by increasing annual temperature.} %The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Daily temperature values were obtained by averaging across years for each day of the year in each temperature treatment in each study. 
+ \caption{\textbf{Deviations in daily observed warming from mean soil temperature for 10 study sites,} excluding data from plots that manipulated precipitation. We show mean soil, rather than above-ground, temperature, as this was the most frequently recorded temperature variable in the C3E database. Solid lines show observed difference between warming treatment (colors) and control (black) plots, averaged across replicates and years; shading shows 95\% confidence intervals. Dashed lines represent target warming levels. Two sites not shown here did not monitor soil temperature. Experimental sites are ordered by low to high mean annual temperature (shown in the upper right corner of each panel).} %The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Daily temperature values were obtained by averaging across years for each day of the year in each temperature treatment in each study. 
  \label{fig:effwarm}
  \end{figure}
  \begin{figure}[p]
@@ -305,6 +305,7 @@ We are grateful to those who shared their experimental climate data with us and 
  \label{fig:blockyear}
  \end{figure}
  
+ % EMW: Check if you included data from plots that manipulated precipitation whenever you don't say "excluding data from plots that manipulated precipitation" in a caption. 
  \begin{figure}[p]
 \centering
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/ShamVSAmbient_all.pdf}  
@@ -315,7 +316,7 @@ We are grateful to those who shared their experimental climate data with us and 
  \begin{figure}[h]
     \centering
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/WarmingEffects_TimeSeries_SoilMoist_Deviation_NoPrecip.png}  
- \caption{\textbf{Deviations in daily observed soil moisture,} shown for the nine study sites that continuously monitored soil moisture, excluding data from plots that manipulated precipitation. Black lines represent control plots, and colored lines represent warming treatments with various target warming levels. The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design). Mean annual soil moisture for the experimental site is shown in the upper right corner of each plot, and plots are arranged by increasing mean soil moisture. All experiments measured soil moisture in volumetric water content (VWC, as a proportion of the soil volume in the sample, scaled from 0 to 1)}. 
+ \caption{\textbf{Deviations in daily observed soil moisture,} shown for the nine study sites that continuously monitored soil moisture, excluding data from plots that manipulated precipitation. Black lines represent control plots, and colored lines represent warming treatments with various target warming levels. The number of temperature treatment levels vary from one (e.g. exp08, exp11) to nine (exp07 and exp10, which used an unreplicated regression design).  Experimental sites are ordered by low to high mean annual soil moisture (shown in the upper right corner of each plot). All experiments measured soil moisture in volumetric water content (VWC, as a proportion of the soil volume in the sample, scaled from 0 to 1)}. 
  \label{fig:mois}
  \end{figure}
  
@@ -327,7 +328,7 @@ We are grateful to those who shared their experimental climate data with us and 
 
 \begin{figure}[h]
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/DirIndWarmingEffects_ExBBSM_reltemp.pdf} 
- \caption{\textbf{Response of budburst day of year to experimental climate change} is an example of a muted response: the observed response to increaseing treatment intensity (i.e., the coefficient of a model fit with only target temperature as the explanatory variable, black line) suggests a weaker temperature sensitivity than the effect of temperature in a more biologically accurate (and better-fitting) model that includes both measured above-ground temperature (dashed red line) and soil moisture (dotted blue line), as well as their interaction. This is because experimental warming dries out the soil in addition to increasing temperatures, and both climate variables affect the timing of budburst. Whereas increasing temperatures advance budburst, decreasing soil moisture has a delaying effect. See Supplemental Materials, especially Tables S14 \& S15, for model details.} 
+ \caption{\textbf{Response of budburst day of year to experimental climate change} is an example of a muted response: the observed response to increasing treatment intensity (i.e., the coefficient of a model fit with only target temperature as the explanatory variable, black line) suggests a weaker temperature sensitivity than the effect of temperature in a more biologically accurate (and better-fitting) model that includes both measured above-ground temperature (dashed red line) and soil moisture (dotted blue line), as well as their interaction. This is because experimental warming dries out the soil in addition to increasing temperatures, and both climate variables affect the timing of budburst. Whereas increasing temperatures advance budburst, decreasing soil moisture has a delaying effect. See Supplemental Materials, especially Tables S14 \& S15, for model details.} 
 \label{fig:phen}
 \end{figure}
   
