@@ -667,7 +667,7 @@ bbmodstable<-rbind(round(summary(smbbdmod_targt)$coeff[,1:2],digits=2),round(sum
 bbmodstable<-cbind(rownames(bbmodstable),bbmodstable)
  rownames(bbmodstable)<-c("target warming model","","tmin*soilmois model","","","")
  colnames(bbmodstable)<-c("fixed effect","est.","se")
-bbmods.table<-xtable(bbmodstable,caption="\textbf{Comparison of linear mixed-effects models for budburst day of year} that contain either target warming treatment only as a fixed effect or measured mean annual minimum temperature (degrees C), mean soil moisture (in percent VWC), and their interaction as fixed effects. Estimates (est.) are the intercept and coefficients from the models; se is the standard error for these estimates. Both models include random effects of site (n=5), year of study nested within site (n=13 day year-site combinations), and plant species (n=54), each with a random intercept structure. Total number of observations was 12839",label="table:bbmods",align=c(
+bbmods.table<-xtable(bbmodstable,caption="\textbf{Comparison of linear mixed-effects models for budburst day of year} that contain either target warming treatment only as a fixed effect or measured mean annual minimum temperature (degrees C), mean soil moisture (in percent VWC), and their interaction as fixed effects. Estimates (est.) are the intercept and coefficients from the models; se is the standard error for these estimates. Both models include random effects of site (n=5), year of study nested within site (n=13 day year-site combinations), and plant species (n=54), each with a random intercept structure. Total number of observations was 12839.",label="table:bbmods",align=c(
                "p{0.01\\textwidth}|", 
             "|p{0.20\\textwidth}|",
                "p{0.10\\textwidth}|",
