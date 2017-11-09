@@ -101,9 +101,20 @@ mtext("Decreasing soil moisture",side=1, line=4.5, cex=.9)
 #now add soil moisture  
 par(new=TRUE)
 
-plot(1, xlab="", xlim=c(0.5,0),ylim=c(60,160), axes=FALSE, type="b")
-abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
+plot(1, xlab="", xlim=c(0.38,.11),ylim=c(60,160), axes=FALSE, type="b")
+abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[3], lwd=3, col="blue", lty=3)#soil moisture coef 
 legend("bottomleft",legend=c("Effect of temperature", "Effect of soil moisture","Observed response to target warming"), lty=c(2,3,1), lwd=2, col=c("darkred","blue","black"), bty="n", cex=.8)
+
+##TRy making same figure with confidence intervals
+quartz(height=5, width=5)
+
+visreg(smbbdmod_targt, "target", ylab="Day of year", partial=FALSE, xlim=c(min(expgdd_bbd$target),max(expgdd_bbd$target)),ylim=c(60,160), las=1, bty="l", line=list(col="black"))
+#polygon(c(rev(newtargt), newtargt), c(rev(predstargt[,3]), predstargt[,2]), col = 'grey80', border = NA)
+# model line
+par(new=TRUE)
+visreg(smbbdmod1a, "agtmin_rel", axes=FALSE, partial=FALSE,line=list(col="darkred", lty=2))
+par(new=TRUE)
+visreg(smbbdmod1a, "soilmois_janmar", axes=FALSE, partial=FALSE,xlim=c(0.5,0),ylim=c(60,160),line=list(col="blue", lty=3))
 
 
 ###Same figure but using different axis for true temp
@@ -130,7 +141,7 @@ abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="darkred", lty=
 par(new=TRUE)
 
 plot(1, xlab="", xlim=c(0.5,0),ylim=c(60,160), axes=FALSE, type="b")
-abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="blue", lty=3)#soil moisture coef 
+abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[3], lwd=3, col="blue", lty=3)#soil moisture coef 
 legend("bottomleft",legend=c("Effect of temperature", "Effect of soil moisture","Observed response to target warming"), lty=c(2,3,1), lwd=2, col=c("darkred","blue","black"), bty="n", cex=.8)
 
 

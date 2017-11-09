@@ -1,0 +1,135 @@
+% Straight up stealing preamble from Eli Holmes 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+\documentclass{article}
+
+%Required: You must have these
+\usepackage{Sweave}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{pdflscape}
+\usepackage{array}
+\usepackage{gensymb}
+%\usepackage[backend=bibtex]{biblatex}
+%Strongly recommended
+  %put your figures in one place
+%\SweaveOpts{prefix.string=figures/, eps=FALSE} 
+%you'll want these for pretty captioning
+\usepackage[small]{caption}
+
+\setkeys{Gin}{width=0.8\textwidth}  %make the figs 50 perc textwidth
+\setlength{\captionmargin}{30pt}
+\setlength{\abovecaptionskip}{10pt}
+\setlength{\belowcaptionskip}{10pt}
+% manual for caption  http://www.dd.chalmers.se/latex/Docs/PDF/caption.pdf
+
+%Optional: I like to muck with my margins and spacing in ways that LaTeX frowns on
+%Here's how to do that
+ \topmargin -1.5cm        
+ \oddsidemargin -0.04cm   
+ \evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+ \textwidth 16.59cm
+ \textheight 21.94cm 
+ %\pagestyle{empty}       % Uncomment if don't want page numbers
+ \parskip 7.2pt           % sets spacing between paragraphs
+ %\renewcommand{\baselinestretch}{1.5} 	% Uncomment for 1.5 spacing between lines
+\parindent 0pt% sets leading space for paragraphs
+\usepackage{setspace}
+%\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+
+%Start of the document
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+\bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/amnat.bst}
+\title{Supplemental Materials for: How do climate change experiments actually change climate?} % Paper 1/Large group paper from Reconciling Experimental and Observational Approaches for Climate Change Impacts
+
+\author{A.K. Ettinger, I. Chuine, B. Cook, J. Dukes, A.M. Ellison, M.R. Johnston, A.M. Panetta,\\ C. Rollinson, Y. Vitasse, E. Wolkovich}
+%\date{\today}
+\maketitle  %put the fancy title on
+%\tableofcontents      %add a table of contents
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\clearpage
+
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
+\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
+
+<<label=xtable, echo=FALSE, results=tex>>=
+library(xtable)
+library(lme4)
+library(car)
+require(dplyr)
+# options(xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity)
+rm(list=ls()) 
+options(stringsAsFactors = FALSE)
+
+# Set working directory: 
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/documents/expwarm") 
+} else
+setwd("/Users/aileneettinger/git/radcliffe/documents/expwarm")
+
+
+expclim<-read.csv("../../Analyses/expclim.csv", header=T)
+treats<-read.csv("../../Analyses/treats_detail.csv", header=T)
+treats[which(is.na(treats$target)),]$target<-0
+treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
+expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
+expclimp<-expclim2[which(expclim2$site=="exp01"|expclim2$site=="exp02"|expclim2$site=="exp05"|expclim2$site=="exp09"|expclim2$site=="exp12"),]
+
+#get one column for above-ground temperature
+expclimp$agtemp_min<-expclimp$airtemp_min
+expclimp[which(is.na(expclimp$agtemp_min) & !is.na(expclimp$cantemp_min)),]$agtemp_min <-expclimp[which(is.na(expclimp$airtemp_min) & !is.na(expclimp$cantemp_min)),]$cantemp_min
+
+expclimp[which(is.na(expclimp$agtemp_min) & !is.na(expclimp$surftemp_min)),]$agtemp_min<-expclimp[which(is.na(expclimp$agtemp_min) & !is.na(expclimp$surftemp_min)),]$surftemp_min
+
+expclimp$agtemp_max<-expclimp$airtemp_max
+
+expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$cantemp_max)),]$agtemp_max<-expclimp[which(is.na(expclimp$airtemp_max) & !is.na(expclimp$cantemp_max)),]$cantemp_max
+
+expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$surftemp_max)),]$agtemp_max<-expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$surftemp_max)),]$surftemp_max
+#give controls target/precip treatments of 0
+expclimp$target[which(is.na(expclimp$target))]<-0
+expclimp$preciptreat_amt[which(is.na(expclimp$preciptreat_amt))]<-0
+expclimp$preciptreat_amt<-as.numeric(expclimp$preciptreat_amt)
+expclimp<-subset(expclimp,select=c(site,year,doy,preciptreat_amt,target,agtemp_min,agtemp_max))
+expclimp<- expclimp [apply(expclimp , 1, function(x) all(!is.na(x))),]
+tempmod4<-lmer(agtemp_max~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+tempmod4_min<-lmer(agtemp_min~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+mintemptable<-cbind(round(summary(tempmod4_min)$coeff[,1:2],digits=3), Anova(tempmod4_min, type="III"))
+temptable<-cbind(round(summary(tempmod4)$coeff[,1:2],digits=3), Anova(tempmod4, type="III"))
+alltemptable<-as.data.frame(rbind(mintemptable,temptable))
+mods<-c("min above-ground temp.","","","","max above-ground temp.","","","")
+preds<-c("intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target")
+alltemptable<-cbind(mods,preds,alltemptable)
+rownames(alltemptable)<-NULL
+colnames(alltemptable)<-c("response","predictors","est.","se","$\\chi^{2}$","df","p")
+alltemptable$p[as.numeric(alltemptable$p)<0.001]<-"<0.001"
+alltemptable$df<-as.character("1")
+
+#digits=c(0,0,0,2,2,2,0,2),
+ preciptemp.table<-xtable(alltemptable,caption="\\textbf{Summary of a linear mixed-effects models of how precipitation treatments affects above-ground minimum and maximum temperatures in climate change experiments.} We include data from all studies that manipulated precipitation and measured daily above-ground temperature. Estimates (est.) are the intercept and coefficients for precipitation and warming treatments, as well as their interaction, from the model; se is the standard error for these estimates; p-values represent significance tests for Type III Wald $\\chi^{2}$ tests. Random effects were site (n=4), year of study (n=9 year:site combinations), and doy nested within year (n=2599 doy:year:site combinations), with a random intercept structure. Total number of observations was 70463.",label="table:preciptemp",align=c(
+               "p{0.01\\textwidth}",
+               "|p{0.20\\textwidth}",
+               "|p{0.10\\textwidth}|",
+               "p{0.03\\textwidth}|",
+               "p{0.03\\textwidth}|",
+               "p{0.05\\textwidth}|",
+               "p{0.01\\textwidth}|",
+               "p{0.05\\textwidth}|"))
+print(preciptemp.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,hline.after = c(-1,0,1,4,8),size="\\footnotesize")
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

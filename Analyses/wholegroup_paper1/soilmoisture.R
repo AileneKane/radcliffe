@@ -15,9 +15,12 @@ library(tidyr)
 
 expclim<-read.csv("expclim.csv", header=T)
 treats<-read.csv("treats_detail.csv", header=T)
-#want to compare mean soil moisture in control plots and warmed plots in each study
-#using two types structural controls separately
+#want to compare temperature in plots with and without precipitation treatments. 
 expclim2<-full_join(treats,expclim, by=c("site", "block", "plot","temptreat","preciptreat"), match="first")
+
+#only include studies that manipulate precipitation
+preciptreats<-table(treats$site, treats$preciptreat)
+unique(preciptreats)
 #select only rows that do not manipulated precipitation
 expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
 #get one column for above-ground temperature
