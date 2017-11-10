@@ -167,7 +167,7 @@ site.table <- xtable(sitetable, caption="\\textbf{Climate measurement details fo
         label="tab:methods",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.05\\textwidth}|",
-               "p{0.12\\textwidth}|",
+               "p{0.09\\textwidth}|",
                "p{0.11\\textwidth}|",
                "p{0.11\\textwidth}|",
                "p{0.14\\textwidth}|",
@@ -241,6 +241,7 @@ expclimt[which(expclimt$temptreat=="ambient"),]$target<-0#for ambient controls, 
 dtr_mod<-lmer(dtr~target + (target|site/styear), data=expclimt, REML=FALSE)#this is the model structure supported by deltaAIC
 #summary(dtr_mod2)#reduced dtr -0.3833 per degree of target warming
 #Anova(dtr_mod)
+#confint(dtr_mod)
 #sdtr_mod<-lmer(sdtr~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(sdtr_mod)#reduces dtr -0.01262 per degree of target warming
 
@@ -260,7 +261,7 @@ dtrtable<-cbind(round(summary(dtr_mod)$coeff[,1:2],digits=2))#
 dtrtable<-as.data.frame(cbind(dtrtable,amintable,amaxtable))
  rownames(dtrtable)<-c("intercept","target warming effect")
   stmod.table<-xtable(dtrtable,
-  caption="\\textbf{Summary of linear mixed-effects models of how target warming treatment affects daily temperature range (DTR) for above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum above-ground temperature ($\\chi^{2}$=40.95, df=1, p<0.001) and maximum above-ground temperature ($\\chi^{2}$=4.63, df=1, p=0.03), but not for DTR ($\\chi^{2}$=1.18, df=1, p=0.28).  Random effects were site (n=7) and year nested within site (n=29 year-site combinations), with a random slope and intercept structure. Total number of observations=135,943, and units are \\degree C for all three models.",label="table:dtrtemp",align=c(
+  caption="\\textbf{Summary of linear mixed-effects models of how target warming treatment affects daily temperature range for above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum above-ground temperature ($\\chi^{2}$=40.95, df=1, p<0.001) and maximum above-ground temperature ($\\chi^{2}$=4.63, df=1, p=0.03), but not for DTR ($\\chi^{2}$=1.18, df=1, p=0.28).  Random effects were site (n=7) and year nested within site (n=29 year-site combinations), with a random slope and intercept structure. Total number of observations=135,943, and units are \\degree C for all three models.",label="table:dtrtemp",align=c(
                 "|p{0.19\\textwidth}",
                 "|p{0.05\\textwidth}",
                 "p{0.05\\textwidth}",
@@ -708,6 +709,8 @@ expgdd_bbd$soilmois_janmar_perc<-expgdd_bbd$soilmois_janmar*100
 smbbdmod_agtsm<-lmer(doy~agtmin_rel*soilmois_janmar_perc + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 smbbdmod_agtsm2<-lmer(doy~agtmin_rel+soilmois_janmar_perc  + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 smbbdmod_agt<-lmer(doy~agtmin_rel + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+#get conf int:
+#confint(smbbdmod_agtsm)
 #smbbdmod_agtsm_jm<-lmer(doy~agtmin_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 #smbbdmod_agtxsm_jm<-lmer(doy~agtmax_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 #smbbdmod_agtxsm<-lmer(doy~agtmax_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
