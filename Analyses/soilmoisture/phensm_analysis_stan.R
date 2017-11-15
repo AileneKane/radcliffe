@@ -33,7 +33,7 @@ sp<-rep(seq(1:n_sp), each=obs_sp)#species ids
 mu_a<-150#grand mean mean of bb doy
 sigma_a<-20
 mu_b_temp_sp<--2
-sigma_b_temp_sp<-.2
+sigma_b_temp_sp<-.1
 mu_b_mois_sp<--1
 sigma_b_mois_sp<-.1
 
@@ -73,7 +73,7 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 #try model in lmer
-testm1.lmer<-lmer(y~temp + mois +(temp + mois|sp))
+testm1.lmer<-lmer(y~temp + mois +(temp+mois|sp))
 summary(testm1.lmer)#looks good!
 
 #now fit the model in stan
@@ -86,9 +86,9 @@ summary(testm1)$summary
 launch_shinystan(testm1)#this can be slow
 
 #now try model with interaction:
-mu_b_tm_sp<-.005
-sigma_b_tm_sp<-.0001
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
+mu_b_tm_sp<-.1#need to ask lizzie abou this part- it doesn't get used anywhere
+sigma_b_tm_sp<-.05#need to ask lizzie abou tthis part- it doesn't get used anywhere
 
 ypred<-c()
 for(i in 1:N){
@@ -102,7 +102,7 @@ plot(mois,y)
 hist(mois)
 #try model in lmer
 testm2.lmer<-lmer(y~temp * mois +(temp*mois|sp))
-summary(testm2.lmer)#model fails to converge
+summary(testm2.lmer)#interaction is too small
 
 #now fit the model in stan
 testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
