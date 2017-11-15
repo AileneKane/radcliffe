@@ -49,7 +49,7 @@ summary(sm_mod)
 sm_tempmod<-lmer(soilmois1~target + (1|site/year/doy), REML=FALSE, data=expclim2a)
 summary(sm_tempmod)
 
-#Figurewith all raw points
+#Figure with all raw points
 #quartz(height=5, width=9)
 #par(mfrow=c(1,2))
 #plot(expclim2$target,expclim2$soilmois1,type="p", pch=21,bg="lightgray",col="gray", ylab="Soil moisture", xlab="Target warming (C)", bty="l", ylim=c(0,0.8))
@@ -369,10 +369,10 @@ soilmois_target<-soilmois_target[!soilmois_target$site=="exp06"|soilmois_target$
 
 
 #Now gdd models
-gddmod_bbd<-lmer(cumgdd_air~smjm_cent + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_bbd)
+gddmod_bbd<-lmer(cumgdd_air~soilmois_janmar + (1|genus.species)+ (1|site/year), REML=FALSE, data=expgdd_bbd)
 summary(gddmod_bbd)
 quartz(height=5, width=4.5)
-plot(expgdd_bbd$smjm_cent,expgdd_bbd$cumgdd_air,type="p",bg=cols[as.numeric(as.factor(expgdd_bbd$site))], pch=21,xlab="Soil moisture (Jan-Mar)", ylab="GDDcrit", bty="l")
+plot(expgdd_bbd$soilmois_janmar,expgdd_bbd$cumgdd_air,type="p",bg=cols[as.numeric(as.factor(expgdd_bbd$site))], pch=21,xlab="Soil moisture (Jan-Mar)", ylab="GDDcrit", bty="l")
 abline(a=fixef(gddmod_bbd)[1],b=fixef(gddmod_bbd)[2], lwd=2)
 
 

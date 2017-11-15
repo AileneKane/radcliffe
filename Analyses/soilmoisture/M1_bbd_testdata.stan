@@ -44,7 +44,7 @@ model {
      mu_a_sp ~ normal(0, 200);
      sigma_a_sp ~ normal(0, 10);
 	   b_temp ~ normal(0, 10);
-    b_mois ~ normal(0, 10);
-	  y ~ normal(yhat, sigma_y);
+     b_mois ~ normal(0, 10);
+	   y ~ normal(yhat, sigma_y);
 }
 
