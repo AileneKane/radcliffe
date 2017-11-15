@@ -10,6 +10,7 @@
 \usepackage{natbib}
 \usepackage{gensymb}
 \usepackage{authblk}
+
 \renewcommand{\baselinestretch}{1.8}
 \usepackage{lineno}
 %\usepackage[backend=bibtex]{biblatex}
@@ -124,20 +125,17 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 \affil[j]{wolkovich@fas.harvard.edu}
 
 
-\date{\today}
-\maketitle  %put the fancy title on
-\tableofcontents      %add a table of contents
+%\date{\today}
+%\maketitle  %put the fancy title on
+%\tableofcontents      %add a table of contents
 
 \textbf{Statement of authorship} %Statement of authorship: Contributions by authors should be listed on the title page and will be printed at the end of the manuscript. This statement should be appropriate to the study described in the manuscript and should clarify who designed the study, who performed the research, who provided new methods or materials, and who wrote the manuscript. We encourage concise statements such as “JW performed phylogenetic analyses, MH collected data, performed modeling work and analyzed output data, and PK performed the meta-analysis. MH wrote the first draft of the manuscript, and all authors contributed substantially to revisions.”
-All authors conceived of this manuscript, which was inspired by our discussions at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. A.E. and E.W. conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar. A.E. compiled the datasets; A.E. and C.R. analyzed the data and created the figures; A.E. wrote the manuscript.
+%All authors conceived of this manuscript, which was inspired by our discussions at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. A.E. and E.W. conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar. A.E. compiled the datasets; A.E. and C.R. analyzed the data and created the figures; A.E. wrote the manuscript.
 
 \textbf{Data Accessibility} %Data accessibility statement: The statement must confirm that, should the manuscript be accepted, the data supporting the results will be archived in an appropriate public repository such as Dryad or Figshare and the data DOI will be included at the end of the article.
-<<<<<<< HEAD
-The C3E database will be available at KNB \citep{ettinger2017}, along with all R code from the analyses included in this paper. (Currently, metadata are published there; the full database and R code are available to reviewers upon request.) 
+%The C3E database will be available at KNB \citep{ettinger2017}, along with all R code from the analyses included in this paper. (Currently, metadata are published there; the full database and R code are available to reviewers upon request.) 
 %CRR I recommend putting the code on Github either now or following acceptance; I recently reveiwed a paper where the authors provided the code and it was really helpful (I also discovered some problems with their code that needed to be corrected)
-=======
 The C3E database will be available at KNB \citep{ettinger2017}, along with all R code from the analyses included in this paper. (Currently, metadata are published there; the full database and R code are available to reviewers on github.) 
->>>>>>> parent of d101d7d... EL cover letter
 
 \textbf{Running title} Experimental climate change
 
@@ -145,21 +143,14 @@ The C3E database will be available at KNB \citep{ettinger2017}, along with all R
 
 \textbf{Type of article} Review and Synthesis
 
-<<<<<<< HEAD
 \textbf{Number of words in abstract} 182
-=======
 \textbf{Number of words in abstract} 239
->>>>>>> parent of d101d7d... EL cover letter
 
 \textbf{Number of words in main text} 4270%(excluding abstract, acknowledgements, references, table and figure legends), 
 
 \textbf{Number of references} 84
 
-<<<<<<< HEAD
 \textbf{Number of figures} 6
-=======
-\textbf{Number of figures} 5
->>>>>>> parent of d101d7d... EL cover letter
 
 \textbf{Number of tables} 0 in main text
 
@@ -207,11 +198,9 @@ Here, we investigate the complex ways that climate is altered by active-warming 
 \section* {Climate from Climate Change Experiments (C3E) database}
 \par To investigate how climate change experiments actually change climate, we first identified published, active-warming field experiments. We focused on \textit{in situ} active-warming manipulations because recent analyses indicate that active-warming methods are the most controlled and consistent method available for experimental warming \citep{kimball2005,kimball2008,aronson2009,wolkovich2012}. We do not include passive warming experiments because they have been analyzed extensively already and are known to have distinct issues, including extreme reduction in wind, overheating and great variation in the amount of warming depending on irradiance and snow-depth \citep{marion1997,shaver2000,wolkovich2012,bokhorst2013}.
 
-<<<<<<< HEAD
 \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citet{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database \citep{wolkovich2012}, but restricted our focus to active-warming experiments. Further, because our goal was to tease out variation in climate (including temperature and soil moisture), we focused on warming studies with multiple levels of warming and/or precipitation treatments. These additional restrictions constrained the list to 11 new studies (i.e., published after the STONE database), as well as 6 of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as datasets from two additional sites offered to us over the course of our literature review.  We received data (or it was already publicly available) from authors of 12 of these 19 studies or 63.2\%. STONE received 16.7\% of data directly \citep{wolkovich2012}. The daily temperature and soil moisture data from these 12 experiments were put together into the Climate from Climate Change Experiments (C3E) database (Figure S1), which is available at KNB \citep{ettinger2017}.%could cut more frmo this paragraph
-=======
+
 \par We carried out a full literature review to identify potential active field warming experiments to include in the database. To find these studies, we followed the methods and search terms of \citet{wolkovich2012} for their Synthesis of Timings Observed in iNcrease Experiments (STONE) database \citep{wolkovich2012}, but restricted our focus to active-warming experiments. Further, because our goal was to tease out variation in climate (including temperature and soil moisture), we focused on warming studies with multiple levels of warming and/or precipitation treatments. These additional restrictions constrained the list to 11 new studies (i.e., published after the STONE database), as well as six of the 37 studies in the STONE database. We contacted authors to obtain daily (or sub-daily) climate data and the most accurate phenological data for these 17 sites, as well as datasets from two additional sites offered to us over the course of our literature review.  We received data (or it was already publicly available) from authors of 12 of these 19 studies or 63.2\%. STONE received 16.7\% of data directly \citep{wolkovich2012}. The daily temperature and soil moisture data from these 12 experiments were put together into the Climate from Climate Change Experiments (C3E) database (Figure S1), which is available at KNB \citep{ettinger2017}.%could cut more from this paragraph perhaps?
->>>>>>> parent of d101d7d... EL cover letter
 
 \section* {Complexities in interpreting experimental climate change} 
 Climate change experiments often include detailed monitoring of climate variables at the plot level, yielding large amounts of data, such as daily or hourly temperature and other climate variables, over the course of an experiment. Ecologists, however, are generally interested in the ecological responses (e.g., community dynamics, species' growth, abundance, or phenology), which are collected on much coarser timescales (e.g., weekly or annually). Not surprisingly, then, authors typically provide detailed information on the observed biological responses, but report only the mean change in climate over the course of the experiment and whether it matched their target level of change \citep[e.g.,][]{price1998,rollinson2012,clark2014a,clark2014b}. 
@@ -220,7 +209,6 @@ Climate change experiments often include detailed monitoring of climate variable
 \par Though the published focus is often on shifts in mean climate variables, imposed climate manipulations actually result in much more complex shifts. The magnitude of change in these manipulations varies in time and space, and the presence of experimental equipment often unintentionally alters environmental conditions. These factors, discussed below, challenge our interpretation of how experimental warming studies forecast effects of climate change on organisms and ecosystems.
 
 \subsection* {Effects on local climate vary over time and space}
-<<<<<<< HEAD
 % EMW: I don't live the (non-significantly) here -- could you just give mean +/- SE in the () instead? %CRR: agreed.  If non-signficant perhaps don't mention it or say why it's ecologically significant even if it doesn't hit the magic p-value
 Reporting only the mean temperature difference across the duration of the study hides potentially important variations in daily, seasonal, or annual temperatures among treatments (Figure S1). Using the C3E database, we found that active warming (non-significantly) reduces above-ground daily temperature range (Table S3, see also Table S2, which details the different methods used to measure temperature). Active warming decreased above-ground daily temperature range by differentially affecting maximum and minimum temperatures: warming increased daily minima by 0.84\degree C per \degree C of warming target, but only increased daily maxima by 0.50\degree C per \degree C of target warming (Table S3). %This may be similar to what is projected for parts of the world, since DTRs are expected to change; however, shifts in the DTR will likely vary spatially, as some regions have experienced greater daytime warming than nighttime warming, whereas others have experienced the opposite \citep{ipcc2013}. 
 %AM: This last sentence doesn’t add much because it is vague.  How about replacing it with a statement about how soil DTRs changed?
@@ -245,7 +233,6 @@ Experimental structures themselves can alter temperature and other important bio
 \par To investigate the magnitude of infrastructure effects, we compared temperature and soil moisture data from five active warming studies at two sites: Duke Forest and Harvard Forest \citep{farnsworth1995,clark2014b, marchin2015, pelini2011}. These were the only studies in the C3E database that monitored climate in two types of control plots: structural controls (i.e., `shams' or `disturbance controls,' which contained all the warming infrastructure, such as soil cables or infrared heating units but with no heat applied) and ambient controls with no infrastructure added. Other studies monitored environmental conditions in only structural controls (n=3) or only ambient controls (n=4).
 
 \par We found that experimental structures altered above-ground and soil temperatures in opposing ways: above-ground temperatures were higher in the structural controls than in ambient controls, whereas soil temperatures were lower in structural controls compared with ambient controls (Figure \ref{fig:shamamb}a-d). This general pattern was consistent across different temperature models (mean, minimum, and maximum temperatures), although the magnitude varied among seasons, studies, and years (Figure \ref{fig:shamamb}a-d, Tables S6-S10). We also found that experimental infrastructure decreased soil moisture relative to ambient conditions across all seasons, studies, years (Figure \ref{fig:shamamb}e, Tables S8, S11). 
->>>>>>> parent of d101d7d... EL cover letter
 
 \par We observed strong seasonal and annual variations in experimental warming effects (Figures \ref{fig:effwarm}, \ref{fig:blockyear}, Table S4). %Yann: is there a pattern, I mean is the deviation from the target higher during summer or spring than during winter for example? %CRR or maybe highlight that these effects weren't consistent across experiments.  It looks like we were generally on target winter & early spring, but then below target for summer, and then it recovers.  Should we note somehow which of these experimetns were soil versus aboveground warming?  Soil warming should have more consistent effect that AG. 
 These may be driven by interactions between warming treatments and daily, seasonal, and annual weather patterns, since the magnitude of warming can vary as weather conditions change.  Both infrared heaters and soil cables fail to achieve the target temperature increases during rainstorms \citep{peterjohn1993,hoeppner2012} and with windy conditions \citep{kimball2005,kimball2008}. In addition, treatments are often applied inconsistently within or across years. Heat applications are frequently shut off during winter months, and some heating methods, even if left on throughout the year, are not capable of applying constant warming year-round \citep[e.g.][]{clark2014a,clark2014b,hagedorn2010}. %Yann: Shall we say that shutting off the cables during winter may not affect microbial communities fro example as it would with a constant warming applied throughout the year...
@@ -272,7 +259,7 @@ Climate change experiments often seek to manipulate temperature or precipitation
 %perhaps look at ambient controls- relationship between air temperature and soil temperature or changes in soil moisture over time with warming.
 %Yann:just something do we explicitly say somewhere that we are not looking at climate chamber experiments that can really control temperature and humidity? (so like ex situ experiments using saplings/seedlings)
 %CRR: I *think* one of the Kimball papers makes a point of saying the precipitation treatments are needed and those should most closely resemble what climate warming would look like rather than warming + precip.
-=======
+
 \par Most warming experiments calculate focal response variables relative to ambient controls \citep [e.g.,][]{price1998,dunne2003,cleland2006,morin2010,marchin2015}, which our analyses suggest will not properly account for infrastructure effects. Further, results from studies using only structural controls \citep [e.g.,][]{sherry2007,hoeppner2012, rollinson2012}, cannot robustly be applied outside of an experimental context, as---without ambient controls---their inference is limited to only the environment with structural controls. Though a major additional effort, our results suggest that studies aiming to predict or forecast effects must employ both structural and ambient controls. This will allow for documentation and analysis of infrastructure effects on abiotic and biotic responses. Separating infrastructure artifacts from warming effects is critical if we wish to apply findings to forecasts outside of an experimental context. 
 \section* {Secondary and feedback effects of climate change manipulations} 
 Climate change experiments often seek to manipulate temperature or precipitation separately as well as interactively, but manipulating either of these variables in isolation is difficult.  Treatments involving precipitation additions typically reduce temperatures in climate change manipulations \citep{sherry2007,rollinson2012,mcdaniel2014}. For example, McDaniel et al. (2014) observed that a 20\% increase in precipitation reduced mean hourly temperatures by 0.3\degree C over the course of their two-year experiment. In the C3E database, there are four experiments that manipulated both temperature and precipitation, and provided daily above-ground temperature data. We found that increasing the amount of added precipitation reduced both daily minimum and maximum above-ground temperatures, at rates of 0.007 and 0.020 \degree C, respectively, per percent increase in added precipitation (Table S12). This is because increasing soil moisture (an effect of precipitation additions) typically shifts the surface energy balance to favor latent (i.e., evapotranspiration) over sensible energy fluxes, reducing heating of the air overlying the soils. 
@@ -295,9 +282,7 @@ Climate change experiments often seek to manipulate temperature or precipitation
 
 <<<<<<< HEAD
 \par We tested how using measured plot-level climate variables, instead of target warming, alters estimates of temperature sensitivity with data in the C3E database. Five study sites from C3E have above-ground temperature and soil moisture, as well as phenology data (day of year of budburst). We first fit a model of target warming only to these data, accounting for non-independence due to site and year with random effects (Table S15, solid black line in Figure \ref{fig:phen}). This model estimates temperature sensitivity of budburst to be -2.01 days/\degree C (i.e., budburst shifts earlier by two days per \degree C of warming). We then fit a model that included mean daily minimum above-ground temperature, mean winter (January-March) soil moisture, and their interaction as explanatory variables (with the same random effects structure, Table S15; see Supplemental Materials for details). The slope for temperature in this temperature-soil moisture model can be directly compared to the slope for target warming in the previous model because the units are the same (change in budburst in days/\degree C). The temperature-soil moisture model had improved model fit compared to the target warming model (Table S16), and the slope tripled in magnitude: estimated temperature sensitivity of budburst was -6.22 days/\degree C (Table S15). In addition, this model estimates a significant negative effect of soil moisture on budburst (), as expected if reducing moisture delays budburst day of year (Table S15, Figure \ref{fig:phen}).
-=======
 \par We tested how using measured plot-level climate variables, instead of target warming, alters estimates of temperature sensitivity with data in the C3E database. Five study sites from C3E have above-ground temperature and soil moisture, as well as phenology data (day of year of budburst). We first fit a model of target warming only to these data, accounting for non-independence due to site and year with random effects (Table S15, solid black line in Figure \ref{fig:phen}). This model estimates temperature sensitivity of budburst to be -2.01 days/\degree C (i.e., budburst shifts earlier by two days per \degree C of warming). We then fit a model that included mean daily minimum above-ground temperature, mean winter (January-March) soil moisture, and their interaction as explanatory variables (with the same random effects structure, Table S15; see Supplemental Materials for details). The slope for temperature in this temperature-soil moisture model can be directly compared to the slope for target warming in the previous model because the units are the same (change in budburst in days/\degree C). The temperature-soil moisture model had improved model fit compared to the target warming model (Table S16), and the slope tripled in magnitude: estimated temperature sensitivity of budburst was -6.22 days/\degree C (95\% CI:-7.034,-5.41, Table S15). In addition, this model estimated that soil moisture has a significant negative effect on budburst of -1.35 days/\% VWC (95\% CI: -1.58,-1.13), as expected if reducing moisture delays budburst (Table S15, Figure \ref{fig:phen}).
->>>>>>> parent of d101d7d... EL cover letter
 
 
 \par The increase in estimated temperature sensitivity with measured (rather than target) temperature has two major causes. First, target warming generally exceeds the measured above-ground temperature differences between treatment and control plots (Figure \ref{fig:blockyear}). Second, experimental warming dries out the soil in addition to increasing temperatures, and both climate variables affect the timing of budburst. %Yann: among other traits (like growth rate)
