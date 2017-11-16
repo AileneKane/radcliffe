@@ -59,7 +59,7 @@
 For our literature review, we searched the Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. We removed all passive warming studies from the list, and contacted authors for daily data. The resulting database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure S1). 
 
 \section* {Details of Statistical Analyses and Results}
-For all analyses, we use mixed-effects models implemented using the lme4 package in R, version 3.2.4 \citep{bates2015,rcoreteam2016}. Mixed-effects models, also called multi-level or hierarchical models, can account for structured data that violate the independence assumption of traditional linear regression \citep{gelman2007}. In our analyses, we use levels/groupings of experimental site, year, and day of year (doy) to account for this mutual dependence among datapoints. To test for significance of fixed effects in our models, we use Type II tests for models including only main effects and Type III tests for models including interactions, as well as main effects. 
+For all analyses, we use mixed-effects models implemented using the lme4 package in R, version 3.2.4 \citep{bates2015,rcoreteam2016}. Mixed-effects models, also called multi-level or hierarchical models, can account for structured data that violate the independence assumption of traditional linear regression \citep{gelman2007}. In our analyses, we use levels/groupings of experimental site, year, and day of year (doy) to account for this mutual dependence among data points. To test for significance of fixed effects in our models, we use Type II tests for models including only main effects and Type III tests for models including interactions, as well as main effects. 
 \subsection* {Analysis of effects of time and space on local experimental climate}
 To test how treatment effects vary spatially (i.e., among blocks within a study) and temporally (i.e., among years within a study), we used data from the four studies in the C3E database that used blocked designs. We fit linear mixed-effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as response predictors (Figure 3 in the main text). For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, Table \ref{table:blocks_time}). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, Table \ref{table:blocks_space}). Both of these models excluded data from plots with precipitation treatments. 
 \subsection* {Analysis of effects of infrastructure on local experimental climate}
@@ -131,10 +131,8 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_
 expsites2 <- read.csv("../../Analyses/expsiteinfo.csv", header=TRUE)
 expsites2$Target<-paste(expsites2$temptreat_1,expsites2$temptreat_2,expsites2$temptreat_3, sep=", ")
 expsites2$Target[expsites2$Target=="1.5, 2, 2.5"]<-"1.5-5.5"
-expsites2$Target[grep("NA, NA",expsites2$Target)]<-substr(expsites2$Target[grep("NA, NA",expsites2$Target)],1,3)
-expsites2$Target[grep(", N",expsites2$Target)]<-substr(expsites2$Target[grep(", N",expsites2$Target)],1,5)
-expsites2$Target[grep(", ",expsites2$Target)]<-substr(expsites2$Target[grep(", ",expsites2$Target)],1,3)
-expsites2$Target[grep(", ",expsites2$Target)]<-substr(expsites2$Target[grep(", ",expsites2$Target)],1,1)
+expsites2$Target[grep("NA, NA",expsites2$Target)]<-substr(expsites2$Target[grep("NA, NA",expsites2$Target)],1,nchar(expsites2$Target[grep("NA, NA",expsites2$Target)])-8)
+expsites2$Target[grep(", NA",expsites2$Target)]<-substr(expsites2$Target[grep(", NA",expsites2$Target)],1,nchar(expsites2$Target[grep(", NA",expsites2$Target)])-4)
 expsites2$ptreat<-paste(expsites2$preciptreat_1,expsites2$preciptreat_.1,sep=", ")
 expsites2$ptreat[expsites2$ptreat=="NA, NA"]<-" "
 expsites2$ptreat[expsites2$ptreat=="NA, 70"]<-"70, 100"
@@ -263,7 +261,7 @@ dtrtable<-cbind(round(summary(dtr_mod)$coeff[,1:2],digits=2))#
 dtrtable<-as.data.frame(cbind(dtrtable,amintable,amaxtable))
  rownames(dtrtable)<-c("intercept","target warming effect")
   stmod.table<-xtable(dtrtable,
-  caption="\\textbf{Summary of linear mixed-effects models of how target warming treatment affects daily temperature range for above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum above-ground temperature ($\\chi^{2}$=40.95, df=1, p<0.001) and maximum above-ground temperature ($\\chi^{2}$=4.63, df=1, p=0.03), but not for DTR ($\\chi^{2}$=1.18, df=1, p=0.28).  Random effects were site (n=7) and year nested within site (n=29 year-site combinations), with a random slope and intercept structure. Total number of observations=135,943, and units are \\degree C for all three models.",label="table:dtrtemp",align=c(
+  caption="\\textbf{Summary of linear mixed-effects models of how target warming treatment affects daily temperature range for above-ground temperatures, and for mimumim and maximum above-ground temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\\chi^{2}$ tests of fixed effects for minimum above-ground temperature ($\\chi^{2}$=40.95, df=1, p<0.001) and maximum above-ground temperature ($\\chi^{2}$=4.63, df=1, p=0.03), but not for daily temperature range (DTR) ($\\chi^{2}$=1.18, df=1, p=0.28).  Random effects were site (n=7) and year nested within site (n=29 year-site combinations), with a random slope and intercept structure. Total number of observations=135,943, and units are \\degree C for all three models.",label="table:dtrtemp",align=c(
                 "|p{0.19\\textwidth}",
                 "|p{0.05\\textwidth}",
                 "p{0.05\\textwidth}",
@@ -751,7 +749,7 @@ print(aic.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement
 \clearpage
 
 \clearpage
-\section* {Supplmenetal Figures}
+\section* {Supplemental Figures}
 \begin{figure}[p]
 \centering
 \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/maps/RadcliffeLocations_Experiments_Open.png} 
@@ -762,7 +760,7 @@ print(aic.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement
 \begin{figure}[p]
 \centering
 \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/targetvsobs_stduration.pdf} 
-\caption{\textbf{Mean warming across the study duration.} Reporting only the mean temperature difference across the duration of the study, as is commonly done in publications of climate change experiments, hides potentially important variations in daily, seasonal, and annual temperatures among treatments. The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Compare to Figure 2 in the main text. Note that exp01 did not specify explicit target temperatures for intermediate warming treatments.} 
+\caption{\textbf{Mean warming across the study duration.} Reporting only the mean temperature difference across the duration of the study, as is commonly done in publications of climate change experiments, hides potentially important variations in daily, seasonal, and annual temperatures among treatments. The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Compare to Figure 2 in the main text.} %jeff says: Note that exp01 did not specify explicit target temperatures for intermediate warming treatments.
  \label{fig:targetvsobs}
  \end{figure}
 

@@ -99,7 +99,7 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 
 \affil[12]{Swiss Federal Institute for Forest, Snow and Landscape Research WSL, Neuch\^atel, Switzerland}
 
-\affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 2204 Flagler Place NW, Washington, Distric of Columbia, 20001,USA}
+\affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 2204 Flagler Place NW, Washington, District of Columbia, 20001,USA}
 
 \affil[b]{isabelle.chuine@cefe.cnrs.fr}
 
@@ -109,7 +109,7 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 
 \affil[e]{aellison@fas.harvard.edu}
 
-\affil[f]{mjohnston@g.harvard.edu,}
+\affil[f]{mjohnston@g.harvard.edu}
 
 \affil[g]{anne.panetta@colorado.edu}
 
@@ -132,7 +132,7 @@ The C3E database will be available at KNB \citep{ettinger2017}, along with all R
 
 \textbf{Running title} Experimental climate change
 
-\textbf{Key words} global warming, warming experiment, microclimate, soil moisture, spring phenology, budburst
+\textbf{Key words} global warming, warming experiment, microclimate, soil moisture, spring phenology, budburst, direct and indirect effects, structural control, hidden treatment, active warming, target temperature, feedback
 
 \textbf{Type of article} Review and Synthesis
 
@@ -140,7 +140,7 @@ The C3E database will be available at KNB \citep{ettinger2017}, along with all R
 
 \textbf{Number of words in main text} 4270%(excluding abstract, acknowledgements, references, table and figure legends), 
 
-\textbf{Number of references} 84
+\textbf{Number of references} 86
 
 \textbf{Number of figures} 5
 
@@ -217,7 +217,7 @@ Climate change experiments often seek to manipulate temperature or precipitation
 %CRR I don't know where this fits in, maybe as a conclusions, but could we say that analyzing mean effective warming is okay if you're making sure things line up temporally?  For example, if you're looking at the response of a physiological process that occurs over the entire growing season (e.g. NPP), then it could in theory be okay to look at the single mean for that time period, but you'd want to leave out the winter.  However, if we're interested in say phenology, then we really need to think about how that effect of warming changes through time?  (I'm thinking about how with tree rings where the growth is a phenomena observed at an annual timescale, you typically need some annual-scale predictor, but if we're looking at photosynthetic response in a particular time frame, we inherently need higher res predictors.)
 \section* {Ecological implications}
 
-\par We have highlighted a suite of factors that complicate interpretation of warming experiments. These largely unintended alterations, analagous to the "hidden treatments" described by \citet{huston1997} in biodiversity experiments, are likely to have biological implications for many of the responses studied in warming experiments (e.g., Figure \ref{fig:biolimp}). Interpretation of experimental climate change effects on biological responses may be misleading because the intended climate treatments (i.e., categorical comparisons or target warming levels) are generally used as explanatory variables in analyses. The interpretation is likely to be altered by using fine-scale, measured climate as explanatory variables. Detailed examination of multiple microclimate variables (e.g., plot-level temperature and soil moisture) will allow a more complete understanding of the indirect, as well as direct, effects of treatments on abiotic and biotic drivers of focal responses.
+\par We have highlighted a suite of factors that complicate interpretation of warming experiments. These largely unintended alterations, analogous to the "hidden treatments" described by \citet{huston1997} in biodiversity experiments, are likely to have biological implications for many of the responses studied in warming experiments (e.g., Figure \ref{fig:biolimp}). Interpretation of experimental climate change effects on biological responses may be misleading because the intended climate treatments (i.e., categorical comparisons or target warming levels) are generally used as explanatory variables in analyses. The interpretation is likely to be altered by using fine-scale, measured climate as explanatory variables. Detailed examination of multiple microclimate variables (e.g., plot-level temperature and soil moisture) will allow a more complete understanding of the indirect, as well as direct, effects of treatments on abiotic and biotic drivers of focal responses.
 
 \par Biological responses may be muted  (Figure \ref{fig:biolimp}b) or exaggerated  (Figure \ref{fig:biolimp}c) in experiments when direct and indirect effects of climate manipulations interact. Plant phenology provides one example of a biological response that appears to be muted in experiments versus observational studies (Figure \ref{fig:biolimp}b). This is because phenology has a complex dependence on temperature and water availability \citep[as well as other factors,][]{davis2015}. Although phenology is generally advanced by higher spring temperatures, it can also be delayed by increased winter temperatures (which delay endodormancy break). In addition, reduced water availability during the spring can slow cell elongation and delay budburst \citep{penuelas2004,ourcival2011,craine2012,matthews2016}. Effects of these different drivers may be responsible for the observed discrepancy between observational and experimental phenological responses to warming \citep{wolkovich2012}. 
 
