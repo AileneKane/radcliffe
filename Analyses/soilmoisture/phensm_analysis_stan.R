@@ -85,8 +85,8 @@ head(summary(testm1)$summary)
 summary(testm1)$summary
 launch_shinystan(testm1)#this can be slow
 
-#M2: now try model with interaction:
-mu_b_tm_sp<-.1
+#M2: now try model with interaction AND with slope:
+mu_b_tm_sp<--.1
 sigma_b_tm_sp<-.005
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
 

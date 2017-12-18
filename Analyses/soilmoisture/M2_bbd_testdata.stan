@@ -2,7 +2,7 @@
 // fake data
 
 // 2 level model for budburst day (or other phenophase)  as a function of above-ground temperature, soil moisture, and their interaction
-// Levels: just Species for now and just intercept
+// Levels: just Species for now
 
 data {
 	int<lower=1> N;
@@ -34,10 +34,10 @@ parameters {
 transformed parameters {
    real yhat[N];
        	for(i in 1:N){
-            yhat[i] = a_sp[sp[i]] + // indexed with species
-		b_temp * temp[sp[i]] + 
-	      	b_mois * mois[i] +
-                b_tm * inter_tm[sp[i]];
+           yhat[i] = a_sp[sp[i]] + // indexed with species
+		b_temp[sp[i]] * temp[i] + 
+	      	b_mois[sp[i]] * mois[i] +
+                b_tm[sp[i]] * inter_tm[i];
 			     	}
 	}
 
