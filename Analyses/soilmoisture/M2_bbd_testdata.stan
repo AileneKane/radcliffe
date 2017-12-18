@@ -35,9 +35,9 @@ transformed parameters {
    real yhat[N];
        	for(i in 1:N){
             yhat[i] = a_sp[sp[i]] + // indexed with species
-		b_temp * temp[i] + 
+		b_temp * temp[sp[i]] + 
 	      	b_mois * mois[i] +
-                b_tm * inter_tm[i];
+                b_tm * inter_tm[sp[i]];
 			     	}
 	}
 
