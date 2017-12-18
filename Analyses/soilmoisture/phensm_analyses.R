@@ -14,7 +14,6 @@ library(RColorBrewer)
 library(lme4)
 library(car)
 library(dplyr)
-library(AICcmodavg)
 #update.packages()
 
 #Read in experimental climate and phenology data
@@ -27,12 +26,13 @@ treats<-read.csv("Analyses/treats_detail.csv", header=T)
 source("analyses/source/standard_mergesandwrangling.R")
 
 #summarize climate data by plot (annual and seasonal temp, soil mois) and merge in with expgdd file
-source("analyses/source/climsum_byplot.R")
+source("analyses/soilmoisture/climsum_byplot.R")
 
 expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
 expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
 expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1))
 expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+table(expclim2a$site,expclim2a$year)
 #First, 
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 

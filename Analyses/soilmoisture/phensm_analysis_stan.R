@@ -31,7 +31,7 @@ sp<-rep(seq(1:n_sp), each=obs_sp)#species ids
 
 #set up distribution parameters
 mu_a<-150#grand mean mean of bb doy
-sigma_a<-20
+sigma_a<-5
 mu_b_temp_sp<--2
 sigma_b_temp_sp<-.1
 mu_b_mois_sp<--1
@@ -87,7 +87,7 @@ launch_shinystan(testm1)#this can be slow
 
 #M2: now try model with interaction:
 mu_b_tm_sp<-.1
-sigma_b_tm_sp<-.05
+sigma_b_tm_sp<-.005
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
 
 ypred<-c()
@@ -102,11 +102,11 @@ plot(mois,y)
 hist(mois)
 #try model in lmer
 testm2.lmer<-lmer(y~temp * mois +(temp*mois|sp))#fails to converge
-summary(testm2.lmer)#interaction is too small
+summary(testm2.lmer)#parameters actually look ok though...
 
 #now fit the model in stan
 testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
-              iter = 2500, warmup=1500) # 
+              iter = 4000) # , warmup=1500, get warning about maximum treedepth when, , control=list(max_treedepth=15)
 
 
 
@@ -140,10 +140,10 @@ plot(mois,y)
 hist(mois)
 #try model in lmer
 testm3.lmer<-lmer(y~temp * mois +(temp*mois|sp)+(1|site))#fails to converge
-summary(testm3.lmer)#interaction is too small
+summary(testm3.lmer)#fixed effects look pretty good
 
 #now fit the model in stan
-testm3 = stan('Analyses/soilmoisture/M3_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N),
+testm3 = stan('Analyses/soilmoisture/M3_bbd.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N),
               iter = 2500, warmup=1500) # 
 
 
