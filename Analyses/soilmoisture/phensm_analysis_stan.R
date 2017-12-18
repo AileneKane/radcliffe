@@ -85,14 +85,14 @@ head(summary(testm1)$summary)
 summary(testm1)$summary
 launch_shinystan(testm1)#this can be slow
 
-#M2: now try model with interaction AND with slope:
+#M2: now try model with interaction
 mu_b_tm_sp<--.1
 sigma_b_tm_sp<-.005
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
 
 ypred<-c()
 for(i in 1:N){
-  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
+  ypred[i] = a_sp[sp[i]] + b_temp[i] * temp[i] + b_mois[i] * mois[i]+ b_tm[i]*temp[i] * mois[i]
 }
 
 y<-rnorm(N,ypred,sigma_y)
@@ -101,14 +101,12 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 #try model in lmer
-testm2.lmer<-lmer(y~temp * mois +(temp*mois|sp))#fails to converge
-summary(testm2.lmer)#parameters actually look ok though...
+testm2.lmer<-lmer(y~temp * mois +(1|sp))#fails to converge
+summary(testm2.lmer)
 
 #now fit the model in stan
 testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
-              iter = 4000) # , warmup=1500, get warning about maximum treedepth when, , control=list(max_treedepth=15)
-
-
+              iter = 2500) # , warmup=1500, get warning about maximum treedepth when, , control=list(max_treedepth=15)
 
 beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","b_tm","sigma_y"))
 mcmc_intervals(beta_draws)
@@ -118,7 +116,8 @@ launch_shinystan(testm2)#this can be slow
 #also, interaction is too small-ask lizzie about this...
 
 
-#M3: With site added as intercept only random effect
+
+#M4: With site added as intercept only random effect
 n_site=10#number of sites
 obs_site=N/n_site#number of obs (plots, years) per site (N is defined above)
 sigma_a_site<-5

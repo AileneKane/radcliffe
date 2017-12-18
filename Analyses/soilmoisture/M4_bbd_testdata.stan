@@ -48,7 +48,7 @@ transformed parameters {
             yhat[i] = a_sp[sp[i]] + // indexed with species
 		b_temp[sp[i]] * temp[i] + 
 	      	b_mois[sp[i]] * mois[i] +
-                b_tm * inter_tm[i];
+                b_tm[sp[i]] * inter_tm[i];
 			     	}
 	}
 
