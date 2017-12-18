@@ -2,7 +2,7 @@
 // Started by ailene September 2017
 
 // 2 level model for budburst day (or other phenophase)  as a function of above-ground temperature, soil moisture, and their interaction
-// Levels: just Species for now
+// Levels: just species for now
 
 data {
 	int<lower=1> N;

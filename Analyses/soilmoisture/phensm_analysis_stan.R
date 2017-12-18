@@ -85,10 +85,10 @@ head(summary(testm1)$summary)
 summary(testm1)$summary
 launch_shinystan(testm1)#this can be slow
 
-#now try model with interaction:
+#M2: now try model with interaction:
+mu_b_tm_sp<-.1
+sigma_b_tm_sp<-.05
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
-mu_b_tm_sp<-.1#need to ask lizzie abou this part- it doesn't get used anywhere
-sigma_b_tm_sp<-.05#need to ask lizzie abou tthis part- it doesn't get used anywhere
 
 ypred<-c()
 for(i in 1:N){
@@ -101,7 +101,7 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 #try model in lmer
-testm2.lmer<-lmer(y~temp * mois +(temp*mois|sp))
+testm2.lmer<-lmer(y~temp * mois +(temp*mois|sp))#fails to converge
 summary(testm2.lmer)#interaction is too small
 
 #now fit the model in stan
@@ -110,10 +110,50 @@ testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,
 
 
 
-beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","mu_b_tm_sp","sigma_y"))
+beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","b_tm","sigma_y"))
 mcmc_intervals(beta_draws)
 head(summary(testm2)$summary)
 launch_shinystan(testm2)#this can be slow
+#warning about tree depth- ask lizzie what to do? 
+#also, interaction is too small-ask lizzie about this...
+
+
+#M3: With site added as intercept only random effect
+n_site=10#number of sites
+obs_site=N/n_site#number of obs (plots, years) per site (N is defined above)
+sigma_a_site<-5
+a_site<-as.integer(rnorm(n_site,mu_a,sigma_a_site))#site specific day of year for bb
+#is this right? use grand mean again (as for species? just variance is different)
+#not sure if more variance among site or species makes more sense...i made site-level variance smaller for now
+
+site<-rep(seq(1:n_site), each=obs_site)#site ids
+
+ypred<-c()
+for(i in 1:N){
+  ypred[i] = a_site[site[i]] + a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
+}
+
+y<-rnorm(N,ypred,sigma_y)
+#check that test data look ok
+plot(temp,y)
+plot(mois,y)
+hist(mois)
+#try model in lmer
+testm3.lmer<-lmer(y~temp * mois +(temp*mois|sp)+(1|site))#fails to converge
+summary(testm3.lmer)#interaction is too small
+
+#now fit the model in stan
+testm3 = stan('Analyses/soilmoisture/M3_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N),
+              iter = 2500, warmup=1500) # 
+
+
+
+beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","b_tm","sigma_y"))
+mcmc_intervals(beta_draws)
+head(summary(testm2)$summary)
+launch_shinystan(testm2)#this can be slow
+#warning about tree depth- ask lizzie what to do? 
+#also, interaction is too small-ask lizzie about this...
 
 
 ###Now with the data
