@@ -8,19 +8,19 @@
 
 \noindent For this we need two equations where we evaluate the effects of experimenal temperature ($eT$) and experimental preciptation ($eP$) treatments on soil moisture and temperature. We're hoping to nest year within site on the intercept and slopes:
 \begin{equation}
-y_{i}=\alpha_{site[year[i]]}+ \alpha_{site[i]}+\beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}
+y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}
 \end{equation}
 
 \begin{equation}
-\alpha_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\alpha_{site[year[doy]]}\sim N(\mu_{site[year]}, \sigma_{site[year]})
 \end{equation}
 
 \begin{equation}
-\mu_{sy} \sim N(\mu_{y}, \sigma_{y})
+\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
 \end{equation}
 
 \begin{equation}
-\alpha_{site} \sim N(\mu_{site}, \sigma_{site})
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
 \end{equation}
 
 \begin{equation}
@@ -39,17 +39,18 @@ y_{i}=\alpha_{site[year[i]]}+ \alpha_{site[i]}+\beta_{1 site[i]}eT_i+\beta_{2 si
 \noindent Alternatively we could consider using `site-years' where we combine the site and year coding into one variable:
 
 \begin{equation}
-y_{i}=\alpha_{siteyear[i]}+ \alpha_{sp[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}P_i+\beta_{3 sp[i]}T_iP_i+\epsilon_{i}
+y_{i}=\alpha_{siteyear[doy[i]]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}P_i+\beta_{3 sp[i]}T_iP_i+\epsilon_{i}
 \end{equation}
 
 \begin{equation}
 \alpha_{siteyear} \sim N(\mu_{sy}, \sigma_{sy})
 \end{equation}
+... need to finish this!
 \vspace{2ex}\\
 
-\noindent {\bf Question 2:} Does these effects differ from non-experimental data?\\
+\noindent {\bf Question 2:} Do these effects differ from non-experimental data?\\
 
-\noindent  So right now we have data from Duke Forest (but probably just soil moisture) and from Harvard Forest (soil moisture and O'Keefe data).\\
+\noindent  So right now we have data from Duke Forest (but probably just soil moisture) and from Harvard Forest (soil moisture and O'Keefe phenology data).\\
 
 \noindent A few things to do here ...
 \begin{enumerate}
@@ -58,7 +59,7 @@ y_{i}=\alpha_{siteyear[i]}+ \alpha_{sp[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}P_i
 \end{enumerate}
 
 \begin{equation}
-y_{i}=\alpha_{doy[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}P_i+\beta_{3 sp[i]}T_iP_i+\epsilon_{i}
+y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]}T_iP_i+\epsilon_{i}
 \end{equation}
 
 \begin{equation}
@@ -72,6 +73,14 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}P_i+\beta_{3 sp[i]}T_iP_
 
 \begin{equation}
 y_{i}=\alpha_{site[year[i]]}+ \alpha_{sp[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}S_i+\beta_{3 sp[i]}T_iS_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\end{equation}
+
+\begin{equation}
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
 \end{equation}
 
 \begin{equation}
@@ -91,7 +100,7 @@ y_{i}=\alpha_{site[year[i]]}+ \alpha_{sp[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}S
 \end{equation}
 \vspace{2ex}\\
 
-\noindent We can then combine equations from Question 1 (which predict MAT and soil moisture on an annual scale, we hope) with equations from Questions 3 (at the annual scale) to answer: how much does 1 degree change in target temperature ($eT$) affect phenology, if this were the only effect of the experiment? Similarly, how much does 50\% change in precipitation ($eP$) affect phenology, if this were the only effect of the experiment? And how big a change does each make acknowledging that they both change moisture and temperature together? We can do this by plugging in different values of $eT$ (e.g., all 1 C, then try with all 2 C) and $eP$ to caculate different outcomes of moisture and temperature which we can evaluate in the eqations in Question 3 to assess changes in phenology. 
+\noindent We can then combine equations from Question 1 (which predict MAT and soil moisture on an annual scale, we hope) with equations from Questions 3 (at the annual scale) to answer: how much does 1 degree change in target temperature ($eT$) affect phenology, if this were the only effect of the experiment? Similarly, how much does 50\% change in precipitation ($eP$) affect phenology, if this were the only effect of the experiment? And how big a change does each make acknowledging that they both change moisture and temperature together? We can do this by plugging in different values of $eT$ (e.g., all 1 C, then try with all 2 C) and $eP$ to caculate different outcomes of moisture and temperature which we can evaluate in the eqations in Question 3 to assess changes in phenology. \\
 
 \noindent For notation questions (I may have our notation wrong), see also: 12.5 in Gelman \& Hill, pages 262-265.
 
