@@ -44,20 +44,17 @@ b_temp<-rnorm(n_sp,mu_b_temp_sp,sigma_b_temp_sp)#species specific effects of tem
 b_mois<-rnorm(n_sp,mu_b_mois_sp,sigma_b_mois_sp)#species specific effects of mois
 
 #create explanatory variables
+#try using centered predictors
 temp<-rep(NA, N)
 for(i in 1:n_sp){
-  temp[which(sp==i)]<-rnorm(obs_sp,25,5)#right now this is set up for each species but it doesn't need to be right?
+  temp[which(sp==i)]<-rnorm(obs_sp,0,1)#right now this is set up for each species but it doesn't need to be right?
 }
 mois<-rep(NA, N)
 for(i in 1:n_sp){
-  mois[which(sp==i)]<-rnorm(obs_sp,20,1)
+  mois[which(sp==i)]<-rnorm(obs_sp,0,2)#we tried having the mean at ~25 for temp and mois, but rhat was bad and model had trouble... mean=5 was ok...
 }
 
-#temp<-rep(rnorm(obs_sp,25,5), n_sp)
-#mois<-rep(rnorm(obs_sp,.2,.1),n_sp)
 
-#b_temp<--2#effect of temp
-#b_mois<-2#effect of soil moisture
 #model without interaction
 sigma_y<-.5
 
@@ -73,10 +70,13 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 #try model in lmer
-testm1.lmer<-lmer(y~temp + mois +(temp+mois|sp))
+testm1.lmer<-lmer(y~temp + mois +(1|sp))
 summary(testm1.lmer)#looks good!
 
 #now fit the model in stan
+#testdan = stan('Analyses/soilmoisture/lday_site_sp_chill_inter_poola.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
+#              iter = 2500) # 
+
 testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
               iter = 2500, warmup=1500) # 
 beta_draws<-as.matrix(testm1,pars=c("b_temp","b_mois","sigma_y"))
@@ -85,14 +85,14 @@ head(summary(testm1)$summary)
 summary(testm1)$summary
 launch_shinystan(testm1)#this can be slow
 
-#M2: now try model with interaction
+#M2: model with interaction
 mu_b_tm_sp<--.1
 sigma_b_tm_sp<-.005
 b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
 
 ypred<-c()
 for(i in 1:N){
-  ypred[i] = a_sp[sp[i]] + b_temp[i] * temp[i] + b_mois[i] * mois[i]+ b_tm[i]*temp[i] * mois[i]
+  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
 }
 
 y<-rnorm(N,ypred,sigma_y)
@@ -101,7 +101,7 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 #try model in lmer
-testm2.lmer<-lmer(y~temp * mois +(1|sp))#fails to converge
+testm2.lmer<-lmer(y~temp * mois +(1|sp))#
 summary(testm2.lmer)
 
 #now fit the model in stan
@@ -111,10 +111,28 @@ testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,
 beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","b_tm","sigma_y"))
 mcmc_intervals(beta_draws)
 head(summary(testm2)$summary)
-launch_shinystan(testm2)#this can be slow
-#warning about tree depth- ask lizzie what to do? 
-#also, interaction is too small-ask lizzie about this...
+launch_shinystan(testm2)#t
+#the above models work fine with centered data...but when mean of temp/mois=25, it has trouble. not sure why! using centered data for now
 
+#M3: model with interaction and varying slopes for species
+
+#try model in lmer
+testm3.lmer<-lmer(y~temp * mois +(temp*mois|sp))#
+summary(testm3.lmer)#fixed effects look pretty good
+
+#now fit the model in stan
+testm3 = stan('Analyses/soilmoisture/M3_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
+              iter = 5000, warmup=3500,control=list(adapt_delta=.95)) # there were divergent transitions. looked at bivariate plots, and problem parameter seems to be sigma_tm. sigma_temp also was a bit weird
+
+testm3_ncp = stan('Analyses/soilmoisture/M3_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
+              iter = 4000) # there were divergent transitions. looked at bivariate plots, and problem parameter seems to be sigma_tm. sigma_temp also was a bit weird
+
+
+beta_draws<-as.matrix(testm3,pars=c("b_temp","b_mois","b_tm","sigma_y"))
+mcmc_intervals(beta_draws)
+head(summary(testm2)$summary)
+launch_shinystan(testm3)#this can be slow
+#Try making noncentered paraterization 
 
 
 #M4: With site added as intercept only random effect
@@ -137,22 +155,6 @@ y<-rnorm(N,ypred,sigma_y)
 plot(temp,y)
 plot(mois,y)
 hist(mois)
-#try model in lmer
-testm3.lmer<-lmer(y~temp * mois +(temp*mois|sp)+(1|site))#fails to converge
-summary(testm3.lmer)#fixed effects look pretty good
-
-#now fit the model in stan
-testm3 = stan('Analyses/soilmoisture/M3_bbd.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N),
-              iter = 2500, warmup=1500) # 
-
-
-
-beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","b_tm","sigma_y"))
-mcmc_intervals(beta_draws)
-head(summary(testm2)$summary)
-launch_shinystan(testm2)#this can be slow
-#warning about tree depth- ask lizzie what to do? 
-#also, interaction is too small-ask lizzie about this...
 
 
 ###Now with the data
