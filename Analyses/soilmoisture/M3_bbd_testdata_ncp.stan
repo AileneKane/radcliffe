@@ -41,7 +41,7 @@ parameters {
 transformed parameters {
   vector[n_sp] b_tm;
 for (i in 1:n_sp){
-  b_tm[i] = mu_b_tm_sp + sigma_b_tm_sp*b_tm_ncp[i]; // you cannot do scalar * vector so if above had been vector in parameters block (see my code) had been vector (instead of real) it probably would have run; but this loop Andrew added is also a work-around!
+  b_tm[i] = mu_b_tm_sp + sigma_b_tm_sp*b_tm_ncp[i]; // you cannot do scalar * vector so if above in parameters block (see my code) had been vector (instead of real) it probably would have run; but this loop Andrew added is also a work-around!
 }
 	}
 
