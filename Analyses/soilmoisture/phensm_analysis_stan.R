@@ -14,6 +14,7 @@ library(ggplot2)
 library(shinystan)
 library(bayesplot)
 library(rstanarm)
+options(mc.cores = parallel::detectCores()) # added by Andrew
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
@@ -77,7 +78,7 @@ summary(testm1.lmer)#looks good!
 #testdan = stan('Analyses/soilmoisture/lday_site_sp_chill_inter_poola.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
 #              iter = 2500) # 
 
-testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
+testm1 = stan('M3_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
               iter = 2500, warmup=1500) # 
 beta_draws<-as.matrix(testm1,pars=c("b_temp","b_mois","sigma_y"))
 mcmc_intervals(beta_draws)
