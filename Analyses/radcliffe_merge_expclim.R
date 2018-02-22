@@ -4,6 +4,8 @@ setwd("~/git/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 library(reshape)
+library(tidyr)
+library(dplyr)
 ##Daily temperature and soil moisture data
 clean.clim <- list()
 
@@ -103,9 +105,10 @@ clean.clim$marchin <- function(filename="hf113-10-df-chamber.csv",path="./Data/E
   allclim2$surftemp_min<-NA
   allclim2$cantemp_max<-NA
   allclim2$cantemp_min<-NA
+  allclim2$airtemp_mean<-(as.numeric(allclim2$airtemp_min)+as.numeric(allclim2$airtemp_max))/2
   allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
   allclim2$soiltemp2_mean  <-(as.numeric(allclim2$soiltemp2_min)+as.numeric(allclim2$soiltemp2_max))/2
-  marchinclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  marchinclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(marchinclim) <- NULL
   return(marchinclim)
 }
@@ -135,6 +138,7 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   allclim<-merge(temp.long2,mois_mean,by.x=c("year","doy","plot","treatment"),by.y=c("year","doy","plot","treatment"),all=TRUE)
   allclim$airtemp_min<-NA 
   allclim$airtemp_max<-NA 
+  allclim$airtemp_mean<-NA 
   allclim$soiltemp1_min<-NA
   allclim$soiltemp2_min<-NA
   allclim$soiltemp1_max<-NA
@@ -160,7 +164,7 @@ clean.clim$farnsworth <- function(filename="hf005-04-soil-temp.csv", path="./Dat
   allclim[allclim$plot==10|allclim$plot==11|allclim$plot==12,]$block=4
   allclim[allclim$plot==13|allclim$plot==14|allclim$plot==15,]$block=5
   allclim[allclim$plot==16|allclim$plot==17|allclim$plot==18,]$block=6
-  farnsworthclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  farnsworthclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   ##select out only 1993, since that's the only year for which we have phenology data
   farnsworthclim_1993<-farnsworthclim[farnsworthclim$year==1993,]
   row.names(farnsworthclim_1993) <- NULL
@@ -232,7 +236,8 @@ clean.clim$clarkharvard <- function(filename="data-Harvard-ST1.csv", path="./Dat
   allclim2$cantemp_max<-NA
   allclim2$cantemp_min<-NA
   allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
-  clarkharvardclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  allclim2$airtemp_mean<-(as.numeric(allclim2$airtemp_min)+as.numeric(allclim2$airtemp_max))/2
+  clarkharvardclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(clarkharvardclim) <- NULL
   return(clarkharvardclim) 
 }
@@ -301,7 +306,8 @@ clean.clim$clarkduke <- function(filename="data-Duke-ST.csv", path="./Data/Exper
   allclim2$cantemp_max<-NA
   allclim2$cantemp_min<-NA
   allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
-  clarkdukeclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  allclim2$airtemp_mean<-(as.numeric(allclim2$airtemp_min)+as.numeric(allclim2$airtemp_max))/2
+  clarkdukeclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(clarkdukeclim) <- NULL
   return(clarkdukeclim) 
 }
@@ -421,10 +427,11 @@ allclim[which(allclim$soilmois1==43),]$soilmois1<-NA
 allclim$soilmois2<-NA
 allclim$airtemp_min<-NA
 allclim$airtemp_max<-NA
+allclim$airtemp_mean<-NA
 allclim$surftemp_min<-NA
 allclim$surftemp_max<-NA
 allclim$site<-"exp01"
-baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+baceclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
 baceclim<-baceclim[-which(as.numeric(baceclim$cantemp_max)>203),]#remove weird value
 row.names(baceclim) <- NULL
 return(baceclim) 
@@ -500,7 +507,8 @@ clean.clim$ellison <- function(filename="ellison_subsetclim.csv", path="./Data/E
   allclim2$surftemp_max<-NA
   allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
   allclim2$soiltemp2_mean<-(as.numeric(allclim2$soiltemp2_min)+as.numeric(allclim2$soiltemp2_max))/2
-  ellisonclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  allclim2$airtemp_mean<-(as.numeric(allclim2$airtemp_min)+as.numeric(allclim2$airtemp_max))/2
+  ellisonclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   ellisonclim[which(as.numeric(ellisonclim$soiltemp2_max) > 90),]$soiltemp2_max<-NA#seems like something weird happened to the sensor? really high
   ellisonclim<-ellisonclim[-which(ellisonclim$year=="NA"),]
   row.names(ellisonclim) <- NULL
@@ -569,6 +577,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   allclim$soiltemp2_mean<-NA
   allclim$soilmois2<-NA
   allclim$soiltemp1_mean<-(allclim$soiltemp1_max+allclim$soiltemp1_min)/2
+  allclim$airtemp_mean<-(allclim$airtemp_max+allclim$airtemp_min)/2
   allclim$site<-"exp12"
   allclim$soilmois1<-allclim$soilmois/100
   allclim$soilmois2<-NA
@@ -583,7 +592,7 @@ clean.clim$sherryok<- function(filename="IRCEBprojectSoilMoist20032004.csv", pat
   allclim$surftemp_min<-NA
   allclim$surftemp_max<-NA
   allclim2<-allclim[allclim$year<2004,]
-  sherryclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  sherryclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   sherryclim[which(sherryclim$soiltemp1_max==max(sherryclim$soiltemp1_max, na.rm=T)),]$soiltemp1_max<-NA#remove really weird high value that is clearly an error (2.51e+289)
   sherryclim[which(sherryclim$soiltemp1_mean==max(sherryclim$soiltemp1_mean, na.rm=T)),]$soiltemp1_mean<-NA#remove really weird high value that is clearly an error (1.255e+289)
   row.names(sherryclim) <- NULL
@@ -627,6 +636,7 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim1$soiltemp2_max<-NA
   allclim1$soiltemp2_mean<-NA
   allclim1$soiltemp1_mean<-(allclim1$soiltemp1_min+allclim1$soiltemp1_max)/2
+  allclim1$airtemp_mean<-(allclim1$airtemp_min+allclim1$airtemp_max)/2
   allclim1$soilmois1<-NA
   allclim1$soilmois2<-NA
   allclim2<-allclim1[allclim1$year>1994,]
@@ -635,7 +645,7 @@ clean.clim$dunne<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim2$surftemp_min<-NA
   allclim2$surftemp_max<-NA
   allclim2$block<-NA
-  dunneclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  dunneclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(dunneclim) <- NULL
   return(dunneclim)
 }  
@@ -674,6 +684,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim1$soiltemp2_max<-NA
   allclim1$soiltemp2_mean<-NA
   allclim1$soiltemp1_mean<-(allclim1$soiltemp1_min+allclim1$soiltemp1_max)/2
+  allclim1$airtemp_mean<-(allclim1$airtemp_min+allclim1$airtemp_max)/2
   allclim1$soilmois1<-NA
   allclim1$soilmois2<-NA
   allclim2<-allclim1[allclim1$year<1995,]
@@ -682,7 +693,7 @@ clean.clim$price<- function(filename="RMBL_1991-1999_Tsoil_depth12cm_CLEAN_20140
   allclim2$surftemp_min<-NA
   allclim2$surftemp_max<-NA
   allclim2$block<-NA
-  priceclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  priceclim<-subset(allclim2,select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(priceclim) <- NULL
   return(priceclim)
 }
@@ -751,10 +762,11 @@ clean.clim$force <- function(filename="FoRCE_CLIMATE_DATA_ALL_2008-2010_raw.csv"
   clim2$soilmois2<-NA
   clim2$airtemp_min<-NA
   clim2$airtemp_max<-NA
+  clim2$airtemp_mean<-NA
   clim2$cantemp_min<-NA
   clim2$cantemp_max<-NA
   clim2$block<-substr(clim2$plot,1,1)
-  forceclim<-subset(clim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  forceclim<-subset(clim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(forceclim) <- NULL
   return(forceclim)
 }
@@ -832,8 +844,9 @@ for (i in 1:length(soilfiles)){
   allclim$surftemp_max<-NA
   allclim$cantemp_min<-NA
   allclim$cantemp_max<-NA
+  allclim$airtemp_mean<-(as.numeric(allclim$airtemp_min)+as.numeric(allclim$airtemp_max))/2
   allclim$block<-substr(allclim$plot,1,1)
-  chuineclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  chuineclim<-subset(allclim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   chuineclim  <- chuineclim [apply(chuineclim[5] , 1, function(x) all(!is.na(x))),] # only keep rows with plotnames in them
   row.names(chuineclim)<- NULL
   return(chuineclim)
@@ -869,9 +882,10 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   mois$cantemp_max<-NA
   mois$airtemp_min<-NA
   mois$airtemp_max<-NA
+  mois$airtemp_mean<-NA
   mois$soilmois2<-NA
   mois<-mois[-which(is.na(mois$year)),]#remove rows that are all NAs- in year, doy, etc
-  clelandclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  clelandclim<-subset(mois, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   clelandclim<-clelandclim[-max(which(clelandclim$block==1 & clelandclim$plot=="1-1" & clelandclim$year==2002 & clelandclim$doy==52)),]#remove duplicate day/year- not sure why there are 2 measurements for one plaot on the same day/year
   clelandclim[which(substr(clelandclim$plot,1,2)=="34" & clelandclim$block =="1"),]$block<-"4"
   clelandclim[which(substr(clelandclim$plot,1,2)=="36" & clelandclim$block =="6"),]$block<-"8"
@@ -880,6 +894,108 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
   row.names(clelandclim)<- NULL
   return(clelandclim)
 } 
+
+clean.clim$cedarcreek <- function(filename="e249_ibutton.csv",path="./Data/Experiments/cedarcreek") {
+  ## Cedar Creek ##
+  ## Data type: temp (air and soil), humidity, infrared
+  ##climate data available at: 
+  file <- file.path(path, filename)
+  cc <- read.csv(file, header=TRUE)
+  cc_temp<-cc[1:289233,1:10]
+  colnames(cc_temp)[1]<-"year"
+  colnames(cc_temp)[4]<-"block"
+  cc_temp$plot<-paste(cc_temp$block,cc_temp$Heat.treatment,sep="-")
+  cc_temp$doy<-strftime(strptime(cc_temp$Date, format = "%m/%d/%y"),format = "%j") 
+  cc_temp$temptreat<-NA
+ cc_temp$temptreat[cc_temp$Heat.treatment=="high"]<-2
+ cc_temp$temptreat[cc_temp$Heat.treatment=="low"]<-1
+ cc_temp$temptreat[cc_temp$Heat.treatment=="control"]<-0
+ temp_max<-subset(cc_temp, select=c("year","doy","block","plot","Depth","temptreat","maximumTemp"))
+ temp_min<-subset(cc_temp, select=c("year","doy","block","plot","Depth","temptreat","minimumTemp"))
+ temp_max2 <- temp_max %>% spread(Depth, maximumTemp)
+ colnames(temp_max2)[6]<-"airtemp_max"
+ colnames(temp_max2)[9]<-"soiltemp1_max"
+ colnames(temp_max2)[10]<-"soiltemp2_max"
+ temp_max3<-subset(temp_max2, select=c("year","doy","block","plot","temptreat","airtemp_max","soiltemp1_max","soiltemp2_max"))
+ temp_min2 <- temp_min %>% spread(Depth, minimumTemp)
+ colnames(temp_min2)[6]<-"airtemp_min"
+ colnames(temp_min2)[9]<-"soiltemp1_min"
+ colnames(temp_min2)[10]<-"soiltemp2_min"
+ temp_min3<-subset(temp_min2, select=c("year","doy","block","plot","temptreat","airtemp_min","soiltemp1_min","soiltemp2_min"))
+ alltemp<-full_join(temp_min3,temp_max3)
+ alltemp<-alltemp[!alltemp$plot=="244-North",]  
+ alltemp<-alltemp[!alltemp$plot=="244-South",]  
+ alltemp<-alltemp[!alltemp$plot=="248-North",]
+ alltemp<-alltemp[!alltemp$plot=="248-South",]
+  file2<-file.path(path, "bac_soilmoisture.csv")
+  mois<-read.csv(file2, header=TRUE)
+  colnames(mois)[2]<-"block"
+  mois$year<-strftime(strptime(mois$date, format = "%m/%d/%y"),format = "%Y") 
+  mois$doy<-strftime(strptime(mois$date, format = "%m/%d/%y"),format = "%j") 
+  mois$Heat.treatment<-NA
+  mois$Heat.treatment[mois$subplot=="C"]<-"control"
+  mois$Heat.treatment[mois$subplot=="H"]<-"high"
+  mois$Heat.treatment[mois$subplot=="L"]<-"low"
+  mois$plot<-paste(mois$block,mois$Heat.treatment,sep="-")
+  mois$temptreat<-NA
+  mois$temptreat[mois$Heat.treatment=="high"]<-2
+  mois$temptreat[mois$Heat.treatment=="low"]<-1
+  mois$temptreat[mois$Heat.treatment=="control"]<-0
+  #mois2<-subset(mois, select=c("year","doy","block","plot","moisturePercent"))
+  allclim2<-full_join(alltemp,mois)
+  allclim2$site<-"exp14"
+  allclim2$preciptreat<-NA
+  allclim2$soilmois1<-as.numeric(allclim2$moisturePercent)/100
+  allclim2$soilmois2<-NA
+  allclim2$surftemp_max<-NA
+  allclim2$surftemp_min<-NA
+  allclim2$cantemp_max<-NA
+  allclim2$cantemp_min<-NA
+  allclim2$airtemp_mean<-(as.numeric(allclim2$airtemp_min)+as.numeric(allclim2$airtemp_max))/2
+  allclim2$soiltemp1_mean<-(as.numeric(allclim2$soiltemp1_min)+as.numeric(allclim2$soiltemp1_max))/2
+  allclim2$soiltemp2_mean<-(as.numeric(allclim2$soiltemp2_min)+as.numeric(allclim2$soiltemp2_max))/2
+  ccclim<-subset(allclim2, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  row.names(ccclim) <- NULL
+  return(ccclim)
+}
+
+clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/haibei") {
+  ## haibei ##
+  ## Data type: temp (air and soil), soil moisture, 
+  ##climate data available at: https://www.datadryad.org/resource/doi:10.5061/dryad.q2g41
+  file <- file.path(path, filename)
+  clim <- read.csv(file, header=TRUE)
+  colnames(clim)[1]<-"year"
+  colnames(clim)[5]<-"plot"
+  clim$doy<-strftime(strptime(paste(clim$Month,clim$Date,clim$Year,sep="/"), format = "%m/%d/%Y"),format = "%j") 
+  clim<-clim[!clim$Treatment=="WW",]
+  clim$temptreat<-NA
+  clim$temptreat[clim$Treatment=="C"]<-0
+  clim$temptreat[clim$Treatment=="W"]<-1
+  clim$site<-"exp13"
+  clim$preciptreat<-NA
+  colnames(clim)[10]<-"soilmois1"
+  colnames(clim)[9]<-"soiltemp1_mean"
+  colnames(clim)[8]<-"airtemp_mean"
+  clim$preciptreat<-NA
+  clim$block<-NA
+  clim$soilmois2<-NA
+  clim$surftemp_max<-NA
+  clim$surftemp_min<-NA
+  clim$airtemp_max<-NA
+  clim$airtemp_min<-NA
+  clim$cantemp_max<-NA
+  clim$cantemp_min<-NA
+  clim$soiltemp1_min<-NA
+  clim$soiltemp2_min<-NA
+  clim$soiltemp1_max<-NA
+  clim$soiltemp2_max<-NA
+  clim$soiltemp2_mean<-NA
+  clim<-subset(clim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  row.names(clim) <- NULL
+  return(clim)
+}
+
 ##Produce cleaned, raw climate data
     raw.data.dir <- "./Experiments/"
     cleanclimdata.raw <- list()
@@ -895,16 +1011,19 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     cleanclimdata.raw$force <- clean.clim$force(path="./Data/Experiments/force")
     cleanclimdata.raw$chuine <- clean.clim$chuine(path="./Data/Experiments/chuine")
     cleanclimdata.raw$cleland <- clean.clim$cleland(path="./Data/Experiments/cleland")
+    cleanclimdata.raw$cedarcreek<-clean.clim$cedarcreek(path="./Data/Experiments/cedarcreek")
+    cleanclimdata.raw$haibei<-clean.clim$haibei(path="./Data/Experiments/haibei")
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#230998      21
+    dim(expphenclim1)#341006     22
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#230974      21
+    dim(expphenclim)#340982     22
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)
     expphenclim$airtemp_min<-as.numeric(expphenclim$airtemp_min)
+    expphenclim$airtemp_mean<-as.numeric(expphenclim$airtemp_mean)
     expphenclim$soiltemp1_min<-as.numeric(expphenclim$soiltemp1_min)
     expphenclim$soiltemp2_min<-as.numeric(expphenclim$soiltemp2_min)
     expphenclim$soiltemp2_max<-as.numeric(expphenclim$soiltemp2_max)
@@ -924,6 +1043,7 @@ clean.clim$cleland <- function(filename="SoilMoisture0to30cm1998to2002.csv",path
     quartz()
     boxplot(airtemp_min~site, data=expphenclim)
     boxplot(airtemp_max~site, data=expphenclim)
+    boxplot(airtemp_mean~site, data=expphenclim)
     boxplot(cantemp_min~site, data=expphenclim)
     boxplot(cantemp_max~site, data=expphenclim)
     boxplot(surftemp_min~site, data=expphenclim)

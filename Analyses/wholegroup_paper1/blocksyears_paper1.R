@@ -2,6 +2,7 @@
 #By Ailene Ettinger
 #Started Septembr 6, 2016
 #modified for NCC manuscript February 24, 2017 
+#modified for EL REviewsFebruary 2018
 #block and year figure with line showing fitted relationship between target versus observed
 
 rm(list=ls()) 
@@ -104,26 +105,26 @@ allwarm_block$target<-as.numeric(allwarm_block$target)
 allwarm_block$agwarm<-as.numeric(allwarm_block$agwarm)
 #allwarm_blockag$target<-as.numeric(allwarm_blockag$target)
 #allwarm_blockag$agwarm<-as.numeric(allwarm_blockag$agwarm)
-plot(allwarm_block$target,allwarm_block$agwarm,pch=as.numeric(as.factor(as.numeric(allwarm_block$site)))+20, col="black",bg="gray",xlab="", ylab="Above-ground", bty="l", main="By Block", xlim=c(0,6), ylim=c(0,6))
-points(allwarm_stmean$target,allwarm_stmean$agwarm,bg="black",pch=as.numeric(as.factor(as.numeric(allwarm_stmean$site)))+20)
+plot(allwarm_block$target,allwarm_block$agwarm,pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))], col="black",bg="gray",xlab="", ylab="Above-ground", bty="l", main="By Block", xlim=c(0,6), ylim=c(0,6))
+points(allwarm_stmean$target,allwarm_stmean$agwarm,bg="black",pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))],
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(mab.mm)[1],b=fixef(mab.mm)[2], lty=1)
 mtext("Observed warming (C)", side=2,line=4,adj=8, cex=1.2)
 
-plot(allwarm_yr$target,allwarm_yr$agwarm,pch=as.numeric(as.factor(as.numeric(allwarm_block$site)))+20, col="black",bg="gray",xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(0,6), ylim=c(0,6))
+plot(allwarm_yr$target,allwarm_yr$agwarm,pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))], col="black",bg="gray",xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(0,6), ylim=c(0,6))
 abline(a=0,b=1,lty=2)
 abline(a=fixef(may.mm)[1],b=fixef(may.mm)[2], lty=1)
 
-plot(allwarm_block$target,allwarm_block$soilwarm,pch=as.numeric(as.factor(as.numeric(allwarm_block$site)))+20, col="black",bg="gray",xlab="", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6))
+plot(allwarm_block$target,allwarm_block$soilwarm,pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))], col="black",bg="gray",xlab="", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6))
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msb.mm)[1],b=fixef(msb.mm)[2], lty=1)
 
-plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=as.numeric(as.factor(as.numeric(allwarm_block$site)))+20, col="black",bg="gray",xlab="", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6))
+plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))], col="black",bg="gray",xlab="", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6))
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msy.mm)[1],b=fixef(msy.mm)[2], lty=1)
-legend(4.5,3.5,pch=c(21,22,23,24),pt.bg="gray",legend=c("exp01","exp08","exp09","exp12"))
+legend(4.5,3.5,pch=c(23,24,23,23),pt.bg=c("darkblue","lightblue","darkgreen","black"),legend=c("exp01","exp08","exp09","exp12"))
 mtext("Target warming (C)", side=1,line=3,adj=-1.5, cex=1.2)
 
 
@@ -134,15 +135,15 @@ ms.m<-lm(soilwarm~target, data=allwarm_stmean)
 
 quartz(height=6,width=6)
 par(mfrow=c(2,1),mai=c(1,1,.2,.2))
-
-plot(allwarm_stmean$target,allwarm_stmean$agwarm,bg="black",pch=as.numeric(as.factor(as.numeric(allwarm_stmean$site)))+20,xlab="", ylab="Above-ground", bty="l", main="Mean Across Duration of Study", xlim=c(0,6), ylim=c(0,6))
+#unique((allwarm_stmean$site))
+plot(allwarm_stmean$target,allwarm_stmean$agwarm,bg=c("darkblue","lightblue","dark green","black")[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))],pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))],xlab="", ylab="Above-ground", bty="l", main="Mean Across Duration of Study", xlim=c(0,6), ylim=c(0,6))
 mtext("Observed warming (C)", side=2,line=4,adj=8, cex=1.2)
 abline(a=0,b=1,lty=2)
 abline(a=coef(mab.m)[1],b=coef(mab.m)[2], lty=1)
 
-plot(allwarm_stmean$target,allwarm_stmean$soilwarm,bg="black",pch=as.numeric(as.factor(as.numeric(allwarm_stmean$site)))+20,xlab="", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6))
+plot(allwarm_stmean$target,allwarm_stmean$soilwarm,bg=c("darkblue","lightblue","darkgreen","black")[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))],pch=c(23,24,23,23)[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))],xlab="", ylab="Soil", bty="l", xlim=c(0,6), ylim=c(0,6))
 abline(a=0,b=1,lty=2)
 abline(a=coef(ms.m)[1],b=coef(ms.m)[2], lty=1)
-legend(4.5,3.5,pch=c(21,22,23,24),pt.bg="black",legend=c("exp01","exp08","exp09","exp12"))
+legend(4.5,3.5,pch=c(23,24,23,23),pt.bg=c("darkblue","lightblue","darkgreen","black"),legend=c("exp01","exp08","exp09","exp12"))
 mtext("Target warming (C)", side=1,line=3,adj=.5, cex=1.2)
 

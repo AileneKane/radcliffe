@@ -14,7 +14,8 @@ library(ggplot2)
 library(shinystan)
 library(bayesplot)
 library(rstanarm)
-options(mc.cores = parallel::detectCores()) # added by Andrew
+library(dplyr)
+#options(mc.cores = parallel::detectCores()) # added by Andrew
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
@@ -52,7 +53,7 @@ for(i in 1:n_sp){
 }
 mois<-rep(NA, N)
 for(i in 1:n_sp){
-  mois[which(sp==i)]<-rnorm(obs_sp,0,2)#we tried having the mean at ~25 for temp and mois, but rhat was bad and model had trouble... mean=5 was ok...
+  mois[which(sp==i)]<-rnorm(obs_sp,0,1)#we tried having the mean at ~25 for temp and mois, but rhat was bad and model had trouble... mean=5 was ok...
 }
 
 
@@ -75,10 +76,9 @@ testm1.lmer<-lmer(y~temp + mois +(1|sp))
 summary(testm1.lmer)#looks good!
 
 #now fit the model in stan
-#testdan = stan('Analyses/soilmoisture/lday_site_sp_chill_inter_poola.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
-#              iter = 2500) # 
+ 
 
-testm1 = stan('M3_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
+testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
               iter = 2500, warmup=1500) # 
 beta_draws<-as.matrix(testm1,pars=c("b_temp","b_mois","sigma_y"))
 mcmc_intervals(beta_draws)
@@ -124,16 +124,16 @@ summary(testm3.lmer)#fixed effects look pretty good
 #now fit the model in stan
 testm3 = stan('Analyses/soilmoisture/M3_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
               iter = 5000, warmup=3500,control=list(adapt_delta=.95)) # there were divergent transitions. looked at bivariate plots, and problem parameter seems to be sigma_tm. sigma_temp also was a bit weird
+#Try making noncentered paraterization 
 
 testm3_ncp = stan('Analyses/soilmoisture/M3_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
-              iter = 4000) # there were divergent transitions. looked at bivariate plots, and problem parameter seems to be sigma_tm. sigma_temp also was a bit weird
+              iter = 4000) 
 
-
-beta_draws<-as.matrix(testm3,pars=c("b_temp","b_mois","b_tm","sigma_y"))
+beta_draws<-as.matrix(testm3_ncp,pars=c("b_temp","b_mois","b_tm","sigma_y"))
 mcmc_intervals(beta_draws)
-head(summary(testm2)$summary)
-launch_shinystan(testm3)#this can be slow
-#Try making noncentered paraterization 
+head(summary(testm3_ncp)$summary)
+
+launch_shinystan(testm3_ncp)#this can be slow
 
 
 #M4: With site added as intercept only random effect
@@ -157,8 +157,34 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 
+testm4.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site))#
+summary(testm4.lmer)#fixed effects look pretty good
+
+testm4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
+#Warning messages:
+#  1: There were 3999 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+#http://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded 
+#2: There were 4 chains where the estimated Bayesian Fraction of Missing Information was low. See
+#http://mc-stan.org/misc/warnings.html#bfmi-low 
+#3: Examine the pairs() plot to diagnose sampling problems
+beta_draws<-as.matrix(testm4,pars=c("b_temp","b_mois","b_tm","sigma_y","sigma_a_sp","sigma_a_site"))
+mcmc_intervals(beta_draws)
+head(summary(testm4)$summary)
+
+launch_shinystan(testm4)#this can be slo
+
+#testm4_ncp = stan('Analyses/soilmoisture/M4_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N),
+#                  iter = 4000,control=list(max_treedepth=15)) # I get warning about maximum treedepth 
+
+#beta_draws<-as.matrix(testm4_ncp,pars=c("b_temp","b_mois","b_tm","sigma_y","sigma_a_sp","sigma_a_site"))
+#mcmc_intervals(beta_draws)
+#head(summary(testm4_ncp)$summary)
+
+#launch_shinystan(testm4_ncp)#this can be slow
 
 ###Now with the data
+###try without ncp if treedepth issue doesn't solve things.
+
 source('Analyses/soilmoisture/savestan.R')
 
 rstan_options(auto_write = TRUE)
@@ -189,18 +215,18 @@ expgdd_lod<-expgdd_subs[which(expgdd_subs$event=="lod"),]#leaf out data
 expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
 
 ## For centering data, not doing it for now:
-#expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
-#expgdd_bbd$smjm_cent<-scale(expgdd_bbd$soilmois_janmar, center = TRUE, scale = TRUE)
-#expgdd_bbd$ag_min_jm_cent<-scale(expgdd_bbd$ag_min_janmar, center = TRUE, scale = TRUE)
-#expgdd_bbd$agtmax_cent<-scale(expgdd_bbd$agtmax, center = TRUE, scale = TRUE)
+expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
+expgdd_bbd$smjm_cent<-scale(expgdd_bbd$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd$ag_min_jm_cent<-scale(expgdd_bbd$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd$agtmax_cent<-scale(expgdd_bbd$agtmax, center = TRUE, scale = TRUE)
 
 
 #2) Make a list out of the processed data. It will be input for the model.
 
 datalist.bbd <- with(expgdd_bbd, 
                     list(y = doy, 
-                         temp = ag_min_janmar, #above-ground minimum air temp
-                         mois = soilmois_janmar*100, #soil moisture as a percentage
+                         temp = ag_min_jm_cent[,1], #above-ground minimum air temp
+                         mois = smjm_cent[,1], #soil moisture
                          sp = genus.species,
                          N = nrow(expgdd_bbd),
                          n_sp = length(unique(expgdd_bbd$genus.species))
@@ -250,3 +276,19 @@ m2.sum[grep("b_temp", rownames(m2.sum)),]
 m2.sum[grep("b_mois", rownames(m2.sum)),]
 m2.sum[grep("b_tm", rownames(m2.sum)),]
 
+
+#data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
+datalist.bbd <- with(expgdd_bbd, 
+                      list(y = doy, 
+                           sp = genus.species,
+                           site = site,
+                           temp = temp = ag_min_jm_cent[,1], #above-ground minimum air temp
+                           mois = smjm_cent[,1], #soil moisture as a percentage
+                           n_sp = length(unique(expgdd_bbd$genus.species)),
+                           n_site = length(unique(expgdd_bbd$site)),
+                           N = nrow(expgdd_bbd)
+                           )
+                      )
+
+m4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data = datalist.bbd,
+          iter = 2500, warmup=1500) # 
