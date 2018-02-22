@@ -100,46 +100,47 @@ air_monthsums<-monthsums_allyear_min[substring(rownames(monthsums_allyear_min),1
 
 quartz(height=6,width=10)
 par(mfcol=c(2,3),mai=c(.6,.7,.2,.1), omi=c(.7,.01,.2,.2))
+
 #air
-plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="black", xlab="", ylab="", ylim=c(-2,2),bty="l", main="Min Air Temp", las=TRUE)
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=8,bg="black", xlab="", ylab="", ylim=c(-2,2),bty="l", main="Min Air Temp", las=TRUE)
 #add random effects
 minaexp03<-minairranef[which(minairranef$site=="exp03"),]
 minaexp04<-minairranef[which(minairranef$site=="exp04"),]
 minaexp07<-minairranef[which(minairranef$site=="exp07"),]
 minaexp10<-minairranef[which(minairranef$site=="exp10"),]
-points(as.numeric(minaexp03$month),minaexp03$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minaexp03$month),minaexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
 points(as.numeric(minaexp04$month),minaexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(minaexp07$month),minaexp07$shamdif,pch=23,bg="lightblue",col="lightblue")
-points(as.numeric(minaexp10$month),minaexp10$shamdif,pch=24,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minaexp07$month),minaexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
+points(as.numeric(minaexp10$month),minaexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
 for (i in 1:12){
   arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.01,angle=90,code=3)}
 abline(h=0,lty=2)
-points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="black")
+points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=8,bg="black")
 
 mtext("Effect of structural control (sham - ambient)",side=2, line=3, cex=0.9,adj=1.1)
 mtext(expression(~degree*C),side=2, line=2, cex=0.8,adj=.5)
 mtext("a)",side=3, line=0, cex=0.9,adj=0)
 
-legend(1.5,-.1,legend=c("exp03","exp04","exp07","exp08","exp10"), pch=c(21,22,23,25,24),pt.bg=c("lightsalmon","lightblue","lightblue","lightblue","lightsalmon"),col=c("lightsalmon","lightblue","lightblue","lightblue","lightsalmon"))
+legend(1.5,-.1,legend=c("exp03","exp04","exp07","exp08","exp10"), pch=c(22,22,21,24,21),pt.bg=c("lightsalmon","lightblue","lightblue","lightblue","lightsalmon"),col=c("lightsalmon","lightblue","lightblue","lightblue","lightsalmon"))
 
 #soil
-plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="black", xlab="", ylab="", ylim=c(-2,2), bty="l", main="Min Soil Temp", las=TRUE)
+plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=8,bg="black", xlab="", ylab="", ylim=c(-2,2), bty="l", main="Min Soil Temp", las=TRUE)
 #add random effects
 minsexp03<-minsoilranef[which(minsoilranef$site=="exp03"),]
 minsexp04<-minsoilranef[which(minsoilranef$site=="exp04"),]
 minsexp07<-minsoilranef[which(minsoilranef$site=="exp07"),]
 minsexp10<-minsoilranef[which(minsoilranef$site=="exp10"),]
-points(as.numeric(minsexp03$month),minsexp03$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minsexp03$month),minsexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
 points(as.numeric(minsexp04$month),minsexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(minsexp07$month),minsexp07$shamdif,pch=23,bg="lightblue",col="lightblue")
-points(as.numeric(minsexp10$month),minsexp10$shamdif,pch=24,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minsexp07$month),minsexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
+points(as.numeric(minsexp10$month),minsexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
 mtext("c)",side=3, line=0, cex=0.9,adj=0)
 mtext(expression(~degree*C),side=2, line=2, cex=0.8,adj=.5)
 
 for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.01,angle=90,code=3)}
 abline(h=0,lty=2)
-points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="black")
+points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=8,bg="black")
 mtext("Month",side=1, line=2, adj=.5,cex=.9)
 ##Now max soil and air temp
 monthsums_allyear_max<-c()
@@ -184,39 +185,39 @@ colnames(maxairranef)<-c("site","month","ambT","shamdif")
 soil_monthsums<-monthsums_allyear_max[substring(rownames(monthsums_allyear_max),1,10)=="soil_fixed",]
 air_monthsums<-monthsums_allyear_max[substring(rownames(monthsums_allyear_max),1,9)=="air_fixed",]
 #air
-plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=21,bg="black", xlab="", ylab="", ylim=c(-2,2),bty="l", main="Max Air Temp", las=TRUE)
+plot(as.numeric(air_monthsums$month),air_monthsums$temptreat0,type="p", pch=8,bg="black", xlab="", ylab="", ylim=c(-2,2),bty="l", main="Max Air Temp", las=TRUE)
 #add random effects
 maxaexp03<-maxairranef[which(maxairranef$site=="exp03"),]
 maxaexp04<-maxairranef[which(maxairranef$site=="exp04"),]
 maxaexp07<-maxairranef[which(maxairranef$site=="exp07"),]
 maxaexp10<-maxairranef[which(maxairranef$site=="exp10"),]
-points(as.numeric(maxaexp03$month),maxaexp03$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(maxaexp03$month),maxaexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
 points(as.numeric(maxaexp04$month),maxaexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(maxaexp07$month),maxaexp07$shamdif,pch=23,bg="lightblue",col="lightblue")
-points(as.numeric(maxaexp10$month),maxaexp10$shamdif,pch=24,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(maxaexp07$month),maxaexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
+points(as.numeric(maxaexp10$month),maxaexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
 #error and fixed effects
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.01,angle=90,code=3)}
-points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=21,bg="black")
+points(as.numeric(air_monthsums$month),air_monthsums$temptreat0,pch=8,bg="black")
 mtext("b)",side=3, line=0, cex=0.9,adj=0)
 mtext(expression(~degree*C),side=2, line=2, cex=0.8,adj=.5)
 
 #soil
-plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=21,bg="black", xlab="", ylab="", ylim=c(-2,2), bty="l", main="Max Soil Temp", las=TRUE)
+plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=8,bg="black", xlab="", ylab="", ylim=c(-2,2), bty="l", main="Max Soil Temp", las=TRUE)
 #add random effects
 maxsexp03<-maxsoilranef[which(maxsoilranef$site=="exp03"),]
 maxsexp04<-maxsoilranef[which(maxsoilranef$site=="exp04"),]
 maxsexp07<-maxsoilranef[which(maxsoilranef$site=="exp07"),]
 maxsexp10<-maxsoilranef[which(maxsoilranef$site=="exp10"),]
-points(as.numeric(maxsexp03$month),maxsexp03$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(maxsexp03$month),maxsexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
 points(as.numeric(maxsexp04$month),maxsexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(maxsexp07$month),maxsexp07$shamdif,pch=23,bg="lightblue",col="lightblue")
-points(as.numeric(maxsexp10$month),maxsexp10$shamdif,pch=24,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(maxsexp07$month),maxsexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
+points(as.numeric(maxsexp10$month),maxsexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.01,angle=90,code=3)}
-points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=21,bg="black")
+points(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,pch=8,bg="black")
 mtext("Month",side=1, line=2.5, adj=.5)
 mtext("d)",side=3, line=0, cex=0.9,adj=0)
 mtext(expression(~degree*C),side=2, line=2, cex=0.8,adj=.5)
@@ -252,19 +253,19 @@ colnames(moisranef)<-c("site","month","ambmois","shamdif")
 ###Plot soil moisture model results:
 plot.new()
 mois_monthsums<-monthsums_allyear_mois[substring(rownames(monthsums_allyear_mois),1,10)=="mois_fixed",]
-plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=21,bg="black", xlab="", ylab="", ylim=c(-.057,0.057),bty="l", main="Soil Moisture", las=TRUE)
+plot(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,type="p", pch=8,bg="black", xlab="", ylab="", ylim=c(-.057,0.057),bty="l", main="Soil Moisture", las=TRUE)
 moisexp03<-moisranef[which(moisranef$site=="exp03"),]
 moisexp04<-moisranef[which(moisranef$site=="exp04"),]
 moisexp07<-moisranef[which(moisranef$site=="exp07"),]
 moisexp08<-moisranef[which(moisranef$site=="exp08"),]
-points(as.numeric(moisexp03$month),moisexp03$shamdif,pch=21,bg="salmon",col="salmon")
+points(as.numeric(moisexp03$month),moisexp03$shamdif,pch=22,bg="salmon",col="salmon")
 points(as.numeric(moisexp04$month),moisexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(moisexp07$month),moisexp07$shamdif,pch=23,bg="lightblue",col="lightblue")
-points(as.numeric(moisexp08$month),moisexp08$shamdif,pch=25,bg="lightblue",col="lightblue")
+points(as.numeric(moisexp07$month),moisexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
+points(as.numeric(moisexp08$month),moisexp08$shamdif,pch=24,bg="lightblue",col="lightblue")
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0.01,angle=90,code=3)}
-points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=21,bg="black")
+points(as.numeric(mois_monthsums$month),mois_monthsums$temptreat0,pch=8,bg="black")
 mtext("Month",side=1, line=2.5, adj=.5)
 mtext("VWC",side=2, line=2.5,adj=.5, cex=0.8)
 mtext("e)",side=3, line=0, cex=0.9,adj=0)

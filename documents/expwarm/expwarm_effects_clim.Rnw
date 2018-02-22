@@ -264,7 +264,7 @@ We are grateful to those who shared their experimental climate data with us, all
  \begin{figure}[p]
    \centering
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/blockyearvar.pdf}  
- \caption{\textbf{Observed warming over space and time, for above-ground and soil temperatures,} excluding data from plots that manipulated precipitation. Points represent the difference between treatment and control plots by block (i.e., one data point per block) and by year (i.e., one data point per year). The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). See Supplemental Materials (especially Tables S4 and S5) for details.}
+ \caption{\textbf{Observed warming over space and time, for above-ground and soil temperatures,} excluding data from plots that manipulated precipitation. Points represent the difference between treatment and control plots by block (i.e., one data point per block) and by year (i.e., one data point per year). The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Shapes vary by heating type: diamonds represent infrared; triangles represent soil warming cables. See Supplemental Materials (especially Tables S4 and S5) for details.}
  \label{fig:blockyear}
  \end{figure}
  
@@ -272,7 +272,7 @@ We are grateful to those who shared their experimental climate data with us, all
  \begin{figure}[p]
 \centering
 \includegraphics[height=100mm,width=180mm]{/Users/aileneettinger/git/radcliffe/Analyses/figures/ShamVSAmbient_all.pdf}  
- \caption{\textbf{Deviations in measured abiotic variables by month in structural controls compared to ambient controls} (i.e., with no control chambers or warming infrastructure in place). Above-ground temperatures were higher (a,b), whereas soil temperature (c,d) and soil moisture (e) were lower in structural controls compared with ambient controls. We show overall (fixed) effects in black from monthly mixed-effects models; site-level random effects are shown by symbols in blue (for the three studies conducted at Harvard Forest in Massachusetts, USA) and pink (the two studies conducted at Duke Forest in North Carolina, USA). See Supplemental Materials for details (Tables S6-S11). }
+ \caption{\textbf{Deviations in measured abiotic variables by month in structural controls compared to ambient controls} (i.e., with no control chambers or warming infrastructure in place). Above-ground temperatures were higher (a,b), whereas soil temperature (c,d) and soil moisture (e) were lower in structural controls compared with ambient controls. We show overall (fixed) effects in black from monthly mixed-effects models; site-level random effects are shown by symbols in blue (for the three studies conducted at Harvard Forest in Massachusetts, USA) and pink (the two studies conducted at Duke Forest in North Carolina, USA). Shapes vary by heating type: triangles represent soil warming cables, circles represent forced air; squares represent combined soil warming and forced air heating. See Supplemental Materials for details (Tables S6-S11). }
  \label{fig:shamamb}
  \end{figure}
 \clearpage

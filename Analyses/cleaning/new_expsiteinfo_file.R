@@ -74,6 +74,7 @@ exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$te
 exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
 exptreats_detail[which(exptreats_detail$DatasetID=="exp05" & exptreats_detail$preciptreat=="1"),]$preciptreat_units<-"perc"
 colnames(exptreats_detail)[1]<-"site"
+
 write.csv(exptreats_detail,"analyses/treats_detail.csv",row.names=FALSE, eol="\r\n")  
   
 ###Check that expphen blocks/plots match expclim blocks/plots:
