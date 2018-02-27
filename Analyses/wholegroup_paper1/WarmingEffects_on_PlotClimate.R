@@ -178,10 +178,10 @@ summary(agg.dev)
 agg.dev.graph <- agg.dev
 
 # Just trimming things to the CIs to make things easier
-agg.dev.graph[agg.dev.graph$soilmois1.dev.lo<= min(agg.dev.graph$soilmois1.dev, na.rm=T) & !is.na(agg.dev.graph$soilmois1.dev.lo),"soilmois1.dev.lo"] <- min(agg.dev.graph$soilmois1.dev, na.rm=T)
-agg.dev.graph[agg.dev.graph$soilmois1.dev.hi>= max(agg.dev.graph$soilmois1.dev, na.rm=T) & !is.na(agg.dev.graph$soilmois1.dev.hi),"soilmois1.dev.hi"] <- max(agg.dev.graph$soilmois1.dev, na.rm=T)
-agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.lo<= min(agg.dev.graph$BGtemp_mean.dev, na.rm=T) & !is.na(agg.dev.graph$BGtemp_mean.dev.lo),"BGtemp_mean.dev.lo"] <- min(agg.dev.graph$BGtemp_mean.dev, na.rm=T)
-agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.hi>= max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)  & !is.na(agg.dev.graph$BGtemp_mean.dev.hi),"BGtemp_mean.dev.hi"] <- max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)
+# agg.dev.graph[agg.dev.graph$soilmois1.dev.lo<= min(agg.dev.graph$soilmois1.dev, na.rm=T) & !is.na(agg.dev.graph$soilmois1.dev.lo),"soilmois1.dev.lo"] <- min(agg.dev.graph$soilmois1.dev, na.rm=T)
+# agg.dev.graph[agg.dev.graph$soilmois1.dev.hi>= max(agg.dev.graph$soilmois1.dev, na.rm=T) & !is.na(agg.dev.graph$soilmois1.dev.hi),"soilmois1.dev.hi"] <- max(agg.dev.graph$soilmois1.dev, na.rm=T)
+# agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.lo<= min(agg.dev.graph$BGtemp_mean.dev, na.rm=T) & !is.na(agg.dev.graph$BGtemp_mean.dev.lo),"BGtemp_mean.dev.lo"] <- min(agg.dev.graph$BGtemp_mean.dev, na.rm=T)
+# agg.dev.graph[agg.dev.graph$BGtemp_mean.dev.hi>= max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)  & !is.na(agg.dev.graph$BGtemp_mean.dev.hi),"BGtemp_mean.dev.hi"] <- max(agg.dev.graph$BGtemp_mean.dev, na.rm=T)
 
 # summary(agg.dev.graph)
 
@@ -219,9 +219,9 @@ summary(agg.dev.graph[agg.dev.graph$site=="exp12" & is.na(agg.dev.graph$BGtemp_m
 unique(agg.dev.graph[agg.dev.graph$site=="exp12" & is.na(agg.dev.graph$BGtemp_mean.base),"doy"])
 
 
-png("../figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPrecip.png", height=4.5, width=9, units="in", res=180)
+png("../figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation_NoPrecip.png", height=9, width=9, units="in", res=180)
 ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
-  facet_wrap(~site, scales="fixed", ncol=5) +
+  facet_wrap(~site, scales="fixed", ncol=4) +
   geom_ribbon(aes(x=doy, ymin=BGtemp_mean.dev.lo, ymax=BGtemp_mean.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=BGtemp_mean.dev, color=target), size=0.5) +
   geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
@@ -236,6 +236,24 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
   theme_bw()
 dev.off()
 # ---------
+sites.graph2 <-unique(site.means$site[!is.na(site.means$AGtemp_mean.ann)])
+
+png("../figures/WarmingEffects_TimeSeries_AGTempMean_Deviation_NoPrecip.png", height=5, width=9, units="in", res=180)
+ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph2,]) +
+  facet_wrap(~site, scales="fixed", ncol=4) +
+  geom_ribbon(aes(x=doy, ymin=AGtemp_mean.dev.lo, ymax=AGtemp_mean.dev.hi, fill=target), alpha=0.3) +
+  geom_line(aes(x=doy, y=AGtemp_mean.dev, color=target), size=0.5) +
+  geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
+  geom_text(data=site.means[site.means$site %in% sites.graph2,], x=325, y=7, aes(label=round(AGtemp_mean.ann,1)), hjust="right", fontface="bold") +
+  scale_x_continuous(expand=c(0,0), name="day of year") +
+  scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("BGtemp_mean.dev.lo", "BGtemp_mean.dev.hi")], na.rm=T), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
+  ggtitle("Daily Mean Soil Temperature Difference")+
+  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+                     name=expression(paste("target warming " ^"o", "C"))) + 
+  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+                    name=expression(paste("target warming " ^"o", "C"))) + 
+  theme_bw()
+dev.off()
 
 
 # ---------
@@ -305,7 +323,7 @@ unique(agg.dev.graph[agg.dev.graph$site=="exp12" & is.na(agg.dev.graph$BGtemp_me
 
 png("../figures/WarmingEffects_TimeSeries_SoilTemp1Mean_Deviation.png", height=4.5, width=9, units="in", res=180)
 ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
-  facet_wrap(~site, scales="fixed", ncol=5) +
+  facet_wrap(~site, scales="fixed", ncol=4) +
   geom_ribbon(aes(x=doy, ymin=BGtemp_mean.dev.lo, ymax=BGtemp_mean.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=BGtemp_mean.dev, color=target), size=0.5) +
   geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
