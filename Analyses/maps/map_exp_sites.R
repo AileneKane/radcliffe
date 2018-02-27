@@ -24,7 +24,7 @@ summary(expsites)
 library(raster)
 nat.earth <- stack("~/Desktop/SpatialData/NaturalEarth/HYP_50M_SR_W/HYP_50M_SR_W.tif")
 nat.crop <- crop(nat.earth, y=c(min(expsites$Long, na.rm=T)-10, max(expsites$Long, na.rm=T)+10, min(expsites$Lat, na.rm=T)-35, max(expsites$Lat, na.rm=T)+35))
-# nat.crop <- aggregate(nat.crop, fact=8, fun=mean) # This was just to help make faster graphs to test sizes, etc
+nat.crop <- aggregate(nat.crop, fact=8, fun=mean) # This was just to help make faster graphs to test sizes, etc
 
 
 rast.table <- data.frame(xyFromCell(nat.crop, 1:ncell(nat.crop)),
@@ -54,10 +54,10 @@ ggplot(data=expsites) +
   scale_shape_manual(values=c(5, 1, 2, 0)) +
   scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
   scale_size(range=c(1.0,5)) +
-  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1),
-         color=guide_legend(title="Warming Type", order=1),
-         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2)) +
-  theme(legend.position="right") +
+  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
+         color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
+         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2, nrow=2, byrow=T)) +
+  theme(legend.position="top") +
   theme(legend.title=element_text(face="bold"),
         legend.key.size=unit(1.25, units="lines")) +
   coord_equal()
@@ -84,13 +84,13 @@ ggplot(data=expsites) +
   scale_shape_manual(values=c(1, 0, 5, 2)) +
   scale_color_manual(values=c("darkorange3", "purple4", "firebrick3", "black")) +
   scale_size(range=c(1.0,5)) +
-  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1),
-         color=guide_legend(title="Warming Type", order=1),
-         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2)) +
-  theme(legend.position="right") +
+  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
+         color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
+         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2, nrow=2, byrow=T)) +
+  theme(legend.position="top") +
   theme(legend.title=element_text(face="bold"),
         legend.key.size=unit(1.25, units="lines")) +
-  coord_equal(xlim=range(rast.table$x), ylim=range(rast.table$y), expand=c(0,0), ratio=1)
+  coord_equal(xlim=range(rast.table$x), ylim=range(rast.table$y), expand=0, ratio=1)
 dev.off()
 
 # set.seed(1138)
@@ -116,13 +116,13 @@ ggplot(data=expsites) +
   scale_shape_manual(values=c(1, 0, 5, 2)) +
   scale_color_manual(values=c("darkorange3", "purple4", "firebrick3", "black")) +
   scale_size(range=c(1.0,5)) +
-  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1),
-         color=guide_legend(title="Warming Type", order=1),
-         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2)) +
-  theme(legend.position="right") +
+  guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
+         color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
+         size=guide_legend((title="Study Length\n(years)"), override.aes = list(shape=1), order=2, nrow=2, byrow=T)) +
+  theme(legend.position="top") +
   theme(legend.title=element_text(face="bold"),
         legend.key.size=unit(1.25, units="lines")) +
-  coord_equal(xlim=range(rast.table$x), ylim=range(rast.table$y), expand=c(0,0), ratio=1)
+  coord_equal(xlim=range(rast.table$x), ylim=range(rast.table$y), expand=0, ratio=1)
 dev.off()
 
 
