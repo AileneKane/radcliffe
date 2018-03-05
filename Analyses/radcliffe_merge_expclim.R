@@ -978,7 +978,12 @@ clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/h
   colnames(clim)[9]<-"soiltemp1_mean"
   colnames(clim)[8]<-"airtemp_mean"
   clim$preciptreat<-NA
+  #block and plot numbers: block C (14, 15, 91),and D (25, 28, 92)
   clim$block<-NA
+  clim$block[clim$plot==14]<-"C"
+  clim$block[clim$plot==15]<-"C"
+  clim$block[clim$plot==25]<-"D"
+  clim$block[clim$plot==28]<-"D"
   clim$soilmois2<-NA
   clim$surftemp_max<-NA
   clim$surftemp_min<-NA
@@ -994,6 +999,52 @@ clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/h
   clim<-subset(clim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
   row.names(clim) <- NULL
   return(clim)
+}
+
+clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experiments/spruce") {
+  ## haibei ##
+  ## Data type: temp (air and soil), soil moisture, 
+  ##climate data available at: https://www.datadryad.org/resource/doi:10.5061/dryad.q2g41
+  file <- file.path(path, filename)
+  ambclim <- read.csv(file,  skip=7,header=TRUE)
+  ambclim2<-subset(ambclim,select=c("Year", "DOY","Tmax","Tmin","Tavg"))
+  ambclim2$plot<-"amb"
+  ambclim2$temptreat<-0
+  ambclim2$year<-as.numeric(ambclim2$Year)
+  ambclim2<-ambclim2[-which(is.na(ambclim2$year)),]
+  file2 <- file.path(path, "Gunderson_E2.csv")
+  e2clim<-read.csv(file2, header=TRUE)
+  e2clim2<-subset(e2clim,select=c("Year", "DOY","Tmax","Tmin","Tavg"))
+  e2clim2$plot<-"e2"
+  e2clim2$temptreat<-1
+  e2clim2$year<-as.numeric(e2clim2$Year)
+  e2clim2<-e2clim2[-which(is.na(e2clim2$year)),]
+  file3 <- file.path(path, "Gunderson_E4.csv")
+  e4clim<-read.csv(file3, header=TRUE)
+  e4clim$plot<-"e4"
+  e4clim$temptreat<-2
+  e4clim$year<-as.numeric(e4clim$Year)
+  e4clim<-e4clim[-which(is.na(e4clim$year)),]
+  clim<-rbind(ambclim2,e2clim2,e4clim)
+  colnames(clim)[2:5]<-c("doy","airtemp_max","airtemp_min","airtemp_mean")
+  clim$site<-"exp15"
+  clim$preciptreat<-NA
+  clim$block<-NA
+  clim$soilmois1<-NA
+  clim$soilmois2<-NA
+  clim$surftemp_max<-NA
+  clim$surftemp_min<-NA
+  clim$cantemp_max<-NA
+  clim$cantemp_min<-NA
+  clim$soiltemp1_min<-NA
+  clim$soiltemp2_min<-NA
+  clim$soiltemp1_max<-NA
+  clim$soiltemp2_max<-NA
+  clim$soiltemp1_mean<-NA
+  clim$soiltemp2_mean<-NA
+  clim2<-subset(clim, select=c("site","temptreat","preciptreat","block","plot","year","doy","airtemp_min","airtemp_max","airtemp_mean","cantemp_min","cantemp_max","surftemp_min","surftemp_max","soiltemp1_min","soiltemp2_min","soiltemp1_max","soiltemp2_max","soiltemp1_mean","soiltemp2_mean","soilmois1","soilmois2"))
+  row.names(clim2) <- NULL
+  return(clim2)
 }
 
 ##Produce cleaned, raw climate data
@@ -1013,12 +1064,13 @@ clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/h
     cleanclimdata.raw$cleland <- clean.clim$cleland(path="./Data/Experiments/cleland")
     cleanclimdata.raw$cedarcreek<-clean.clim$cedarcreek(path="./Data/Experiments/cedarcreek")
     cleanclimdata.raw$haibei<-clean.clim$haibei(path="./Data/Experiments/haibei")
+    cleanclimdata.raw$spruce<-clean.clim$spruce(path="./Data/Experiments/spruce")
     
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
-    dim(expphenclim1)#341006     22
+    dim(expphenclim1)#343758     22
     expphenclim<-expphenclim1[-which(expphenclim1$doy=="NA"),]
-    dim(expphenclim)#340982     22
+    dim(expphenclim)#343734     22
     expphenclim$doy<-as.numeric(expphenclim$doy)
     expphenclim$year<-as.numeric(expphenclim$year)
     expphenclim$airtemp_max<-as.numeric(expphenclim$airtemp_max)

@@ -30,10 +30,22 @@ expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agt
 expclimt$agtemp_max<-expclimt$airtemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
+expclimt$styear<-NA#
+#make a column for styear (study year, as opposed to calendar year)
+sites<-unique(expclimt$site)
+for (i in 1:length(sites)){
+  sitedat<-expclimt[expclimt$site==sites[i],]
+  styears<-unique(sitedat$year)
+  #print(styears)
+  for (j in 1:length(styears)){
+    expclimt$styear[expclimt$site==sites[i] & expclimt$year==styears[j]]<-j
+  }
+}
 
 expclimt$temptreat <- relevel(as.factor(expclimt$temptreat), ref = "ambient")
-moismod<-lmer(soilmois1~temptreat + (temptreat|site/year), data=expclimt, REML=FALSE)
 moismod2<-lmer(soilmois1~temptreat + (1|site/year), data=expclimt, REML=FALSE)
+#the below model takes a really long time...
+moismod<-lmer(soilmois1~temptreat + (temptreat|site/styear), data=expclimt, REML=FALSE)
 AIC(moismod,moismod2)#moismod2 wins
 summary(moismod2)
 expclimt$warm<-"warmed"#for actively warmed sites
