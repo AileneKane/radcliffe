@@ -47,7 +47,7 @@ expclim$BGtemp_mean <- ifelse(is.na(expclim$soiltemp1_mean), sum(expclim[,c("soi
 summary(expclim)
 
 # Making some color ramps for graphing
-expclim$target <- factor(expclim$target, levels=c("0", "1", "1.5", "2", "2.5", "2.7","3", "3.5", "4", "4.5", "5", "5.5"))
+# expclim$target <- factor(expclim$target, levels=c("0", "1", "1.5", "2", "2.5", "2.7","3", "3.5", "4", "4.5", "5", "5.5"))
 #                   0          1               1.5           2      2.5       2.7     3                3.5        4            4.5,      5,           5.5
 # colors.target <- c("black", "purple", "mediumpurple", "mediumorchid", "plum3","plum2", "palevioletred", "salmon1", "orange", "coral2", "orangered", "red")
 colors.target <- data.frame(target = c("0",     "1",      "1.5",          "2",            "2.5",  "2.7",   "3",             "3.5",     "4",      "4.5",    "5",         "5.5"),
@@ -82,9 +82,18 @@ expclim[expclim$temptreat %in% c(0, "ambient"), "target"] <- 0 # If this isn't a
 summary(expclim$target)
 for(s in unique(expclim[is.na(expclim$target), "site"])){
   tmiss <- unique(expclim[expclim$site==s & is.na(expclim$target),"temptreat"]) 
+  
   for(t in tmiss){
-    t.use <- unique(expclim[expclim$site==s & expclim$temptreat==t & !is.na(expclim$target),"target"]) 
-    expclim[expclim$site==s & expclim$temptreat==t & is.na(expclim$target),"target"] <- t.use
+    
+    if(tmiss %in% unique(targets[targets$site==s,"temptreat"])){
+      tuse <- unique(targets[targets$site==s & targets$temptreat==t,"target"])
+      expclim[expclim$site==s & expclim$temptreat==t & is.na(expclim$target),"target"] <- tuse
+    } else {
+      next
+      #   t.use <- unique(expclim[expclim$site==s & expclim$temptreat==t & !is.na(expclim$target),"target"]) 
+      #   expclim[expclim$site==s & expclim$temptreat==t & is.na(expclim$target),"target"] <- t.use
+    }
+    
   }
 }
 summary(expclim[is.na(expclim$target),])
@@ -148,8 +157,8 @@ dim(expclim); dim(expclim2)
 # ----------------
 library(ggplot2); library(stringr)
 
-colors.target <- data.frame(target = c("0",     "1",      "1.5",          "2",            "2.5",  "2.7",   "3",             "3.5",     "4",      "4.5",    "5",         "5.5"),
-                            color  = c("black", "purple", "mediumpurple", "mediumorchid", "plum3","plum2", "palevioletred", "salmon1", "orange", "coral2", "orangered", "red"))
+colors.target <- data.frame(target = c("0",     "1",      "1.5",          "2",            "2.5",  "2.7",   "3",             "3.5",     "4",      "4.5",    "5",         "5.5", "unknown"),
+                            color  = c("black", "purple", "mediumpurple", "mediumorchid", "plum3","plum2", "palevioletred", "salmon1", "orange", "coral2", "orangered", "red", "gray50"))
 # For when 1-degree drops out for some reason
 colors.target2 <- c("black", "purple", "mediumpurple", "plum3", "plum2","palevioletred", "salmon1", "orange", "coral2", "orangered", "red")
 
@@ -199,6 +208,7 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph & !is.na(agg.dev.g
   geom_line(aes(x=doy, y=soilmois1.dev*100, color=target), size=0.5) +
   geom_text(data=site.means[site.means$site %in% sites.graph,], x=325, y=0.12*100, aes(label=str_pad(round(soilmois1.ann,2), 4,side="right", pad="0")), hjust="right", fontface="bold") +
   scale_y_continuous(expand=c(0,0), name="diff from non-warmed (% soil moisture)") +
+  coord_cartesian(ylim=c(-17, 15)) +
   ggtitle("Daily Mean Soil Moisture Difference") +
   scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$soilmois1.dev),"target"]), "color"]), 
                      name=expression(paste("target warming " ^"o", "C"))) + 
@@ -227,7 +237,8 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
   geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
   geom_text(data=site.means[site.means$site %in% sites.graph,], x=325, y=7, aes(label=round(BGtemp_mean.ann,1)), hjust="right", fontface="bold") +
   scale_x_continuous(expand=c(0,0), name="day of year") +
-  scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("BGtemp_mean.dev.lo", "BGtemp_mean.dev.hi")], na.rm=T), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
+  scale_y_continuous(expand=c(0,0), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
+  coord_cartesian(ylim=c(-5,8)) +
   ggtitle("Daily Mean Soil Temperature Difference")+
   scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
                      name=expression(paste("target warming " ^"o", "C"))) + 
@@ -244,14 +255,33 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph2,]) +
   geom_ribbon(aes(x=doy, ymin=AGtemp_mean.dev.lo, ymax=AGtemp_mean.dev.hi, fill=target), alpha=0.3) +
   geom_line(aes(x=doy, y=AGtemp_mean.dev, color=target), size=0.5) +
   geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
-  geom_text(data=site.means[site.means$site %in% sites.graph2,], x=325, y=7, aes(label=round(AGtemp_mean.ann,1)), hjust="right", fontface="bold") +
+  geom_text(data=site.means[site.means$site %in% sites.graph2,], x=325, y=8, aes(label=round(AGtemp_mean.ann,1)), hjust="right", fontface="bold") +
   scale_x_continuous(expand=c(0,0), name="day of year") +
-  scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("BGtemp_mean.dev.lo", "BGtemp_mean.dev.hi")], na.rm=T), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
-  ggtitle("Daily Mean Soil Temperature Difference")+
-  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
-                     name=expression(paste("target warming " ^"o", "C"))) + 
-  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
-                    name=expression(paste("target warming " ^"o", "C"))) + 
+  scale_y_continuous(expand=c(0,0), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
+  coord_cartesian(ylim=c(-7.5,10)) +
+  ggtitle("Daily Mean Aboveground Temperature Difference")+
+  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),"target"]), "color"]),
+  name=expression(paste("target warming " ^"o", "C"))) +
+  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),"target"]), "color"]),
+  name=expression(paste("target warming " ^"o", "C"))) +
+  theme_bw()
+dev.off()
+
+png("../figures/WarmingEffects_TimeSeries_AGTempMean_Deviation_NoPrecip_2.png", height=5, width=9, units="in", res=180)
+ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph2[!sites.graph2=="exp15"],]) +
+  facet_wrap(~site, scales="fixed", ncol=4) +
+  geom_ribbon(aes(x=doy, ymin=AGtemp_mean.dev.lo, ymax=AGtemp_mean.dev.hi, fill=target), alpha=0.3) +
+  geom_line(aes(x=doy, y=AGtemp_mean.dev, color=target), size=0.5) +
+  geom_hline(aes(yintercept=as.numeric(paste(target)), color=target), linetype="dashed") +
+  geom_text(data=site.means[site.means$site %in% sites.graph2[!sites.graph2=="exp15"],], x=325, y=8, aes(label=round(AGtemp_mean.ann,1)), hjust="right", fontface="bold") +
+  scale_x_continuous(expand=c(0,0), name="day of year") +
+  scale_y_continuous(expand=c(0,0), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
+  coord_cartesian(ylim=c(-7.5,10)) +
+  ggtitle("Daily Mean Aboveground Temperature Difference")+
+  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),"target"]), "color"]),
+                     name=expression(paste("target warming " ^"o", "C"))) +
+  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$AGtemp_mean.dev),"target"]), "color"]),
+                    name=expression(paste("target warming " ^"o", "C"))) +
   theme_bw()
 dev.off()
 
