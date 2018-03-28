@@ -1111,7 +1111,7 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
     unique(expphenclim$alltreat)
     boxplot(airtemp_min~alltreat, data=expphenclim)
     boxplot(airtemp_max~alltreat, data=expphenclim)
-    boxplot(soiltemp1_max~alltreat, data=expphenclim)
+    843boxplot(soiltemp1_max~alltreat, data=expphenclim)
     boxplot(soiltemp2_min~alltreat, data=expphenclim)
     boxplot(soiltemp1_max~alltreat, data=expphenclim)
     boxplot(soiltemp2_max~alltreat, data=expphenclim)

@@ -56,9 +56,7 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 
 \section* {Additional methods for database development}
-For our literature review, we searched Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. We removed all passive warming studies from the list, and contacted authors for daily data. The resulting database contains daily climate data collected between 1991 and 2014 from North American and European climate change experiments (Table S1, Figure S1). 
-
-We were unable to include the following studies because authors declined to share their data or did not respond: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}
+For our literature review, we searched Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. We removed all passive warming studies from the list, and contacted authors for daily data. Three additional datasets were offered or suggested to us, and in March 2018, we added additional studies found by using the same terms to search the following online databases for additional datasets: dataONE \citep{dataONE}, KNB \citep{knb}, and dryad \citep{dryad}. The resulting database contains daily climate data collected between 1991 and 2014 from 15 North American, European, and Chinese climate change experiments (Table S1, Figure S1). We were unable to include the following studies because authors declined to share their data or did not respond: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}.
 
 \section* {Details of statistical analyses and results}
 For all analyses, we use mixed-effects models implemented using the lme4 package in R, version 3.2.4 \citep{bates2015,rcoreteam2016}. Mixed-effects models, also called multi-level or hierarchical models, can account for structured data that violate the independence assumption of traditional linear regression \citep{gelman2007}. In our analyses, we use levels/groupings of experimental site, year, and day of year (doy) to account for this mutual dependence among data points. To test for significance of fixed effects in our models, we use Type II tests for models including only main effects and Type III tests for models including interactions, as well as main effects. 
@@ -72,10 +70,10 @@ We found that experimental structures altered above-ground and soil temperatures
 minimum, and maximum soil and air temperatures), although the magnitude varied across months, as well as among studies. We show summaries from models fit to the entire year (Tables \ref{table:shamamb_soiltemp}, \ref{table:shamamb_airtemp}, \ref{table:shamamb_soilmois}), as well as summaries from models fit to each month of data, as is shown in Figure 4 in the main text (Tables \ref{table:shamamb_stempm}, \ref{table:shamamb_atempm}, \ref{table:shamamb_soilmoism}).
 
 \subsection* {Analysis of effects of precipitation treatments on above-ground temperature}
-Of the twelve experiments in the C3E database, four manipulated precipitation and measured above-ground temperature. To examine the effects of precipitation treatment on above-ground temperature, we fit linear mixed effect models to data from these four sites with above-ground temperature (daily minimum and maximum) as the response variables. Predictors were precipitation treatment (a continuous fixed effect, which ranged from 50 to 200 \% of ambient for these four studies), target warming (a continuous fixed effect, which ranged from 0 to 4 \degree C for these four studies), and their interaction. To account for methodological and other differences among site, we included site as a random effect, with year and doy nested within site to account for the non-independent nature of measurements taken on the same day within sites. We used a random intercept model structure, (Table \ref{table:preciptemp}). 
+Of the 15 experiments in the C3E database, four manipulated precipitation and measured above-ground temperature and three of these also measured soil temperature. To examine the effects of precipitation treatment on temperature, we fit linear mixed effect models to data from these sites with temperature (above-ground daily minimum and maximum, and soil minimum and maximum) as the response variables. Predictors were precipitation treatment (a continuous fixed effect, which ranged from 50 to 200 \% of ambient for these four studies), target warming (a continuous fixed effect, which ranged from 0 to 4 \degree C for thesefour studies), and their interaction. To account for methodological and other differences among site, we included site as a random effect, with year and doy nested within site to account for the non-independent nature of measurements taken on the same day within sites. We used a random intercept model structure, (Table \ref{table:preciptemp}). 
 
 \subsection* {Analysis of effects of experimental warming on soil moisture}
-Of the twelve experiments in the C3E database, ten measured and reported soil moisture. To examine the effects of target warming treatment on soil moisture, we fit linear mixed effects models to data from these ten sites, excluding plots with precipitation treatments. We first fit a model with soil moisture as the response and a predictor of target warming (this was a continuous fixed effect, which ranged from 0 to 5.2 \degree C for these 10 studies). To account for methodological and other differences among site, we included site as a random effect, with year and doy nested within site to account for the non-independent nature of measurements taken on the same day within sites.  We used a random slope and intercept model structure, to allow the effect of target warming to vary among sites (Table \ref{table:targsoilmois}). 
+Of the 15 experiments in the C3E database, XX measured and reported soil moisture. To examine the effects of target warming treatment on soil moisture, we fit linear mixed effects models to data from these ten sites, excluding plots with precipitation treatments. We first fit a model with soil moisture as the response and a predictor of target warming (this was a continuous fixed effect, which ranged from 0 to 5.2 \degree C for these 10 studies). To account for methodological and other differences among site, we included site as a random effect, with year and doy nested within site to account for the non-independent nature of measurements taken on the same day within sites.  We used a random slope and intercept model structure, to allow the effect of target warming to vary among sites (Table \ref{table:targsoilmois}). 
 
 \par In addition to testing how experimental warming influenced soil moisture, we also tested how experimental structures influenced soil moisture. We compared the soil moisture measured in structural controls to both ambient controls and warmed plots by fitting a model with categorical fixed effects of ``ambient," ``structural control," and ``warmed."  We again included site as a random effect, with doy nested within site to account for the non-independent nature of measurements taken on the same day within sites, and used a random intercept structure (Table \ref{table:warmsoilmois}). 
 
@@ -107,6 +105,9 @@ We wanted to investigate how using measured plot-level climate variables, as opp
     exp10 & Duke Forest, NC, USA & \cite{marchin2015} & 2010-2013 & forced air \\ \hline
     exp11 & Rocky Mountain Biological Lab, CO, USA & \cite{price1998} & 1991-1994 & infrared\\ \hline
     exp12 & Kessler Farm Field Laboratory, OK, USA & \cite{sherry2007} & 2003 & infrared\\ \hline
+    exp13 & Haibei Alpine Grassland Research Station, China & \cite{suonan2017} & 2012-2014 & infrared\\ \hline
+    exp14 & Cedar Creek, MN, USA & \cite{whittington2015} & 2009-2011 & infrared\\ \hline
+    exp15 & Oak Ridge, TN, USA & \cite{gunderson2012} & 2003-2005 & forced air\\ \hline
      \end{tabular} 
     \end{footnotesize}  
     \end{table}
@@ -121,26 +122,33 @@ We wanted to investigate how using measured plot-level climate variables, as opp
 \arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
 
+
+\begin{landscape}
 \begin{footnotesize} 
 <<label=xtable1, echo=FALSE, results=tex>>=
 source("../../Analyses/wholegroup_paper1/exps_table.R")
-site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, warming type,target warming treatment (\\degree C), precipitation treatment (percent of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth of soil temperature measurement (cm), and depth of soil moisture measurement (cm) used in each study. Note that some sites may have multiple sources; however, we list only one here.", 
+site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, warming type,target warming treatment (\\degree C), precipitation treatment (proportion of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth of soil temperature measurement (cm), and depth of soil moisture measurement (cm) used in each study. Note that some sites may have multiple sources; however, we list only one here.", 
         label="tab:methods",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.04\\textwidth}|",
-               "p{0.17\\textwidth}|",
+               "p{0.19\\textwidth}|",
                "p{0.08\\textwidth}|",
+               "p{0.12\\textwidth}|",
+               "p{0.07\\textwidth}|",
                "p{0.10\\textwidth}|",
+               "p{0.09\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
-               "p{0.07\\textwidth}|"))
+               "p{0.07\\textwidth}|",
+               "p{0.09\\textwidth}|"))
 
 print(site.table, include.rownames=FALSE, caption.placement="top",size="\\footnotesize")
 
 @
 \end{footnotesize} 
+\end{landscape}
 \clearpage
 
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\
@@ -560,50 +568,9 @@ print(moismod.table, include.rownames=FALSE, include.colnames=TRUE,caption.place
 \clearpage
 %how do precip treatments affect above-ground temperature
 <<label=xtable9, echo=FALSE, results=tex>>=
-library(xtable)
-library(lme4)
-library(car)
-require(dplyr)
-#include only studies that modify precip
-expclim<-read.csv("../../Analyses/expclim.csv", header=T)
-treats<-read.csv("../../Analyses/treats_detail.csv", header=T)
-treats[which(is.na(treats$target)),]$target<-0
-treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
-expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
-expclimp<-expclim2[which(expclim2$site=="exp01"|expclim2$site=="exp02"|expclim2$site=="exp05"|expclim2$site=="exp09"|expclim2$site=="exp12"),]
-
-#get one column for above-ground temperature
-expclimp$agtemp_min<-expclimp$airtemp_min
-expclimp[which(is.na(expclimp$agtemp_min) & !is.na(expclimp$cantemp_min)),]$agtemp_min <-expclimp[which(is.na(expclimp$airtemp_min) & !is.na(expclimp$cantemp_min)),]$cantemp_min
-
-expclimp[which(is.na(expclimp$agtemp_min) & !is.na(expclimp$surftemp_min)),]$agtemp_min<-expclimp[which(is.na(expclimp$agtemp_min) & !is.na(expclimp$surftemp_min)),]$surftemp_min
-
-expclimp$agtemp_max<-expclimp$airtemp_max
-
-expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$cantemp_max)),]$agtemp_max<-expclimp[which(is.na(expclimp$airtemp_max) & !is.na(expclimp$cantemp_max)),]$cantemp_max
-
-expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$surftemp_max)),]$agtemp_max<-expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$surftemp_max)),]$surftemp_max
-#give controls target/precip treatments of 0
-expclimp$target[which(is.na(expclimp$target))]<-0
-expclimp$preciptreat_amt[which(is.na(expclimp$preciptreat_amt))]<-0
-expclimp$preciptreat_amt<-as.numeric(expclimp$preciptreat_amt)
-expclimp<-subset(expclimp,select=c(site,year,doy,preciptreat_amt,target,agtemp_min,agtemp_max))
-expclimp<- expclimp [apply(expclimp , 1, function(x) all(!is.na(x))),]
-tempmod4<-lmer(agtemp_max~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-tempmod4_min<-lmer(agtemp_min~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-mintemptable<-cbind(round(summary(tempmod4_min)$coeff[,1:2],digits=3), Anova(tempmod4_min, type="III"))
-temptable<-cbind(round(summary(tempmod4)$coeff[,1:2],digits=3), Anova(tempmod4, type="III"))
-alltemptable<-as.data.frame(rbind(mintemptable,temptable))
-mods<-c("min above-ground temp.","","","","max above-ground temp.","","","")
-preds<-c("intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target")
-alltemptable<-cbind(mods,preds,alltemptable)
-rownames(alltemptable)<-NULL
-colnames(alltemptable)<-c("response","predictors","est.","se","$\\chi^{2}$","df","p")
-alltemptable$p[as.numeric(alltemptable$p)<0.001]<-"<0.001"
-alltemptable$df<-as.character("1")
-
+source("../../Analyses/wholegroup_paper1/preciptemp.R")
 #digits=c(0,0,0,2,2,2,0,2),
- preciptemp.table<-xtable(alltemptable,caption="\\textbf{Summary of a linear mixed-effects models of how precipitation treatment affects above-ground minimum and maximum temperatures in climate change experiments.} We include data from all studies that manipulated precipitation and measured daily above-ground temperature. Estimates (est.) are the intercept and coefficients for precipitation and warming treatments, as well as their interaction, from the model; se is the standard error for these estimates; p-values represent significance tests for Type III Wald $\\chi^{2}$ tests. Random effects were site (n=4), year of study (n=9 year:site combinations), and doy nested within year (n=2599 doy:year:site combinations), with a random intercept structure. Total number of observations was 70463.",label="table:preciptemp",align=c(
+ preciptemp.table<-xtable(alltemptable,caption="\\textbf{Summary of a linear mixed-effects models of how precipitation treatment affects temperature in climate change experiments.} We include data from all studies that manipulated precipitation and measured daily above-ground temperature and/or soil temperature. Estimates (est.) are the intercept and coefficients for precipitation and warming treatments, as well as their interaction, from the model; se is the standard error for these estimates; p-values represent significance tests for Type III Wald $\\chi^{2}$ tests. Random effects were site (n=4 for above-ground, n=3 for soil), year of study (n=10 year:site combinations for above-ground, n=9 for soil), and doy nested within year (n=2818 doy:year:site combinations for above-ground, n= 2747 for soil), with a random intercept structure. Total number of observations was 78347 for above-ground temperature and 76481 for soil.",label="table:preciptemp",align=c(
                "p{0.01\\textwidth}",
                "|p{0.20\\textwidth}",
                "|p{0.10\\textwidth}|",
@@ -612,7 +579,7 @@ alltemptable$df<-as.character("1")
                "p{0.05\\textwidth}|",
                "p{0.01\\textwidth}|",
                "p{0.05\\textwidth}|"))
-print(preciptemp.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,hline.after = c(-1,0,4,8),size="\\footnotesize")
+print(preciptemp.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement="top",xtable.sanitize.rownames.function=identity, sanitize.colnames.function = identity, sanitize.text.function=identity,hline.after = c(-1,0,4,8,12,16),size="\\footnotesize")
 @
 
 %how soil  moisture is affected by warming treatment
@@ -725,11 +692,16 @@ print(aic.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement
 \begin{figure}[p]
 \centering
 \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/targetvsobs_stduration.pdf} 
-\caption{\textbf{Mean warming across the study duration.} Reporting only the mean temperature difference across the duration of the study, as is commonly done in publications of climate change experiments, hides potentially important variations in daily, seasonal, and annual temperatures among treatments. The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Compare to Figure 2 in the main text.} %jeff says: Note that exp01 did not specify explicit target temperatures for intermediate warming treatments.
+\caption{\textbf{Mean warming across the study duration.} Reporting only the mean temperature difference across the duration of the study, as is commonly done in publications of climate change experiments, hides potentially important variations in daily, seasonal, and annual temperatures among treatments. The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Compare to Figure 2 in the main text. (Note that exp01 did not specify explicit target temperatures for all warming treatments. See \ref{fig:blockyearrep} for comparison using reported, rather than target, temperatures.)}
  \label{fig:targetvsobs}
  \end{figure}
 
-
+ \begin{figure}[p]
+   \centering
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/blockyearvar_reported.pdf}  
+ \caption{\textbf{Observed warming over space and time, for above-ground and soil temperatures,} excluding data from plots that manipulated precipitation. Points represent the difference between treatment and control plots by block (i.e., one data point per block) and by year (i.e., one data point per year). The solid line is the fitted relationship between observed and reported warming for the duration of the study. The dashed line shows when observed warming within a block or year is exactly equal to mean reported warming for the duration of the study (1:1). Shapes vary by heating type: diamonds represent infrared; triangles represent soil warming cables. Compare to Figure 2 in the main text.}
+ \label{fig:blockyearrep}
+ \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -49,6 +49,9 @@ exptreats_detail[which(exptreats_detail$DatasetID=="exp09" & exptreats_detail$pr
 exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="1"),]$target<-1
 exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="2"),]$target<-2.7
 exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="3"),]$target<-4
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="1"),]$reported<-1
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="2"),]$reported<-2.7
+exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat=="3"),]$reported<-4
 exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$temptreat>0),]$temptreat_units<-"C"
 exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$preciptreat=="1"),]$preciptreat_amt<-150
 exptreats_detail[which(exptreats_detail$DatasetID=="exp01" & exptreats_detail$preciptreat=="-1"),]$preciptreat_amt<-50
