@@ -977,7 +977,6 @@ clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/h
   colnames(clim)[10]<-"soilmois1"
   colnames(clim)[9]<-"soiltemp1_mean"
   colnames(clim)[8]<-"airtemp_mean"
-  clim$preciptreat<-NA
   #block and plot numbers: block C (14, 15, 91),and D (25, 28, 92)
   clim$block<-NA
   clim$block[clim$plot==14]<-"C"
@@ -1002,9 +1001,7 @@ clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/h
 }
 
 clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experiments/spruce") {
-  ## haibei ##
-  ## Data type: temp (air and soil), soil moisture, 
-  ##climate data available at: https://www.datadryad.org/resource/doi:10.5061/dryad.q2g41
+  
   file <- file.path(path, filename)
   ambclim <- read.csv(file,  skip=7,header=TRUE)
   ambclim2<-subset(ambclim,select=c("Year", "DOY","Tmax","Tmin","Tavg"))
@@ -1020,12 +1017,13 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
   e2clim2$year<-as.numeric(e2clim2$Year)
   e2clim2<-e2clim2[-which(is.na(e2clim2$year)),]
   file3 <- file.path(path, "Gunderson_E4.csv")
-  e4clim<-read.csv(file3, header=TRUE)
-  e4clim$plot<-"e4"
-  e4clim$temptreat<-2
-  e4clim$year<-as.numeric(e4clim$Year)
-  e4clim<-e4clim[-which(is.na(e4clim$year)),]
-  clim<-rbind(ambclim2,e2clim2,e4clim)
+  e4clim<-read.csv(file3, skip=1,header=TRUE)
+  e4clim2<-subset(e4clim,select=c("Year", "DOY","Tmax","Tmin","Tavg"))
+  e4clim2$plot<-"e4"
+  e4clim2$temptreat<-2
+  e4clim2$year<-as.numeric(e4clim2$Year)
+  e4clim2<-e4clim2[-which(is.na(e4clim2$year)),]
+  clim<-rbind(ambclim2,e2clim2,e4clim2)
   colnames(clim)[2:5]<-c("doy","airtemp_max","airtemp_min","airtemp_mean")
   clim$site<-"exp15"
   clim$preciptreat<-NA
@@ -1065,7 +1063,7 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
     cleanclimdata.raw$cedarcreek<-clean.clim$cedarcreek(path="./Data/Experiments/cedarcreek")
     cleanclimdata.raw$haibei<-clean.clim$haibei(path="./Data/Experiments/haibei")
     cleanclimdata.raw$spruce<-clean.clim$spruce(path="./Data/Experiments/spruce")
-    
+    #"spruce" data might be derived, not measured?
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
     dim(expphenclim1)#343758     22
@@ -1090,7 +1088,7 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
     write.csv(expphenclim, "Analyses/expclim.csv", row.names=FALSE, eol="\r\n")
 
   ##Look at the data to check for errors
-    head(expphenclim)
+   tail(expphenclim)
     dim(expphenclim)
     quartz()
     boxplot(airtemp_min~site, data=expphenclim)
@@ -1111,7 +1109,7 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
     unique(expphenclim$alltreat)
     boxplot(airtemp_min~alltreat, data=expphenclim)
     boxplot(airtemp_max~alltreat, data=expphenclim)
-    843boxplot(soiltemp1_max~alltreat, data=expphenclim)
+    boxplot(soiltemp1_max~alltreat, data=expphenclim)
     boxplot(soiltemp2_min~alltreat, data=expphenclim)
     boxplot(soiltemp1_max~alltreat, data=expphenclim)
     boxplot(soiltemp2_max~alltreat, data=expphenclim)

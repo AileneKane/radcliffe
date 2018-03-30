@@ -2,7 +2,7 @@
 #By Ailene Ettinger
 #Started Septembr 6, 2016
 #modified for NCC manuscript February 24, 2017 
-#modified for EL REviewsFebruary 2018
+#modified for EL Reviews February 2018
 #block and year figure with line showing fitted relationship between target versus observed
 
 rm(list=ls()) 
@@ -100,8 +100,12 @@ allwarm_stmean<-allwarm_stmean[order(allwarm_stmean$site),]
 quartz(height=7,width=7)
 par(mfrow=c(2,2),mai=c(1,1,.2,.2))
 sites<-unique(allwarm_block$site)
-shapes<-c(23,24,23,23,23)#determined by the warming type: infrared=23, soil warming=24
-cols<-c("darkblue","lightblue","darkgreen","gray","white","lightgreen")#determind by site
+#cols<-c("darkgray","darkred","darkgray","darkgray","darkgray","darkgray")#determined by the warming type: infrared=23, soil warming=24
+cols<-c("black","darkred","black","black","black","black")#determined by the warming type: infrared=23, soil warming=24
+
+shapes<-c(23,24,10,3,22,21)
+#cols<-c("darkblue","lightblue","darkgreen","gray","white","lightgreen")
+#colors determined by the warming type: infrared="darkgreen", soil warming="lightblue"
 #allwarm_blockag<-allwarm_block[-which(allwarm_block$agwarm=="NaN"),]
 #sitesag<-unique(allwarm_blockag$site)
 allwarm_block$target<-as.numeric(allwarm_block$target)
@@ -114,20 +118,20 @@ plot(allwarm_block$target,allwarm_block$agwarm,pch=shapes[as.factor(allwarm_bloc
 abline(a=0,b=1,lty=2)
 abline(a=fixef(mab.mm)[1],b=fixef(mab.mm)[2], lty=1)
 mtext("Observed warming (C)", side=2,line=4,adj=-5, cex=1.2)
-
+#col=cols[as.factor(allwarm_yr$site)],
 plot(allwarm_yr$target,allwarm_yr$agwarm,pch=shapes[as.factor(allwarm_yr$site)], bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(may.mm)[1],b=fixef(may.mm)[2], lty=1)
-
+# col=cols[as.factor(allwarm_block$site)],
 plot(allwarm_block$target,allwarm_block$soilwarm,pch=shapes[as.factor(allwarm_block$site)],bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msb.mm)[1],b=fixef(msb.mm)[2], lty=1)
 
-plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)], bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)],  bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msy.mm)[1],b=fixef(msy.mm)[2], lty=1)
-legend(4.15,2.9,pch=shapes,pt.bg=cols,legend=sites)
+legend(4.15,2.9,pch=shapes,pt.bg=cols,col=cols,legend=sites)
 mtext("Target warming (C)", side=1,line=3,adj=-3, cex=1.2)
 
 

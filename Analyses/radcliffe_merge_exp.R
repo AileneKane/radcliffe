@@ -1057,8 +1057,81 @@ clean.raw$dunne <- function(path="./Data/Experiments/dunne") {
   dunnermbl<-dunnermbl[!is.na(dunnermbl$genus),]
   return(dunnermbl)
 }
+##Data from Haibei Alpine Grassland Research Station, China
+##Spring phenology
+##Contact: sonamkyi@itpcas.ac.cn
+clean.raw$haibei <- function(filename="ww_data1.csv", path="./Data/Experiments/haibei") {
+  file <- file.path(path, filename)
+  haibei1 <- read.csv(file, check.names=FALSE, header=TRUE)
+  haibei1<-haibei1[haibei1$Treatment!="WW",]#remove winter warming treatment
+  colnames(haibei1)[1]<-"year"
+  colnames(haibei1)[4]<-"block"
+  colnames(haibei1)[5]<-"plot"
+  flow<-subset(haibei1,select=c("block","plot","year","Species","FFD"))
+  colnames(flow)[5]<-"doy"
+  flow$event<-"ffd"
+  leaf<-subset(haibei1,select=c("block","plot","year","Species","LOD"))
+  colnames(leaf)[5]<-"doy"
+  leaf$event<-"lod"
+  haibei<-rbind(flow,leaf)
+  haibei$genus[haibei$Species=="En"] <- "Elymus"
+  haibei$species[haibei$Species=="En"] <- "nutans"
+  haibei$genus[haibei$Species=="Sa"] <- "Stipa"
+  haibei$species[haibei$Species=="Sa"] <- "alinea"
+  haibei$genus[haibei$Species=="Pp"] <- "Poa"
+  haibei$species[haibei$Species=="Pp"] <- "pratensis"
+  haibei$genus[haibei$Species=="Kh"] <- "Kobresia"
+  haibei$species[haibei$Species=="Kh"] <- "humilis"
+  haibei$genus[haibei$Species=="Th"] <- "Tibetia"
+  haibei$species[haibei$Species=="Th"] <- "himalaica"
+  haibei$genus[haibei$Species=="Ma"] <- "Melilotoides"
+  haibei$species[haibei$Species=="Ma"] <- "archiducis-nicolai"
+  haibei$genus[haibei$Species=="Pn"] <- "Potentilla"
+  haibei$species[haibei$Species=="Pn"] <- "nivea"
+  haibei$genus[haibei$Species=="Gs"] <- "Gentiana"
+  haibei$species[haibei$Species=="Gs"] <- "straminea"
+  haibei$genus[haibei$Species=="Ss"] <- "Saussurea"
+  haibei$species[haibei$Species=="Ss"] <- "superba"
+  haibei$genus[haibei$Species=="Gl"] <- "Gentiana"
+  haibei$species[haibei$Species=="Gl"] <- "lawrencei"
+  haibei$genus[haibei$Species=="Ad"] <- "Aster"
+  haibei$species[haibei$Species=="Ad"] <- "diplostephioides"
+  haibei$site<-"exp13"
+  haibei$doy<-round(haibei$doy,digits=0)
+  haibei2<-subset(haibei, select=c("site","block","plot","event","year","genus","species", "doy"))
+  return(haibei2)
+}
+
+##Data from Cedar Creek
+##Spring and Fall phenology
+##Contact: danbaha@umn.edu
+clean.raw$cc <- function(filename="https___pasta.lternet.edu_package_data_eml_knb-lter-cdr_575_8_760e44559a2611967d61bb35f21d9260.csv", path="./Data/Experiments/cedarcreek") {
+  file <- file.path(path, filename)
+  phen <- read.csv(file, check.names=FALSE, header=TRUE)
+  colnames(phen)[2]<-"year"
+  colnames(phen)[4]<-"block"
+  phen$Heat.treatment<-NA#make the plots to match those in clim data
+  phen$Heat.treatment[phen$Treatment=="0-Ambient"]<-"control"
+  phen$Heat.treatment[phen$Treatment=="1-Low"]<-"low"
+  phen$Heat.treatment[phen$Treatment=="2-High"]<-"high"
+  phen$plot<-paste(phen$block,phen$Heat.treatment,sep="-")
+  flow<-subset(phen,select=c("block","plot","year","Species","FlwrDay"))
+  colnames(flow)[5]<-"doy"
+  flow$event<-"ffd"
+  fruit<-subset(phen,select=c("block","plot","year","Species","SeedDay"))
+  colnames(fruit)[5]<-"doy"
+  fruit$event<-"ffrd"
+  ccphen<-rbind(flow,fruit)
+  ccphen$site<-"exp14"
+  genus.species<-strsplit(ccphen$Species," ")
+  genus.species<-do.call(rbind, genus.species)
+  colnames(genus.species)<-c("genus","species")
+  ccphen<-cbind(ccphen,genus.species)
+  cedarcreek<-subset(ccphen, select=c("site","block","plot","event","year","genus","species", "doy"))
+  return(cedarcreek)
+}
+
 # Produce cleaned raw data
-#
 raw.data.dir <- "./Data/Experiments"
 cleandata.raw <- list()
 cleandata.raw$marchin <- clean.raw$marchin(path="./Data/Experiments/marchin")
@@ -1073,16 +1146,18 @@ cleandata.raw$chuine<- clean.raw$chuine(path="./Data/Experiments/chuine")
 cleandata.raw$force<- clean.raw$force(path="./Data/Experiments/force")
 cleandata.raw$ellison<- clean.raw$ellison(path="./Data/Experiments/ellison")
 cleandata.raw$dunne<- clean.raw$dunne(path="./Data/Experiments/dunne")
+cleandata.raw$haibei<- clean.raw$haibei(path="./Data/Experiments/haibei")
+cleandata.raw$cc<- clean.raw$cc(path="./Data/Experiments/cedarcreek")
 
 expphendb <- do.call("rbind", cleandata.raw)
 row.names(expphendb) <- NULL
 #Do some additional cleaning and checking:
 dim(expphendb)
-#73844 rows,    8 columns
+#76966     8
 expphendb<-expphendb[!is.na(expphendb$event),]
 expphendb<-expphendb[!is.na(expphendb$doy),]
 expphendb$doy<-as.numeric(expphendb$doy)
-dim(expphendb)#73270  rows,8 columns
+dim(expphendb)#75314  rows,8 columns
 expphendb<-expphendb[!is.na(expphendb$genus),]
 expphendb<-expphendb[!expphendb$genus=="",]
 expphendb<-expphendb[!expphendb$genus=="spp.",]#should look at these
@@ -1107,10 +1182,10 @@ head(expphendb)
 expphendb <- expphendb[order(expphendb$site,expphendb$block,expphendb$plot,expphendb$year,expphendb$doy,expphendb$genus),] 
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 
-unique(expphendb$site)#12 experiments across 9 sites
-sort(unique(expphendb$genus))#147 genera
+unique(expphendb$site)#14 experiments across 9 sites
+sort(unique(expphendb$genus))#161 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
-sort(unique(expphendb$genus.species))#249 species
+sort(unique(expphendb$genus.species))#268 species
 
 unique(expphendb$event)#13 phenological events
 #Do species cleaning with Miriam's new file
