@@ -1,11 +1,31 @@
-\begin{thebibliography}{88}
+\begin{thebibliography}{93}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
+  Emmett, Estiarte, Jentsch, Kr{\"o}el-Dulay, L{\"u}scher, Niu
+  \emph{et~al.}}]{andresen2016}
+Andresen, L.C., M{\"u}ller, C., de~Dato, G., Dukes, J.S., Emmett, B.A.,
+  Estiarte, M., Jentsch, A., Kr{\"o}el-Dulay, G., L{\"u}scher, A., Niu, S.
+  \emph{et~al.} (2016).
+\newblock Shifting impacts of climate change: long-term patterns of plant
+  response to elevated co2, drought, and warming across ecosystems.
+\newblock In: \emph{Advances in ecological research}.
+\newblock Elsevier, vol.~55, pp. 437--473.
 
 \bibitem[{Aronson \& McNulty(2009)}]{aronson2009}
 Aronson, E.L. \& McNulty, S.G. (2009).
 \newblock Appropriate experimental ecosystem warming methods by ecosystem,
   objective, and practicality.
 \newblock \emph{Agricultural and Forest Meteorology}, 149, 1791--1799.
+
+\bibitem[{Aspinwall \emph{et~al.}(2016)Aspinwall, Drake, Campany,
+  V{\aa}rhammar, Ghannoum, Tissue, Reich \& Tjoelker}]{aspinwall2016}
+Aspinwall, M.J., Drake, J.E., Campany, C., V{\aa}rhammar, A., Ghannoum, O.,
+  Tissue, D.T., Reich, P.B. \& Tjoelker, M.G. (2016).
+\newblock Convergent acclimation of leaf photosynthesis and respiration to
+  prevailing ambient temperatures under current and warmer climates in
+  eucalyptus tereticornis.
+\newblock \emph{New Phytologist}, 212, 354--367.
 
 \bibitem[{Bokhorst \emph{et~al.}(2013)Bokhorst, Huiskes, Aerts, Convey, Cooper,
   Dalen, Erschbamer, Gudmundsson, Hofgaard, Hollister
@@ -123,6 +143,15 @@ Essiamah, S. \& Eschrich, W. (1986).
 \bibitem[{Ettinger \& Wolkovich(2017)}]{ettinger2017}
 Ettinger, A. \& Wolkovich, E. (2017).
 \newblock Climate from climate change experiments (\uppercase{C3E}).
+
+\bibitem[{Famiglietti \emph{et~al.}(1999)Famiglietti, Devereaux, Laymon,
+  Tsegaye, Houser, Jackson, Graham, Rodell \& Oevelen}]{famiglietti1999}
+Famiglietti, J., Devereaux, J., Laymon, C., Tsegaye, T., Houser, P., Jackson,
+  T., Graham, S., Rodell, M. \& Oevelen, P.V. (1999).
+\newblock Ground-based investigation of soil moisture variability within remote
+  sensing footprints during the southern great plains 1997 (sgp97) hydrology
+  experiment.
+\newblock \emph{Water Resources Research}, 35, 1839--1851.
 
 \bibitem[{Farnsworth \emph{et~al.}(1995)Farnsworth, Nunez-Farfan, Careaga \&
   Bazzaz}]{farnsworth1995}
@@ -430,6 +459,14 @@ Reich, P.B., Sendall, K.M., Rice, K., Rich, R.L., Stefanski, A., Hobbie, S.E.
   warming in co-occurring tree species.
 \newblock \emph{Nature Climate Change}, 5, 148--152.
 
+\bibitem[{Reich \emph{et~al.}(2016)Reich, Sendall, Stefanski, Wei, Rich \&
+  Montgomery}]{reich2016}
+Reich, P.B., Sendall, K.M., Stefanski, A., Wei, X., Rich, R.L. \& Montgomery,
+  R.A. (2016).
+\newblock Boreal and temperate trees show strong acclimation of respiration to
+  warming.
+\newblock \emph{Nature}, 531, 633--636.
+
 \bibitem[{Rollinson \& Kaye(2012)}]{rollinson2012}
 Rollinson, C.R. \& Kaye, M.W. (2012).
 \newblock Experimental warming alters spring phenology of certain plant
@@ -535,6 +572,11 @@ Tamaki, G., Weiss, M.A. \& Long, G.E. (1981).
 Templer, P.H., Phillips, N.G., Ellison, A.M. \& Pelini, S.L. (2016).
 \newblock Ecosystem warming increases sap flow rates of northern red oak trees.
 \newblock \emph{Ecosphere}, 7.
+
+\bibitem[{Teuling \& Troch(2005)}]{teuling2005}
+Teuling, A.J. \& Troch, P.A. (2005).
+\newblock Improved understanding of soil moisture variability dynamics.
+\newblock \emph{Geophysical Research Letters}, 32.
 
 \bibitem[{Thomas \emph{et~al.}(2004)Thomas, Cameron, Green, Bakkenes, Beaumont,
   Collingham, Erasmus, de~Siqueira, Grainger, Hannah, Hughes, Huntley, van
