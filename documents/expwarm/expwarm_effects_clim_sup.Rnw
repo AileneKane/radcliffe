@@ -86,43 +86,6 @@ We wanted to investigate how using measured plot-level climate variables, as opp
 \bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
 \section* {Supplemental Tables} 
-
-\begin{table}[b]
-  \caption{\textbf{Sites included in the C3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, and warming type used in the study. Note that some sites may have multiple sources; however, we list only one here. Note that we were unable to include the following studies because authors declined to share their data or did not respond: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}.}
-\begin{footnotesize} 
-   \begin{tabular}{| p{1.2cm} | p{5.7cm} | p{3.5cm} | p{1.5cm} | p{2cm} |}
-    \hline
-  study id & location & source & data years & warming type \\ \hline
-    exp01 & Waltham, MA, USA & \cite{hoeppner2012} & 2009-2011 & infrared\\ \hline
-    exp02 & Montpelier, France & \cite{morin2010} & 2004 & infrared\\ \hline
-    exp03 & Duke Forest, NC, USA & \cite{clark2014a} & 2009-2014 & forced air and soil warming\\ \hline
-    exp04 & Harvard Forest, MA, USA & \cite{clark2014a} & 2009-2012 & forced air and soil warming\\ \hline
-    exp05 & Jasper Ridge Biological Preserve, CA, USA & \cite{cleland2007} & 1998-2002 & infrared\\ \hline
-    exp06 & Rocky Mountain Biological Lab, CO, USA & \cite{dunne2003} & 1995-1998 & infrared\\ \hline
-    exp07 & Harvard Forest, MA, USA & \cite{pelini2011} & 2010-2015 & forced air \\ \hline
-    exp08 & Harvard Forest, MA, USA & \cite{farnsworth1995} & 1993 & soil warming \\ \hline
-    exp09 & Stone Valley Forest, PA, USA & \cite{rollinson2012} & 2009-2010 & infrared \\ \hline
-    exp10 & Duke Forest, NC, USA & \cite{marchin2015} & 2010-2013 & forced air \\ \hline
-    exp11 & Rocky Mountain Biological Lab, CO, USA & \cite{price1998} & 1991-1994 & infrared\\ \hline
-    exp12 & Kessler Farm Field Laboratory, OK, USA & \cite{sherry2007} & 2003 & infrared\\ \hline
-    exp13 & Haibei Alpine Grassland Research Station, China & \cite{suonan2017} & 2012-2014 & infrared\\ \hline
-    exp14 & Cedar Creek, MN, USA & \cite{whittington2015} & 2009-2011 & infrared\\ \hline
-    exp15 & Oak Ridge, TN, USA & \cite{gunderson2012} & 2003-2005 & forced air\\ \hline
-     \end{tabular} 
-    \end{footnotesize}  
-    \end{table}
-  
-\clearpage
-
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\
-\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\
-\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
-\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
-
-
 \begin{landscape}
 \begin{footnotesize} 
 <<label=xtable1, echo=FALSE, results=tex>>=
@@ -131,18 +94,18 @@ site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites included i
         label="tab:methods",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.04\\textwidth}|",
-               "p{0.19\\textwidth}|",
+               "p{0.21\\textwidth}|",
                "p{0.08\\textwidth}|",
-               "p{0.12\\textwidth}|",
-               "p{0.07\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
                "p{0.10\\textwidth}|",
-               "p{0.09\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
-               "p{0.07\\textwidth}|",
-               "p{0.07\\textwidth}|",
-               "p{0.09\\textwidth}|"))
+               "p{0.06\\textwidth}|",
+               "p{0.06\\textwidth}|",
+               "p{0.08\\textwidth}|"))
 
 print(site.table, include.rownames=FALSE, caption.placement="top",size="\\footnotesize")
 
@@ -151,13 +114,26 @@ print(site.table, include.rownames=FALSE, caption.placement="top",size="\\footno
 \end{landscape}
 \clearpage
 
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\
-\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\
-\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\
-\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{P}[1]{>{\raggedright\tabularxbackslash}p{#1}}
+<<label=xtable1a, echo=FALSE, results=tex>>=
+source("../../Analyses/wholegroup_paper1/warmtype_table.R")
+site.table <- xtable(alltypes2, caption="\\textbf{Summary of warming treatments, by warming type} for studies included in the MC3E database, and for another common type of experimental warming, passive open-top chambers (OTC), for comparison. Summaries of the target warming treatments (\\degree C) and measured warming for air temperature, soil surface temperature, and soil temperture are given. Measured warming shown here is for warming treatments only (precipitation treatments are expcluded), and is the difference between mean annual temperature (MAT) of control plots and MAT of each treatment level within a study. Mean difference (with standard error) and the range of differences (minimum to maximum differences in MAT) is shown. n is the number of studies of each warming type in the MC3E database.", 
+        label="tab:warmtreats",align=c(
+               "p|{0.08\\textwidth}|",
+                "p{0.10\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.12\\textwidth}|"
+               ))
+
+print(site.table, include.rownames=TRUE, caption.placement="top",size="\\footnotesize")
+@
+\clearpage
+
+
 <<label=xtable2, echo=FALSE, results=tex>>=
 options(stringsAsFactors = FALSE)
 library(xtable)

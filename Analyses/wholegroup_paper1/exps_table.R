@@ -4,6 +4,7 @@ rm(list=ls())
 options(stringsAsFactors = FALSE)
 
 library(xtable)
+library(dplyr)
 require(dplyr)
 
 # Set working directory: 
@@ -63,10 +64,10 @@ sitetable$location<-c("Waltham, MA, USA","Montpelier, France","Duke Forest, NC, 
    #      "Marchin et al. 2015","Price and Wasser 1998","Sherry et al. 2007","Suonan et al. 2017","Whittington et al 2015","Gunderson et al 2015"))
 sitetable$data_years<-c("2009-2011","2004","2009-2014","2009-2012","1998-2002","1995-1998",
          "2010-2015","1993","2009-2010","2010-2013","1991-1994","2003","2012-2014","2009-2011","2003-2005")
-sitetable$type<-c("infrared","infrared","forced air and soil warming",
-        "forced air and soil warming","infrared","infrared","forced air",
+sitetable$type<-c("infrared","infrared","forced air and soil",
+        "forced air and soil","infrared","infrared","forced air",
         "soil warming","infrared","forced air","infrared","infrared","infrared","infrared","forced air")
 
 sitetable2<-subset(sitetable, select=c(DatasetID, location, data_years,type,warming_control,plot_area_m2,W_per_m2,Target,ptreat,AGtemp, Tsoildepths, Msoildepths,analysis))
 
-colnames(sitetable2)<-c("study","location","data years", "warming type","control","area","watts","warming treatment","precip treatment","above-ground temp","soil temp depth","soil moist depth","analysis type")
+colnames(sitetable2)<-c("study","location","data years", "warming type","control","area","watts","warming trtmt","precip trtmt","above-ground temp","soil temp depth","soil moist depth","analysis type")

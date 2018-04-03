@@ -14,10 +14,10 @@ library(RColorBrewer)
 library(lme4)
 #library(car)
 library(dplyr)
-
+library(visreg)
 #Read in experimental climate and phenology data
 setwd("~/git/radcliffe")
-expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
+expclim<-read.csv("Analyses/expclim.csv", header=TRUE)#could use .wchillgdd
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
 
@@ -35,13 +35,14 @@ source("Analyses/soilmoisture/climsum_byplot.R")
 expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#
 expgdd_bbd$styear<-as.factor(expgdd_bbd$styear)
 #model with actual temp/soil mois data
-smbbdmod<-lmer(doy~ag_max_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod<-lmer(doy~ag_mean_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod)
 #subtract minimum agtmax to get it close to 0 warming to make scale more comparable to "target wamring"
 expgdd_bbd$agtmax_rel<-expgdd_bbd$agtmax-min(expgdd_bbd$agtmax)
 expgdd_bbd$agtmin_rel<-expgdd_bbd$agtmin-min(expgdd_bbd$agtmin)
+expgdd_bbd$agtmean_rel<-expgdd_bbd$agtmean-min(expgdd_bbd$agtmean)
 
-smbbdmod1<-lmer(doy~agtmax_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod1<-lmer(doy~agtmean_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod1)
 smbbdmod1a<-lmer(doy~agtmin_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod1a)
@@ -93,7 +94,7 @@ plot(1,type="n",xlab="Treatment intensity", ylab="Day of year", bty="l",xlim=c(m
 #for(i in 1:dim(ranef(smbbdmod2)$site)[1]){
 #  abline(a=coef(smbbdmod2)$site[i,1],b=fixef(smbbdmod2)[2], lwd=1, lty=2,col=cols2[i])#temp ranef
 #}
-abline(a=fixef(smbbdmod1a)[1],b=fixef(smbbdmod1a)[2], lwd=3, col="darkred", lty=2)#actual ag temp coef
+abline(a=fixef(smbbdmod1)[1],b=fixef(smbbdmod1)[2], lwd=3, col="darkred", lty=2)#actual ag temp coef
 abline(a=fixef(smbbdmod_targt)[1],b=fixef(smbbdmod_targt)[2], lwd=3)
 mtext("Increasing above-ground temperature",side=1, line=4, cex=.9)
 mtext("Decreasing soil moisture",side=1, line=4.5, cex=.9)
@@ -193,4 +194,4 @@ abline(a=0, b=1, lwd=2)
 summary(lm(predict(smbbdmod_targt)~expgdd_bbd$doy))
 mean(expgdd_bbd$doy)
 AIC(smbbdmod,smbbdmod_targt,smbbdmod_agtmax,smbbdmod2,smbbdmod1,smbbdmod1a)
-#smbbdmod1a has lowest aic, highset r2 in pred vs obs. use this model in figure
+#smbbdmod1 has lowest aic, highset r2 in pred vs obs. use this model in figure
