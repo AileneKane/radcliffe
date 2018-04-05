@@ -1,4 +1,4 @@
-\begin{thebibliography}{93}
+\begin{thebibliography}{94}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
@@ -466,6 +466,15 @@ Reich, P.B., Sendall, K.M., Stefanski, A., Wei, X., Rich, R.L. \& Montgomery,
 \newblock Boreal and temperate trees show strong acclimation of respiration to
   warming.
 \newblock \emph{Nature}, 531, 633--636.
+
+\bibitem[{Rich \emph{et~al.}(2015)Rich, Stefanski, Montgomery, Hobbie, Kimball
+  \& Reich}]{rich2015}
+Rich, R.L., Stefanski, A., Montgomery, R.A., Hobbie, S.E., Kimball, B.A. \&
+  Reich, P.B. (2015).
+\newblock Design and performance of combined infrared canopy and belowground
+  warming in the b4warmed (boreal forest warming at an ecotone in danger)
+  experiment.
+\newblock \emph{Global change biology}, 21, 2334--2348.
 
 \bibitem[{Rollinson \& Kaye(2012)}]{rollinson2012}
 Rollinson, C.R. \& Kaye, M.W. (2012).

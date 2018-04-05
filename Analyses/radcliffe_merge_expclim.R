@@ -909,7 +909,7 @@ clean.clim$cedarcreek <- function(filename="e249_ibutton.csv",path="./Data/Exper
   cc_temp$temptreat<-NA
  cc_temp$temptreat[cc_temp$Heat.treatment=="high"]<-2
  cc_temp$temptreat[cc_temp$Heat.treatment=="low"]<-1
- cc_temp$temptreat[cc_temp$Heat.treatment=="control"]<-0
+ cc_temp$temptreat[cc_temp$Heat.treatment=="control"]<-"ambient"
  temp_max<-subset(cc_temp, select=c("year","doy","block","plot","Depth","temptreat","maximumTemp"))
  temp_min<-subset(cc_temp, select=c("year","doy","block","plot","Depth","temptreat","minimumTemp"))
  temp_max2 <- temp_max %>% spread(Depth, maximumTemp)

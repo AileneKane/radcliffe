@@ -12,7 +12,8 @@ treats<-read.csv("../../Analyses/treats_detail.csv", header=T)
 treats[which(is.na(treats$target)),]$target<-0
 treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
 expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
-expclimp<-expclim2[which(expclim2$site=="exp01"|expclim2$site=="exp02"|expclim2$site=="exp05"|expclim2$site=="exp09"|expclim2$site=="exp12"),]
+#which studies manupulate precip
+expclimp<-expclim2[which(expclim2$site=="exp01"|expclim2$site=="exp02"|expclim2$site=="exp05"|expclim2$site=="exp09"|expclim2$site=="exp12"),]#studies that manipulated precip
 
 #get one column for above-ground temperature
 expclimp$agtemp_min<-expclimp$airtemp_min
@@ -26,7 +27,7 @@ expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$cantemp_max)),]$agte
 
 expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$surftemp_max)),]$agtemp_max<-expclimp[which(is.na(expclimp$agtemp_max) & !is.na(expclimp$surftemp_max)),]$surftemp_max
 #change precip to proportion
-expclimp$preciptreat_amt<-as.numeric(expclimp$preciptreat_amt)/100
+#expclimp$preciptreat_amt<-as.numeric(expclimp$preciptreat_amt)/100
 expclimp<-subset(expclimp,select=c(site,year,doy,preciptreat_amt,target,agtemp_min,agtemp_max,soiltemp1_min,soiltemp1_max))
 expclimp<- expclimp [apply(expclimp , 1, function(x) all(!is.na(x))),]
 tempmod4<-lmer(agtemp_max~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
@@ -37,7 +38,8 @@ stempmod4<-lmer(soiltemp1_min~preciptreat_amt * target+ (1|site/year/doy), data=
 stempmod4_min<-lmer(soiltemp1_max~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 smintemptable<-cbind(round(summary(stempmod4_min)$coeff[,1:2],digits=3), Anova(stempmod4_min, type="III"))
 stemptable<-cbind(round(summary(stempmod4)$coeff[,1:2],digits=3), Anova(stempmod4, type="III"))
-
+#which studies?
+#unique(expclimp$site)
 alltemptable<-as.data.frame(rbind(mintemptable,temptable,smintemptable,stemptable))
 mods<-c("min above-ground temp.","","","","max above-ground temp.","","","","min soil temp.","","","","max soil temp.","","","")
 preds<-c("intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target")

@@ -4,11 +4,11 @@
 #Started by Ailene February 9, 2018
 
 rm(list=ls()) 
-options(stringsAsFactors = FALSE)
-library(plyr)
-library(xtable)
-require(plyr)
-library(dplyr)
+#options(stringsAsFactors = FALSE)
+#library(plyr)
+#library(xtable)
+#require(plyr)
+#library(dplyr)
 library(lme4)
 # Set working directory: 
 if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/documents/expwarm") 
@@ -48,15 +48,20 @@ for (i in 1:length(sites)){
     expclim2$styear[expclim2$site==sites[i] & expclim2$year==styears[j]]<-j
   }
 }
+#remove sites that manipulate precip
 expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]
+#get above-ground temperature
 expclimt$agtemp_min<-expclimt$airtemp_min
 expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$cantemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$airtemp_min) & !is.na(expclimt$cantemp_min)),]$cantemp_min
 expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$agtemp_min<-expclimt[which(is.na(expclimt$agtemp_min) & !is.na(expclimt$surftemp_min)),]$surftemp_min
 expclimt$agtemp_max<-expclimt$airtemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$cantemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$airtemp_max) & !is.na(expclimt$cantemp_max)),]$cantemp_max
 expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$agtemp_max<-expclimt[which(is.na(expclimt$agtemp_max) & !is.na(expclimt$surftemp_max)),]$surftemp_max
-#remove site 2 (chuine) because these are not real temp measurements
+#remove site 2 (chuine) because these are not plot-level temperature measurements
 expclimt<-expclimt[-which(expclimt$site=="exp02"),]
+#fix mistake in control type for cedar creek site
+expclimt$temptreat[expclimt$site=="exp14" & expclimt$temptreat=="0"]<-"ambient"
+treats$temptreat[treats$site=="exp14" & treats$temptreat=="0"]<-"ambient"
 
 expclimt$agtemp_mn<-(expclimt$agtemp_max+expclimt$agtemp_min)/2
 expclimt$agtemp_mn[which(is.na(expclimt$agtemp_min) & is.na(expclimt$cantemp_min))]<-expclimt$airtemp_mean[which(is.na(expclimt$agtemp_min) & is.na(expclimt$cantemp_min))]
@@ -72,14 +77,14 @@ expclimt$type[which(expclimt$site=="exp08")]<-"S"
 
 get_mn_temp_range<-function(temptype){
   #temptype<-"agtemp_mn"
-  mat<-aggregate(expclimt[,which(colnames(expclimt)==temptype)], by=list(expclimt$type,expclimt$site,expclimt$year,expclimt$target), FUN=mean,na.rm=TRUE)
-  colnames(mat)<-c("type","site","year","target","temp")
+  mat<-aggregate(expclimt[,which(colnames(expclimt)==temptype)], by=list(expclimt$type,expclimt$site,expclimt$year,expclimt$styear,expclimt$target), FUN=mean,na.rm=TRUE)
+  colnames(mat)<-c("type","site","year","styear","target","temp")
   #dim(mat)
   mat<-mat[-which(is.na(mat$temp)),]
   #dim(mat)
   #get control temps
   mat_control<-mat[mat$target==0,]
-  colnames(mat_control)[5]<-"cont.temp"
+  colnames(mat_control)[6]<-"cont.temp"
   mat_control<-subset(mat_control,select=-target)
   #get difference between controls and treatments
   matdif<-join(mat, mat_control)
@@ -138,14 +143,14 @@ alltypes2$n<-c("0 (from Bokhorst et al. 2013)","2","2","9","1")
 #Analyze tdif per degree of target warming in infrared plots
 get_tdiff<-function(temptype){
   #temptype<-"agtemp_mn"
-  mat<-aggregate(expclimt[,which(colnames(expclimt)==temptype)], by=list(expclimt$type,expclimt$site,expclimt$year,expclimt$target), FUN=mean,na.rm=TRUE)
-  colnames(mat)<-c("type","site","year","target","temp")
+  mat<-aggregate(expclimt[,which(colnames(expclimt)==temptype)], by=list(expclimt$type,expclimt$site,expclimt$year,expclimt$styear,expclimt$target), FUN=mean,na.rm=TRUE)
+  colnames(mat)<-c("type","site","year","styear","target","temp")
   #dim(mat)
   mat<-mat[-which(is.na(mat$temp)),]
   #dim(mat)
   #get control temps
   mat_control<-mat[mat$target==0,]
-  colnames(mat_control)[5]<-"cont.temp"
+  colnames(mat_control)[6]<-"cont.temp"
   mat_control<-subset(mat_control,select=-target)
   #get difference between controls and treatments
   matdif<-join(mat, mat_control)
@@ -169,51 +174,53 @@ st.tdiff2<-left_join(st.tdiff,controltypes2, by="site")
 #fit a model to see if there is a difference in tdiff by control type
 boxplot(st.tdiff2$tdiffperd~as.factor(st.tdiff2$control))
 #Yikes! Big differences
-test<-lmer(tdiffperd~as.factor(control)+ (1|year), data=st.tdiff2)
-test2<-lm(tdiffperd~as.factor(control), data=st.tdiff2)
-
+test<-lmer(tdiffperd~as.factor(control)+ (1|site/year), data=st.tdiff2)#add site and see what happens
+#summary(test)
+test.table<-round(summary(test)$coefficients[,1:2], digits=2)
+rownames(test.table)<-c("structural controls","ambient controls")
+colnames(test.table)<-c("Tdiff", "se")
 #Seasonal values
 #add season
-expclimt$season<-"winter"#dec22-mar21
+#expclimt$season<-"winter"#dec22-mar21
 
-expclimt$season[expclimt$doy>80 & expclimt$doy<173]<-"spring"#mar22(=81)-june21 (172)
-expclimt$season[expclimt$doy>172 & expclimt$doy<264]<-"summer"#june22-sept21
-expclimt$season[expclimt$doy>263 & expclimt$doy<354]<-"fall"#sept22-dec21
-spring<-expclimt[expclimt$season=="spring",]
-winter<-expclimt[expclimt$season=="winter",]
-summer<-expclimt[expclimt$season=="summer",]
-fall<-expclimt[expclimt$season=="fall",]
-springt<-aggregate(spring$agtemp_mn, by=list(spring$type,spring$site,spring$year,spring$target), FUN=mean,na.rm=TRUE)
-summert<-aggregate(summer$agtemp_mn, by=list(summer$type,summer$site,summer$year,summer$target), FUN=mean,na.rm=TRUE)
-fallt<-aggregate(fall$agtemp_mn, by=list(fall$type,fall$site,fall$year,fall$target), FUN=mean,na.rm=TRUE)
-wintert<-aggregate(winter$agtemp_mn, by=list(winter$type,winter$site,winter$year,winter$target), FUN=mean,na.rm=TRUE)
-colnames(fallt)<-colnames(summert)<-colnames(wintert)<-colnames(springt)<-c("type","site","year","target","temp")
-fallt<-fallt[-which(is.na(fallt$temp)),]
-wintert<-wintert[-which(is.na(wintert$temp)),]
-springt<-springt[-which(is.na(springt$temp)),]
-summert<-summert[-which(is.na(summert$temp)),]
+#expclimt$season[expclimt$doy>80 & expclimt$doy<173]<-"spring"#mar22(=81)-june21 (172)
+#expclimt$season[expclimt$doy>172 & expclimt$doy<264]<-"summer"#june22-sept21
+#expclimt$season[expclimt$doy>263 & expclimt$doy<354]<-"fall"#sept22-dec21
+#spring<-expclimt[expclimt$season=="spring",]
+#winter<-expclimt[expclimt$season=="winter",]
+#summer<-expclimt[expclimt$season=="summer",]
+#fall<-expclimt[expclimt$season=="fall",]
+#springt<-aggregate(spring$agtemp_mn, by=list(spring$type,spring$site,spring$year,spring$target), FUN=mean,na.rm=TRUE)
+#summert<-aggregate(summer$agtemp_mn, by=list(summer$type,summer$site,summer$year,summer$target), FUN=mean,na.rm=TRUE)
+#fallt<-aggregate(fall$agtemp_mn, by=list(fall$type,fall$site,fall$year,fall$target), FUN=mean,na.rm=TRUE)
+#wintert<-aggregate(winter$agtemp_mn, by=list(winter$type,winter$site,winter$year,winter$target), FUN=mean,na.rm=TRUE)
+#colnames(fallt)<-colnames(summert)<-colnames(wintert)<-colnames(springt)<-c("type","site","year","target","temp")
+#fallt<-fallt[-which(is.na(fallt$temp)),]
+#wintert<-wintert[-which(is.na(wintert$temp)),]
+#springt<-springt[-which(is.na(springt$temp)),]
+#summert<-summert[-which(is.na(summert$temp)),]
 #get control temps
-fallt_control<-fallt[fallt$target==0,]
-springt_control<-springt[springt$target==0,]
-summert_control<-summert[summert$target==0,]
-wintert_control<-wintert[wintert$target==0,]
+#fallt_control<-fallt[fallt$target==0,]
+#springt_control<-springt[springt$target==0,]
+#summert_control<-summert[summert$target==0,]
+#wintert_control<-wintert[wintert$target==0,]
 
-colnames(fallt_control)[5]<-colnames(summert_control)[5]<-colnames(springt_control)[5]<-colnames(wintert_control)[5]<-"cont.temp"
+#colnames(fallt_control)[5]<-colnames(summert_control)[5]<-colnames(springt_control)[5]<-colnames(wintert_control)[5]<-"cont.temp"
 
-wintert_control<-subset(wintert_control,select=-target)
-fallt_control<-subset(fallt_control,select=-target)
-springt_control<-subset(springt_control,select=-target)
-summert_control<-subset(summert_control,select=-target)
+#wintert_control<-subset(wintert_control,select=-target)
+#fallt_control<-subset(fallt_control,select=-target)
+#springt_control<-subset(springt_control,select=-target)
+#summert_control<-subset(summert_control,select=-target)
 
-falldif<-join(fallt, fallt_control)
-falldif$tdiff<-falldif$temp-falldif$cont.temp
-springdif<-join(springt, springt_control)
-springdif$tdiff<-springdif$temp-springdif$cont.temp
-summerdif<-join(summert, summert_control)
-summerdif$tdiff<-summerdif$temp-summerdif$cont.temp
-winterdif<-join(wintert, wintert_control)
-winterdif$tdiff<-winterdif$temp-winterdif$cont.temp
-winterdif2<-winterdif[winterdif$tdiff!=0,]
-summerdif2<-summerdif[summerdif$tdiff!=0,]
-springdif2<-springdif[springdif$tdiff!=0,]
-falldif2<-falldif[falldif$tdiff!=0,]
+#falldif<-join(fallt, fallt_control)
+#falldif$tdiff<-falldif$temp-falldif$cont.temp
+#springdif<-join(springt, springt_control)
+#springdif$tdiff<-springdif$temp-springdif$cont.temp
+#summerdif<-join(summert, summert_control)
+#summerdif$tdiff<-summerdif$temp-summerdif$cont.temp
+#winterdif<-join(wintert, wintert_control)
+#winterdif$tdiff<-winterdif$temp-winterdif$cont.temp
+#winterdif2<-winterdif[winterdif$tdiff!=0,]
+#summerdif2<-summerdif[summerdif$tdiff!=0,]
+#springdif2<-springdif[springdif$tdiff!=0,]
+#falldif2<-falldif[falldif$tdiff!=0,]

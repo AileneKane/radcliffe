@@ -4,7 +4,7 @@ rm(list=ls())
 options(stringsAsFactors = FALSE)
 
 library(xtable)
-library(dplyr)
+library(plyr); library(dplyr);
 require(dplyr)
 
 # Set working directory: 
