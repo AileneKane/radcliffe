@@ -161,4 +161,4 @@ ggplot(data=expsites) +
   coord_equal()
 dev.off()
 
-expsites[,c("StudySite", "warming_type", "Location", "studylength")]
+expsites[,c("StudySite", "Lat", "Long", "Location", "warming_type", "studylength")]

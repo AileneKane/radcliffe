@@ -85,19 +85,19 @@ for(s in unique(expclim[is.na(expclim$target), "site"])){
   
   for(t in tmiss){
     
-    if(tmiss %in% unique(targets[targets$site==s,"temptreat"])){
+    # if(tmiss %in% unique(targets[targets$site==s,"temptreat"])){
       tuse <- unique(targets[targets$site==s & targets$temptreat==t,"target"])
       expclim[expclim$site==s & expclim$temptreat==t & is.na(expclim$target),"target"] <- tuse
-    } else {
-      next
+    # } else {
+      # next
       #   t.use <- unique(expclim[expclim$site==s & expclim$temptreat==t & !is.na(expclim$target),"target"]) 
       #   expclim[expclim$site==s & expclim$temptreat==t & is.na(expclim$target),"target"] <- t.use
-    }
+    # }
     
   }
 }
 summary(expclim[is.na(expclim$target),])
-expclim[is.na(expclim$target), "target"] <- "unknown" # List unreported expclim that aren't controls as unknwon
+# expclim[is.na(expclim$target), "target"] <- "unknown" # List unreported expclim that aren't controls as unknwon
 expclim$target <- as.factor(expclim$target) # make this a readable factor
 summary(expclim)
 # ----------------
