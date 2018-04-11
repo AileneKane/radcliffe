@@ -1,4 +1,4 @@
-\begin{thebibliography}{94}
+\begin{thebibliography}{96}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
@@ -27,6 +27,12 @@ Aspinwall, M.J., Drake, J.E., Campany, C., V{\aa}rhammar, A., Ghannoum, O.,
   eucalyptus tereticornis.
 \newblock \emph{New Phytologist}, 212, 354--367.
 
+\bibitem[{Berg \emph{et~al.}(2017)Berg, Sheffield \& Milly}]{berg2017}
+Berg, A., Sheffield, J. \& Milly, P.C. (2017).
+\newblock Divergent surface and total soil moisture projections under global
+  warming.
+\newblock \emph{Geophysical Research Letters}, 44, 236--244.
+
 \bibitem[{Bokhorst \emph{et~al.}(2013)Bokhorst, Huiskes, Aerts, Convey, Cooper,
   Dalen, Erschbamer, Gudmundsson, Hofgaard, Hollister
   \emph{et~al.}}]{bokhorst2013}
@@ -36,6 +42,15 @@ Bokhorst, S., Huiskes, A., Aerts, R., Convey, P., Cooper, E.J., Dalen, L.,
 \newblock Variable temperature effects of open top chambers at polar and alpine
   sites explained by irradiance and snow depth.
 \newblock \emph{Global Change Biology}, 19, 64--74.
+
+\bibitem[{Carey \emph{et~al.}(2016)Carey, Tang, Templer, Kroeger, Crowther,
+  Burton, Dukes, Emmett, Frey, Heskel \emph{et~al.}}]{carey2016}
+Carey, J.C., Tang, J., Templer, P.H., Kroeger, K.D., Crowther, T.W., Burton,
+  A.J., Dukes, J.S., Emmett, B., Frey, S.D., Heskel, M.A. \emph{et~al.} (2016).
+\newblock Temperature response of soil respiration largely unaltered with
+  experimental warming.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 113,
+  13797--13802.
 
 \bibitem[{Carlson \& Bazzaz(1982)}]{carlson1982}
 Carlson, R.W. \& Bazzaz, F.A. (1982).
@@ -140,9 +155,10 @@ Essiamah, S. \& Eschrich, W. (1986).
   conducting tissues in spring reactivation.
 \newblock \emph{IAWA Journal}, 7, 31--38.
 
-\bibitem[{Ettinger \& Wolkovich(2017)}]{ettinger2017}
-Ettinger, A. \& Wolkovich, E. (2017).
-\newblock Climate from climate change experiments (\uppercase{C3E}).
+\bibitem[{Ettinger \& Wolkovich(2018)}]{ettinger2018}
+Ettinger, A. \& Wolkovich, E. (2018).
+\newblock Microclimate from climate change experiments (\uppercase{MC3E}).
+\newblock doi:10.5063/F1QV3JQR.
 
 \bibitem[{Famiglietti \emph{et~al.}(1999)Famiglietti, Devereaux, Laymon,
   Tsegaye, Houser, Jackson, Graham, Rodell \& Oevelen}]{famiglietti1999}
@@ -272,7 +288,6 @@ Kearney, M. \& Porter, W. (2009).
 \newblock Mechanistic niche modelling: combining physiological and spatial data
   to predict species' ranges.
 \newblock \emph{Ecology Letters}, 12, 334--350.
-\newblock PT: J; UT: WOS:000264067600007.
 
 \bibitem[{Kennedy(1995)}]{kennedy1995}
 Kennedy, A. (1995).
@@ -558,11 +573,11 @@ Spector, R. (2001).
   Boschung, Nauels, Xia, Bex \& Midgley}]{ipcc2013}
 Stocker, T., Qin, D., Plattner, G., Tignor, M., Allen, S., Boschung, J.,
   Nauels, A., Xia, Y., Bex, B. \& Midgley, B. (2013).
-\newblock \uppercase{IPCC} 2013. \uppercase{IC}limate change 2013:
+\newblock \uppercase{IPCC} 2013. \uppercase{C}limate change 2013:
   \uppercase{t}he physical science basis. \uppercase{C}ontribution of
-  \uppercase{IW}orking \uppercase{IG}roup \uppercase{II} to the fifth
-  assessment report of the \uppercase{Ii}ntergovernmental \uppercase{Ip}anel on
-  \uppercase{Ic}limate \uppercase{Ic}hange.
+  \uppercase{W}orking \uppercase{G}roup \uppercase{II} to the fifth assessment
+  report of the \uppercase{i}ntergovernmental \uppercase{p}anel on
+  \uppercase{c}limate \uppercase{c}hange.
 
 \bibitem[{Swab \emph{et~al.}(2012)Swab, Regan, Keith, Regan \& Ooi}]{swab2012}
 Swab, R.M., Regan, H.M., Keith, D.A., Regan, T.J. \& Ooi, M.K.J. (2012).

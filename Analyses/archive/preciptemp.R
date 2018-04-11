@@ -37,12 +37,12 @@ expclimp$target[which(is.na(expclimp$target))]<-0
 expclimp$preciptreat_amt[which(is.na(expclimp$preciptreat_amt))]<-0
 expclimp$preciptreat_amt<-as.numeric(expclimp$preciptreat_amt)
 expclimp$preciptreat_prop<-expclimp$preciptreat_amt/100
-table(expclimp$site, expclimp$preciptreat_amt)
+#table(expclimp$site, expclimp$preciptreat_amt)
 
 #check which sites have agtemp 
 expclimp<-subset(expclimp,select=c(site,year,doy,preciptreat_amt,preciptreat_prop,target,agtemp_min,agtemp_max))
 expclimp  <- expclimp [apply(expclimp , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-table(expclimp$site, expclimp$preciptreat_amt)
+#table(expclimp$site, expclimp$preciptreat_amt)
 
 tempmod<-lmer(agtemp_max~preciptreat_amt + (1|site/year/doy), data=expclimp, REML=FALSE)
 summary(tempmod)

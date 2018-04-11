@@ -3,6 +3,8 @@
 #uses three files () to get two commonly used databases:
 #1) experimental climate with one variable for above ground warming and all treatments added in
 #2) exppgdd database with climate data (gddcrit,etc)
+
+
 #First add treatment information to expclim
 #dim(expclim)#343734     22
 #dim(treats)#379  10
@@ -28,9 +30,16 @@ for (i in 1:length(sites)){
 }
 
 #merge phenology data with experimental climate to get gdd crit
-dim(exppheno)#74512     8
+#dim(exppheno)#74512     8
+expclim2$site<-as.character(expclim2$site)
+expclim2$block<-as.character(expclim2$block)
+expclim2$plot<-as.character(expclim2$plot)
+exppheno$site<-as.character(exppheno$site)
+exppheno$block<-as.character(exppheno$block)
+exppheno$plot<-as.character(exppheno$plot)
+
 expgdd<-inner_join(exppheno,expclim2, by=c("site", "block", "plot","year","doy"), match="all", copy=TRUE)
-dim(expgdd)#63734    31
+#dim(expgdd)#63734    31
 #unique(expgdd$site)#14 sites
 #Need surftemp_mean (laready have airtempmean)
 expclim2$surftemp_mean<-(expclim2$surftemp_min+expclim2$surftemp_max)/2

@@ -3,17 +3,17 @@
 #code to make table s1 with basic info on study designs
 #Started by Ailene February 9, 2018
 
-rm(list=ls()) 
+#rm(list=ls()) 
 #options(stringsAsFactors = FALSE)
 #library(plyr)
 #library(xtable)
 #require(plyr)
 #library(dplyr)
-library(lme4)
+#library(lme4)
 # Set working directory: 
-if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/documents/expwarm") 
-} else
-  setwd("/Users/aileneettinger/git/radcliffe/documents/expwarm")
+#if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/documents/expwarm") 
+#} else
+#  setwd("/Users/aileneettinger/git/radcliffe/documents/expwarm")
 
 
 #Data from Bokhorst at all: Mean OTC effect (mean OTC temperature minus mean control/ambient temperature) on air, 
@@ -131,14 +131,16 @@ names(otcann2)<-c("air_mean (se)","air_range","surf_mean (se)","surf_range","soi
 alltypes<-cbind(c(airt.table$mn_se,""),c(airt.table$range,""),c("","",surft.table$mn_se,""),c("","",surft.table$range,""), soilt.table$mn_se,soilt.table$range)
 alltypes<-rbind(otcann2,alltypes)
 
-alltypes2<-as.data.frame(cbind(c("",targ.table$sum),alltypes))
+alltypes2<-as.data.frame(cbind(c("NA",targ.table$sum),alltypes))
 colnames(alltypes2)[1]<-c("target (min-max)")
 
 rownames(alltypes2)<-c("otc","force_air","force_air_soil","infrared","soil")
 alltypes2[5,7]<-"NA"
 
 alltypes2$n<-c("0 (from Bokhorst et al. 2013)","2","2","9","1")
-
+alltypes3<-t(alltypes2)
+#dim(alltypes)
+#write.csv(alltypes2,"../../Analyses/output/warmtype.table.csv")
 
 #Analyze tdif per degree of target warming in infrared plots
 get_tdiff<-function(temptype){
@@ -169,16 +171,17 @@ controltypes2 <- controltypes %>% # start with the data frame
   distinct(site.treat, .keep_all = TRUE) %>% # establishing grouping variables
   dplyr::select(site, temptreat)
 colnames(controltypes2)[2]<-"control"
-controltypes2$site[controltypes2$control=="ambient"]
+
+#controltypes2$site[controltypes2$control=="ambient"]
 st.tdiff2<-left_join(st.tdiff,controltypes2, by="site")
 #fit a model to see if there is a difference in tdiff by control type
-boxplot(st.tdiff2$tdiffperd~as.factor(st.tdiff2$control))
+#boxplot(st.tdiff2$tdiffperd~as.factor(st.tdiff2$control))
 #Yikes! Big differences
-test<-lmer(tdiffperd~as.factor(control)+ (1|site/year), data=st.tdiff2)#add site and see what happens
+test<-lmer(tdiffperd~-1+as.factor(control)+ (1|site/year), data=st.tdiff2)#add site and see what happens
 #summary(test)
 test.table<-round(summary(test)$coefficients[,1:2], digits=2)
 rownames(test.table)<-c("structural controls","ambient controls")
-colnames(test.table)<-c("Tdiff", "se")
+colnames(test.table)<-c("Tdiff (per \\degree C of target)", "se")
 #Seasonal values
 #add season
 #expclimt$season<-"winter"#dec22-mar21

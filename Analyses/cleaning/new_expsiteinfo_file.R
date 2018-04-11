@@ -89,12 +89,26 @@ expphen$site.block.plot<-paste(expphen$site,expphen$block,expphen$plot,sep=".")
 expplots <- expphen %>% # start with the data frame
   distinct(site.block.plot,.keep_all = TRUE) %>% # establishing grouping variables
   dplyr::select(site, block, plot,site.block.plot)
-#expplots  <- expplots [apply(expplots , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expplots  <- expplots [apply(expplots , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expclimplots  <- expplots [apply(expclimplots , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+
 #check for missing/nonmatching site/block/plots between these two files
 expphenplots_nomatch<-expplots[which(is.na(match(expplots$site.block.plot,expclimplots$site.block.plot))),]
-##these are all fine- there are some plots for which there are phenology data but no climate data were collected- bace block 0 and force plots "E"
+##these are all fine:
+#there are some plots for which there are phenology data but no climate data were collected
+#-force plots "E", some exp13 blocks
+#
 expphenplots_nomatch2<-expclimplots[which(is.na(match(expclimplots$site.block.plot,expplots$site.block.plot))),]
-#these are all fine, there are a few plots (33,34,35,36) in the cleland dataset and one plot in the clarkduke dataset (G08) in which climate data were collected, but no phenology data were
+#hm:
+#these are all fine, there are a few plots in which climate data were collected, but no phenology data were
+#(33,34,35,36) in the cleland dataset 
+#one plot in the clarkduke dataset (G08) 
+#110, 138, 167-control, 176, 201, 223,229,230,233,237 and more do not match in exp14
+#there seem like a lot in exp14, but there are a lot of plots. how many actually do match?
+#not many...but some. there are 38 different blocks in expclim; only 23 in exphn for exp14
+#there are 15 blocks that occur in exclim but not in exphen
+#expplots$site.block.plot[which(match(expplots$site.block.plot,expclimplots$site.block.plot))]
+#I don't need to deal with this now, since bbd is not tracked in exp14. 
 
 ##now need to check with effective warming data...for some reason that is not lining up.
 ###Check that expphen blocks/plots match expclim blocks/plots:
