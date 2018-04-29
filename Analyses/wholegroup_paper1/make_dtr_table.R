@@ -59,15 +59,17 @@ expclimt$agtemp_max<-as.numeric(expclimt$agtemp_max)
 #Now see how warming treatment affects dtr, and if warming increases min and max temp the same magnitude as mean
 #Now see how warming treatment affects dtr, and if warming increases min and max temp the same magnitude as mean
 dtr_mod<-lmer(dtr~target + (target|site/styear), data=expclimt, REML=FALSE)#this is the model structure supported by deltaAIC
+sdtr_mod<-lmer(sdtr~target + (target|site/styear), data=expclimt, REML=FALSE)#this is the model structure supported by deltaAIC
+
 #dtrtype_mod<-lmer(dtr~target*type + (target|site/styear), data=expclimt, REML=FALSE)
 amin_mod<-lmer(agtemp_min~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(amin_mod)#warms, on average 0.81 degrees per target degree, for air min
 #Anova(amin_mod)
 amax_mod<-lmer(agtemp_max~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(amax_mod)#warms, on average 0.48 degrees per target degree, for air max
-#smin_mod<-lmer(soiltemp1_min~target + (target|site/styear), data=expclimt, REML=FALSE)
+smin_mod<-lmer(soiltemp1_min~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(smin_mod)#warms, on average 0.72 \\degree C per target \\degree C, for soil min
-#smax_mod<-lmer(soiltemp1_max~target + (target|site/styear), data=expclimt, REML=FALSE)
+smax_mod<-lmer(soiltemp1_max~target + (target|site/styear), data=expclimt, REML=FALSE)
 #summary(smax_mod)#warms, on average 0.75 \\degree C per target \\degree C, for air max
 amintable<-cbind(round(summary(amin_mod)$coeff[,1:2],digits=2))#
 amaxtable<-cbind(round(summary(amax_mod)$coeff[,1:2],digits=2))#
@@ -77,9 +79,20 @@ dtrtable<-cbind(round(summary(dtr_mod)$coeff[,1:2],digits=2))#
 dtrtable<-as.data.frame(cbind(dtrtable,amintable,amaxtable))
 rownames(dtrtable)<-c("intercept","target warming effect")
 ranefs<-cbind(round(coef(dtr_mod)$site, digits=2),round(coef(amin_mod)$site,digits=2),round(coef(amax_mod)$site, digits=2))
-colnames(dtrtable)<-c("est.","se","est.","se","est.","se")
-colnames(ranefs)<-colnames(dtrtable)
+
+smintable<-cbind(round(summary(smin_mod)$coeff[,1:2],digits=2))#
+smaxtable<-cbind(round(summary(smax_mod)$coeff[,1:2],digits=2))#
+sdtrtable<-cbind(round(summary(sdtr_mod)$coeff[,1:2],digits=2))#
+sdtrtable<-as.data.frame(cbind(sdtrtable,smintable,smaxtable))
+ranefs2<-cbind(round(coef(sdtr_mod)$site, digits=2),round(coef(smin_mod)$site,digits=2),round(coef(smax_mod)$site, digits=2))
+
+colnames(dtrtable)<-colnames(sdtrtable)<-c("est.","se","est.","se","est.","se")
+colnames(ranefs)<-colnames(ranefs2)<-colnames(dtrtable)
 blankrow<-c("int","target","int","target","int","target")
 dtrtable2<-rbind(dtrtable,blankrow,ranefs)
+sdtrtable2<-rbind(sdtrtable,blankrow,ranefs2)
+
 rownames(dtrtable2)[3]<-"site random effects"
+rownames(sdtrtable2)[3]<-"site random effects"
 write.csv(dtrtable2,"../../Analyses/wholegroup_paper1/output/dtrtable2.csv")
+write.csv(sdtrtable2,"../../Analyses/wholegroup_paper1/output/sdtrtable2.csv")
