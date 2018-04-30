@@ -14,7 +14,7 @@ library(car)
 # Define our base directory
 # Load in the locations for experimental and observational sites
 expsites <- read.csv("../expsiteinfo.csv")
-expsites$warming_type <- factor(expsites$warming_type, levels=c("infrared", "forced air", "soil warming", "forced air & soil warming"))
+expsites$warming_type <- factor(expsites$warming_type, levels=c("infrared", "forced air", "soil warming", "forced air and soil"))
 expsites$studylength <- (expsites$data_endyear-expsites$data_startyear)+1
 summary(expsites)
 
@@ -37,6 +37,8 @@ rast.table$rgb <- with(rast.table, rgb(HYP_50M_SR_W.1,
 
 
 levels(expsites$warming_type) <- c("infrared", "forced air", "soil warming", "forced air & \nsoil warming")
+warming.shapes <- c(5, 1, 2, 0)
+warming.cols <- c("black", "blue2", "red3", "purple3")
 
 # Note: the natural earth data takes quite a while to plot!
 # set.seed(1134)
@@ -51,8 +53,8 @@ ggplot(data=expsites) +
   geom_point(data=expsites[expsites$StudySite!="price"       ,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
   geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+0.5, y=Lat+1, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
   # scale_shape_manual(values=c(18, 19, 17, 15)) +
-  scale_shape_manual(values=c(5, 1, 2, 0)) +
-  scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
+  scale_shape_manual(values=warming.shapes) +
+  scale_color_manual(values=warming.cols) +
   scale_size(range=c(1.0,5)) +
   guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
          color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
@@ -74,15 +76,17 @@ ggplot(data=expsites) +
   geom_tile(data=rast.table, aes(x=x, y=y), fill=rast.table$rgb) + # NOTE: fill MUST be outside of the aes otherwise it converts it to ggcolors
   scale_x_continuous(expand=c(0,0), name="Degrees Longitude") +
   scale_y_continuous(expand=c(0,0), name="Degrees Latitude") +
-  geom_point(data=expsites[!expsites$Location %in% sites.jitter & !expsites$StudySite %in% c("dunne", "price"),], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1.1, alpha=1) +
-  geom_point(data=expsites[expsites$StudySite=="dunne"       ,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
-  geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+0.75, y=Lat+1.2, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
-  geom_point(data=expsites[expsites$Location %in% sites.jitter,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1.1, alpha=1, position=position_jitter(width=1, height=1)) +
+  geom_point(data=expsites[expsites$StudySite!="price"       ,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1, position=position_jitter(width=1, height=1)) +
+  geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+1, y=Lat+1, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
+  # geom_point(data=expsites[!expsites$Location %in% sites.jitter & !expsites$StudySite %in% c("dunne", "price"),], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1.1, alpha=1) +
+  # geom_point(data=expsites[expsites$StudySite=="dunne"       ,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
+  # geom_point(data=expsites[expsites$StudySite=="price"       ,], aes(x=Long+0.75, y=Lat+1.2, shape=warming_type, color=warming_type, size=studylength), stroke=1, alpha=1) +
+  # geom_point(data=expsites[expsites$Location %in% sites.jitter,], aes(x=Long, y=Lat, shape=warming_type, color=warming_type, size=studylength), stroke=1.1, alpha=1, position=position_jitter(width=1, height=1)) +
   # scale_shape_manual(values=c(18, 19, 17, 15)) +
   # scale_shape_manual(values=c(5, 1, 2, 0)) +
   # scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
-  scale_shape_manual(values=c(1, 0, 5, 2)) +
-  scale_color_manual(values=c("darkorange3", "purple4", "firebrick3", "black")) +
+  scale_shape_manual(values=warming.shapes) +
+  scale_color_manual(values=warming.cols) +
   scale_size(range=c(1.0,5)) +
   guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
          color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
@@ -113,8 +117,8 @@ ggplot(data=expsites) +
   # scale_shape_manual(values=c(18, 19, 17, 15)) +
   # scale_shape_manual(values=c(5, 1, 2, 0)) +
   # scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
-  scale_shape_manual(values=c(1, 0, 5, 2)) +
-  scale_color_manual(values=c("darkorange3", "purple4", "firebrick3", "black")) +
+  scale_shape_manual(values=c(2,0,5,1)) +
+  scale_color_manual(values=c("red3", "purple3", "black", "blue2")) +
   scale_size(range=c(1.0,5)) +
   guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
          color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
@@ -150,7 +154,7 @@ ggplot(data=expsites) +
   
   scale_shape_manual(values=c(18, 19, 17, 15)) +
   # scale_shape_manual(values=c(5, 1, 2, 0)) +
-  scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
+  scale_color_manual(values=warming.cols) +
   scale_size(range=c(1.0,5)) +
   guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1),
          color=guide_legend(title="Warming Type", order=1),
