@@ -103,7 +103,7 @@ sites<-unique(allwarm_block$site)
 #cols<-c("darkgray","darkred","darkgray","darkgray","darkgray","darkgray")#determined by the warming type: infrared=23, soil warming=24
 cols<-c("black","darkred","black","black","black","black")#determined by the warming type: infrared=23, soil warming=24
 
-shapes<-c(23,24,10,3,22,21)
+shapes<-c(23,22,10,3,22,21)
 #cols<-c("darkblue","lightblue","darkgreen","gray","white","lightgreen")
 #colors determined by the warming type: infrared="darkgreen", soil warming="lightblue"
 #allwarm_blockag<-allwarm_block[-which(allwarm_block$agwarm=="NaN"),]
@@ -112,23 +112,23 @@ allwarm_block$target<-as.numeric(allwarm_block$target)
 allwarm_block$agwarm<-as.numeric(allwarm_block$agwarm)
 #allwarm_blockag$target<-as.numeric(allwarm_blockag$target)
 #allwarm_blockag$agwarm<-as.numeric(allwarm_blockag$agwarm)
-plot(allwarm_block$target,allwarm_block$agwarm,pch=shapes[as.factor(allwarm_block$site)], bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Above-ground", bty="l", main="By Block", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_block$target,allwarm_block$agwarm,pch=shapes[as.factor(allwarm_block$site)], bg=cols[as.factor(allwarm_block$site)],col=cols[as.factor(allwarm_block$site)],xlab="", ylab="Above-ground", bty="l", main="By Block", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 #points(allwarm_stmean$target,allwarm_stmean$agwarm,bg=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))])
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(mab.mm)[1],b=fixef(mab.mm)[2], lty=1)
 mtext("Observed warming (C)", side=2,line=4,adj=-5, cex=1.2)
 #col=cols[as.factor(allwarm_yr$site)],
-plot(allwarm_yr$target,allwarm_yr$agwarm,pch=shapes[as.factor(allwarm_yr$site)], bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_yr$target,allwarm_yr$agwarm,pch=shapes[as.factor(allwarm_yr$site)][-which(allwarm_yr$site=="exp08")], bg=cols[as.factor(allwarm_yr$site)],col=cols[as.factor(allwarm_yr$site)][-which(allwarm_yr$site=="exp08")],xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(may.mm)[1],b=fixef(may.mm)[2], lty=1)
 # col=cols[as.factor(allwarm_block$site)],
-plot(allwarm_block$target,allwarm_block$soilwarm,pch=shapes[as.factor(allwarm_block$site)],bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_block$target,allwarm_block$soilwarm,pch=shapes[as.factor(allwarm_block$site)],bg=cols[as.factor(allwarm_block$site)],col=cols[as.factor(allwarm_block$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msb.mm)[1],b=fixef(msb.mm)[2], lty=1)
 
-plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)],  bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)],  bg=cols[as.factor(allwarm_yr$site)],col=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msy.mm)[1],b=fixef(msy.mm)[2], lty=1)
 legend(4.15,2.9,pch=shapes,pt.bg=cols,col=cols,legend=sites)
@@ -198,8 +198,8 @@ allwarm_stmean<-allwarm_stmean[order(allwarm_stmean$site),]
 quartz(height=7,width=7)
 par(mfrow=c(2,2),mai=c(1,1,.2,.2))
 sites<-unique(allwarm_block$site)
-shapes<-c(23,24,23,23,23)#determined by the warming type: infrared=23, soil warming=24
-cols<-c("darkblue","lightblue","darkgreen","gray","white","lightgreen")#determind by site
+#shapes<-c(23,24,23,23,23)#determined by the warming type: infrared=23, soil warming=24
+#cols<-c("darkblue","lightblue","darkgreen","gray","white","lightgreen")#determind by site
 #allwarm_blockag<-allwarm_block[-which(allwarm_block$agwarm=="NaN"),]
 #sitesag<-unique(allwarm_blockag$site)
 allwarm_block$reported<-as.numeric(allwarm_block$reported)

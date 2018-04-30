@@ -108,10 +108,10 @@ minaexp03<-minairranef[which(minairranef$site=="exp03"),]
 minaexp04<-minairranef[which(minairranef$site=="exp04"),]
 minaexp07<-minairranef[which(minairranef$site=="exp07"),]
 minaexp10<-minairranef[which(minairranef$site=="exp10"),]
-points(as.numeric(minaexp03$month),minaexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
-points(as.numeric(minaexp04$month),minaexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(minaexp07$month),minaexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
-points(as.numeric(minaexp10$month),minaexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minaexp03$month),minaexp03$shamdif,pch=21,bg="darkorchid",col="darkorchid")
+points(as.numeric(minaexp04$month),minaexp04$shamdif,pch=22,bg="darkorchid",col="darkorchid")
+points(as.numeric(minaexp07$month),minaexp07$shamdif,pch=22,bg="blue",col="blue")
+points(as.numeric(minaexp10$month),minaexp10$shamdif,pch=21,bg="blue",col="blue")
 for (i in 1:12){
   arrows(as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]-air_monthsums$SE[i],as.numeric(air_monthsums$month[i]),air_monthsums$temptreat0[i]+air_monthsums$SE[i],length=0.01,angle=90,code=3)}
 abline(h=0,lty=2)
@@ -121,7 +121,7 @@ mtext("Effect of structural control (sham - ambient)",side=2, line=3, cex=0.9,ad
 mtext(expression(~degree*C),side=2, line=2, cex=0.8,adj=.5)
 mtext("a)",side=3, line=0, cex=0.9,adj=0)
 
-legend(1.5,-.1,legend=c("exp03","exp04","exp07","exp08","exp10"), pch=c(22,22,21,24,21),pt.bg=c("lightsalmon","lightblue","lightblue","lightblue","lightsalmon"),col=c("lightsalmon","lightblue","lightblue","lightblue","lightsalmon"))
+legend(1.5,-.1,legend=c("exp03","exp04","exp07","exp08","exp10"), pch=c(21,22,22,22,21),pt.bg=c("darkorchid","darkorchid","blue","darkred","blue"),col=c("darkorchid","darkorchid","blue","darkred","blue"))
 
 #soil
 plot(as.numeric(soil_monthsums$month),soil_monthsums$temptreat0,type="p", pch=8,bg="black", xlab="", ylab="", ylim=c(-2,2), bty="l", main="Min Soil Temp", las=TRUE)
@@ -130,10 +130,11 @@ minsexp03<-minsoilranef[which(minsoilranef$site=="exp03"),]
 minsexp04<-minsoilranef[which(minsoilranef$site=="exp04"),]
 minsexp07<-minsoilranef[which(minsoilranef$site=="exp07"),]
 minsexp10<-minsoilranef[which(minsoilranef$site=="exp10"),]
-points(as.numeric(minsexp03$month),minsexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
-points(as.numeric(minsexp04$month),minsexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(minsexp07$month),minsexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
-points(as.numeric(minsexp10$month),minsexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(minsexp03$month),minsexp03$shamdif,pch=21,bg="darkorchid",col="darkorchid")
+points(as.numeric(minsexp04$month),minsexp04$shamdif,pch=22,bg="darkorchid",col="darkorchid")
+points(as.numeric(minsexp07$month),minsexp07$shamdif,pch=22,bg="blue",col="blue")
+points(as.numeric(minsexp10$month),minsexp10$shamdif,pch=21,bg="blue",col="blue")
+
 mtext("c)",side=3, line=0, cex=0.9,adj=0)
 mtext(expression(~degree*C),side=2, line=2, cex=0.8,adj=.5)
 
@@ -191,10 +192,11 @@ maxaexp03<-maxairranef[which(maxairranef$site=="exp03"),]
 maxaexp04<-maxairranef[which(maxairranef$site=="exp04"),]
 maxaexp07<-maxairranef[which(maxairranef$site=="exp07"),]
 maxaexp10<-maxairranef[which(maxairranef$site=="exp10"),]
-points(as.numeric(maxaexp03$month),maxaexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
-points(as.numeric(maxaexp04$month),maxaexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(maxaexp07$month),maxaexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
-points(as.numeric(maxaexp10$month),maxaexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(maxaexp03$month),maxaexp03$shamdif,pch=21,bg="darkorchid",col="darkorchid")
+points(as.numeric(maxaexp04$month),maxaexp04$shamdif,pch=22,bg="darkorchid",col="darkorchid")
+points(as.numeric(maxaexp07$month),maxaexp07$shamdif,pch=22,bg="blue",col="blue")
+points(as.numeric(maxaexp10$month),maxaexp10$shamdif,pch=21,bg="blue",col="blue")
+
 #error and fixed effects
 abline(h=0,lty=2)
 for (i in 1:12){
@@ -210,10 +212,11 @@ maxsexp03<-maxsoilranef[which(maxsoilranef$site=="exp03"),]
 maxsexp04<-maxsoilranef[which(maxsoilranef$site=="exp04"),]
 maxsexp07<-maxsoilranef[which(maxsoilranef$site=="exp07"),]
 maxsexp10<-maxsoilranef[which(maxsoilranef$site=="exp10"),]
-points(as.numeric(maxsexp03$month),maxsexp03$shamdif,pch=22,bg="lightsalmon",col="lightsalmon")
-points(as.numeric(maxsexp04$month),maxsexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(maxsexp07$month),maxsexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
-points(as.numeric(maxsexp10$month),maxsexp10$shamdif,pch=21,bg="lightsalmon",col="lightsalmon")
+points(as.numeric(maxsexp03$month),maxsexp03$shamdif,pch=21,bg="darkorchid",col="darkorchid")
+points(as.numeric(maxsexp04$month),maxsexp04$shamdif,pch=22,bg="darkorchid",col="darkorchid")
+points(as.numeric(maxsexp07$month),maxsexp07$shamdif,pch=22,bg="blue",col="blue")
+points(as.numeric(maxsexp10$month),maxsexp10$shamdif,pch=21,bg="blue",col="blue")
+
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]-soil_monthsums$SE[i],as.numeric(soil_monthsums$month[i]),soil_monthsums$temptreat0[i]+soil_monthsums$SE[i],length=0.01,angle=90,code=3)}
@@ -258,10 +261,11 @@ moisexp03<-moisranef[which(moisranef$site=="exp03"),]
 moisexp04<-moisranef[which(moisranef$site=="exp04"),]
 moisexp07<-moisranef[which(moisranef$site=="exp07"),]
 moisexp08<-moisranef[which(moisranef$site=="exp08"),]
-points(as.numeric(moisexp03$month),moisexp03$shamdif,pch=22,bg="salmon",col="salmon")
-points(as.numeric(moisexp04$month),moisexp04$shamdif,pch=22,bg="lightblue",col="lightblue")
-points(as.numeric(moisexp07$month),moisexp07$shamdif,pch=21,bg="lightblue",col="lightblue")
-points(as.numeric(moisexp08$month),moisexp08$shamdif,pch=24,bg="lightblue",col="lightblue")
+points(as.numeric(moisexp03$month),moisexp03$shamdif,pch=21,bg="darkorchid",col="darkorchid")
+points(as.numeric(moisexp04$month),moisexp04$shamdif,pch=22,bg="darkorchid",col="darkorchid")
+points(as.numeric(moisexp07$month),moisexp07$shamdif,pch=22,bg="blue",col="blue")
+points(as.numeric(moisexp08$month),moisexp08$shamdif,pch=22,bg="darkred",col="darkred")
+
 abline(h=0,lty=2)
 for (i in 1:12){
   arrows(as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]-mois_monthsums$SE[i],as.numeric(mois_monthsums$month[i]),mois_monthsums$temptreat0[i]+mois_monthsums$SE[i],length=0.01,angle=90,code=3)}

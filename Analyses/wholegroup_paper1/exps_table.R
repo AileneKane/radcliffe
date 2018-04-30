@@ -67,4 +67,4 @@ sitetable$type<-c("infrared","infrared","forced air and soil",
 
 sitetable2<-subset(sitetable, select=c(DatasetID, location, source,data_years,type,warming_control,plot_area_m2,W_per_m2,Target,ptreat,AGtemp, Tsoildepths, Msoildepths,control_type,analysis))
 
-colnames(sitetable2)<-c("study","location","data years", "source", "warming type","warming control","area","watts","warming trtmt","precip trtmt","above-ground temp","soil temp depth","soil moist depth","control type","analysis type")
+colnames(sitetable2)<-c("study","location","source","data years", "warming type","warming control","area","watts","warming trtmt","precip trtmt","above-ground temp","soil temp depth","soil moist depth","control type","analysis type")

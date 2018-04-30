@@ -1,4 +1,4 @@
-\begin{thebibliography}{97}
+\begin{thebibliography}{95}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
@@ -104,24 +104,10 @@ Cox, P.M., Betts, R.A., Jones, C.D., Spall, S.A. \& Totterdell, I.J. (2000).
   coupled climate model.
 \newblock \emph{Nature}, 408, 184--187.
 
-\bibitem[{Craine \emph{et~al.}(2012)Craine, Wolkovich, Towne \&
-  Kembel}]{craine2012}
-Craine, J.M., Wolkovich, E.M., Towne, E.G. \& Kembel, S.W. (2012).
-\newblock Flowering phenology as a functional trait in a tallgrass prairie.
-\newblock \emph{New Phytologist}, 193, 673--682.
-
 \bibitem[{Dai(2013)}]{dai2013}
 Dai, A. (2013).
 \newblock Increasing drought under global warming in observations and models.
 \newblock \emph{Nature Climate Change}, 3, 52--58.
-
-\bibitem[{Davis \emph{et~al.}(2015)Davis, Willis, Connolly, Kelly \&
-  Ellison}]{davis2015}
-Davis, C.C., Willis, C.G., Connolly, B., Kelly, C. \& Ellison, A.M. (2015).
-\newblock Herbarium records are reliable sources of phenological change driven
-  by climate and provide novel insights into species' phenological cueing
-  mechanisms.
-\newblock \emph{American journal of botany}, 102, 1599--1609.
 
 \bibitem[{Dayton(1971)}]{dayton1971}
 Dayton, P.K. (1971).
@@ -264,6 +250,13 @@ Hoeppner, S.S. \& Dukes, J.S. (2012).
   warming and precipitation.
 \newblock \emph{Global Change Biology}, 18, 1754--1768.
 
+\bibitem[{Holmgren \emph{et~al.}(2001)Holmgren, Scheffer, Ezcurra,
+  Guti{\'e}rrez \& Mohren}]{holmgren2001}
+Holmgren, M., Scheffer, M., Ezcurra, E., Guti{\'e}rrez, J.R. \& Mohren, G.M.
+  (2001).
+\newblock El ni{\~n}o effects on the dynamics of terrestrial ecosystems.
+\newblock \emph{Trends in Ecology \& Evolution}, 16, 89--94.
+
 \bibitem[{Hoover \emph{et~al.}(2014)Hoover, Knapp \& Smith}]{hoover2014}
 Hoover, D.L., Knapp, A.K. \& Smith, M.D. (2014).
 \newblock Resistance and resilience of a grassland ecosystem to climate
@@ -343,13 +336,6 @@ Marion, G., Henry, G., Freckman, D., Johnstone, J., Jones, G., Jones, M.,
   ecosystems.
 \newblock \emph{Global Change Biology}, 3, 20--32.
 
-\bibitem[{Matthews \& Mazer(2016)}]{matthews2016}
-Matthews, E.R. \& Mazer, S.J. (2016).
-\newblock Historical changes in flowering phenology are governed by
-  temperature$\times$ precipitation interactions in a widespread perennial herb
-  in western \uppercase{N}orth \uppercase{A}merica.
-\newblock \emph{New Phytologist}, 210, 157--167.
-
 \bibitem[{McDaniel \emph{et~al.}(2014{\natexlab{a}})McDaniel, Kaye \&
   Kaye}]{mcdaniel2014b}
 McDaniel, M., Kaye, J. \& Kaye, M. (2014{\natexlab{a}}).
@@ -411,12 +397,6 @@ Ohlem{\"u}ller, R., Gritti, E.S., Sykes, M.T. \& Thomas, C.D. (2006).
   of analogous and non-analogous climates 1931--2100.
 \newblock \emph{Global Ecology and Biogeography}, 15, 395--405.
 
-\bibitem[{Ourcival \& Rambal(2011)}]{ourcival2011}
-Ourcival, J. \& Rambal, S. (2011).
-\newblock Phenological responses to extreme droughts in a
-  \uppercase{M}editerranean forest.
-\newblock \emph{Global Change Biology}, 17, 1036--1048.
-
 \bibitem[{Parmesan(2006)}]{parmesan2006}
 Parmesan, C. (2006).
 \newblock Ecological and evolutionary responses to recent climate change.
@@ -446,20 +426,20 @@ Pelini, S.L., Bowles, F.P., Ellison, A.M., Gotelli, N.J., Sanders, N.J. \&
   \uppercase{F}orests.
 \newblock \emph{Methods in Ecology and Evolution}, 2, 534--540.
 
-\bibitem[{Pe{\~n}uelas \emph{et~al.}(2004)Pe{\~n}uelas, Filella, Zhang,
-  Llorens, Ogaya, Lloret, Comas, Estiarte \& Terradas}]{penuelas2004}
-Pe{\~n}uelas, J., Filella, I., Zhang, X., Llorens, L., Ogaya, R., Lloret, F.,
-  Comas, P., Estiarte, M. \& Terradas, J. (2004).
-\newblock Complex spatiotemporal phenological shifts as a response to rainfall
-  changes.
-\newblock \emph{New Phytologist}, 161, 837--846.
-
 \bibitem[{Peterjohn \emph{et~al.}(1993)Peterjohn, Melillo, Bowles \&
   Steudler}]{peterjohn1993}
 Peterjohn, W.T., Melillo, J.M., Bowles, F.P. \& Steudler, P.A. (1993).
 \newblock Soil warming and trace gas fluxes: experimental design and
   preliminary flux results.
 \newblock \emph{Oecologia}, 93, 18--24.
+
+\bibitem[{Polade \emph{et~al.}(2014)Polade, Pierce, Cayan, Gershunov \&
+  Dettinger}]{polade2014}
+Polade, S.D., Pierce, D.W., Cayan, D.R., Gershunov, A. \& Dettinger, M.D.
+  (2014).
+\newblock The key role of dry days in changing regional climate and
+  precipitation regimes.
+\newblock \emph{Scientific reports}, 4, 4364.
 
 \bibitem[{Price \& Waser(1998)}]{price1998}
 Price, M.V. \& Waser, N.M. (1998).
@@ -471,6 +451,12 @@ Price, M.V. \& Waser, N.M. (1998).
 Quinn, G.P. \& Keough, M.J. (2002).
 \newblock \emph{Experimental design and data analysis for biologists}.
 \newblock Cambridge University Press.
+
+\bibitem[{Reich \emph{et~al.}(2018)Reich, Hobbie, Lee \& Pastore}]{reich2018}
+Reich, P.B., Hobbie, S.E., Lee, T.D. \& Pastore, M.A. (2018).
+\newblock Unexpected reversal of c3 versus c4 grass response to elevated co2
+  during a 20-year field experiment.
+\newblock \emph{Science}, 360, 317--320.
 
 \bibitem[{Reich \emph{et~al.}(2015)Reich, Sendall, Rice, Rich, Stefanski,
   Hobbie \& Montgomery}]{reich2015}

@@ -131,17 +131,18 @@ names(otcann2)<-c("air_mean (se)","air_range","surf_mean (se)","surf_range","soi
 alltypes<-cbind(c(airt.table$mn_se,""),c(airt.table$range,""),c("","",surft.table$mn_se,""),c("","",surft.table$range,""), soilt.table$mn_se,soilt.table$range)
 alltypes<-rbind(otcann2,alltypes)
 
-alltypes2<-as.data.frame(cbind(c("NA",targ.table$sum),alltypes))
+alltypes2<-as.data.frame(cbind(c(" ",targ.table$sum),alltypes))
 colnames(alltypes2)[1]<-c("target (min-max)")
 
 rownames(alltypes2)<-c("otc","force_air","force_air_soil","infrared","soil")
-alltypes2[5,7]<-"NA"
+alltypes2[5,7]<-" "
 
-alltypes2$n<-c("0 (from Bokhorst et al. 2013)","2","2","9","1")
+alltypes2$n<-c("0*","2","2","9","1")
 alltypes3<-t(alltypes2)
 alltypes3<-cbind(alltypes3,alltypes3[,1])
 alltypes3<-alltypes3[,-1]
-colnames(alltypes3)<-c("forced air","force air, soil cables","infrared","soil cables","otc")
+alltypes3<-cbind(rownames(alltypes3),alltypes3)
+colnames(alltypes3)<-c("temperature type","forced air","force air, soil cables","infrared","soil cables","passive otc")
 
 #dim(alltypes)
 #write.csv(alltypes2,"../../Analyses/output/warmtype.table.csv")

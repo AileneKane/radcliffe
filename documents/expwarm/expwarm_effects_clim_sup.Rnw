@@ -56,7 +56,7 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 
 \section* {Additional methods for database development}
-For our literature review, we searched Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. We removed all passive warming studies from the list, and contacted authors for daily data. Three additional datasets were offered or suggested to us, and in March 2018, we added additional studies found by using the same terms to search the following online databases for additional datasets: dataONE \citep{dataONE}, KNB \citep{knb}, and dryad \citep{dryad}. The resulting database contains daily climate data collected between 1991 and 2015 from 15 North American, European, and Chinese climate change experiments (Table S1, Figure S1). %We were unable to include the following studies because authors declined to share their data or did not respond: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}.
+For our literature review, we searched Web of Science (ISI) for Topic=(warm* OR temperature*) AND Topic=(plant* AND phenolog*) AND Topic=(experiment* OR manip*). We restricted dates to the time period after the STONE database (i.e. January 2011 through March 2015). This yielded 277 new studies. We removed all passive warming studies from the list, and contacted authors for daily data. Three additional datasets were offered or suggested to us, and in March 2018, we added additional studies found by using the same terms to search the following online databases for additional datasets: dataONE \citep{dataONE}, KNB \citep{knb}, and dryad \citep{dryad}. The resulting database contains daily climate data collected between 1991 and 2015 from 15 North American, European, and Chinese climate change experiments (Table \ref{tab:methods}, Figure \ref{fig:map}). %We were unable to include the following studies because authors declined to share their data or did not respond: \citep{schwartzberg2014,moser2011,caron2015,ellebjerg2008}.
 
 \section* {Details of statistical analyses and results}
 For all analyses, we use mixed-effects models implemented using the lme4 package in R, version 3.2.4 \citep{bates2015,rcoreteam2016}. Mixed-effects models, also called multi-level or hierarchical models, can account for structured data that violate the independence assumption of traditional linear regression \citep{gelman2007}. In our analyses, we use levels/groupings of experimental site, year, and day of year (doy) to account for this mutual dependence among data points. To test for significance of fixed effects in our models, we use Type II tests for models including only main effects and Type III tests for models including interactions, as well as main effects. 
@@ -70,7 +70,7 @@ To test how infrastructure affects local climate, we compared temperature and so
 \par We fit linear mixed effects models by month for the following response variables: mean daily soil temperature, minimum and maximum daily air and soil temperature (\citet{farnsworth1995} only measured mean soil, not minimum and maximum air or soil so there are only four different studies in those models), and soil moisture. The predictor was control type (sham or ambient). To allow for both mean differences in temperature and the effect of control to to vary among sites and years, random effects were site and year nested within site, modeled with a random slopes and random intercepts structure. 
 We found that experimental structures altered above-ground and soil temperatures in opposing ways: above-ground temperatures were higher in the structural controls, compared with ambient conditions with no structures installed, whereas soil temperatures were lower in the structural controls compared with ambient soil (Figure 4 in the main text).  In addition, soil moisture was lower in structural controls compared with ambient conditions. These general patterns were consistent across the different temperature models we fit (mean, minimum, and maximum soil and air temperatures), although the magnitude varied across months, as well as among studies. We show summaries from models fit to the entire year (Tables \ref{table:shamamb_soiltemp}, \ref{table:shamamb_airtemp}, \ref{table:shamamb_soilmois}), as well as summaries from models fit to each month of data, as is shown in Figure 4 in the main text (Tables \ref{table:shamamb_stempm}, \ref{table:shamamb_atempm}, \ref{table:shamamb_soilmoism}).
 
-\par For experiments using infrared heating, we were unable to directly compare ambient and structural controls because no studies in our database included both control types. Instead, we compared differences between each control type (ambient versus structural) and the measured amount of warming per degree of target warming in experimental plots. We predicted that, if heating infrastructure affects microclimate, the measured amount of warming per degree of target warming should differ by control type. Of the seven infrared sites in our database that measured soil temperature, three used ambient controls (exp06, exp11, exp14) and four used structural controls (exp01, exp09, exp12, exp13).  Among these studies, warming per \degree of target warming was 1.01 for structural controls (SE= 0.09, Table S13), but significantly lower for ambient controls (0.41 \degree C of warming per \degree C of target warming, SE=0.09, Table \ref{table:table:infrared}). This trend, based on a limited number of studies and sites, suggests that infrared heating equipment may alter microclimate, likely by shading the soil surface \citep{mcdaniel2014}.  
+\par For experiments using infrared heating, we were unable to directly compare ambient and structural controls because no studies in our database included both control types. Instead, we compared differences between each control type (ambient versus structural) and the measured amount of warming per degree of target warming in experimental plots. We predicted that, if heating infrastructure affects microclimate, the measured amount of warming per degree of target warming should differ by control type. Of the seven infrared sites in our database that measured soil temperature, three used ambient controls (exp06, exp11, exp14) and four used structural controls (exp01, exp09, exp12, exp13).  Among these studies, warming per \degree of target warming was 1.01 for structural controls (SE= 0.09, Table S13), but significantly lower for ambient controls (0.41 \degree C of warming per \degree C of target warming, SE=0.09, Table \ref{table:infrared}). This trend, based on a limited number of studies and sites, suggests that infrared heating equipment may alter microclimate, likely by shading the soil surface \citep{mcdaniel2014}.  
 
 \subsection* {Analysis of effects of precipitation treatments on above-ground temperature}
 Of the 15 experiments in the MC3E database, four manipulated precipitation and measured above-ground temperature and three of these also measured soil temperature. To examine the effects of precipitation treatment on temperature, we fit linear mixed effect models to data from these sites with temperature (above-ground daily minimum and maximum, and soil minimum and maximum) as the response variables. Predictors were precipitation treatment (a continuous fixed effect, which ranged from 50 to 200 \% of ambient for these four studies), target warming (a continuous fixed effect, which ranged from 0 to 4 \degree C for thesefour studies), and their interaction. To account for methodological and other differences among site, we included site as a random effect, with year and doy nested within site to account for the non-independent nature of measurements taken on the same day within sites. We used a random intercept model structure, (Table \ref{table:preciptemp}). 
@@ -101,19 +101,19 @@ site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites included i
         label="tab:methods",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.04\\textwidth}|",
+               "p{0.15\\textwidth}|",
                "p{0.12\\textwidth}|",
-               "p{0.08\\textwidth}|",
-               "p{0.08\\textwidth}|",
-               "p{0.08\\textwidth}|",
-               "p{0.08\\textwidth}|",
-               "p{0.05\\textwidth}|",
-               "p{0.05\\textwidth}|",
+               "p{0.04\\textwidth}|",
+               "p{0.07\\textwidth}|",
+               "p{0.07\\textwidth}|",
+               "p{0.03\\textwidth}|",
+               "p{0.03\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
                "p{0.07\\textwidth}|",
-               "p{0.06\\textwidth}|",
-               "p{0.06\\textwidth}|",
-               "p{0.06\\textwidth}|",
+               "p{0.04\\textwidth}|",
+               "p{0.04\\textwidth}|",
+               "p{0.08\\textwidth}|",
                "p{0.08\\textwidth}|"))
 
 print(site.table, include.rownames=FALSE, hline.after = c(-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15),caption.placement="top",size="\\footnotesize")
@@ -127,15 +127,16 @@ print(site.table, include.rownames=FALSE, hline.after = c(-1,0,1,2,3,4,5,6,7,8,9
 <<label=xtable1a, echo=FALSE, results=tex>>=
 source("../../Analyses/wholegroup_paper1/warmtype_table.R")
 
-wtype.table <- xtable(alltypes3, caption="\\textbf{Summary of warming treatments, by warming type,} for studies included in the MC3E database. An additional common type of experimental warming, passive open-top chambers (OTC), is included for comparison. Summaries of the target warming treatments (\\degree C) and measured warming for air temperature, soil surface temperature, and soil temperture are given. Measured warming shown here is for warming treatments only (precipitation treatments are expcluded), and is the difference between mean annual temperature (MAT) of control plots and MAT of each treatment level within a study. Mean difference (with standard error) and the range of differences (minimum to maximum differences in MAT) is shown. n is the number of studies of each warming type in the MC3E database.", label="tab:warmtreats",align=c(
+wtype.table <- xtable(alltypes3, caption="\\textbf{Summary of warming treatments, by warming type,} for studies included in the MC3E database. An additional common type of experimental warming, passive open-top chambers (OTC), is included for comparison. Summaries of the target warming treatments (\\degree C) and measured warming for air temperature, soil surface temperature, and soil temperture are given. Measured warming shown here is for warming treatments only (precipitation treatments are expcluded), and is the difference between mean annual temperature (MAT) of control plots and MAT of each treatment level within a study. Mean difference (with standard error) and the range of differences (minimum to maximum differences in MAT) is shown. n is the number of studies of each warming type in the MC3E database. *Passive OTC data are from \\cite{bokhorst2013}.", label="tab:warmtreats",align=c(
+               "p{0.01\\textwidth}",
                "|p{0.20\\textwidth}",
-               "p{0.25\\textwidth}",
+               "p{0.10\\textwidth}",
                "p{0.10\\textwidth}",
                "p{0.10\\textwidth}",
                "p{0.10\\textwidth}",
                "p{0.10\\textwidth}|"
                ))
-print(wtype.table, include.rownames=TRUE, caption.placement="top",size="\\footnotesize")
+print(wtype.table, include.rownames=FALSE, caption.placement="top",size="\\footnotesize")
 @
 \end{footnotesize} 
 \clearpage
@@ -550,7 +551,7 @@ print(aic.table, include.rownames=FALSE, include.colnames=TRUE,caption.placement
 \begin{figure}[p]
 \centering
 \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/maps/RadcliffeLocations_Experiments_Open.png} 
-\caption{\textbf{Climate data from 12 climate change experiments in North America and Europe are included in the MC3E database and analyzed here.} See Tables S1 and S2 for details.} 
+\caption{\textbf{Climate data from 12 climate change experiments in North America and Europe are included in the MC3E database and analyzed here.} See Table \ref{tab:methods} for details.} 
 \label{fig:map}
 \end{figure}
 \clearpage
