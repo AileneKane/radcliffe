@@ -139,6 +139,10 @@ alltypes2[5,7]<-"NA"
 
 alltypes2$n<-c("0 (from Bokhorst et al. 2013)","2","2","9","1")
 alltypes3<-t(alltypes2)
+alltypes3<-cbind(alltypes3,alltypes3[,1])
+alltypes3<-alltypes3[,-1]
+colnames(alltypes3)<-c("forced air","force air, soil cables","infrared","soil cables","otc")
+
 #dim(alltypes)
 #write.csv(alltypes2,"../../Analyses/output/warmtype.table.csv")
 
