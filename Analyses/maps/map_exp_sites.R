@@ -117,8 +117,8 @@ ggplot(data=expsites) +
   # scale_shape_manual(values=c(18, 19, 17, 15)) +
   # scale_shape_manual(values=c(5, 1, 2, 0)) +
   # scale_color_manual(values=c("firebrick3", "darkorange3", "black", "purple4")) +
-  scale_shape_manual(values=c(2,0,5,1)) +
-  scale_color_manual(values=c("red3", "purple3", "black", "blue2")) +
+  scale_shape_manual(values=c(1,0,5,2)) +
+  scale_color_manual(values=c("blue2", "purple3", "black", "red3")) +
   scale_size(range=c(1.0,5)) +
   guides(shape=guide_legend(title="Warming Type", override.aes = list(size=4), order=1, nrow=2, byrow=T),
          color=guide_legend(title="Warming Type", order=1, nrow=2, byrow=T),
