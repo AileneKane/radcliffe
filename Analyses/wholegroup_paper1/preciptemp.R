@@ -42,7 +42,7 @@ stemptable<-cbind(round(summary(stempmod4)$coeff[,1:2],digits=3), Anova(stempmod
 #unique(expclimp$site)
 alltemptable<-as.data.frame(rbind(mintemptable,temptable,smintemptable,stemptable))
 mods<-c("min above-ground temp.","","","","max above-ground temp.","","","","min soil temp.","","","","max soil temp.","","","")
-preds<-c("intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target","intercept","preciptreat","target","precip*target")
+preds<-c("intercept","preciptreat","warmtreat","precip*target","intercept","preciptreat","warmtreat","precip*warm","intercept","preciptreat","warmtreat","precip*warm","intercept","preciptreat","warmtreat","precip*warm")
 alltemptable<-cbind(mods,preds,alltemptable)
 rownames(alltemptable)<-NULL
 colnames(alltemptable)<-c("response","predictors","est.","se","$\\chi^{2}$","df","p")

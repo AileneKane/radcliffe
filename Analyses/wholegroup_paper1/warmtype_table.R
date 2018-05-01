@@ -126,7 +126,7 @@ otcann<-rbind(otctab[1,2:4],otctab[1,5:7])#just the annual values
 otcann1<-t(otcann)
 colnames(otcann1)<-c("otc_mean (se)","otc_range")
 otcann2<-c(otcann1[1,],otcann1[2,],otcann1[3,])
-names(otcann2)<-c("air_mean (se)","air_range","surf_mean (se)","surf_range","soil_mean (se)","soil_range")
+names(otcann2)<-c("air, mean (se)","air, range","surface, mean (se)","surface, range","soil, mean (se)","soil, range")
 
 alltypes<-cbind(c(airt.table$mn_se,""),c(airt.table$range,""),c("","",surft.table$mn_se,""),c("","",surft.table$range,""), soilt.table$mn_se,soilt.table$range)
 alltypes<-rbind(otcann2,alltypes)
@@ -136,7 +136,8 @@ colnames(alltypes2)[1]<-c("target (min-max)")
 
 rownames(alltypes2)<-c("otc","force_air","force_air_soil","infrared","soil")
 alltypes2[5,7]<-" "
-
+alltypes2[5,6]<-"5.04"
+alltypes2[5,1]<-"5"
 alltypes2$n<-c("0*","2","2","9","1")
 alltypes3<-t(alltypes2)
 alltypes3<-cbind(alltypes3,alltypes3[,1])
