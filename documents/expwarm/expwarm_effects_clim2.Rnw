@@ -74,7 +74,7 @@
 
 \author[11,12,i]{Y. Vitasse}
 
-\author[1,8,j]{E.M. Wolkovich}
+\author[1,8, 13,j]{E.M. Wolkovich}
 
 \affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts 02131, USA}
 
@@ -100,6 +100,8 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 \affil[11]{Institute of Geography, University of Neuch\^atel, Neuch\^atel, Switzerland}
 
 \affil[12]{Swiss Federal Institute for Forest, Snow and Landscape Research WSL, Neuch\^atel, Switzerland}
+
+\affil[13]{Forest \& Conservation Sciences, Faculty of Forestry, University of British Columbia, 2424 Main Mall, Vancouver, BC, Canada}
 
 \affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 1300 Centre Street, Boston, Massachusetts 02140, USA }
 
@@ -209,7 +211,7 @@ Experimental structures themselves can alter temperature and other important bio
 \par Our analyses suggest that warming experiments which calculate focal response variables relative to ambient controls \citep[e.g.,][]{price1998,dunne2003,cleland2006,morin2010,marchin2015} may not adequately account for the ways in which infrastructure affects microclimate. Results from studies reporting only structural controls \citep [e.g.,][]{sherry2007,hoeppner2012, rollinson2012}, should be cautiously applied outside of an experimental context, as---without ambient controls---their inference is technically limited to the environment of the structural controls. Our results suggest that studies aiming to predict or forecast the effects of climate change on organisms and ecosystems would benefit from employing both structural and ambient controls so that they may separate infrastructural artifacts from the effects of experimental warming. 
 \section* {Secondary and feedback effects of climate change manipulations} 
 Climate change experiments often seek to manipulate temperature or precipitation separately as well as interactively, but manipulating either of these variables in isolation is difficult. Treatments involving precipitation additions typically reduce temperatures in climate change manipulations \citep{sherry2007,rollinson2012,mcdaniel2014}. For example, McDaniel et al. (2014) observed that a 20\% increase in precipitation reduced mean hourly temperatures by 0.3\degree C over the course of their two-year experiment. 
-\par In the MC3E database, there are four experiments that manipulated both temperature and precipitation, and provided daily above-ground temperature data (three of these also measured soil temperature). Across these studies, all of which used infrared heating, we found that increasing the amount of added precipitation reduced daily minimum and maximum above-ground temperatures, at rates of 0.01 and 0.02 \degree C, respectively, and soil temperatures, at a rate of 0.01\degree C for both minimum and maximum temperature, per percent increase in added precipitation (Table S14). Thus, a 50\% increase in temperature would be expected to decrease temperature by 0.5 \degree C .
+\par In the MC3E database, there are four experiments that manipulated both temperature and precipitation, and provided daily above-ground temperature data (three of these also measured soil temperature). Across these studies, all of which used infrared heating, we found that increasing the amount of added precipitation reduced daily minimum and maximum above-ground temperatures, at rates of 0.01 and 0.02 \degree C, respectively, and soil temperatures, at a rate of 0.01\degree C for both minimum and maximum temperature, per percent increase in added precipitation (Table S14). Thus, a 50\% increase in temperature would be expected to decrease temperature by 0.5 \degree C.
 This is likely because increasing soil moisture (an effect of precipitation additions) typically shifts the surface energy balance to favor latent (i.e., evapotranspiration) over sensible energy fluxes, reducing heating of the air overlying the soils. Maintaining target warming levels is a challenge even for independent feedback systems, which vary wattage output using ongoing temperature measurements, particularly during seasons or years with wetter soils and higher evapotranspiration \citep{rich2015}.
 \par In addition to its effects on temperature, experimental warming often increases vapor pressure deficit and reduces soil water content \citep[e.g.,][]{harte1995b,sherry2007,morin2010,pelini2014,templer2016}. Of the 15 experiments in the MC3E database, we examined the 12 that continuously measured and reported soil moisture. We found that experimental warming reduced soil moisture across all warming types, with substantial variation among experiments (Figure 5, Table S16). The drying effect varied by warming type (ranging from -0.80 for infrared to -0.30\% for forced air and soil warming per degree of target warming, Table S16). Soil moisture can be difficult to measure, with high spatial and temporal variation \citep{famiglietti1999,teuling2005}, but these results suggest that soil moisture is unavoidably affected by changing temperatures, even when active-warming experiments may not be explicitly designed to manipulate soil moisture.
 
