@@ -1,4 +1,4 @@
-\begin{thebibliography}{100}
+\begin{thebibliography}{98}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
@@ -136,11 +136,6 @@ Diamond, S.E., Penick, C.A., Pelini, S.L., Ellison, A.M., Gotelli, N.J.,
 \newblock Using physiology to predict the responses of ants to climatic
   warming.
 \newblock \emph{Integrative and comparative biology}, 53, 965--974.
-
-\bibitem[{Dietze \emph{et~al.}(2013)Dietze, Lebauer \& Kooper}]{dietze2013}
-Dietze, M.C., Lebauer, D.S. \& Kooper, R. (2013).
-\newblock On improving the communication between models and data.
-\newblock \emph{Plant, Cell \& Environment}, 36, 1575--1585.
 
 \bibitem[{Dukes \& Mooney(1999)}]{dukes1999}
 Dukes, J.S. \& Mooney, H.A. (1999).
@@ -372,13 +367,6 @@ McDaniel, M., Wagner, R., Rollinson, C., Kimball, B., Kaye, M. \& Kaye, J.
 \newblock Microclimate and ecological threshold responses in a warming and
   wetting experiment following whole tree harvest.
 \newblock \emph{Theoretical and Applied Climatology}, 116, 287--299.
-
-\bibitem[{Medlyn \emph{et~al.}(2015)Medlyn, Zaehle, De~Kauwe, Walker, Dietze,
-  Hanson, Hickler, Jain, Luo, Parton \emph{et~al.}}]{medlyn2015}
-Medlyn, B.E., Zaehle, S., De~Kauwe, M.G., Walker, A.P., Dietze, M.C., Hanson,
-  P.J., Hickler, T., Jain, A.K., Luo, Y., Parton, W. \emph{et~al.} (2015).
-\newblock Using ecosystem experiments to improve vegetation models.
-\newblock \emph{Nature Climate Change}, 5, 528.
 
 \bibitem[{Melillo \emph{et~al.}(2017)Melillo, Frey, DeAngelis, Werner, Bernard,
   Bowles, Pold, Knorr \& Grandy}]{melillo2017}
