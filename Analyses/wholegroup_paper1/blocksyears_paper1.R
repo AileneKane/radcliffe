@@ -117,7 +117,7 @@ plot(allwarm_block$target,allwarm_block$agwarm,pch=shapes[as.factor(allwarm_bloc
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(mab.mm)[1],b=fixef(mab.mm)[2], lty=1)
-mtext("Observed warming (C)", side=2,line=4,adj=-5, cex=1.2)
+mtext("Observed warming (ºC)", side=2,line=4,adj=-5, cex=1.2)
 #col=cols[as.factor(allwarm_yr$site)],
 plot(allwarm_yr$target,allwarm_yr$agwarm,pch=shapes[as.factor(allwarm_yr$site)][-which(allwarm_yr$site=="exp08")], bg=cols[as.factor(allwarm_yr$site)],col=cols[as.factor(allwarm_yr$site)][-which(allwarm_yr$site=="exp08")],xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
@@ -132,7 +132,7 @@ plot(allwarm_yr$target,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msy.mm)[1],b=fixef(msy.mm)[2], lty=1)
 legend(4.15,2.9,pch=shapes,pt.bg=cols,col=cols,legend=sites)
-mtext("Target warming (C)", side=1,line=3,adj=-3, cex=1.2)
+mtext("Target warming (ºC)", side=1,line=3,adj=-3, cex=1.2)
 
 
 #Plot means across duration of study
@@ -143,16 +143,16 @@ ms.m<-lm(soilwarm~target, data=allwarm_stmean)
 quartz(height=6.6,width=4)
 par(mfrow=c(2,1),mai=c(1,1,.2,.2))
 #unique((allwarm_stmean$site))
-plot(allwarm_stmean$target,allwarm_stmean$agwarm,bg=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.factor(allwarm_stmean$site)],xlab="", ylab="Above-ground", bty="l", main="Mean Across Duration of Study", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
-mtext("Observed warming (C)", side=2,line=4,adj=-15, cex=1.2)
+plot(allwarm_stmean$target,allwarm_stmean$agwarm,bg=cols[as.factor(allwarm_stmean$site)],col=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.factor(allwarm_stmean$site)],xlab="", ylab="Above-ground", bty="l", main="Mean Across Duration of Study", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+mtext("Observed warming (ºC)", side=2,line=4,adj=-15, cex=1.2)
 abline(a=0,b=1,lty=2)
 abline(a=coef(mab.m)[1],b=coef(mab.m)[2], lty=1)
 
-plot(allwarm_stmean$target,allwarm_stmean$soilwarm,bg=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.factor(allwarm_stmean$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_stmean$target,allwarm_stmean$soilwarm,bg=cols[as.factor(allwarm_stmean$site)],col=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.factor(allwarm_stmean$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=coef(ms.m)[1],b=coef(ms.m)[2], lty=1)
-legend(4.5,3,pch=shapes,pt.bg=cols,legend=sites, cex=.8)
-mtext("Target warming (C)", side=1,line=3,adj=.5, cex=1.2)
+legend(4.5,3,pch=shapes,pt.bg=cols,col=cols,legend=sites, cex=.8)
+mtext("Target warming (ºC)", side=1,line=3,adj=.5, cex=1.2)
 
 #try with reported warming instead of Target (to address REviewer 1's comments):
 head(blockdat2)
@@ -206,27 +206,27 @@ allwarm_block$reported<-as.numeric(allwarm_block$reported)
 allwarm_block$agwarm<-as.numeric(allwarm_block$agwarm)
 #allwarm_blockag$reported<-as.numeric(allwarm_blockag$reported)
 #allwarm_blockag$agwarm<-as.numeric(allwarm_blockag$agwarm)
-plot(allwarm_block$reported,allwarm_block$agwarm,pch=shapes[as.factor(allwarm_block$site)], bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Above-ground", bty="l", main="By Block", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_block$reported,allwarm_block$agwarm,pch=shapes[as.factor(allwarm_block$site)], col=cols[as.factor(allwarm_block$site)],bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Above-ground", bty="l", main="By Block", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 #points(allwarm_stmean$reported,allwarm_stmean$agwarm,bg=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.numeric(as.factor(as.numeric(allwarm_stmean$site)))])
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(mab.mm)[1],b=fixef(mab.mm)[2], lty=1)
-mtext("Observed warming (C)", side=2,line=4,adj=-8, cex=1.2)
+mtext("Observed warming (ºC)", side=2,line=4,adj=-8, cex=1.2)
 
-plot(allwarm_yr$reported,allwarm_yr$agwarm,pch=shapes[as.factor(allwarm_yr$site)], bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_yr$reported,allwarm_yr$agwarm,pch=shapes[as.factor(allwarm_yr$site)], col=cols[as.factor(allwarm_block$site)],bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Above-ground", bty="l", main="By Year", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(may.mm)[1],b=fixef(may.mm)[2], lty=1)
 
-plot(allwarm_block$reported,allwarm_block$soilwarm,pch=shapes[as.factor(allwarm_block$site)],bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_block$reported,allwarm_block$soilwarm,pch=shapes[as.factor(allwarm_block$site)],col=cols[as.factor(allwarm_yr$site)],bg=cols[as.factor(allwarm_block$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msb.mm)[1],b=fixef(msb.mm)[2], lty=1)
 
-plot(allwarm_yr$reported,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)], bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
+plot(allwarm_yr$reported,allwarm_yr$soilwarm,pch=shapes[as.factor(allwarm_yr$site)], col=cols[as.factor(allwarm_yr$site)],bg=cols[as.factor(allwarm_yr$site)],xlab="", ylab="Soil", bty="l", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
 abline(a=0,b=1,lty=2)
 abline(a=fixef(msy.mm)[1],b=fixef(msy.mm)[2], lty=1)
-legend(4.15,2.9,pch=shapes,pt.bg=cols,legend=sites)
-mtext("Reported warming (C)", side=1,line=3,adj=-5, cex=1.2)
+legend(4.15,2.9,pch=shapes,col=cols,pt.bg=cols,legend=sites)
+mtext("Reported warming (ºC)", side=1,line=3,adj=-5, cex=1.2)
 
 
 #Plot means across duration of study
@@ -238,7 +238,7 @@ quartz(height=6.6,width=4)
 par(mfrow=c(2,1),mai=c(1,1,.2,.2))
 #unique((allwarm_stmean$site))
 plot(allwarm_stmean$reported,allwarm_stmean$agwarm,bg=cols[as.factor(allwarm_stmean$site)],pch=shapes[as.factor(allwarm_stmean$site)],xlab="", ylab="Above-ground", bty="l", main="Mean Across Duration of Study", xlim=c(-0.5,6), ylim=c(-0.5,6), cex.lab=1.1, cex.axis=1.1)
-mtext("Observed warming (C)", side=2,line=4,adj=-15, cex=1.2)
+mtext("Observed warming (ºC)", side=2,line=4,adj=-15, cex=1.2)
 abline(a=0,b=1,lty=2)
 abline(a=coef(mab.m)[1],b=coef(mab.m)[2], lty=1)
 
@@ -246,5 +246,5 @@ plot(allwarm_stmean$reported,allwarm_stmean$soilwarm,bg=cols[as.factor(allwarm_s
 abline(a=0,b=1,lty=2)
 abline(a=coef(ms.m)[1],b=coef(ms.m)[2], lty=1)
 legend(4.5,3,pch=shapes,pt.bg=cols,legend=sites, cex=.8)
-mtext("Reported warming (C)", side=1,line=3,adj=.5, cex=1.2)
+mtext("Reported warming (ºC)", side=1,line=3,adj=.5, cex=1.2)
 

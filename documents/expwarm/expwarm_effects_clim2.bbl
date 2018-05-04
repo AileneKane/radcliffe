@@ -1,4 +1,4 @@
-\begin{thebibliography}{98}
+\begin{thebibliography}{97}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
@@ -329,14 +329,6 @@ Kimball, B.A., Conley, M.M., Wang, S., Lin, X., Luo, C., Morgan, J. \& Smith,
   D. (2008).
 \newblock Infrared heater arrays for warming ecosystem field plots.
 \newblock \emph{Global Change Biology}, 14, 309--320.
-
-\bibitem[{Luo \emph{et~al.}(2011)Luo, Melillo, Niu, Beier, Clark, Classen,
-  Davidson, Dukes, Evans, Field \emph{et~al.}}]{luo2011}
-Luo, Y., Melillo, J., Niu, S., Beier, C., Clark, J.S., Classen, A.T., Davidson,
-  E., Dukes, J.S., Evans, R., Field, C.B. \emph{et~al.} (2011).
-\newblock Coordinated approaches to quantify long-term ecosystem dynamics in
-  response to global change.
-\newblock \emph{Global Change Biology}, 17, 843--854.
 
 \bibitem[{Marchin \emph{et~al.}(2015)Marchin, Salk, Hoffmann \&
   Dunn}]{marchin2015}

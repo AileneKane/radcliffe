@@ -74,7 +74,7 @@
 
 \author[11,12,i]{Y. Vitasse}
 
-\author[1,8, 13,j]{E.M. Wolkovich}
+\author[1,8,13,j]{E.M. Wolkovich}
 
 \affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts 02131, USA}
 
@@ -121,7 +121,7 @@ and Department of Biological Sciences, Purdue University, West Lafayette, Indian
 
 \affil[i]{yann.vitasse@wsl.ch}
 
-\affil[j]{wolkovich@fas.harvard.edu}
+\affil[j]{e.wolkovich@ubc.ca}
 
 
 \date{\today}
@@ -142,9 +142,9 @@ The MC3E database will be available at KNB \citep{ettinger2018}, along with all 
 
 \textbf{Number of words in abstract} 200
 
-\textbf{Number of words in main text} 5,465%(excluding abstract, acknowledgements, references, table and figure legends), 
+\textbf{Number of words in main text} 4,883%(excluding abstract, acknowledgements, references, table and figure legends), 
 
-\textbf{Number of references} 87
+\textbf{Number of references} 94
 
 \textbf{Number of figures} 5
 
@@ -152,7 +152,7 @@ The MC3E database will be available at KNB \citep{ettinger2018}, along with all 
 
 \textbf{Number of text boxes} 1
 
-\textbf{Number of words in Box 1} 475
+\textbf{Number of words in Box 1} 545
 
 \clearpage
 
@@ -163,7 +163,7 @@ The MC3E database will be available at KNB \citep{ettinger2018}, along with all 
 
 
 \section*{Abstract}
-\par To understand and forecast biological responses to climate change, scientists frequently use field experiments that alter temperature and precipitation. Climate manipulations can manifest in complex ways, however, challenging interpretations of biological responses. We reviewed publications from active-warming experiments to compile a database of daily local (i.e., plot-level) climate data from 15 experiments that use forced air, infrared heaters, and soil cables to warm plots. We find that the common practices of analyzing primarily mean changes among treatments and analyzing treatments as categorical variables (e.g. warmed verses unwarmed) masks important variation in treatment effects over space and time. Our synthesis showed measured mean warming in plots with the same target warming can vary by 3\degree C or more among blocks. Furthermore, warming treatments produce secondary effects, such as soil drying. The implications of these complexities can have important biological consequences. We show one such consequence with a case study of plant phenology, in which accounting for secondary non-temperature effects of warming triples the estimated sensitivity of budburst to warming. Based on our synthesis, we present recommendations for future analyses, experimental design, and data sharing that will improve the ability of climate change experiments to accurately identify and forecast species' responses.
+\par To understand and forecast biological responses to climate change, scientists frequently use field experiments that alter temperature and precipitation. Climate manipulations can manifest in complex ways, however, challenging interpretations of biological responses. We reviewed publications from active-warming experiments to compile a database of daily local (i.e., plot-level) climate data from 15 experiments that use forced air, infrared heaters, and soil cables to warm plots. We find that the common practices of analyzing primarily mean changes among treatments and analyzing treatments as categorical variables (e.g., warmed verses unwarmed) masks important variation in treatment effects over space and time. Our synthesis showed measured mean warming in plots with the same target warming can vary by 3\degree C or more among blocks. Furthermore, warming treatments produce secondary effects, such as soil drying. The implications of these complexities can have important biological consequences. We show one such consequence with a case study of plant phenology, in which accounting for secondary non-temperature effects of warming triples the estimated sensitivity of budburst to warming. Based on our synthesis, we present recommendations for future analyses, experimental design, and data sharing that will improve the ability of climate change experiments to accurately identify and forecast species' responses.
 
  
 \section* {Introduction}
