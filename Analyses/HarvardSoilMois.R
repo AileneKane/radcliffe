@@ -1,7 +1,9 @@
 #Looking at Harvard forest soil moisture data
 #Goals are:
-#1) See if relationship between temperature and soil moisture is different than relationship among experiments. Can also do this with controls in experimental dataset
-#2) See if relationship between HArvard Forest phenology and soil moisture/temperature differs from experimental dataset
+#1) See if relationship between temperature and soil moisture is different than 
+#relationship among experiments. 
+#Can also do this with controls in experimental dataset
+#2) See if relationship between Harvard Forest phenology and soil moisture/temperature differs from experimental dataset
 #Started by  Ailene, August 23 2017
 
 ## housekeeping
@@ -50,8 +52,8 @@ harvclim<-left_join(harvagt.yr,harvsoil.yr,by=c("year"), copy=TRUE)
 harvsoil2$site<-as.factor(harvsoil2$site)
 harvsoil2$doy<-as.factor(harvsoil2$doy)#
 
-harvsm_mod<-lmer(vsm~tmax + (1|site)+ (1|year/doy), REML=FALSE, data=harvsoil2)
-summary(harvsm_mod)#temp coef: tmax: -0.02893 
+harvsm_mod<-lmer(vsm~tmax + (1|site)+(1|year/doy), REML=FALSE, data=harvsoil3)
+summary(harvsm_mod)#temp coef: tmax: -0.02893
 #experimental model: target -3.517e-03
 
 #To do this, get annual average temperature and use this in place of "target" then get total annual precipitation, and use this in place of "preciptreat_amt

@@ -15,6 +15,11 @@ library(shinystan)
 library(bayesplot)
 library(rstanarm)
 library(dplyr)
+library(brms)
+
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+
 #options(mc.cores = parallel::detectCores()) # added by Andrew
 #update.packages()
 
@@ -72,12 +77,30 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 #try model in lmer
+#chosen values:
+#mu_a<-150#grand mean mean of bb doy
+#sigma_a<-.5,
+#mu_b_temp_sp<--2
+#sigma_b_temp_sp<-.1
+#mu_b_mois_sp<--1
+#sigma_b_mois_sp<-.1
+
 testm1.lmer<-lmer(y~temp + mois +(1|sp))
 summary(testm1.lmer)#looks good!
 
-#now fit the model in stan
- 
+#try the model with brms
+testm1.brms <- brm(y ~ temp + mois +#fixed effects
+                     (1|sp), #random effects
+                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
+                   chains = 2,iter = 2000,control = list(max_treedepth = 15))
 
+stancode(testm1.brms)
+summary(testm1.brms)
+#brms model says a: 148.62, temp=-1.98, mois=-0.99, species sigma=0.52
+marginal_effects(testm1.brms, surface = TRUE)
+
+
+#now fit the model in stan for comparison- haven't done this in a while...
 testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
               iter = 2500, warmup=1500) # 
 beta_draws<-as.matrix(testm1,pars=c("b_temp","b_mois","sigma_y"))
@@ -104,6 +127,19 @@ hist(mois)
 #try model in lmer
 testm2.lmer<-lmer(y~temp * mois +(1|sp))#
 summary(testm2.lmer)
+#brms
+
+#try the model with brms
+testm2.brms <- brm(y ~ temp * mois +#fixed effects
+                     (1|sp), #random effects
+                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
+                   chains = 2,control = list(max_treedepth = 15)) 
+
+stancode(testm2.brms)
+summary(testm2.brms)#looks good!
+#brms model says a: 148.82, temp=-2.01, mois=-1.00, tmint=-0.09, species sigma=0.52
+marginal_effects(testm2.brms, surface = TRUE)
+
 
 #now fit the model in stan
 testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
@@ -121,7 +157,19 @@ launch_shinystan(testm2)#t
 testm3.lmer<-lmer(y~temp * mois +(temp*mois|sp))#
 summary(testm3.lmer)#fixed effects look pretty good
 
-#now fit the model in stan
+#try the model with brms
+testm3.brms <- brm(y ~ temp * mois +#fixed effects
+                     (temp * mois|sp), #random effects
+                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
+                   chains = 2,control = list(max_treedepth = 15)) 
+
+stancode(testm3.brms)
+summary(testm3.brms)
+#brms model says a: 148.85, temp=-2.01, mois=-1.00, tmint=-0.09, species sigma=0.50
+marginal_effects(testm3.brms, surface = TRUE)
+#looks good!!!
+
+#now fit the model in stan- haven't done this in a while...
 testm3 = stan('Analyses/soilmoisture/M3_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
               iter = 5000, warmup=3500,control=list(adapt_delta=.95)) # there were divergent transitions. looked at bivariate plots, and problem parameter seems to be sigma_tm. sigma_temp also was a bit weird
 #Try making noncentered paraterization 
@@ -157,8 +205,19 @@ plot(temp,y)
 plot(mois,y)
 hist(mois)
 
-testm4.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site))#
-summary(testm4.lmer)#fixed effects look pretty good
+testm4.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site))#failed to converge
+summary(testm4.lmer)#but fixed effects look pretty good
+#try the model with brms
+testm4.brms <- brm(y ~ temp * mois +#fixed effects
+                     (temp * mois|sp) + (1|site), #random effects
+                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N, site=site),
+                   chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99)) 
+#the above code is really slow....
+stancode(testm4.brms)
+summary(testm4.brms)
+#brms model says a: 148.85, temp=-2.01, mois=-1.00, tmint=-0.09, species sigma=0.50
+marginal_effects(testm4.brms, surface = TRUE)
+#looks good!!!
 
 testm4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
 #Warning messages:
@@ -185,10 +244,10 @@ launch_shinystan(testm4)#this can be slo
 ###Now with the data
 ###try without ncp if treedepth issue doesn't solve things.
 
-source('Analyses/soilmoisture/savestan.R')
+#source('Analyses/soilmoisture/savestan.R')
 
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
+#rstan_options(auto_write = TRUE)
+#options(mc.cores = parallel::detectCores())
 
 #Read in experimental climate and phenology data
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)

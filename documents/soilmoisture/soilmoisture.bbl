@@ -1,0 +1,9 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Ettinger \& Wolkovich(2018)}]{ettinger2018}
+Ettinger, A. \& Wolkovich, E. (2018).
+\newblock Microclimate from climate change experiments (\uppercase{MC3E}).
+\newblock doi:10.5063/F1QV3JQR.
+
+\end{thebibliography}

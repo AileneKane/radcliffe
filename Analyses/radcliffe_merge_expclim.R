@@ -1000,7 +1000,7 @@ clean.clim$haibei <- function(filename="ww_data2.csv",path="./Data/Experiments/h
   return(clim)
 }
 
-clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experiments/spruce") {
+clean.clim$oakridge <- function(filename="oakridge_Amb.csv",path="./Data/Experiments/oakridge") {
   
   file <- file.path(path, filename)
   ambclim <- read.csv(file,  skip=7,header=TRUE)
@@ -1009,14 +1009,14 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
   ambclim2$temptreat<-0
   ambclim2$year<-as.numeric(ambclim2$Year)
   ambclim2<-ambclim2[-which(is.na(ambclim2$year)),]
-  file2 <- file.path(path, "Gunderson_E2.csv")
+  file2 <- file.path(path, "oakridge_E2.csv")
   e2clim<-read.csv(file2, header=TRUE)
   e2clim2<-subset(e2clim,select=c("Year", "DOY","Tmax","Tmin","Tavg"))
   e2clim2$plot<-"e2"
   e2clim2$temptreat<-1
   e2clim2$year<-as.numeric(e2clim2$Year)
   e2clim2<-e2clim2[-which(is.na(e2clim2$year)),]
-  file3 <- file.path(path, "Gunderson_E4.csv")
+  file3 <- file.path(path, "oakridge_E4.csv")
   e4clim<-read.csv(file3, skip=1,header=TRUE)
   e4clim2<-subset(e4clim,select=c("Year", "DOY","Tmax","Tmin","Tavg"))
   e4clim2$plot<-"e4"
@@ -1062,8 +1062,8 @@ clean.clim$spruce <- function(filename="Gunderson_Amb.csv",path="./Data/Experime
     cleanclimdata.raw$cleland <- clean.clim$cleland(path="./Data/Experiments/cleland")
     cleanclimdata.raw$cedarcreek<-clean.clim$cedarcreek(path="./Data/Experiments/cedarcreek")
     cleanclimdata.raw$haibei<-clean.clim$haibei(path="./Data/Experiments/haibei")
-    cleanclimdata.raw$spruce<-clean.clim$spruce(path="./Data/Experiments/spruce")
-    #"spruce" data might be derived, not measured?
+    cleanclimdata.raw$oakridge<-clean.clim$oakridge(path="./Data/Experiments/oakridge")
+    #"oakridge" data might be derived, not measured?
     expphenclim1 <- do.call("rbind", cleanclimdata.raw)
     row.names(expphenclim1) <- NULL
     dim(expphenclim1)#343758     22
