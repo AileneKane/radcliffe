@@ -11,7 +11,7 @@
 \usepackage{pdflscape}
 \usepackage{array}
 \usepackage{gensymb}
-%\usepackage{authblk}
+\usepackage{authblk}
 \renewcommand{\baselinestretch}{1.8}
 %\usepackage{lineno}
 %\usepackage[backend=bibtex]{biblatex}
@@ -57,28 +57,25 @@
 
 \title{How does soil moisture interact with temperature to affect phenology?}
 \author[1,2,a]{A.K. Ettinger}
+\author[3,b]{J.S. Dukes}
+\author[4,c]{M.R. Johnston}
+\author[5,d]{C.R. Rollinson}
+\author[1,4,6,e]{E.M. Wolkovich}
 
+% ESA authors: Ailene K. Ettinger, Jeffrey S. Dukes, Miriam R. Johnston, Christy R.  Rollinson, and Elizabeth M. Wolkovich.
 %\author[3,b]{I. Chuine}
 
 %\author[4,5,c]{B.I. Cook}
 
-%\author[6,d]{J.S. Dukes}
 
 %\author[7,e]{A.M. Ellison}
 
-%\author[8,f]{M.R. Johnston}
-
 %\author[9,g]{A.M. Panetta}
-
-%\author[10,h]{C.R. Rollinson}
-
 %\author[11,12,i]{Y. Vitasse}
 
-\author[1,8,13,j]{E.M. Wolkovich}
+\affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts 02131, USA}
 
-%\affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts 02131, USA}
-
-%\affil[2]{Tufts University, Medford, Massachusetts 02155, USA}
+\affil[2]{Tufts University, Medford, Massachusetts 02155, USA}
 
 %\affil[3]{CEFE UMR 5175, CNRS, Universit\'e de Montpellier,Universit\'e Paul-Val\'ery Montpellier, EPHE IRD, Montpellier, France}
 
@@ -86,24 +83,23 @@
 
 %\affil[5]{NASA Goddard Institute for Space Studies, New York, New York 10025, USA}
 
-%\affil[6]{Department of Forestry and Natural Resources
-%and Department of Biological Sciences, Purdue University, West Lafayette, Indiana 47907, USA}
+\affil[3]{Department of Forestry \& Natural Resources and Department of Biological Sciences, Purdue University, West Lafayette, Indiana 47907, USA}
 
 %\affil[7]{Harvard Forest, Harvard University, Petersham, Massachusetts 01366, USA}
 
-%\affil[8]{Department of Organismic and Evolutionary Biology, Harvard University, Cambridge, Massachusetts 02138, USA}
+\affil[4]{Department of Organismic \& Evolutionary Biology, Harvard University, Cambridge, Massachusetts 02138, USA}
 
 %\affil[9]{Department of Ecology and Evolutionary Biology, University of Colorado, Boulder, Colorado 80309, USA}
 
-%\affil[10]{The Morton Arboretum, Lisle, Illinois 60532, USA}
+\affil[5]{The Morton Arboretum, Lisle, Illinois 60532, USA}
 
 %\affil[11]{Institute of Geography, University of Neuch\^atel, Neuch\^atel, Switzerland}
 
 %\affil[12]{Swiss Federal Institute for Forest, Snow and Landscape Research WSL, Neuch\^atel, Switzerland}
 
-%\affil[13]{Forest \& Conservation Sciences, Faculty of Forestry, University of British Columbia, Vancouver, BC, Canada}
+\affil[6]{Forest \& Conservation Sciences, Faculty of Forestry, University of British Columbia, Vancouver, BC, Canada}
 
-%\affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 1300 Centre Street, Boston, Massachusetts 02140, USA }
+\affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 1300 Centre Street, Boston, Massachusetts 02140, USA }
 
 %\affil[b]{isabelle.chuine@cefe.cnrs.fr}
 
@@ -128,33 +124,103 @@
 \maketitle %put the fancy title on
 %\tableofcontents %add a table of contents
 
-%\textbf{Statement of authorship} %Statement of authorship: Contributions by authors should be listed on the title page and will be printed at the end of the manuscript. This statement should be appropriate to the study described in the manuscript and should clarify who designed the study, who performed the research, who provided new methods or materials, and who wrote the manuscript. We encourage concise statements such as ?JW performed phylogenetic analyses, MH collected data, performed modeling work and analyzed output data, and PK performed the meta-analysis. MH wrote the first draft of the manuscript, and all authors contributed substantially to revisions.?
-%All authors conceived of this manuscript, which was inspired by our discussions at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. AKE and EMW conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar. AKE compiled the datasets; AKE analyzed the data and created the figures; AKE wrote the manuscript.
+\textbf{Statement of authorship} 
+All authors conceived of this manuscript, which began at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. AKE and EMW conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar. AKE compiled the datasets; AKE analyzed the data and created the figures; AKE wrote the manuscript.
 
-%\textbf{Data Accessibility} %Data accessibility statement: The statement must confirm that, should the manuscript be accepted, the data supporting the results will be archived in an appropriate public repository such as Dryad or Figshare and the data DOI will be included at the end of the article.
-%The MC3E database will be available at KNB \citep{ettinger2018}, along with all R code from the analyses included in this paper. (Currently, metadata are published there; the full database and R code are available to reviewers on github.) 
+\textbf{Data Accessibility} %Data accessibility statement: The statement must confirm that, should the manuscript be accepted, the data supporting the results will be archived in an appropriate public repository such as Dryad or Figshare and the data DOI will be included at the end of the article.
+The MC3E and ExPhen databases are available at KNB \citep{ettinger2018}, along with all R code from the analyses included in this paper. (Currently, metadata are published there; the full databases and R code are available to reviewers on github.) 
 
-%\textbf{Running title} 
-%\textbf{Key words} global warming, warming experiment, microclimate, soil moisture, phenology, budburst, direct and indirect effects, active-warming, target temperature
+\textbf{Running title} 
+\textbf{Key words} global warming, warming experiment, microclimate, soil moisture, phenology, budburst, direct and indirect effects, active-warming, target temperature
 
 
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\linenumbers
 
-\section*{Question/goals}
+\section*{Outline}
 \begin{enumerate}
-\item{How does soil moisture affect phenology?}
-\item{Does the effect of soil moisture on phenology differ between experiments and observational data?}
-\end{enumerate}
-\section*{Approach}
-\begin{enumerate}
-\item{Compile phenology data that goes with climate data in MC3E database. (Name this database!)}
-\item{Fit models with soil moisture, temperature, and interaction to phenology data (budburst, leafout, flowering, fruiting, senesence? (See what phenophases have enough data.)}
-\item{Compile Duke and Harvard Forest phenology and climate data.}
-\item{Fit models to observational data with microclimate and compare coefficients.}
-\end{enumerate}
+\item{How do climate manipulations affect soil moisture and temperature?}
+\item{Approach: Use MC3E database. Fit multilevel models of soil moisture as a function of temperature and precipitation treatments.}
+\noindent For this we need two equations where we evaluate the effects of experimenal temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments on soil moisture and temperature. We're hoping to nest year within site on the intercept and slopes:
+\begin{equation}
+y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}
+\end{equation}
+\begin{equation}
+\alpha_{site[year[doy]]}\sim N(\mu_{site[year]}, \sigma_{site[year]})
+\end{equation}
 
+\begin{equation}
+\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\end{equation}
+
+\begin{equation}
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
+\end{equation}
+
+\begin{equation}
+\beta_{1 site} \sim N(\mu_{\beta1}, \sigma_{\beta1})
+\end{equation}
+
+\begin{equation}
+\beta_{2 site} \sim N(\mu_{\beta2}, \sigma_{\beta2})
+\end{equation}
+
+\begin{equation}
+\beta_{3 site} \sim N(\mu_{\beta3}, \sigma_{\beta3})
+\end{equation}
+
+\begin{equation}
+\beta_{1 sp} \sim N(\mu_{\beta1}, \sigma_{\beta1})
+\end{equation}
+
+\begin{equation}
+\beta_{2 sp} \sim N(\mu_{\beta2}, \sigma_{\beta2})
+\end{equation}
+
+\begin{equation}
+\beta_{3 sp} \sim N(\mu_{\beta3}, \sigma_{\beta3})
+\end{equation}
+
+\item{Does warming affect soil moisture similarly to warming in experimental and non-experimental data?}
+
+\par Compile data from Duke Forest (maybe just soil moisture?) and from Harvard Forest (soil moisture and O'Keefe phenology data). Think on best model and how to model temperature as \textit{y} variable ... here's one idea where \textit{y} could be daily moisture data across multiple years and \textit{T} would be MAT and \textit{P} would be percent different than mean for that year:
+
+
+
+\begin{equation}
+y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]}T_iP_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{doy} \sim N(\mu_{doy}, \sigma_{doy})
+\end{equation}
+\noindent First we need to use seasonal or annual temperature (\textit{T}) and soil moisture (\textit{S}) data to predict phenology (so here textit{y} is DOY):
+
+\begin{equation}
+y_{i}=\alpha_{site[year[i]]}+ \alpha_{sp[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}S_i+\beta_{3 sp[i]}T_iS_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\end{equation}
+
+\begin{equation}
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
+\end{equation}
+
+\begin{equation}
+\alpha_{sp} \sim N(\mu_{sp}, \sigma_{sp})
+\end{equation}
+
+
+\item{How does soil moisture affect phenology? How does soil moisture affect GDDcrit?}
+\begin{enumerate}
+\item{Compile phenology data that goes with climate data in MC3E database. (Name the phenology database!)}
+\item{Fit models with soil moisture, temperature, and interaction to phenology data (budburst, leafout, flowering, fruiting, senesence? (See what phenophases have enough data.)}
+\end{enumerate}
+\noindent Does the effect of soil moisture on phenology differ between experiments and observational data? We can then combine equations from Question 1 (which predict MAT and soil moisture on an annual scale, we hope) with equations from Questions 3 (at the annual scale) to answer: how much does 1 degree change in target temperature (\textit{eT}) affect phenology, if this were the only effect of the experiment? Similarly, how much does 50\% change in precipitation (\textit{eP}) affect phenology, if this were the only effect of the experiment? And how big a change does each make acknowledging that they both change moisture and temperature together? We can do this by plugging in different values of \textit{eT} (e.g., all 1 C, then try with all 2 C) and \textit{eP} to calculate different outcomes of moisture and temperature which we can evaluate in the equations in Question 3 to assess changes in phenology.
+\end{enumerate}
 %\section*{Abstract}
 
 %\section* {Introduction}
