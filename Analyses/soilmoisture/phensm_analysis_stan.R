@@ -1,7 +1,7 @@
 #Started Sept 2017
 #By Ailene
 
-#Use Stan to fit soil moisture- phenology model to radcliffe data 
+#Use brms/Stan to fit soil moisture- phenology model to radcliffe data 
 
 ## housekeeping
 rm(list=ls()) 
@@ -206,7 +206,7 @@ plot(mois,y)
 hist(mois)
 
 testm4.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site))#converged when site variance =3
-summary(testm4.lmer)#but fixed effects look pretty good
+summary(testm4.lmer)#fixed effects look pretty good
 #try the model with brms
 testm4.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site), #random effects
@@ -217,7 +217,7 @@ stancode(testm4.brms)
 summary(testm4.brms)
 #brms model says a: 299.44, temp=-1.97, mois=-1.03, tmint=-0.11, species sigma=0.51
 marginal_effects(testm4.brms, surface = TRUE)
-#looks good!!! but tok a really long time to fit...
+#looks good!!! but took a really long time to fit...
 
 #testm4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
 #Warning messages:
@@ -266,6 +266,7 @@ expgdd_subs$genus.species<-as.numeric(as.factor(expgdd_subs$genus.species))
 expgdd_subs$site<-as.numeric(as.factor(expgdd_subs$site))
 expgdd_subs$year<-as.numeric(as.factor(expgdd_subs$year))
 
+
 #1) Divide by phenophase:
 
 expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#bud burst data
@@ -285,6 +286,14 @@ expgdd_ffrd <- expgdd_ffrd[apply(expgdd_ffrd, 1, function(x) all(!is.na(x))),] #
 
 expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]#leaf unfolding data
 expgdd_sen <- expgdd_sen[apply(expgdd_sen, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+
+#For lod and lud, use only species which have all lod and lud
+unique(expgdd_lud$genus.species)#many fewer species have lud- do not sure this one!
+unique(expgdd_lod$genus.species)
+common.spp<-unique(expgdd_lud$genus.species[expgdd_lud$genus.species%in%expgdd_lod$genus.species])
+unique(expgdd_sen$genus.species)
+expgdd_lod_cs<-expgdd_lod[which(expgdd_lod$genus.species%in%common.spp),]
+expgdd_lud_cs<-expgdd_lud[which(expgdd_lud$genus.species%in%common.spp),]
 
 # For centering data:
 expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
@@ -396,18 +405,23 @@ datalist.bbd.cent <- with(expgdd_bbd,
                           )
 )
 
-testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.bbd)#converged when site variance =3
-summary(testm5.lmer)#model fits! temp= -3.734; mois=--33.070; temp:mois= 2.954
+testm5.lmer<-lmer(y~temp * mois +
+                    (temp*mois|sp)+ (1|site/year),
+                  data=datalist.bbd)
+summary(testm5.lmer)
+#model fits! a=108.961,temp= -3.734; mois=--33.070; temp:mois= 2.954
 
-testm5cent.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.bbd.cent)#converged when site variance =3
-summary(testm5cent.lmer)#model fits! a=99.4208, temp= -10.1869; mois=--1.2633; temp:mois=-0.3990
+testm5cent.lmer<-lmer(y~temp * mois +
+                      (temp*mois|sp)+ (1|site/year),
+                      data=datalist.bbd.cent)
+summary(testm5cent.lmer)
+#model fits! a=99.4208, temp= -10.1869; mois=--1.2633; temp:mois=-0.3990
 
 #try the model with brms
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd,
                    chains = 2)# control = list(max_treedepth = 15,adapt_delta = 0.99)
-
 
 stancode(testm5.brms)#has 31 divergent transitions
 summary(testm5.brms)
@@ -420,7 +434,8 @@ stanplot(testm5.brms, surface = TRUE)
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd.cent,
-                   chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))# without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
+                   chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
+# without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
 
 
 
@@ -456,6 +471,20 @@ axis(2,at=c(95,85,75,65,50),labels=c("intercept","temp","mois","temp*mois","spec
 mean(expgdd_bbd$doy, na.rm=TRUE)#99.95649
 mean(expgdd_lud$doy, na.rm=TRUE)#106.
 mean(expgdd_lod$doy, na.rm=TRUE)#145.7179= april/may
+summary(expgdd_bbd$doy)
+datalist.lod<- with(expgdd_lod, 
+                          list(y = doy, 
+                               temp = ag_min_aprjun, #above-ground minimum air temp
+                               mois = soilmois_aprjun, #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_bbd),
+                               n_sp = length(unique(expgdd_bbd$genus.species))
+                          )
+)
+
+
 datalist.lod.cent <- with(expgdd_lod, 
                           list(y = doy, 
                                temp = ag_min_aprjun_cent, #above-ground minimum air temp
@@ -469,9 +498,13 @@ datalist.lod.cent <- with(expgdd_lod,
 )
 
 
-lod.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.lod.cent)#converged when site variance =3
-summary(lod.testm5.lmer)#model fits! 
+lod.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.lod)#
+summary(lod.testm5.lmer)#failed to converge with uncentered data! 
+#temp= -3.8227; mois=-71.7425; temp:mois= 5.1062
+lodcent.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.lod.cent)#
+summary(lodcent.testm5.lmer)
 #temp= -9.9582; mois=--0.6598; temp:mois= 0.6661
+
 datalist.lud.cent <- with(expgdd_lud, 
                           list(y = doy, 
                                temp = ag_min_jm_cent, #above-ground minimum air temp
@@ -496,20 +529,16 @@ datalist.lud <- with(expgdd_lud,
                           )
 )
 
-lud.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.lud)#converged when site variance =3
+lud.testm5.lmer<-lmer(y~temp * mois +
+                        (temp*mois|sp)+ (1|site/year),
+                      data=datalist.lud)#
 summary(lud.testm5.lmer)#model fits! 
+#temp= -7.893; mois=7.655; temp:mois= 18.238
+ludcent.testm5.lmer<-lmer(y~temp * mois +
+                        (temp*mois|sp)+ (1|site/year),
+                      data=datalist.lud.cent)#converged when site variance =3
+summary(ludcent.testm5.lmer)#model fits! 
 #temp= -14.0005; mois=0.9292; temp:mois= 2.2634
-datalist.lud.cent <- with(expgdd_lud, 
-                          list(y = doy, 
-                               temp = ag_min_jm_cent, #above-ground minimum air temp
-                               mois = smjm_cent, #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
-                          )
-)
 
 datalist.ffd.cent <- with(expgdd_ffd, 
                      list(y = doy, 
@@ -609,7 +638,7 @@ datalist.bbd <- with(expgdd_bbd,
                            sp = genus.species,
                            site = site,
                            temp = temp = ag_min_jm_cent[,1], #above-ground minimum air temp
-                           mois = smjm_cent[,1], #soil moisture as a percentage
+                           mois = smjm_cent[,1], #soil moisture as a proportion
                            n_sp = length(unique(expgdd_bbd$genus.species)),
                            n_site = length(unique(expgdd_bbd$site)),
                            N = nrow(expgdd_bbd)
