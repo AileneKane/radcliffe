@@ -169,7 +169,7 @@ sm_mod_cent<-lmer(y~target*prec +
                   (target*prec|site)+(1|year/doy),
                   REML=TRUE, data=datalist.sm.cent)
 summary(sm_mod_cent)
-coef(sm_mod_cent)
+coef(sm_mod_cent)$site
 sm_mod<-lmer(y~target*prec + 
                     (target*prec|site)+(1|year/doy),
                   REML=TRUE, data=datalist.sm)

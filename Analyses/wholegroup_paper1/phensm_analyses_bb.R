@@ -37,20 +37,25 @@ expgdd_bbd$styear<-as.factor(expgdd_bbd$styear)
 #model with actual temp/soil mois data
 smbbdmod<-lmer(doy~ag_mean_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod)
+smbbdmod.struct<-lmer(doy~ag_mean_janmar*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_subs_struct)
+summary(smbbdmod.struct)
+
 #subtract minimum agtmax to get it close to 0 warming to make scale more comparable to "target wamring"
 expgdd_bbd$agtmax_rel<-expgdd_bbd$agtmax-min(expgdd_bbd$agtmax)
 expgdd_bbd$agtmin_rel<-expgdd_bbd$agtmin-min(expgdd_bbd$agtmin)
 expgdd_bbd$agtmean_rel<-expgdd_bbd$agtmean-min(expgdd_bbd$agtmean)
 
-smbbdmod1<-lmer(doy~agtmean_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod1<-lmer(doy~agtmean_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_subs )
 summary(smbbdmod1)
-smbbdmod1a<-lmer(doy~agtmin_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod1a<-lmer(doy~agtmin_rel*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_subs )
 summary(smbbdmod1a)
-smbbdmod2<-lmer(doy~target*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod2<-lmer(doy~target*soilmois_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_subs )
 summary(smbbdmod2)
 
-smbbdmod_targt<-lmer(doy~target + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
+smbbdmod_targt<-lmer(doy~target + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd_subs)
 summary(smbbdmod_targt)
+smbbdmod_targt.struct<-lmer(doy~target + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_subs_struct)
+summary(smbbdmod_targt.struct)
 
 smbbdmod_agtmax<-lmer(doy~ag_max_janmar + (1|genus.species)+ (1|site/styear), REML=FALSE, data=expgdd_bbd)
 summary(smbbdmod_agtmax)

@@ -52,7 +52,9 @@ sm<-tapply(expgdd4$soilmois1,expgdd4$site,mean, na.rm=TRUE)
 smsites<-names(sm[!is.na(sm)])
 both<-smsites[which(!is.na(match(smsites,agsites)))]
 #expgdd_subs<-expgdd4[!is.na(match(expgdd4$site,both)),]#not working...
-expgdd_subs2<-expgdd4[which(expgdd4$site=="exp01"|expgdd4$site=="exp02"|expgdd4$site=="exp03"|expgdd4$site=="exp04"|expgdd4$site=="exp07"|expgdd4$site=="exp09"|expgdd4$site=="exp10"|expgdd4$site=="exp12"|expgdd4$site=="exp13"),]#
+expgdd_subs2<-expgdd4[which(expgdd4$site=="exp01"|expgdd4$site=="exp02"|expgdd4$site=="exp03"|expgdd4$site=="exp04"|expgdd4$site=="exp07"|expgdd4$site=="exp09"|expgdd4$site=="exp10"|expgdd4$site=="exp12"|expgdd4$site=="exp13"),]#exclude plots that do not have above-ground temperature, or for which we have no phenology data (exp15)
+expgdd_subs3<-subset(expgdd_subs2,select=c(site,block, plot,year,styear,temptreat,target,preciptreat_amt,agtmax,agtmin,agtmean,sm,doy,genus.species,event,ag_max_janmar,ag_min_janmar,ag_mean_janmar,soilmois_janmar,ag_max_aprjun,ag_min_aprjun,ag_mean_aprjun,soilmois_aprjun))
 expgdd_subs2<-subset(expgdd_subs2,select=c(site,block, plot,year,styear,target,preciptreat_amt,agtmax,agtmin,agtmean,sm,doy,genus.species,event,ag_max_janmar,ag_min_janmar,ag_mean_janmar,soilmois_janmar,ag_max_aprjun,ag_min_aprjun,ag_mean_aprjun,soilmois_aprjun))
 expgdd_subs <- expgdd_subs2[apply(expgdd_subs2, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-
+expgdd_subs_struct<-expgdd_subs3[expgdd_subs3$temptreat!="ambient",]
+expgdd_subs_struct <- expgdd_subs_struct[apply(expgdd_subs_struct, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
