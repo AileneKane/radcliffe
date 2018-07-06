@@ -1,4 +1,4 @@
-\begin{thebibliography}{97}
+\begin{thebibliography}{98}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Andresen \emph{et~al.}(2016)Andresen, M{\"u}ller, de~Dato, Dukes,
@@ -395,8 +395,8 @@ Moorcroft, P.R. (2006).
 
 \bibitem[{Morin \emph{et~al.}(2010)Morin, Roy, Soni{\'e} \& Chuine}]{morin2010}
 Morin, X., Roy, J., Soni{\'e}, L. \& Chuine, I. (2010).
-\newblock Changes in leaf phenology of three european oak species in response
-  to experimental climate change.
+\newblock {Changes in leaf phenology of three European oak species in response
+  to experimental climate change}.
 \newblock \emph{New Phytologist}, 186, 900--910.
 
 \bibitem[{Ohlem{\"u}ller \emph{et~al.}(2006)Ohlem{\"u}ller, Gritti, Sykes \&
@@ -449,6 +449,14 @@ Polade, S.D., Pierce, D.W., Cayan, D.R., Gershunov, A. \& Dettinger, M.D.
 \newblock The key role of dry days in changing regional climate and
   precipitation regimes.
 \newblock \emph{Scientific reports}, 4, 4364.
+
+\bibitem[{Polgar \emph{et~al.}(2014)Polgar, Primack, Dukes, Schaaf, Wang \&
+  Hoeppner}]{polgar2014}
+Polgar, C.A., Primack, R.B., Dukes, J.S., Schaaf, C., Wang, Z. \& Hoeppner,
+  S.S. (2014).
+\newblock Tree leaf out response to temperature: comparing field observations,
+  remote sensing, and a warming experiment.
+\newblock \emph{International journal of biometeorology}, 58, 1251--1257.
 
 \bibitem[{Price \& Waser(1998)}]{price1998}
 Price, M.V. \& Waser, N.M. (1998).
