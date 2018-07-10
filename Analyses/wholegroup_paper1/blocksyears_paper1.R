@@ -248,3 +248,8 @@ abline(a=coef(ms.m)[1],b=coef(ms.m)[2], lty=1)
 legend(4.5,3,pch=shapes,pt.bg=cols,legend=sites, cex=.8)
 mtext("Reported warming (ºC)", side=1,line=3,adj=.5, cex=1.2)
 
+#Reviewer asked for mean or median difference among plots with same target treatment, 
+agwarm_min<-aggregate(allwarm_block$agwarm, by=list(allwarm_block$site,allwarm_block$target),min, na.rm=TRUE)
+agwarm_max<-aggregate(allwarm_block$agwarm, by=list(allwarm_block$site,allwarm_block$target),max, na.rm=TRUE)
+meandiff<-mean(agwarm_max$x[1:8]-agwarm_min$x[1:8])
+meddiff<-median(agwarm_max$x[1:8]-agwarm_min$x[1:8])

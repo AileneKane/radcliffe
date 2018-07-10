@@ -201,7 +201,7 @@ Franklin, J.F. (1989).
   Jones, Anav, Liddicoat \& Knutti}]{friedlingstein2014}
 Friedlingstein, P., Meinshausen, M., Arora, V.K., Jones, C.D., Anav, A.,
   Liddicoat, S.K. \& Knutti, R. (2014).
-\newblock Uncertainties in cmip5 climate projections due to carbon cycle
+\newblock Uncertainties in {CMIP}5 climate projections due to carbon cycle
   feedbacks.
 \newblock \emph{Journal of Climate}, 27, 511--526.
 
@@ -209,7 +209,7 @@ Friedlingstein, P., Meinshausen, M., Arora, V.K., Jones, C.D., Anav, A.,
   Drake, Frey, Hadley, Lavine, Melillo \emph{et~al.}}]{giasson2013}
 Giasson, M.A., Ellison, A.M., Bowden, R., Crill, P.M., Davidson, E., Drake, J.,
   Frey, S., Hadley, J., Lavine, M., Melillo, J. \emph{et~al.} (2013).
-\newblock Soil respiration in a northeastern us temperate forest: a 22-year
+\newblock Soil respiration in a northeastern {US} temperate forest: a 22-year
   synthesis.
 \newblock \emph{Ecosphere}, 4, 1--28.
 
@@ -226,7 +226,7 @@ Gruner, D.S., Bracken, M.E., Berger, S.A., Eriksson, B.K., Gamfeldt, L.,
 Hagedorn, F., Martin, M., Rixen, C., Rusch, S., Bebi, P., Z{\"u}rcher, A.,
   Siegwolf, R.T., Wipf, S., Escape, C., Roy, J. \emph{et~al.} (2010).
 \newblock Short-term responses of ecosystem carbon fluxes to experimental soil
-  warming at the swiss alpine treeline.
+  warming at the {S}wiss alpine treeline.
 \newblock \emph{Biogeochemistry}, 97, 7--19.
 
 \bibitem[{Hampe(2004)}]{hampe2004}
@@ -258,7 +258,7 @@ Helm, B. \& Shavit, A. (2017).
   Chapin~III}]{hobbie1999}
 Hobbie, S.E., Shevtsova, A. \& Chapin~III, F.S. (1999).
 \newblock Plant responses to species removal and experimental warming in
-  alaskan tussock tundra.
+  {A}laskan tussock tundra.
 \newblock \emph{Oikos}, 84, 417--434.
 
 \bibitem[{Hoeppner \& Dukes(2012)}]{hoeppner2012}
@@ -267,18 +267,16 @@ Hoeppner, S.S. \& Dukes, J.S. (2012).
   warming and precipitation.
 \newblock \emph{Global Change Biology}, 18, 1754--1768.
 
-\bibitem[{Holmgren \emph{et~al.}(2001)Holmgren, Scheffer, Ezcurra,
-  Guti{\'e}rrez \& Mohren}]{holmgren2001}
-Holmgren, M., Scheffer, M., Ezcurra, E., Guti{\'e}rrez, J.R. \& Mohren, G.M.
-  (2001).
-\newblock El ni{\~n}o effects on the dynamics of terrestrial ecosystems.
-\newblock \emph{Trends in Ecology \& Evolution}, 16, 89--94.
-
 \bibitem[{Hoover \emph{et~al.}(2014)Hoover, Knapp \& Smith}]{hoover2014}
 Hoover, D.L., Knapp, A.K. \& Smith, M.D. (2014).
 \newblock Resistance and resilience of a grassland ecosystem to climate
   extremes.
 \newblock \emph{Ecology}, 95, 2646--2656.
+
+\bibitem[{Hurlbert(1984)}]{hurlbert1984}
+Hurlbert, S.H. (1984).
+\newblock Pseudoreplication and the design of ecological field experiments.
+\newblock \emph{Ecological monographs}, 54, 187--211.
 
 \bibitem[{Huston(1997)}]{huston1997}
 Huston, M.A. (1997).
@@ -402,7 +400,7 @@ Morin, X., Roy, J., Soni{\'e}, L. \& Chuine, I. (2010).
 \bibitem[{Ohlem{\"u}ller \emph{et~al.}(2006)Ohlem{\"u}ller, Gritti, Sykes \&
   Thomas}]{ohlemuller2006}
 Ohlem{\"u}ller, R., Gritti, E.S., Sykes, M.T. \& Thomas, C.D. (2006).
-\newblock Towards european climate risk surfaces: the extent and distribution
+\newblock Towards {European} climate risk surfaces: the extent and distribution
   of analogous and non-analogous climates 1931--2100.
 \newblock \emph{Global Ecology and Biogeography}, 15, 395--405.
 
@@ -471,8 +469,8 @@ Quinn, G.P. \& Keough, M.J. (2002).
 
 \bibitem[{Reich \emph{et~al.}(2018)Reich, Hobbie, Lee \& Pastore}]{reich2018}
 Reich, P.B., Hobbie, S.E., Lee, T.D. \& Pastore, M.A. (2018).
-\newblock Unexpected reversal of c3 versus c4 grass response to elevated co2
-  during a 20-year field experiment.
+\newblock Unexpected reversal of {C}3 versus {C}4 grass response to elevated
+  {CO}2 during a 20-year field experiment.
 \newblock \emph{Science}, 360, 317--320.
 
 \bibitem[{Reich \emph{et~al.}(2015)Reich, Sendall, Rice, Rich, Stefanski,
@@ -496,7 +494,7 @@ Reich, P.B., Sendall, K.M., Stefanski, A., Wei, X., Rich, R.L. \& Montgomery,
 Rich, R.L., Stefanski, A., Montgomery, R.A., Hobbie, S.E., Kimball, B.A. \&
   Reich, P.B. (2015).
 \newblock Design and performance of combined infrared canopy and belowground
-  warming in the b4warmed (boreal forest warming at an ecotone in danger)
+  warming in the {B4WarmED} (boreal forest warming at an ecotone in danger)
   experiment.
 \newblock \emph{Global change biology}, 21, 2334--2348.
 
@@ -533,7 +531,7 @@ Seager, R., Neelin, D., Simpson, I., Liu, H., Henderson, N., Shaw, T., Kushnir,
 Seager, R., Ting, M., Li, C., Naik, N., Cook, B., Nakamura, J. \& Liu, H.
   (2013).
 \newblock Projections of declining surface-water availability for the
-  southwestern united states.
+  southwestern {United States}.
 \newblock \emph{Nature Climate Change}, 3, 482.
 
 \bibitem[{Shaver \emph{et~al.}(2000)Shaver, Canadell, Chapin, Gurevitch, Harte,
@@ -672,12 +670,9 @@ Williams, J.W., Jackson, S.T. \& Kutzbacht, J.E. (2007).
   States of America}, 104, 5738--5742.
 
 \bibitem[{Wolkovich \emph{et~al.}(2012)Wolkovich, Cook, Allen, Crimmins,
-  Betancourt, Travers, Pau, Regetz, Davies, Kraft, Ault, Bolmgren, Mazer,
-  McCabe, McGill, Parmesan, Salamin, Schwartz \& Cleland}]{wolkovich2012}
+  Betancourt, Travers, Pau \emph{et~al.}}]{wolkovich2012}
 Wolkovich, E.M., Cook, B.I., Allen, J.M., Crimmins, T.M., Betancourt, J.L.,
-  Travers, S.E., Pau, S., Regetz, J., Davies, T.J., Kraft, N.J.B., Ault, T.R.,
-  Bolmgren, K., Mazer, S.J., McCabe, G.J., McGill, B.J., Parmesan, C., Salamin,
-  N., Schwartz, M.D. \& Cleland, E.E. (2012).
+  Travers, S.E., Pau, S. \emph{et~al.} (2012).
 \newblock Warming experiments underpredict plant phenological responses to
   climate change.
 \newblock \emph{Nature}, 485, 494--497.
