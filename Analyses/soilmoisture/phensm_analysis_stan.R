@@ -1,8 +1,10 @@
 #Started Sept 2017
 #By Ailene
+#Three questions to address:
+#1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
+#2) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
 
 #Use brms/Stan to fit soil moisture- phenology model to radcliffe data 
-
 ## housekeeping
 rm(list=ls()) 
 options(stringsAsFactors = FALSE)
@@ -24,223 +26,11 @@ options(mc.cores = parallel::detectCores())
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
- if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliffe")}
 
 #Goal: Fit a multimodel to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
 #
-#Step 1: Fit the model with test data to make sure that the model can recover parameters accurately
-###set up data 
-n_sp=50#number of species
-obs_sp=30#number of obs (plots, years) per species
-N=n_sp*obs_sp#sample size
-sp<-rep(seq(1:n_sp), each=obs_sp)#species ids
-
-#set up distribution parameters
-mu_a<-150#grand mean mean of bb doy
-sigma_a<-5
-mu_b_temp_sp<--2
-sigma_b_temp_sp<-.1
-mu_b_mois_sp<--1
-sigma_b_mois_sp<-.1
-
-
-a_sp<-as.integer(rnorm(n_sp,mu_a,sigma_a))#species specific day of year for bb
-
-b_temp<-rnorm(n_sp,mu_b_temp_sp,sigma_b_temp_sp)#species specific effects of temp
-b_mois<-rnorm(n_sp,mu_b_mois_sp,sigma_b_mois_sp)#species specific effects of mois
-
-#create explanatory variables
-#try using centered predictors
-temp<-rep(NA, N)
-for(i in 1:n_sp){
-  temp[which(sp==i)]<-rnorm(obs_sp,0,1)#right now this is set up for each species but it doesn't need to be right?
-}
-mois<-rep(NA, N)
-for(i in 1:n_sp){
-  mois[which(sp==i)]<-rnorm(obs_sp,0,1)#we tried having the mean at ~25 for temp and mois, but rhat was bad and model had trouble... mean=5 was ok...
-}
-
-
-#model without interaction
-sigma_y<-.5
-
-#generate the response variable, ypred
-ypred<-c()
-for(i in 1:N){
-  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]
-}
-
-y<-rnorm(N,ypred,sigma_y)
-#check that test data look ok
-plot(temp,y)
-plot(mois,y)
-hist(mois)
-#try model in lmer
-#chosen values:
-#mu_a<-150#grand mean mean of bb doy
-#sigma_a<-.5,
-#mu_b_temp_sp<--2
-#sigma_b_temp_sp<-.1
-#mu_b_mois_sp<--1
-#sigma_b_mois_sp<-.1
-
-testm1.lmer<-lmer(y~temp + mois +(1|sp))
-summary(testm1.lmer)#looks good!
-
-#try the model with brms
-testm1.brms <- brm(y ~ temp + mois +#fixed effects
-                     (1|sp), #random effects
-                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
-                   chains = 2,iter = 2000,control = list(max_treedepth = 15))
-
-stancode(testm1.brms)
-summary(testm1.brms)
-#brms model says a: 148.62, temp=-1.98, mois=-0.99, species sigma=0.52
-marginal_effects(testm1.brms, surface = TRUE)
-
-
-#now fit the model in stan for comparison- haven't done this in a while...
-testm1 = stan('Analyses/soilmoisture/M1_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
-              iter = 2500, warmup=1500) # 
-beta_draws<-as.matrix(testm1,pars=c("b_temp","b_mois","sigma_y"))
-mcmc_intervals(beta_draws)
-head(summary(testm1)$summary)
-summary(testm1)$summary
-launch_shinystan(testm1)#this can be slow
-
-#M2: model with interaction
-mu_b_tm_sp<--.1
-sigma_b_tm_sp<-.005
-b_tm<-rnorm(n_sp,mu_b_tm_sp,sigma_b_tm_sp)#species specific interaction
-
-ypred<-c()
-for(i in 1:N){
-  ypred[i] = a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
-}
-
-y<-rnorm(N,ypred,sigma_y)
-#check that test data look ok
-plot(temp,y)
-plot(mois,y)
-hist(mois)
-#try model in lmer
-testm2.lmer<-lmer(y~temp * mois +(1|sp))#
-summary(testm2.lmer)
-#brms
-
-#try the model with brms
-testm2.brms <- brm(y ~ temp * mois +#fixed effects
-                     (1|sp), #random effects
-                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
-                   chains = 2,control = list(max_treedepth = 15)) 
-
-stancode(testm2.brms)
-summary(testm2.brms)#looks good!
-#brms model says a: 148.82, temp=-2.01, mois=-1.00, tmint=-0.09, species sigma=0.52
-marginal_effects(testm2.brms, surface = TRUE)
-
-
-#now fit the model in stan
-testm2 = stan('Analyses/soilmoisture/M2_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
-              iter = 2500) # , warmup=1500, get warning about maximum treedepth when, , control=list(max_treedepth=15)
-
-beta_draws<-as.matrix(testm2,pars=c("b_temp","b_mois","b_tm","sigma_y"))
-mcmc_intervals(beta_draws)
-head(summary(testm2)$summary)
-launch_shinystan(testm2)#t
-#the above models work fine with centered data...but when mean of temp/mois=25, it has trouble. not sure why! using centered data for now
-
-#M3: model with interaction and varying slopes for species
-
-#try model in lmer
-testm3.lmer<-lmer(y~temp * mois +(temp*mois|sp))#
-summary(testm3.lmer)#fixed effects look pretty good
-
-#try the model with brms
-testm3.brms <- brm(y ~ temp * mois +#fixed effects
-                     (temp * mois|sp), #random effects
-                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N),
-                   chains = 2,control = list(max_treedepth = 15)) 
-
-stancode(testm3.brms)
-summary(testm3.brms)
-#brms model says a: 148.85, temp=-2.01, mois=-1.00, tmint=-0.09, species sigma=0.50
-marginal_effects(testm3.brms, surface = TRUE)
-#looks good!!!
-
-#now fit the model in stan- haven't done this in a while...
-testm3 = stan('Analyses/soilmoisture/M3_bbd_testdata.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
-              iter = 5000, warmup=3500,control=list(adapt_delta=.95)) # there were divergent transitions. looked at bivariate plots, and problem parameter seems to be sigma_tm. sigma_temp also was a bit weird
-#Try making noncentered paraterization 
-
-testm3_ncp = stan('Analyses/soilmoisture/M3_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,temp=temp, mois=mois,n_sp=n_sp,N=N),
-              iter = 4000) 
-
-beta_draws<-as.matrix(testm3_ncp,pars=c("b_temp","b_mois","b_tm","sigma_y"))
-mcmc_intervals(beta_draws)
-head(summary(testm3_ncp)$summary)
-
-launch_shinystan(testm3_ncp)#this can be slow
-
-
-#M4: With site added as intercept only random effect
-n_site=10#number of sites
-obs_site=N/n_site#number of obs (plots, years) per site (N is defined above)
-sigma_a_site<-3
-a_site<-as.integer(rnorm(n_site,mu_a,sigma_a_site))#site specific day of year for bb
-#is this right? use grand mean again (as for species? just variance is different)
-#not sure if more variance among site or species makes more sense...i made site-level variance smaller for now
-
-site<-rep(seq(1:n_site), each=obs_site)#site ids
-
-ypred<-c()
-for(i in 1:N){
-  ypred[i] = a_site[site[i]] + a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
-}
-
-y<-rnorm(N,ypred,sigma_y)
-#check that test data look ok
-plot(temp,y)
-plot(mois,y)
-hist(mois)
-
-testm4.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site))#converged when site variance =3
-summary(testm4.lmer)#fixed effects look pretty good
-#try the model with brms
-testm4.brms <- brm(y ~ temp * mois +#fixed effects
-                     (temp * mois|sp) + (1|site), #random effects
-                   data=list(y=y,sp=sp,temp=temp, mois=mois, n_sp=n_sp,N=N, site=site),
-                   chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99)) 
- #the above code is really, really slow....
-stancode(testm4.brms)
-summary(testm4.brms)
-#brms model says a: 299.44, temp=-1.97, mois=-1.03, tmint=-0.11, species sigma=0.51
-marginal_effects(testm4.brms, surface = TRUE)
-#looks good!!! but took a really long time to fit...
-
-#testm4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
-#Warning messages:
-#  1: There were 3999 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
-#http://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded 
-#2: There were 4 chains where the estimated Bayesian Fraction of Missing Information was low. See
-#http://mc-stan.org/misc/warnings.html#bfmi-low 
-#3: Examine the pairs() plot to diagnose sampling problems
-#beta_draws<-as.matrix(testm4,pars=c("b_temp","b_mois","b_tm","sigma_y","sigma_a_sp","sigma_a_site"))
-#mcmc_intervals(beta_draws)
-#head(summary(testm4)$summary)
-
-#launch_shinystan(testm4)#this can be slo
-
-#testm4_ncp = stan('Analyses/soilmoisture/M4_bbd_testdata_ncp.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N),
-#                  iter = 4000,control=list(max_treedepth=15)) # I get warning about maximum treedepth 
-
-#beta_draws<-as.matrix(testm4_ncp,pars=c("b_temp","b_mois","b_tm","sigma_y","sigma_a_sp","sigma_a_site"))
-#mcmc_intervals(beta_draws)
-#head(summary(testm4_ncp)$summary)
-
-#launch_shinystan(testm4_ncp)#this can be slow
-
 ###Now with the data
 ###try without ncp if treedepth issue doesn't solve things.
 
@@ -261,7 +51,69 @@ source("Analyses/source/standard_mergesandwrangling.R")
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 source("Analyses/soilmoisture/climsum_byplot.R")
 
+#1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
+
+expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
+expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
+expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1))
+expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+
+#fit model in lmer
+###Fit lmer model for soil moisture~warming*preciptreatment
+#sm_mod<-lmer(soilmois1~target*preciptreat_amt + (target*preciptreat_amt|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+#summary(sm_mod)
+sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (target_cent*preciptreat_amt_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+summary(sm_mod_cent)
+
+#sm_tempmod<-lmer(soilmois1~target + (1|site/year/doy), REML=FALSE, data=expclim2a)
+#summary(sm_tempmod)
+
+#Figure with lines for each site showing different effects
+quartz(height=5, width=9)
+par(mfrow=c(1,2))
+plot(expclim2a$target_cent[1],expclim2$soilmois1[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Target warming (centered)", bty="l", ylim=c(0,0.4))
+#site effects
+for(i in 1:dim(coef(sm_mod_cent)$site)[1]){
+abline(a=coef(sm_mod_cent)$site[i,1],b=coef(sm_mod_cent)$site[i,2], lwd=1, col= "darkgray")
+}
+#main effects
+abline(a=fixef(sm_mod_cent)[1],b=fixef(sm_mod_cent)[2], lwd=2)
+#Add confidence intervals to line:
+#polygon(c(x,rev(x)),c(Con.Low,rev(Con.High)),col="thistle",border=NA)
+#OR:
+#CI <- predict(model1, newdata=df, interval="confidence")
+#CI <- as.data.frame(CI) # Coerce the matrix to a dataframe, so we can access the column using the $ operator.
+
+#plot(x=iris$Petal.Length, y=iris$Sepal.Length, pch=19, las=1, main="Iris sepal length vs. petal length", xlab="Petal length", ylab="Sepal length", col=color.vector)
+
+# Plot our best fit line. The x values are the Petal.Length column from the 'df' dataframe, and the y values are the 'fit' column from the CI dataframe. 
+# Note that I use the lines() function, which just adds features to an existing plot.
+# The lwd= argument changes the line width
+#lines(x=df$Petal.Length, y=CI$fit, lwd=2)
+
+# Plot the confidence intervals
+# The lty= argument changes the line type. There are 6 different line types, and you can just put a number 1 through 6 if you'd like. Default is "solid" (aka 1)
+#lines(x=df$Petal.Length, y=CI$lwr, lwd=2, lty="dashed", col="red")
+#lines(x=df$Petal.Length, y=CI$upr, lwd=2, lty="dashed", col="red")
+
+plot(expclim2a$preciptreat_amt_cent[1],expclim2$soilmois1[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Precipitation treatment (centered)", bty="l", ylim=c(0,0.4))
+#site effects
+for(i in 1:dim(coef(sm_mod_cent)$site)[1]){
+  abline(a=coef(sm_mod_cent)$site[i,1],b=coef(sm_mod_cent)$site[i,3], lwd=1, col= "darkgray")
+}
+#main effects
+abline(a=fixef(sm_mod_cent)[1],b=fixef(sm_mod_cent)[3], lwd=2)
+
+
+#Analyses started April 11, 2017
+#Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
+#Start by looking at which studies have both SM and AG temp data
+#which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
+#which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
+#The
+
 #Prep the data for Stan model
+expgdd_subs$sp.name<-expgdd_subs$genus.species
 expgdd_subs$genus.species<-as.numeric(as.factor(expgdd_subs$genus.species))
 expgdd_subs$site<-as.numeric(as.factor(expgdd_subs$site))
 expgdd_subs$year<-as.numeric(as.factor(expgdd_subs$year))
@@ -445,6 +297,7 @@ stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and 
 #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
 
 #make plots of main effects and species- level effects of this model 
+
 quartz()
 species=as.numeric(rownames(coef(testm5cent.brms)$sp[,,2]))
 plot(coef(testm5cent.brms)$sp[,1,2],1:length(species),type="p",pch=21,bg="darkred",xlab="Temperature effect (days)", ylab=" ", yaxt="n",cex=1.2, xlim=c(-100,20), ylim=c(0,100))
@@ -466,6 +319,55 @@ for (i in 1:length(fixef(testm5cent.brms)[,1])){
 }
 points(fixef(testm5cent.brms)[,1],coefs,pch=21,bg=c("gray","darkred","darkblue","purple4"), cex=2)
 axis(2,at=c(95,85,75,65,50),labels=c("intercept","temp","mois","temp*mois","species"), las=2)
+
+#use lizzies code now
+mod<-testm5cent.brms
+sum<-summary(mod)
+fix<-sum$fixed
+speff <- coef(mod)
+
+#pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
+quartz(width = 8, height = 6)
+par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
+# One panel: budburst
+plot(seq(-25, #min(meanz[,'mean']*1.1),
+         150, #max(meanz[,'mean']*1.1),
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate change in day of budburst",
+     ylab = "",
+     yaxt = "n")
+
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha("darkgray", 0.2)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = 16,
+         col = alpha("darkgray", 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "black", lwd = 3)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 2,
+       col = "midnightblue")
+
+abline(v = 0, lty = 2)
+#dev.off()
+
+
+
 
 #LUD and LOD in lmer
 mean(expgdd_bbd$doy, na.rm=TRUE)#99.95649
@@ -586,6 +488,9 @@ summary(ffrd.testm5.lmer)#model fits!
 sen.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.sen.cent)#converged when site variance =3
 summary(sen.testm5.lmer)#model fits! 
 #temp= 1.311 ; mois=-8.317 ; temp:mois= -4.695
+
+
+
 
 #Old stan model code
 #################################################################

@@ -55,7 +55,7 @@
 % \SweaveOpts{concordance=TRUE}
 \bibliographystyle{/Users/aileneettinger/citations/Bibtex/styles/ecol_let.bst}
 
-\title{How does soil moisture interact with temperature to affect phenology?}
+\title{Soil moisture interacts with temperature to affect plant phenology}
 \begin{singlespace}
 
 \author[1,2,a]{A.K. Ettinger}
@@ -105,43 +105,36 @@
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\linenumbers
-\begin{singlespace}
-\section{Introduction}
-\begin{enumerate}
+\section*{Abstract}
 
-We aim to understand generally how soil moisture may affect plant phenology, and specifically if experimental effects on soil moisture in warming experiments may be responsible for the discrepency in phenology temperature sensitivity between experimental and observational studies of plant phenology. To accomplish these aims, we have three study questions:
+\section* {Introduction}
+\begin{singlespace}
 \begin{enumerate}
-\item{How do climate manipulations (target warming, precip manipulations) affect soil moisture (and temperature)?}
+\item Phenology has shifted earlier with climate change. These shifts, which have occurred around the world, are generally attributed to warming temperature, since temperature is a well-studied driver of phenology.  Chilling, forcing. 
+\item In addition to warmer temperatures, climate change is expected to alter precipitation patterns. Some places may get wetter, others may get drier. The ways that changes in precipitation will affect phenology has recieved less attention. 
+\item Tree water status can affect phenology, particularly in dry, tropical forests. Budburst,flowering and leaf drop phenology have also been related to tree water status in dry ecosystems \citep{essiamah1986,reich1984, van1993}. 
+\item Physiology and mechanisms for soil moisture to affect phenology. Budburst can be slowed by water stress through inhibiting cell elongation \citep{essiamah1986}.
+\item Climate change experiments offer a valuable tool to study climate change impacts on phenology, especially because they often manipulate precipitation, in addition to temperature, have been used to understand how global warming may affect phenology. Previous analysis of phenology in climate change experiments have generally focused on effects of warming. 
+\item Do we need to discuss discrepencies between observations and experiments?
+
+\item Here we use two databases of experimental climate change and phenology data to understand how soil moisture affects plant phenology. We also compare phenological sensitivity to temperature and soil moisture in experiments to sensitivity in observational studies. 
+\end{enumerate}
+ \underline{We ask three specific questions:}
+\begin{enumerate}
+\item{How do climate manipulations (target warming, precipitation manipulations) affect soil moisture?}
 \item{How does soil moisture interact with temperature to affect phenology?}
 \item{Does warming affect soil moisture similarly in experimental and non-experimental data?}
 \end{enumerate}
 \end{singlespace}
-\section{How do climate manipulations affect soil moisture and temperature?}
+
+\section* {Methods}
 \begin{singlespace}
-
+\underline{Data}: Experimental data from MC3E and ExPhen databases, observational data from Duke (soil moisture, temp data) and Harvard Forest (soil moisture and O'Keefe phenology data). 
+\underline{Analysis}:
 \begin{enumerate}
-\item{\textbf{Approach}: Use MC3E database. Fit multilevel models of soil moisture (and air temperature?) as a function of temperature and precipitation treatments.}
-\noindent For this we need two equations where we evaluate the effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments on soil moisture (and temperature, perhaps). There are two (or more!) possible random effects structures these models:
+\item How do climate manipulations affect soil moisture and temperature?
 \begin{enumerate}
-
-\item{Random intercepts for doy nested within year nested within site}
-\begin{equation}
-y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1}eT_i+\beta_{2}eP_i+\beta_{3}eT_ieP_i+\epsilon_{i}
-\end{equation}
-\begin{equation}
-\alpha_{site[year[doy]]}\sim N(\mu_{site[year]}, \sigma_{site[year]})
-\end{equation}
-
-\begin{equation}
-\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
-\end{equation}
-
-\begin{equation}
-\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
-\end{equation}
-
-
-\item{Random slopes and intercepts for site; random intercepts for doy nested within year}
+\item Fit a multilevel model: response variable is soil moisture (from experiments in MC3E database), explanatory variables are temperature, precipitation, and their interaction. Random slopes and intercepts for site; random intercepts only for doy nested within year. We the following equations to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments on soil moisture . 
 
 \begin{equation}
 y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}
@@ -169,34 +162,12 @@ y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\
 \begin{equation}
 \beta_{3 site} \sim N(\mu_{\beta3}, \sigma_{\beta3})
 \end{equation}
-\item{Random slopes and intercepts for site and year nested within site; random intercepts for doy. (I think we probably don't want this one...)}
-
 \end{enumerate}
 
-\item{\textbf{Findings}}:
+\item How does soil moisture affect phenology?
 \begin{enumerate}
-\item{12 sites included: exps 1-5, 7-9,10 and 12-14}
-\item{Target temp has a negative effect on soil moisture. (Figure \ref {fig:soilmois})}
-\item{Precip treatment has a positive effect on soil moisture.(Figure \ref {fig:soilmois})}
-\item{Effects vary by site. (One site, exp07, has positive effect of temperature).}
-\end{enumerate}
-\item{\textbf{Next steps  and questions}}:
-\begin{enumerate}
-\item{Fit different models for different seasonal temperatures used in Question 2?}
-\item{Decide on random effects structure}
-\item{Models for air temperature}
-\end{enumerate}
-
-\end{enumerate}
-
-\section{How does soil moisture affect phenology?}
-\begin{enumerate}
-\item{\textbf{Approach}: Compile ExPhen database (phenology data that goes with climate data in MC3E database). Fit models with soil moisture (SM), temperature (T), and interaction to phenology data (budburst, leafout, flowering, fruiting, senesence). }
-\begin{enumerate}
-\item{Exclude "lud" as a phenophases becuase we have much less data for this phase compared with lod.}
-\item{Excluding conifers for now.}
-\end{enumerate}
-\item{\textbf{Equations}Response variable (\textit{y}) is day of year of the phenological event. PRedictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (random slopes and intercepts); site and for year nested within site (random intercepts).}
+\item Fit models with soil moisture (SM), temperature (T), and interaction to phenology response data (budburst, leafout, flowering, fruiting, senesence). Data are from experiments (MC3E and ExPhen). Note: excluding conifers for now.
+\item{\textbf{Equations}: Response variable (\textit{y}) is day of year of the phenological event. PRedictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (random slopes and intercepts); site and for year nested within site (random intercepts).}
 
 \begin{equation}
 y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{1 sp[i]}T_i+\beta_{2 sp[i]}SM_i+\beta_{3 site[i]}T_iSM_i+\epsilon_{i}
@@ -224,29 +195,12 @@ y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{1 sp[i]}T_i+\beta_{2 sp[i]}SM_i+\beta
 \begin{equation}
 \beta_{3 sp} \sim N(\mu_{\beta3}, \sigma_{\beta3})
 \end{equation}
-
-\item{\textbf{Findings}}
-\begin{enumerate}
-\item{Air temperature (seasonal) has a negative effect on phenology for all phenophases except senescence, which has a positive effect (Figure \ref{fig:bb}). Magnitude varies among sites and species.}
-\item{Moisture has a negative effect on phenology for all phenophases. Magnitude varies among sites and species. }
 \end{enumerate}
 
-\item{\textbf{Next steps and questions}}: 
-\begin{enumerate}
-\item{What figures to make?}
-\item{How does soil moisture affect GDDcrit?}
-\item Combine equations from Question 1 with equations from Questions 2 (at the annual scale) to answer: how much does 1 degree change in target temperature (\textit{eT}) affect phenology, if this were the only effect of the experiment? Similarly, how much does 50\% change in precipitation (\textit{eP}) affect phenology, if this were the only effect of the experiment? And how big a change does each make acknowledging that they both change moisture and temperature together? We can do this by plugging in different values of \textit{eT} (e.g., all 1 C, then try with all 2 C) and \textit{eP} to calculate different outcomes of moisture and temperature which we can evaluate in the equations in Question 2 to assess changes in phenology.
-\item{How do we do the above with centered models?}
-\end{enumerate}
-
-\end{enumerate}
-\end{singlespace}
-
-\section{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}
-\begin{singlespace}
+\item Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?
 
 \begin{enumerate}
-\item{Approach: Compile data from Duke (soil moisture, temp data) and Harvard Forest (soil moisture and O'Keefe phenology data). Think on best model and how to model soil moisture as a function of temperature (\textit{T}, annual? seasonal?) and precipitation (\textit{P}, annual? seasonal?). For now, \textit{y} is daily moisture across multiple years and \textit{T} is MAT and \textit{P} is percent different than mean over available time series. We use this approach to make the observational data comparable to experimental data in Question 1 above.}
+\item Think on best model and how to model soil moisture as a function of temperature (\textit{T}, annual? seasonal?) and precipitation (\textit{P}, annual? seasonal?). For now, \textit{y} is daily moisture across multiple years and \textit{T} is MAT and \textit{P} is percent different than mean over available time series. We use this approach to make the observational data comparable to experimental data in Question 1 above.
 \begin{equation}
 y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]}T_iP_i+\epsilon_{i}
 \end{equation}
@@ -266,42 +220,72 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
 \alpha_{sp} \sim N(\mu_{sp}, \sigma_{sp})
 \end{equation}
 
-\item{\textbf{Next steps}:We can compare \ensuremath{\beta_{1}},\ensuremath{\beta_{2}}, and \ensuremath{\beta_{3}} in experiments and observations. We may not be able to look at the \ensuremath{\beta}s themselves to do this (for instance, if data are centered).} 
+\item We can compare \ensuremath{\beta_{1}},\ensuremath{\beta_{2}}, and \ensuremath{\beta_{3}} in experiments and observations. 
 
+\end{enumerate}
 \end{enumerate}
 \end{singlespace}
 
-%\section*{Abstract}
-
-%\section* {Introduction}
-
-%\section* {Methods}
-
-%\section* {Results}
-%\section* {Discussion}
-
-%\section* {Conclusions}
+\section* {Results}
 \begin{singlespace}
 
-\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\begin{enumerate}
+\item {\textbf{How do climate manipulations affect soil moisture and temperature?}}
+\begin{enumerate}
+\item{12 sites included: exps 1-5, 7-9,10 and 12-14}
+\item{Target temp has a negative effect on soil moisture. (Figure \ref {fig:soilmois})}
+\item{Precip treatment has a positive effect on soil moisture.(Figure \ref {fig:soilmois})}
+\item{Effects vary by site. (One site, exp07, has positive effect of temperature).}
+\item \underline{For supplement}: Fit different models for different seasonal temperatures used in Question 2 (phenology models).
+\end{enumerate}
+
+\item{\textbf{How does soil moisture affect phenology?
+}}
+\begin{enumerate}
+\item{Air temperature (seasonal) has a negative effect on phenology for all phenophases except senescence, which has a positive effect (Figure \ref{fig:bb}). Magnitude varies among sites and species.}
+\item{Moisture has a negative effect on phenology for all phenophases. Magnitude varies among sites and species. }
+\item \underline{For supplement}: Figures of fruiting and senescence (fewer sites)
+\end{enumerate}
+\item {\textbf{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}}
+\end{enumerate}
 \end{singlespace}
+
+\section* {Discussion}
+
+\section* {Conclusions}
+
+\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
 
 \clearpage
 \section* {Figures}
 \clearpage
  \begin{figure}[h]
 \centering
- \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/smvstargtemp_smvspreciptreat.pdf}
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/smvstargtemp_smvspreciptreat_lines.pdf}
  \caption{\textbf{Effects of target temperature and precipitation treatments on soil moisture.}} 
  \label{fig:soilmois}
  \end{figure}
 
 \begin{figure}[h]
 \centering
- \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/bbdcentmodbrms.pdf}
- \caption{\textbf{Model coefficients from budburst model.}} 
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5bbd.pdf}
+ \caption{\textbf{Model coefficients from budburst model (with centered predictors).}} 
  \label{fig:bb}
  \end{figure}
+
+%\begin{figure}[h]
+%\centering
+% \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5lod.pdf}
+% \caption{\textbf{Model coefficients from leafout model (with centered predictors).}} 
+% \label{fig:lo}
+% \end{figure}
+
+%\begin{figure}[h]
+%\centering
+% \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5ffd.pdf}
+% \caption{\textbf{Model coefficients from first flower model (with centered predictors).}} 
+% \label{fig:ff}
+ %\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
