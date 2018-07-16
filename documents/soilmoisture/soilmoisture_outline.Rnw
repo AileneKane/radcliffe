@@ -106,7 +106,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\linenumbers
 \begin{singlespace}
-\section{Objective}
+\section{Introduction}
+\begin{enumerate}
+
 We aim to understand generally how soil moisture may affect plant phenology, and specifically if experimental effects on soil moisture in warming experiments may be responsible for the discrepency in phenology temperature sensitivity between experimental and observational studies of plant phenology. To accomplish these aims, we have three study questions:
 \begin{enumerate}
 \item{How do climate manipulations (target warming, precip manipulations) affect soil moisture (and temperature)?}
