@@ -108,5 +108,5 @@ cummean2<-function(x){cumsum(x)/ seq_along(x)}
 
 #expclim3$cummean_sm<-NA
 #expclim3$cummean_sm<-ave(expclim3$soilmois1,list(expclim3$site,expclim3$block,expclim3$plot,expclim3$year), FUN=cummean)
-cbind(expclim3$year,expclim3$doy,expclim3$soilmois1,expclim3$cummean_sm)[30:100,]
+#cbind(expclim3$year,expclim3$doy,expclim3$soilmois1,expclim3$cummean_sm)[30:100,]
 write.csv(expclim3,"Analyses/gddchill/expclim.wchillgdd.csv", row.names=FALSE)

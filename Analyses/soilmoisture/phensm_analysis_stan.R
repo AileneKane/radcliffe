@@ -40,7 +40,7 @@ if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliff
 #options(mc.cores = parallel::detectCores())
 
 #Read in experimental climate and phenology data
-expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
+expclim<-read.csv("Analyses/gddchill/expclim.wchill.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
 
@@ -65,8 +65,9 @@ expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only
 sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (target_cent*preciptreat_amt_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
 summary(sm_mod_cent)
 
-#sm_tempmod<-lmer(soilmois1~target + (1|site/year/doy), REML=FALSE, data=expclim2a)
-#summary(sm_tempmod)
+#sm_tempmod_cent<-lmer(soilmois1~target_cent + (target_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+#summary(sm_tempmod_cent)#model does not fit for noncentered data
+#AIC(sm_tempmod_cent,sm_mod_cent)
 
 #Figure with lines for each site showing different effects
 quartz(height=5, width=9)
@@ -103,14 +104,21 @@ for(i in 1:dim(coef(sm_mod_cent)$site)[1]){
 }
 #main effects
 abline(a=fixef(sm_mod_cent)[1],b=fixef(sm_mod_cent)[3], lwd=2)
+#Need to add interaction somehow...
+
+#Now look at soil moisture in experimental controls only
+expclim2a$preciptreat_prop<-expclim2a$preciptreat_amt/100
+sm_mod<-lmer(soilmois1~target*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+summary(sm_mod)
+
+sm_mod_agt<-lmer(soilmois1~agt*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+expclim_cont<-expclim2a[expclim2a$target==0,]
 
 
-#Analyses started April 11, 2017
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
 #Start by looking at which studies have both SM and AG temp data
 #which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
 #which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
-#The
 
 #Prep the data for Stan model
 expgdd_subs$sp.name<-expgdd_subs$genus.species
@@ -127,8 +135,8 @@ expgdd_bbd <- expgdd_bbd[apply(expgdd_bbd, 1, function(x) all(!is.na(x))),] # on
 expgdd_lod<-expgdd_subs[which(expgdd_subs$event=="lod"),]#leaf out data
 expgdd_lod <- expgdd_lod[apply(expgdd_lod, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
-expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
-expgdd_lud <- expgdd_lud[apply(expgdd_lud, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+#expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
+#expgdd_lud <- expgdd_lud[apply(expgdd_lud, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
 expgdd_ffd<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#leaf unfolding data
 expgdd_ffd <- expgdd_ffd[apply(expgdd_ffd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
@@ -139,13 +147,13 @@ expgdd_ffrd <- expgdd_ffrd[apply(expgdd_ffrd, 1, function(x) all(!is.na(x))),] #
 expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]#leaf unfolding data
 expgdd_sen <- expgdd_sen[apply(expgdd_sen, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
-#For lod and lud, use only species which have all lod and lud
-unique(expgdd_lud$genus.species)#many fewer species have lud- do not sure this one!
-unique(expgdd_lod$genus.species)
-common.spp<-unique(expgdd_lud$genus.species[expgdd_lud$genus.species%in%expgdd_lod$genus.species])
-unique(expgdd_sen$genus.species)
-expgdd_lod_cs<-expgdd_lod[which(expgdd_lod$genus.species%in%common.spp),]
-expgdd_lud_cs<-expgdd_lud[which(expgdd_lud$genus.species%in%common.spp),]
+#For lod and lud, use only species which have all lod and lud, to see what is driving differences between these two models
+#unique(expgdd_lud$genus.species)#many fewer species have lud- do not use this one!
+#unique(expgdd_lod$genus.species)
+#common.spp<-unique(expgdd_lud$genus.species[expgdd_lud$genus.species%in%expgdd_lod$genus.species])
+#unique(expgdd_sen$genus.species)
+#expgdd_lod_cs<-expgdd_lod[which(expgdd_lod$genus.species%in%common.spp),]
+#expgdd_lud_cs<-expgdd_lud[which(expgdd_lud$genus.species%in%common.spp),]
 
 # For centering data:
 expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
@@ -160,10 +168,10 @@ expgdd_lod$agtmax_cent<-scale(expgdd_lod$agtmax, center = TRUE, scale = TRUE)
 expgdd_lod$ag_min_aprjun_cent<-scale(expgdd_lod$ag_min_aprjun, center = TRUE, scale = TRUE)
 expgdd_lod$soilmois_aprjun_cent<-scale(expgdd_lod$soilmois_aprjun, center = TRUE, scale = TRUE)
 
-expgdd_lud$sm_cent <- scale(expgdd_lud$sm, center=TRUE, scale=TRUE)
-expgdd_lud$smjm_cent<-scale(expgdd_lud$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_lud$ag_min_jm_cent<-scale(expgdd_lud$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_lud$agtmax_cent<-scale(expgdd_lud$agtmax, center = TRUE, scale = TRUE)
+#expgdd_lud$sm_cent <- scale(expgdd_lud$sm, center=TRUE, scale=TRUE)
+#expgdd_lud$smjm_cent<-scale(expgdd_lud$soilmois_janmar, center = TRUE, scale = TRUE)
+#expgdd_lud$ag_min_jm_cent<-scale(expgdd_lud$ag_min_janmar, center = TRUE, scale = TRUE)
+#expgdd_lud$agtmax_cent<-scale(expgdd_lud$agtmax, center = TRUE, scale = TRUE)
 
 expgdd_ffd$sm_cent <- scale(expgdd_ffd$sm, center=TRUE, scale=TRUE)
 expgdd_ffd$agtmin_cent<-scale(expgdd_ffd$agtmin, center = TRUE, scale = TRUE)
@@ -406,40 +414,89 @@ summary(lod.testm5.lmer)#failed to converge with uncentered data!
 lodcent.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.lod.cent)#
 summary(lodcent.testm5.lmer)
 #temp= -9.9582; mois=--0.6598; temp:mois= 0.6661
+testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
+                         (temp * mois|sp) + (1|site/year), #random effects
+                       data=datalist.lod.cent,
+                       chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
 
-datalist.lud.cent <- with(expgdd_lud, 
-                          list(y = doy, 
-                               temp = ag_min_jm_cent, #above-ground minimum air temp
-                               mois = smjm_cent, #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
-                          )
-)
+mod<-testm5cent.lod.brms
+sum<-summary(mod)
+fix<-sum$fixed
+speff <- coef(mod)
 
-datalist.lud <- with(expgdd_lud, 
-                          list(y = doy, 
-                               temp = ag_min_janmar, #above-ground minimum air temp
-                               mois = soilmois_janmar, #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
-                          )
-)
+#pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
+quartz(width = 8, height = 6)
+par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
+# One panel: budburst
+plot(seq(-35, 
+         190, 
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate change in day of leafout",
+     ylab = "",
+     yaxt = "n")
 
-lud.testm5.lmer<-lmer(y~temp * mois +
-                        (temp*mois|sp)+ (1|site/year),
-                      data=datalist.lud)#
-summary(lud.testm5.lmer)#model fits! 
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha("darkgray", 0.2)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = 16,
+         col = alpha("darkgray", 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "black", lwd = 3)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 2,
+       col = "midnightblue")
+
+abline(v = 0, lty = 2)
+#dev.off()
+
+#datalist.lud.cent <- with(expgdd_lud, 
+ #                         list(y = doy, 
+  #                             temp = ag_min_jm_cent, #above-ground minimum air temp
+   #                            mois = smjm_cent, #soil moisture
+    #                           sp = genus.species,
+     #                          site = site,
+      #                         year = year,
+       #                        N = nrow(expgdd_bbd),
+        #                       n_sp = length(unique(expgdd_bbd$genus.species))
+         #                 )
+#)
+
+#datalist.lud <- with(expgdd_lud, 
+#                          list(y = doy, 
+#                               temp = ag_min_janmar, #above-ground minimum air temp
+#                               mois = soilmois_janmar, #soil moisture
+#                               sp = genus.species,
+#                               site = site,
+#                               year = year,
+#                               N = nrow(expgdd_bbd),
+#                               n_sp = length(unique(expgdd_bbd$genus.species))
+#                          )
+#)
+
+#lud.testm5.lmer<-lmer(y~temp * mois +
+#                        (temp*mois|sp)+ (1|site/year),
+#                      data=datalist.lud)#
+#summary(lud.testm5.lmer)#model fits! 
 #temp= -7.893; mois=7.655; temp:mois= 18.238
-ludcent.testm5.lmer<-lmer(y~temp * mois +
-                        (temp*mois|sp)+ (1|site/year),
-                      data=datalist.lud.cent)#converged when site variance =3
-summary(ludcent.testm5.lmer)#model fits! 
+#ludcent.testm5.lmer<-lmer(y~temp * mois +
+#                        (temp*mois|sp)+ (1|site/year),
+#                      data=datalist.lud.cent)#converged when site variance =3
+#summary(ludcent.testm5.lmer)#model fits! 
 #temp= -14.0005; mois=0.9292; temp:mois= 2.2634
 
 datalist.ffd.cent <- with(expgdd_ffd, 
@@ -454,6 +511,61 @@ datalist.ffd.cent <- with(expgdd_ffd,
                      )
 )
 
+testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
+                             (temp * mois|sp) + (1|site/year), #random effects
+                           data=datalist.ffd.cent,
+                           chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
+
+
+mod<-testm5cent.ffd.brms
+sum<-summary(mod)
+fix<-sum$fixed
+speff <- coef(mod)
+
+#pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
+quartz(width = 8, height = 6)
+par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
+# One panel: budburst
+plot(seq(-25, #min(meanz[,'mean']*1.1),
+         150, #max(meanz[,'mean']*1.1),
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate change in day of flowering",
+     ylab = "",
+     yaxt = "n")
+
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha("darkgray", 0.2)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = 16,
+         col = alpha("darkgray", 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "black", lwd = 3)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 2,
+       col = "midnightblue")
+
+abline(v = 0, lty = 2)
+#dev.off()
+
+
+
+
+###For supplement
 datalist.ffrd.cent <- with(expgdd_ffrd, 
                           list(y = doy, 
                                temp = agtmin_cent, #above-ground minimum air temp
@@ -480,6 +592,7 @@ datalist.sen.cent <- with(expgdd_sen,
 ffd.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.ffd.cent)#converged when site variance =3
 summary(ffd.testm5.lmer)#model fits! 
 #temp= -7.1193; mois=-2.4218 ; temp:mois= -2.4283
+
 
 ffrd.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.ffrd.cent)#converged when site variance =3
 summary(ffrd.testm5.lmer)#model fits! 

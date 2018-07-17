@@ -115,7 +115,7 @@
 \item Tree water status can affect phenology, particularly in dry, tropical forests. Budburst,flowering and leaf drop phenology have also been related to tree water status in dry ecosystems \citep{essiamah1986,reich1984, van1993}. 
 \item Physiology and mechanisms for soil moisture to affect phenology. Budburst can be slowed by water stress through inhibiting cell elongation \citep{essiamah1986}.
 \item Climate change experiments offer a valuable tool to study climate change impacts on phenology, especially because they often manipulate precipitation, in addition to temperature, have been used to understand how global warming may affect phenology. Previous analysis of phenology in climate change experiments have generally focused on effects of warming. 
-\item Do we need to discuss discrepencies between observations and experiments?
+\item Do we need to discuss discrepencies between observations and experiments? I think not- I think I will just mention it in the discussion. And say we compared observational data to compare to experiments. 
 
 \item Here we use two databases of experimental climate change and phenology data to understand how soil moisture affects plant phenology. We also compare phenological sensitivity to temperature and soil moisture in experiments to sensitivity in observational studies. 
 \end{enumerate}
@@ -167,7 +167,7 @@ y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\
 \item How does soil moisture affect phenology?
 \begin{enumerate}
 \item Fit models with soil moisture (SM), temperature (T), and interaction to phenology response data (budburst, leafout, flowering, fruiting, senesence). Data are from experiments (MC3E and ExPhen). Note: excluding conifers for now.
-\item{\textbf{Equations}: Response variable (\textit{y}) is day of year of the phenological event. PRedictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (random slopes and intercepts); site and for year nested within site (random intercepts).}
+\item{\textbf{Equations}: Response variable (\textit{y}) is day of year of the phenological event. Predictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (random slopes and intercepts); site and for year nested within site (random intercepts).}
 
 \begin{equation}
 y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{1 sp[i]}T_i+\beta_{2 sp[i]}SM_i+\beta_{3 site[i]}T_iSM_i+\epsilon_{i}
@@ -197,7 +197,7 @@ y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{1 sp[i]}T_i+\beta_{2 sp[i]}SM_i+\beta
 \end{equation}
 \end{enumerate}
 
-\item Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?
+\item Does warming affect soil moisture (and phenology) similarly in experimental and non-experimental data?
 
 \begin{enumerate}
 \item Think on best model and how to model soil moisture as a function of temperature (\textit{T}, annual? seasonal?) and precipitation (\textit{P}, annual? seasonal?). For now, \textit{y} is daily moisture across multiple years and \textit{T} is MAT and \textit{P} is percent different than mean over available time series. We use this approach to make the observational data comparable to experimental data in Question 1 above.
@@ -242,8 +242,8 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
 \item{\textbf{How does soil moisture affect phenology?
 }}
 \begin{enumerate}
-\item{Air temperature (seasonal) has a negative effect on phenology for all phenophases except senescence, which has a positive effect (Figure \ref{fig:bb}). Magnitude varies among sites and species.}
-\item{Moisture has a negative effect on phenology for all phenophases. Magnitude varies among sites and species. }
+\item Air temperature (seasonal) has a negative effect on phenology for all phenophases except senescence, which has a positive effect (Figure \ref{fig:bb}). Magnitude varies among sites and species. 
+\item Moisture has a negative effect on phenology for all phenophases,. Magnitude varies among phenophases (e.g., LOD is weaker than BBD), sites, and species.
 \item \underline{For supplement}: Figures of fruiting and senescence (fewer sites)
 \end{enumerate}
 \item {\textbf{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}}
@@ -273,12 +273,12 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
  \label{fig:bb}
  \end{figure}
 
-%\begin{figure}[h]
-%\centering
-% \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5lod.pdf}
-% \caption{\textbf{Model coefficients from leafout model (with centered predictors).}} 
-% \label{fig:lo}
-% \end{figure}
+\begin{figure}[h]
+\centering
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5lod.pdf}
+ \caption{\textbf{Model coefficients from leafout model (with centered predictors).}} 
+ \label{fig:lo}
+ \end{figure}
 
 %\begin{figure}[h]
 %\centering
