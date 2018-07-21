@@ -40,7 +40,7 @@ if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliff
 #options(mc.cores = parallel::detectCores())
 
 #Read in experimental climate and phenology data
-expclim<-read.csv("Analyses/gddchill/expclim.wchill.csv", header=TRUE)
+expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
 
@@ -106,15 +106,26 @@ for(i in 1:dim(coef(sm_mod_cent)$site)[1]){
 abline(a=fixef(sm_mod_cent)[1],b=fixef(sm_mod_cent)[3], lwd=2)
 #Need to add interaction somehow...
 
-#Now look at soil moisture in experimental controls only
-expclim2a$preciptreat_prop<-expclim2a$preciptreat_amt/100
-sm_mod<-lmer(soilmois1~target*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2a)
-summary(sm_mod)
+expclim2$preciptreat_prop<-expclim2$preciptreat_amt/100
+#now compare several models:
+#target warming:
+sm_mod_targ<-lmer(soilmois1~target*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod_targ)
+#measured warming:
+sm_mod_meas<-lmer(soilmois1~agtemp_mean*preciptreat_prop + (agtemp_mean*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod_meas)
+#only measured warming
+sm_mod_temp<-lmer(soilmois1~agtemp_mean + (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod_temp)
+#only measured warming in control plots
+expclim_cont<-expclim2[expclim2$target==0,]
 
-sm_mod_agt<-lmer(soilmois1~agt*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2a)
-expclim_cont<-expclim2a[expclim2a$target==0,]
+sm_mod_temp_cont<-lmer(soilmois1~agtemp_mean + (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim_cont)
+summary(sm_mod_temp_cont)
 
+modcomp<-rbind(fixef(sm_mod_targ)[,1:2],fixef(sm_mod_meas)[,1:2],c(fixef(sm_mod_temp)[,1],NA,NA),c(fixef(sm_mod_temp)[,2],NA,NA),c(fixef(sm_mod_temp_cont)[,1],NA,NA),c(fixef(sm_mod_temp_cont)[,2],NA,NA))
 
+colnames(modcomp)<-c("eff","se")
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
 #Start by looking at which studies have both SM and AG temp data
 #which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
@@ -333,17 +344,17 @@ mod<-testm5cent.brms
 sum<-summary(mod)
 fix<-sum$fixed
 speff <- coef(mod)
-
+rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 8, height = 6)
-par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
+quartz(width = 4, height = 7)
+par(mfrow=c(3,1), mar = c(4, 7, .5, 1))
 # One panel: budburst
-plot(seq(-25, #min(meanz[,'mean']*1.1),
-         150, #max(meanz[,'mean']*1.1),
+plot(seq(-35, #min(meanz[,'mean']*1.1),
+         300, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
-     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
      type="n",
-     xlab = "Model estimate change in day of budburst",
+     xlab = "Model estimate, change in day of budburst",
      ylab = "",
      yaxt = "n")
 
@@ -363,13 +374,13 @@ for(i in 1:nrow(fix)){
 }
 #fixed effects
 arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "black", lwd = 3)
+       len = 0, col = "black", lwd = 2)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
-       cex = 2,
-       col = "midnightblue")
+       cex = 1.2,
+       col = "springgreen")
 
 abline(v = 0, lty = 2)
 #dev.off()
@@ -423,17 +434,18 @@ mod<-testm5cent.lod.brms
 sum<-summary(mod)
 fix<-sum$fixed
 speff <- coef(mod)
+rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 
 #pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 8, height = 6)
-par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
+#quartz(width = 8, height = 6)
+#par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
 # One panel: budburst
-plot(seq(-35, 
-         190, 
+plot(seq(-30, 
+         300, 
          length.out = nrow(fix)), 
-     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
      type="n",
-     xlab = "Model estimate change in day of leafout",
+     xlab = "Model estimate, change in day of leafout",
      ylab = "",
      yaxt = "n")
 
@@ -453,13 +465,13 @@ for(i in 1:nrow(fix)){
 }
 #fixed effects
 arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "black", lwd = 3)
+       len = 0, col = "black", lwd = 2)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
-       cex = 2,
-       col = "midnightblue")
+       cex = 1.2,
+       col = "darkgreen")
 
 abline(v = 0, lty = 2)
 #dev.off()
@@ -514,24 +526,25 @@ datalist.ffd.cent <- with(expgdd_ffd,
 testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
                            data=datalist.ffd.cent,
-                           chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
+                           chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
 
 
 mod<-testm5cent.ffd.brms
 sum<-summary(mod)
 fix<-sum$fixed
 speff <- coef(mod)
+rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 
 #pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 8, height = 6)
-par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
+#quartz(width = 8, height = 6)
+#par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
 # One panel: budburst
 plot(seq(-25, #min(meanz[,'mean']*1.1),
-         150, #max(meanz[,'mean']*1.1),
+         300, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
-     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
      type="n",
-     xlab = "Model estimate change in day of flowering",
+     xlab = "Model estimate, change in day of flowering",
      ylab = "",
      yaxt = "n")
 
@@ -551,13 +564,13 @@ for(i in 1:nrow(fix)){
 }
 #fixed effects
 arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "black", lwd = 3)
+       len = 0, col = "black", lwd = 2)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
-       cex = 2,
-       col = "midnightblue")
+       cex = 1.2,
+       col = "purple3")
 
 abline(v = 0, lty = 2)
 #dev.off()
@@ -578,6 +591,11 @@ datalist.ffrd.cent <- with(expgdd_ffrd,
                           )
 )
 
+testm5cent.ffrd.brms <- brm(y ~ temp * mois +#fixed effects
+                             (temp * mois|sp) + (1|site/year), #random effects
+                           data=datalist.ffrd.cent,
+                           chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
+
 datalist.sen.cent <- with(expgdd_sen, 
                           list(y = doy, 
                                temp = agtmin_cent, #above-ground minimum air temp
@@ -589,6 +607,13 @@ datalist.sen.cent <- with(expgdd_sen,
                                n_sp = length(unique(expgdd_bbd$genus.species))
                           )
 )
+
+testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
+                              (temp * mois|sp) + (1|site/year), #random effects
+                            data=datalist.sen.cent,
+                            chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
+
+
 ffd.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.ffd.cent)#converged when site variance =3
 summary(ffd.testm5.lmer)#model fits! 
 #temp= -7.1193; mois=-2.4218 ; temp:mois= -2.4283
@@ -601,6 +626,100 @@ summary(ffrd.testm5.lmer)#model fits!
 sen.testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/year),data=datalist.sen.cent)#converged when site variance =3
 summary(sen.testm5.lmer)#model fits! 
 #temp= 1.311 ; mois=-8.317 ; temp:mois= -4.695
+
+##Figure of FFRD and SEN
+mod<-testm5cent.ffrd.brms 
+sum<-summary(mod)
+fix<-sum$fixed
+speff <- coef(mod)
+rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
+#pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
+quartz(width = 6, height = 7)
+par(mfrow=c(2,1), mar = c(4, 7, .5, 1))
+# One panel: budburst
+plot(seq(-45, #min(meanz[,'mean']*1.1),
+         360, #max(meanz[,'mean']*1.1),
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate, change in day of fruiting",
+     ylab = "",
+     yaxt = "n")
+
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha("darkgray", 0.2)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = 16,
+         col = alpha("darkgray", 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "black", lwd = 2)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 1.2,
+       col = "midnight blue")
+
+abline(v = 0, lty = 2)
+#dev.off()
+
+mod<-testm5cent.sen.brms 
+sum<-summary(mod)
+fix<-sum$fixed
+speff <- coef(mod)
+rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
+#pdf(file.path("Analyses/soilmoisture/figures/m5.sen.pdf"), width = 8, height = 6)
+
+# One panel: budburst
+plot(seq(-45, #min(meanz[,'mean']*1.1),
+         360, #max(meanz[,'mean']*1.1),
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate, change in day of senescence",
+     ylab = "",
+     yaxt = "n")
+
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha("darkgray", 0.2)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = 16,
+         col = alpha("darkgray", 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "black", lwd = 2)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 1.2,
+       col = "burlywood4")
+
+abline(v = 0, lty = 2)
+#dev.off()
+
+
+
+
 
 
 

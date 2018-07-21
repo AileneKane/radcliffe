@@ -115,7 +115,7 @@
 \item Tree water status can affect phenology, particularly in dry, tropical forests. Budburst,flowering and leaf drop phenology have also been related to tree water status in dry ecosystems \citep{essiamah1986,reich1984, van1993}. 
 \item Physiology and mechanisms for soil moisture to affect phenology. Budburst can be slowed by water stress through inhibiting cell elongation \citep{essiamah1986}.
 \item Climate change experiments offer a valuable tool to study climate change impacts on phenology, especially because they often manipulate precipitation, in addition to temperature, have been used to understand how global warming may affect phenology. Previous analysis of phenology in climate change experiments have generally focused on effects of warming. 
-\item Do we need to discuss discrepencies between observations and experiments? I think not- I think I will just mention it in the discussion. And say we compared observational data to compare to experiments. 
+%\item Do we need to discuss discrepencies between observations and experiments? I think not- I think I will just mention it in the discussion. And say we compared observational data to compare to experiments. 
 
 \item Here we use two databases of experimental climate change and phenology data to understand how soil moisture affects plant phenology. We also compare phenological sensitivity to temperature and soil moisture in experiments to sensitivity in observational studies. 
 \end{enumerate}
@@ -268,17 +268,17 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
 
 \begin{figure}[h]
 \centering
- \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5bbd.pdf}
- \caption{\textbf{Model coefficients from budburst model (with centered predictors).}} 
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5bbdlodffd.pdf}
+ \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors).}} 
  \label{fig:bb}
  \end{figure}
 
-\begin{figure}[h]
-\centering
- \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5lod.pdf}
- \caption{\textbf{Model coefficients from leafout model (with centered predictors).}} 
- \label{fig:lo}
- \end{figure}
+%begin{figure}[h]
+%\centering
+% \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5lod.pdf}
+% \caption{\textbf{Model coefficients from leafout model (with centered predictors).}} 
+% \label{fig:lo}
+% \end{figure}
 
 %\begin{figure}[h]
 %\centering
@@ -286,6 +286,15 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
 % \caption{\textbf{Model coefficients from first flower model (with centered predictors).}} 
 % \label{fig:ff}
  %\end{figure}
+\section* {To do}
+\begin{enumerate}
+\item Test Yann's theory (that soil moisture affects phenology through its effects on air temperature): fit models with soil temperature instead of air temperature (using same data)- compare coefficients
+\item Why is x-axis negative in soil moisture model with centered predictors?
+\item Modify Figure 1: color code lines by site, calculate how big effect of precip is and temp is, plot interaction
+\item Figure 2: color code dots by species (by BB day of year, from early to late)
+\item analyze experimental controls a bit more, before delving into observational comparisons
+\end{enumerate}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
