@@ -162,6 +162,10 @@ colors.target <- data.frame(target = c("0",     "1",      "1.5",          "2",  
 # For when 1-degree drops out for some reason
 colors.target2 <- c("black", "purple", "mediumpurple", "plum3", "plum2","palevioletred", "salmon1", "orange", "coral2", "orangered", "red")
 
+#For when one additional one pops up in soil temp
+colors.target3 <- data.frame(target = c("0",     "1",  "1.2",    "1.5",       "1.9",   "2",            "2.5",  "2.7",   "3",             "3.5",     "4",      "4.5",    "5",         "5.5"),
+                            color  = c("black", "purple","mediumpurple2", "mediumpurple", "mediumorchid1","mediumorchid", "plum3","plum2", "palevioletred", "salmon1", "orange", "coral2", "orangered", "red"))
+
 # ---------
 # 4.a Finding the mean deviation for each across years
 # ---------
@@ -194,7 +198,7 @@ agg.dev.graph <- agg.dev
 
 # summary(agg.dev.graph)
 
-# Ordering things by mean annual soil temp
+# Ordering things by mean annual soil mois
 site.means
 agg.dev.graph$site <- factor(agg.dev.graph$site, levels=site.means[order(site.means$soilmois1.ann),"site"])
 # identifying which figures we want to graph
@@ -240,9 +244,9 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
   scale_y_continuous(expand=c(0,0), name=expression(paste("diff from non-warmed (" ^"o", "C)"))) +
   coord_cartesian(ylim=c(-5,8)) +
   ggtitle("Daily Mean Soil Temperature Difference")+
-  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+  scale_color_manual(values=as.vector(colors.target3[colors.target3$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
                      name=expression(paste("target warming " ^"o", "C"))) + 
-  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+  scale_fill_manual(values=as.vector(colors.target3[colors.target3$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
                     name=expression(paste("target warming " ^"o", "C"))) + 
   theme_bw()
 dev.off()
@@ -361,9 +365,9 @@ ggplot(data=agg.dev.graph[agg.dev.graph$site %in% sites.graph ,]) +
   scale_x_continuous(expand=c(0,0), name="day of year") +
   scale_y_continuous(expand=c(0,0), limits=range(agg.dev.graph[,c("BGtemp_mean.dev.lo", "BGtemp_mean.dev.hi")], na.rm=T), name="diff from non-warmed (degrees C)") +
   ggtitle("Daily Mean Soil Temperature Difference")+
-  scale_color_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+  scale_color_manual(values=as.vector(colors.target3[colors.target3$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
                      name=expression(paste("target warming " ^"o", "C"))) + 
-  scale_fill_manual(values=as.vector(colors.target[colors.target$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
+  scale_fill_manual(values=as.vector(colors.target3[colors.target3$target %in% unique(agg.dev.graph[!is.na(agg.dev.graph$BGtemp_mean.dev),"target"]), "color"]), 
                     name=expression(paste("target warming " ^"o", "C"))) + 
   theme_bw()
 dev.off()

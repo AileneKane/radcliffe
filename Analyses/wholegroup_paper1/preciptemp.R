@@ -34,12 +34,12 @@ tempmod4<-lmer(agtemp_max~preciptreat_amt * target+ (1|site/year/doy), data=expc
 tempmod4_min<-lmer(agtemp_min~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 mintemptable<-cbind(round(summary(tempmod4_min)$coeff[,1:2],digits=3), Anova(tempmod4_min, type="III"))
 temptable<-cbind(round(summary(tempmod4)$coeff[,1:2],digits=3), Anova(tempmod4, type="III"))
-stempmod4<-lmer(soiltemp1_min~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
-stempmod4_min<-lmer(soiltemp1_max~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+stempmod4_min<-lmer(soiltemp1_min~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
+stempmod4<-lmer(soiltemp1_max~preciptreat_amt * target+ (1|site/year/doy), data=expclimp, REML=FALSE,contrasts=c(unordered="contr.sum", ordered="contr.poly"))
 smintemptable<-cbind(round(summary(stempmod4_min)$coeff[,1:2],digits=3), Anova(stempmod4_min, type="III"))
 stemptable<-cbind(round(summary(stempmod4)$coeff[,1:2],digits=3), Anova(stempmod4, type="III"))
 #which studies?
-#unique(expclimp$site)
+#unique(expclimp$site)#
 alltemptable<-as.data.frame(rbind(mintemptable,temptable,smintemptable,stemptable))
 mods<-c("min above-ground temp.","","","","max above-ground temp.","","","","min soil temp.","","","","max soil temp.","","","")
 preds<-c("intercept","preciptreat","warmtreat","precip*warm","intercept","preciptreat","warmtreat","precip*warm","intercept","preciptreat","warmtreat","precip*warm","intercept","preciptreat","warmtreat","precip*warm")
