@@ -61,3 +61,19 @@ documents/expwarm/RevResponse_EL2.synctex.gz
 documents/expwarm/expwarm_effects_clim2.tex
 
 *.docx
+
+Data/Experiments/.DS_Store
+
+*.RData
+
+*.RData
+
+M5_bbdlod_brms.RData
+
+documents/expwarm/RevResponse_EL3.synctex.gz
+
+Data/Experiments/.DS_Store
+
+documents/.DS_Store
+
+M5_bbdlod_brms.RData
