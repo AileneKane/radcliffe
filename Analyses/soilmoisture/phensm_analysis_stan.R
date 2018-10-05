@@ -28,7 +28,7 @@ options(mc.cores = parallel::detectCores())
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliffe")}
 
-#Goal: Fit a multimodel to phenology (budburst) data with temperature, soil moisture, and 
+#Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
 #
 ###Now with the data
@@ -49,7 +49,7 @@ source("Analyses/source/standard_mergesandwrangling.R")
 
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
-source("Analyses/soilmoisture/climsum_byplot.R")
+source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")
 
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 
@@ -64,6 +64,9 @@ expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only
 #summary(sm_mod)
 sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (target_cent*preciptreat_amt_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
 summary(sm_mod_cent)
+
+
+
 
 #sm_tempmod_cent<-lmer(soilmois1~target_cent + (target_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
 #summary(sm_tempmod_cent)#model does not fit for noncentered data
@@ -142,21 +145,27 @@ expgdd_subs$year<-as.numeric(as.factor(expgdd_subs$year))
 
 expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#bud burst data
 expgdd_bbd <- expgdd_bbd[apply(expgdd_bbd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_bbd_cont<-expgdd_bbd[expgdd_bbd$target==0,]
+
 
 expgdd_lod<-expgdd_subs[which(expgdd_subs$event=="lod"),]#leaf out data
 expgdd_lod <- expgdd_lod[apply(expgdd_lod, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_lod_cont<-expgdd_lod[expgdd_lod$target==0,]
 
 #expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
 #expgdd_lud <- expgdd_lud[apply(expgdd_lud, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
 expgdd_ffd<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#leaf unfolding data
 expgdd_ffd <- expgdd_ffd[apply(expgdd_ffd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_ffd_cont<-expgdd_ffd[expgdd_ffd$target==0,]
 
 expgdd_ffrd<-expgdd_subs[which(expgdd_subs$event=="ffrd"),]#leaf unfolding data
 expgdd_ffrd <- expgdd_ffrd[apply(expgdd_ffrd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_ffrd_cont<-expgdd_ffrd[expgdd_ffrd$target==0,]
 
 expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]#leaf unfolding data
 expgdd_sen <- expgdd_sen[apply(expgdd_sen, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expgdd_sen_cont<-expgdd_sen[expgdd_sen$target==0,]
 
 #For lod and lud, use only species which have all lod and lud, to see what is driving differences between these two models
 #unique(expgdd_lud$genus.species)#many fewer species have lud- do not use this one!
@@ -171,6 +180,13 @@ expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
 expgdd_bbd$smjm_cent<-scale(expgdd_bbd$soilmois_janmar, center = TRUE, scale = TRUE)
 expgdd_bbd$ag_min_jm_cent<-scale(expgdd_bbd$ag_min_janmar, center = TRUE, scale = TRUE)
 expgdd_bbd$agtmax_cent<-scale(expgdd_bbd$agtmax, center = TRUE, scale = TRUE)
+#centering control only data
+# For centering data:
+expgdd_bbd_cont$sm_cent <- scale(expgdd_bbd_cont$sm, center=TRUE, scale=TRUE)
+expgdd_bbd_cont$smjm_cent<-scale(expgdd_bbd_cont$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd_cont$ag_min_jm_cent<-scale(expgdd_bbd_cont$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd_cont$agtmax_cent<-scale(expgdd_bbd_cont$agtmax, center = TRUE, scale = TRUE)
+
 
 expgdd_lod$sm_cent <- scale(expgdd_lod$sm, center=TRUE, scale=TRUE)
 expgdd_lod$smjm_cent<-scale(expgdd_lod$soilmois_janmar, center = TRUE, scale = TRUE)
@@ -218,6 +234,16 @@ datalist.bbd.cent <- with(expgdd_bbd,
                                n_sp = length(unique(expgdd_bbd$genus.species))
                           )
 )
+datalist.bbdcont <- with(expgdd_bbd_cont, 
+                     list(y = doy, 
+                          temp = ag_min_janmar, #above-ground minimum air temp
+                          mois = soilmois_janmar, #soil moisture
+                          sp = genus.species,
+                          site = site,
+                          N = nrow(expgdd_bbd),
+                          n_sp = length(unique(expgdd_bbd$genus.species))
+                     )
+)
 
 ##################
 # Fit m4 to data #
@@ -227,6 +253,11 @@ summary(testm4.lmer)#model fits! a=112.694; temp= -4.048; mois=-78.903; temp:moi
 
 testm4cent.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site),data=datalist.bbd.cent)#converged when site variance =3
 summary(testm4cent.lmer)#model fits! temp= -15.01; mois=-3.32; temp:mois=-0.33
+
+#compare coefficients to model fit only to control plots
+testm4cont.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site),data=datalist.bbdcont)#converged when site variance =3
+
+cbind(round(fixef(testm4.lmer), digits=3),round(fixef(testm4cont.lmer), digits=3))#model fits! a=112.694; temp= -4.048; mois=-78.903; temp:mois=2.463, site var=34.08; sp
 
 #try the model with brms
 testm4.brms <- brm(y ~ temp * mois +#fixed effects
@@ -252,7 +283,23 @@ stanplot(testm4.brms, pars = "^b_")
 ##################
 # Fit m5 to data #
 ##################
-datalist.bbd <- with(expgdd_bbd, 
+#make sure that species match between control-only and full dataset
+contsp<-unique(expgdd_bbd_cont$genus.species)
+expgdd_bbdmatchcsp<-expgdd_bbd[expgdd_bbd$genus.species %in% contsp,]
+#only lose 9 rows of data (5 species)
+
+# Centering data:
+expgdd_bbd_cont$sm_cent <- scale(expgdd_bbd_cont$sm, center=TRUE, scale=TRUE)
+expgdd_bbd_cont$smjm_cent<-scale(expgdd_bbd_cont$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd_cont$ag_min_jm_cent<-scale(expgdd_bbd_cont$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_bbd_cont$agtmax_cent<-scale(expgdd_bbd_cont$agtmax, center = TRUE, scale = TRUE)
+
+expgdd_bbdmatchcsp$sm_cent <- scale(expgdd_bbdmatchcsp$sm, center=TRUE, scale=TRUE)
+expgdd_bbdmatchcsp$smjm_cent<-scale(expgdd_bbdmatchcsp$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_bbdmatchcsp$ag_min_jm_cent<-scale(expgdd_bbdmatchcsp$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_bbdmatchcsp$agtmax_cent<-scale(expgdd_bbdmatchcsp$agtmax, center = TRUE, scale = TRUE)
+
+datalist.bbd <- with(expgdd_bbdmatchcsp, 
                      list(y = doy, 
                           temp = ag_min_janmar, #above-ground minimum air temp
                           mois = soilmois_janmar, #soil moisture
@@ -264,7 +311,7 @@ datalist.bbd <- with(expgdd_bbd,
                      )
 )
 
-datalist.bbd.cent <- with(expgdd_bbd, 
+datalist.bbd.cent <- with(expgdd_bbdmatchcsp, 
                           list(y = doy, 
                                temp = ag_min_jm_cent[,1], #above-ground minimum air temp
                                mois = smjm_cent[,1], #soil moisture
@@ -274,6 +321,29 @@ datalist.bbd.cent <- with(expgdd_bbd,
                                N = nrow(expgdd_bbd),
                                n_sp = length(unique(expgdd_bbd$genus.species))
                           )
+)
+datalist.bbdcont <- with(expgdd_bbd_cont, 
+                     list(y = doy, 
+                          temp = ag_min_janmar, #above-ground minimum air temp
+                          mois = soilmois_janmar, #soil moisture
+                          sp = genus.species,
+                          site = site,
+                          year = year,
+                          N = nrow(expgdd_bbd_cont),
+                          n_sp = length(unique(expgdd_bbd_cont$genus.species))
+                     )
+)
+
+datalist.bbdcont.cent <- with(expgdd_bbd_cont, 
+                         list(y = doy, 
+                              temp = ag_min_jm_cent, #above-ground minimum air temp
+                              mois = smjm_cent, #soil moisture
+                              sp = genus.species,
+                              site = site,
+                              year = year,
+                              N = nrow(expgdd_bbd_cont),
+                              n_sp = length(unique(expgdd_bbd_cont$genus.species))
+                         )
 )
 
 testm5.lmer<-lmer(y~temp * mois +
@@ -287,7 +357,45 @@ testm5cent.lmer<-lmer(y~temp * mois +
                       data=datalist.bbd.cent)
 summary(testm5cent.lmer)
 #model fits! a=99.4208, temp= -10.1869; mois=--1.2633; temp:mois=-0.3990
+testm5cont.lmer<-lmer(y~temp * mois +
+                    (temp*mois|sp)+ (1|site/year),
+                  data=datalist.bbdcont)
+summary(testm5cont.lmer)
+testm5contcent.lmer<-lmer(y~temp * mois +
+                        (temp*mois|sp)+ (1|site/year),
+                      data=datalist.bbdcont.cent)
+summary(testm5contcent.lmer)
 
+#compare coefs from full dataset and control dataset
+comp.coefs.lmer<-cbind(round(fixef(testm5.lmer), digits=3),round(fixef(testm5cont.lmer), digits=3),round(fixef(testm5cent.lmer), digits=3),round(fixef(testm5contcent.lmer), digits=3))
+colnames(comp.coefs.lmer)<-c("m5","m5cont","m5.cent","m5cont.cent")
+write.csv(comp.coefs.lmer,"Analyses/soilmoisture/comp.coefs.lmer.csv", row.names = TRUE)
+Anova(testm5contcent.lmer)
+Anova(testm5cent.lmer)
+Anova(testm5cont.lmer)
+Anova(testm5.lmer)
+
+
+#compare coefs in with soil temp versus air temp
+colnames(expgdd)
+#mois not significant in controls; is marginally significant in full dataset
+#Make plot of range of soil moisture in controls and in all
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+hist(datalist.bbd$mois, main="All plots")
+mn.mois<-round(mean(datalist.bbd$mois), digits=4)
+md.mois<-round(median(datalist.bbd$mois), digits=4)
+
+var(datalist.bbd$mois)
+mtext(paste(c(mn.mois)))
+
+hist(datalist.bbdcont$mois, main = "Control plots")
+mn.mois.cont<-round(mean(datalist.bbdcont$mois), digits=4)
+md.mois.cont<-round(median(datalist.bbdcont$mois), digits=4)
+
+mtext(paste(mn.mois.cont))
+
+cor(datalist.bbd$temp,datalist.bbd$mois)
 #try the model with brms
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
@@ -300,6 +408,13 @@ stanplot(testm5.brms, pars = "^b_")
 
 stanplot(testm5.brms, surface = TRUE)
 #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. 
+
+#Fit model with control data only
+testm5cont.brms <- brm(y ~ temp * mois +#fixed effects
+                     (temp * mois|sp) + (1|site/year), #random effects
+                   data=datalist.bbdcont,
+                   chains = 2)# control = list(max_treedepth = 15,adapt_delta = 0.99)
+
 
 #try the model with brms
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects

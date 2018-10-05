@@ -246,16 +246,41 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
 \item Moisture has a negative effect on phenology for all phenophases,. Magnitude varies among phenophases (e.g., LOD is weaker than BBD), sites, and species.
 \item \underline{For supplement}: Figures of fruiting and senescence (fewer sites)
 \end{enumerate}
-\item {\textbf{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}}
+\item {\textbf{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}} OR {\textbf{Does soil moisture affect phenology similarly in experimental and non-experimental data?}}
+
+\item {Soil moisture effect size is bigger in full dataset than in controls only, for BB.} Mean and range of SM is similar (though max is a bit higher in full dataset; min is similar).
+
 \end{enumerate}
 \end{singlespace}
 
 \section* {Discussion}
-
+\begin{enumerate}
+\item Soil moisture affects phenology, budburst, and  leaf-out
+\end{enumerate}
 \section* {Conclusions}
 
-\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}x
 
+\clearpage
+\section* {Tables}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Fri Oct  5 12:03:53 2018
+\begin{table}[ht]
+\centering
+\caption{\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.} 
+\label{tab:warmtech}
+\begin{tabular}{|p{0.08\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|}
+  \hline
+X & m5 & m5cont & m5.cent & m5cont.cent \\ 
+  \hline
+int & 108.30 & 95.88 & 98.98 & 101.82 \\ 
+  temp & -3.79 & -4.82 & -10.43 & -8.83 \\ 
+  mois & -31.74 & 25.68 & -1.21 & 1.02 \\ 
+  temp:mois & 2.85 & 6.29 & 0.39 & 0.66 \\ 
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
 \clearpage
 \section* {Figures}
 \clearpage
@@ -271,6 +296,13 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5bbdlodffd.pdf}
  \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors).}} 
  \label{fig:bb}
+ \end{figure}
+
+\begin{figure}[h]
+\centering
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/soilmoishist_mn.pdf}
+ \caption{\textbf{Observed daily soil moisture in all plots verus control plots.}} 
+ \label{fig:sm}
  \end{figure}
 
 %begin{figure}[h]

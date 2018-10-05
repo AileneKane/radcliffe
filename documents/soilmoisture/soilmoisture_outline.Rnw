@@ -246,16 +246,41 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
 \item Moisture has a negative effect on phenology for all phenophases,. Magnitude varies among phenophases (e.g., LOD is weaker than BBD), sites, and species.
 \item \underline{For supplement}: Figures of fruiting and senescence (fewer sites)
 \end{enumerate}
-\item {\textbf{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}}
+\item {\textbf{Does warming affect soil moisture and phenology similarly in experimental and non-experimental data?}} OR {\textbf{Does soil moisture affect phenology similarly in experimental and non-experimental data?}}
+
+\item {Soil moisture effect size is bigger in full dataset than in controls only, for BB.} Mean and range of SM is similar (though max is a bit higher in full dataset; min is similar).
+
 \end{enumerate}
 \end{singlespace}
 
 \section* {Discussion}
-
+\begin{enumerate}
+\item Soil moisture affects phenology, budburst, and  leaf-out
+\end{enumerate}
 \section* {Conclusions}
 
-\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}
+\bibliography{/Users/aileneettinger/citations/Bibtex/mylibrary}x
 
+\clearpage
+\section* {Tables}
+<<label=xtable1a, echo=FALSE, results=tex>>=
+library(xtable)
+compcoefs<-read.csv("../../Analyses/soilmoisture/comp.coefs.lmer.csv")
+
+wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
+               
+               "|p{0.09\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.10\\textwidth}|"
+               
+               ))
+print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
+@
+
+\clearpage
 \clearpage
 \section* {Figures}
 \clearpage
@@ -271,6 +296,13 @@ y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]
  \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5bbdlodffd.pdf}
  \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors).}} 
  \label{fig:bb}
+ \end{figure}
+
+\begin{figure}[h]
+\centering
+ \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/soilmoishist_mn.pdf}
+ \caption{\textbf{Observed daily soil moisture in all plots verus control plots.}} 
+ \label{fig:sm}
  \end{figure}
 
 %begin{figure}[h]
