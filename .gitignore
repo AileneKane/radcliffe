@@ -79,3 +79,5 @@ documents/.DS_Store
 M5_bbdlod_brms.RData
 
 M5_bbdlod_brms.RData
+
+*.RData
