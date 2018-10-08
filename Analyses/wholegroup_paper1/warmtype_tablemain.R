@@ -179,7 +179,7 @@ alltypes2[5,3]<-5#target
 alltypes2$ord<-c(5,3,1,2,4)
 alltypes2<-alltypes2[order(alltypes2$ord),]
 #Add in experiments?
-alltypes2<-cbind(alltypes2[,1:2],c("5,6,11-14","1,2,9","7,10,15","8","3,4"), alltypes2[,3:9])
+alltypes2<-cbind(alltypes2[,1:2],c("exp05,06,11-14","exp01,02,09","exp07,10,15","exp08","exp03,04"), alltypes2[,3:9])
 #add in some blank rows to accomodate the indirect effects column
 alltypes3<-rbind(alltypes2[1:2,],
                  c(rep("",times=dim(alltypes2)[2])),
@@ -202,7 +202,7 @@ alltypes3$effects<-c("+shading (Kimball et. all 2005)","+freeze-thaw cycles (McD
 
 alltypes3<-alltypes3[,-10]
 alltypes3[,1]<-c("infrared","infrared","","","forced air","","soil cables","","force air, soil cables")
-colnames(alltypes3)<-c("warming type","warming control","study numbers","target (min-max)","aboveground mean (se)","aboveground range","soil mean (se)","soil range","n","soil drying","other nontemperature effects")
+colnames(alltypes3)<-c("warming type","warming control","study","target (min-max)","aboveground mean (se)","aboveground range","soil mean (se)","soil range","n","soil drying","other nontemperature effects")
 
 #dim(alltypes)
 #write.csv(alltypes2,"../../Analyses/output/warmtype.table.csv")
