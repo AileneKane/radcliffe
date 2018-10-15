@@ -61,16 +61,16 @@ For our literature review, we searched Web of Science (ISI) for Topic=(warm* OR 
 \section* {Details of statistical analyses and results}
 For all analyses, we use mixed-effects models implemented with the lme4 package in R, version 3.2.4 \citep{bates2015,rcoreteam2017}. Mixed-effects models, also called multi-level or hierarchical models, can account for structured data that violate the independence assumption of traditional linear regression \citep{gelman2007}. In our analyses, we use levels/groupings of experimental site, year, and day of year (doy) to account for this mutual dependence among data points. We use three as a minimum threshold for sample size within each level/grouping, for fixed and random effects (i.e., there must be at least three observations within each level/group for it to be considered as a separate group in our analyses). To test for significance of fixed effects in our models, we use Type II tests for models including only main effects and Type III tests for models including interactions, as well as main effects. 
 \subsection* {Analysis of effects of warming on daily temperature range}
-To test how active warming alters daily temperature range (DTR, the difference between maximum and minimum temperatures in a day), we used data from eight studies in the MC3E database that include daily measurements of soil and/or above-ground (i.e., air, canopy, surface) temperature maxima and minima. These studies included infrared (n=4), forced air (n=2), and combined forced air and soil cable (n=2) warming types.  For consistency, we included only structural controls (we therefore excluded exp15, which used only ambient controls), and also excluded data from plots with precipitation treatments. We fit linear mixed-effect models with above-ground DTR, soil DTR, minimum and maximum daily above-ground temperature, and minimum and maximum daily soil temperature as response variables. We included target temperature treatment (or measured temperature, for those studies that did not have explicit target temperatures) as a predictor (i.e., a fixed effect). Random effects were site and study year nested within site (with random slopes and intercepts, Tables \ref{table:dtrtemp} \& \ref{table:sdtrtemp}). 
+To test how active warming alters daily temperature range (DTR, the difference between maximum and minimum temperatures in a day), we used data from eight (for above-ground) and ten (for soil) studies in the MC3E database that include daily measurements of above-ground (i.e., air, canopy, surface) and soil temperature maxima and minima. These data were from studies that used infrared warming with feedback control (n=2), infrared with constant control (n=4), forced air (n=2), and combined forced air and soil cable (n=2) warming types.  For consistency, we included only structural controls (we therefore excluded exp15, which used only ambient controls), and also excluded data from plots with precipitation treatments. We fit linear mixed-effect models with above-ground DTR, soil DTR, minimum and maximum daily above-ground temperature, and minimum and maximum daily soil temperature as response variables. We included target temperature treatment (or measured temperature, for those studies that did not have explicit target temperatures) as a predictor (i.e., a fixed effect). Random effects were site and study year nested within site (with random slopes and intercepts, Tables \ref{table:dtrtemp} \& \ref{table:sdtrtemp}). 
 
 \subsection* {Analysis of effects of time and space on experimental microclimate}
 To test how treatment effects vary spatially (i.e., among blocks within a study) and temporally (i.e., among years within a study), we used data from the four studies in the MC3E database that used blocked designs. These studies included infrared (n=5), and soil cable (n=1) warming types.  We fit linear mixed-effect models with mean daily soil temperature, minimum daily air temperature, and maximum daily air temperature as response variables (Figure 3 in the main text). For temporal models, we included fixed effects of temperature treatment, year, and their interaction; random effects were site and block nested within site (intercept-only structure, Table \ref{table:blocks_time}). For spatial models, we included fixed effects of temperature treatment, block, and their interaction; random effects were site and year nested within site (intercept-only structure, Table \ref{table:blocks_space}). Both of these models excluded data from plots with precipitation treatments. 
 \subsection* {Analysis of effects of infrastructure on experimental microclimate}
-To test how infrastructure affects microclimate, we compared temperature and soil moisture data from the studies in the MC3E database that monitored climate in two types of control plots: structural controls (i.e., `shams' or `disturbance controls,'which contained all the warming infrastructure, such as soil cables or forced air chambers with no heat applied) and ambient controls with no infrastructure added. These five studies consisted of soil cables (n=1), forced air (n=2), and combined soil and forced air (n=2) warming types (all with feedback control) and occurred at two sites: Duke Forest and Harvard Forest \citep{farnsworth1995,clark2014a,marchin2015,pelini2011}. One additional study, exp15, which utilized forced air, monitored environmental conditions in both ambient and structural controls, but we were only able to obtain data for the ambient controls so it is excluded from this analysis. Note that all studies that employ forced air warming utilize chambers, whereas the other warming types did not utilize chambers.
+To test how infrastructure affects microclimate, we compared temperature and soil moisture data from the studies in the MC3E database that monitored climate in two types of control plots: structural controls (i.e., `shams' or `disturbance controls,'which contained all the warming infrastructure, such as soil cables or forced air chambers with no heat applied) and ambient controls with no infrastructure added. These five studies consisted of soil cables (n=1, exp08), forced air (n=2; exp07, exp10), and combined soil and forced air (n=2; exp03, exp04) warming types (all with feedback control) and occurred at two sites: Duke Forest and Harvard Forest \citep{farnsworth1995,clark2014a,marchin2015,pelini2011}. One additional study, exp15, which utilized forced air, monitored environmental conditions in both ambient and structural controls, but we were only able to obtain data for the ambient controls so it is excluded from this analysis. Note that all studies that employ forced air warming utilize chambers, whereas the other warming types did not utilize chambers.
 \par We fit linear mixed-effects models by month for the following response variables: mean daily soil temperature, minimum and maximum daily air and soil temperature (\citet{farnsworth1995} only measured mean soil, so there are only four different studies in models for minimum and maximum air and soil), and soil moisture. The predictor was control type (sham or ambient). To allow for both mean differences in temperature and the effect of control to to vary among sites and years, random effects were site and year nested within site, modeled as random slopes and random intercepts. 
-We found that experimental structures altered above-ground and soil temperatures in opposing ways: above-ground temperatures were higher in the structural controls, compared with ambient conditions with no structures installed, whereas soil temperatures were lower in the structural controls compared with ambient soil (Figure 3 in the main text).  In addition, soil moisture was lower in structural controls compared with ambient conditions. These general patterns were consistent across the different temperature models we fit (mean, minimum, and maximum soil and air temperatures), although the magnitude varied across months, as well as among studies. We show summaries from models fit to the entire year (Tables \ref{table:shamamb_soiltemp}, \ref{table:shamamb_airtemp}, \ref{table:shamamb_soilmois}), as well as summaries from models fit to each month of data, as is shown in Figure 3 in the main text (Tables \ref{table:shamamb_stempm}, \ref{table:shamamb_atempm}, \ref{table:shamamb_soilmoism}).
+We found that experimental structures altered above-ground and soil temperatures in opposing ways: above-ground temperatures were higher in the structural controls, compared with ambient conditions with no structures installed, whereas soil temperatures were lower in the structural controls compared with ambient soil (Figure 3 in the main text).  In addition, soil moisture was lower in structural controls compared with ambient conditions. These general patterns were consistent across the different temperature models we fit (mean, minimum, and maximum soil and air temperatures), although the magnitude varied across months, as well as among studies. We show summaries from models fit to the entire year (Tables \ref{table:shamamb_soiltemp}, \ref{table:shamamb_airtemp}, \ref{table:shamamb_soilmois}), as well as summaries from models fit to each month of data, is shown in Figure 3 in the main text (Tables \ref{table:shamamb_stempm}, \ref{table:shamamb_atempm}, \ref{table:shamamb_soilmoism}).
 
-\par For experiments using infrared heating, we were unable to directly compare ambient and structural controls because no studies in our database included and shared data from both control types. Instead, we compared differences between each control type (ambient versus structural) and the measured amount of warming per degree of target warming in experimental plots. We predicted that, if heating infrastructure affects microclimate, the measured amount of warming per degree of target warming should differ by control type. Of the seven infrared sites in our database that measured soil temperature, three used ambient controls (exp06, exp11, exp14) and four used structural controls (exp01, exp09, exp12, exp13).  Among these studies, warming per \degree C of target warming was 1.01\degree C for structural controls (SE= 0.09, Table  \ref{table:infrared}), but significantly lower for ambient controls (0.41\degree C of warming per \degree C of target warming, SE=0.09, Table \ref{table:infrared}). This trend, based on a limited number of studies and sites, suggests that infrared heating equipment may alter microclimate, likely by shading the soil surface \citep{mcdaniel2014}.  
+\par For experiments using infrared heating, we were unable to directly compare ambient and structural controls because no studies in our database included and shared data from both control types. Instead, we compared differences between each control type (ambient versus structural) and the measured amount of warming per degree of target warming in experimental plots. We predicted that, if heating infrastructure affects microclimate, the measured amount of warming per degree of target warming should differ by control type. Of the seven infrared sites in our database that measured soil temperature, three used ambient controls (exp06, exp11, exp14) and four used structural controls (exp01, exp09, exp12, exp13). (Two studies used feedback control [exp01, exp09]; five studies used constant warming control [exp06, exp11, exp12, exp13, exp14].) Among these studies, warming per \degree C of target warming was 1.01\degree C for structural controls (SE= 0.09, Table  \ref{table:infrared}), but significantly lower for ambient controls (0.41\degree C of warming per \degree C of target warming, SE=0.09, Table \ref{table:infrared}). This trend, based on a limited number of studies and sites, suggests that infrared heating equipment may alter microclimate, likely by shading the soil surface \citep{mcdaniel2014}.  
 
 \subsection* {Analysis of effects of precipitation treatments on above-ground temperature}
 Of the 15 experiments in the MC3E database, five manipulated precipitation and measured above-ground temperature and three of these also measured soil temperature (all used infrared warming, with one constant wattage and two feedback control). To examine the effects of precipitation treatment on temperature, we fit linear mixed-effects models to data from these sites with temperature (above-ground daily minimum and maximum, and soil minimum and maximum) as the response variables. Predictors were precipitation treatment (a continuous fixed effect, which ranged from 50 to 200\% of ambient for these four studies), target warming (a continuous fixed effect, which ranged from 0 to 4 \degree C for these three studies), and their interaction. To account for methodological and other differences among sites, we included site as a random effect, with year and doy nested within site to account for the non-independent nature of measurements taken on the same day within sites. We used a random intercept model structure (Table \ref{table:preciptemp}). 
@@ -90,7 +90,7 @@ We wanted to investigate how using measured plot-level climate variables, as opp
 \begin{landscape}
 \begin{footnotesize} 
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:01:39 2018
+% Fri Oct 12 23:08:43 2018
 \begin{table}[ht]
 \centering
 \caption{\textbf{Experimental sites included in the MC3E database}. Experimental sites correspond to the map (Figure 1, main text). We give the study ID, location, source, years of data included, warming type, the type of control used to maintain warming, plot area (in square meters), watts of heating output, target warming treatment (\degree C; reported warming was used for exp06, exp11, exp12, and for the two lower warming treatments for exp01, which did not have explicit targets for warming treatments), precipitation treatment (proportion of ambient), method of above-ground temperature measurement (with height of measurement, in cm, for air), depth of soil temperature measurement (cm), depth of soil moisture measurement (cm) used in each study, the type(s) of control plots installed (structural controls contain all the warming infrastructure, such as soil cables, but with no heat applied; ambient controls have no infrastructure added), and statistical analysis used in the source listed (i.e., ANOVA with categorical explatory variables for different warming levels versus continuous microclimate explanatory variables). All studies that employ forced air warming utilize chambers, whereas the other warming types did not utilize chambers. Note that some sites may have multiple sources; however, we list only one here. *data collected but not available in the MC3E database.} 
@@ -138,10 +138,10 @@ exp15 & Oak Ridge, TN, USA & Gunderson et al 2015 & 2003-2005 & forced air & fee
 \begin{footnotesize} 
 
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:01:56 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of warming treatments, by warming type,} for studies included in the MC3E database. An additional common type of experimental warming, passive open-top chambers (OTC), is included for comparison. Summaries of the target warming treatments (\degree C) and measured warming for air temperature, soil surface temperature, and soil temperature are given. Measured warming shown here is for warming treatments only (precipitation treatments are excluded), and is the difference between mean annual temperature (MAT) of control plots and MAT of each treatment level within a study. Mean difference (with standard error) and the range of differences (minimum to maximum differences in MAT) is shown. n is the number of studies of each warming type in the MC3E database. *Passive OTC data are from \cite{bokhorst2013}.} 
+\caption{\textbf{Summary of warming treatments, by warming type,} for studies included in the MC3E database. An additional common type of experimental warming, passive open-top chambers (OTC), is included for comparison. Summaries of the target warming treatments (\degree C) and measured warming for air temperature, soil surface temperature, and soil temperature are given. Measured warming shown here is for warming treatments only (precipitation treatments are excluded), and is the difference between mean annual temperature (MAT) of control plots and MAT of each treatment level within a study. Mean difference (with standard error) and the range of differences (minimum to maximum differences in MAT) are shown. n is the number of studies of each warming type in the MC3E database. *Passive OTC data are from \cite{bokhorst2013}.} 
 \label{tab:warmtreats}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.20\textwidth}p{0.10\textwidth}p{0.10\textwidth}p{0.10\textwidth}p{0.10\textwidth}p{0.10\textwidth}|}
@@ -163,10 +163,10 @@ target (min-max) & 3.5 (1.5-5.5) & 4 (3-5) & 2.2 (1-4) & 5 &   \\
 \clearpage
 
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:01:56 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of linear mixed-effects models of how target warming treatment affects above-ground daily temperature range (DTR), mimumim, and maximum temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\chi^{2}$ tests of fixed effects for above-ground minimum temperature ($\chi^{2}$=46.58, df=1, p<0.001) and above-ground maximum temperature ($\chi^{2}$=5.74, df=1, p=0.02), but not for above-ground daily DTR ($\chi^{2}$=1.38, df=1, p=0.24).  Random effects were site (n=8), with a random slope and intercept structure (listed for each model), and year nested within site (n=32 year-site combinations, not shown). Total number of observations=169,797, and units are \degree C for all three models.} 
+\caption{\textbf{Summary of linear mixed-effects models of how target warming treatment affects above-ground daily temperature range (DTR), mimumim, and maximum temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses, which included data from sites using infrared with feedback control, infrared with constant control, forced air, and combined forced air and soil warming. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\chi^{2}$ tests of fixed effects for above-ground minimum temperature ($\chi^{2}$=46.58, df=1, p<0.001) and above-ground maximum temperature ($\chi^{2}$=5.74, df=1, p=0.02), but not for above-ground daily DTR ($\chi^{2}$=1.38, df=1, p=0.24).  Random effects were site (n=8), with a random slope and intercept structure (listed for each model), and year nested within site (n=32 year-site combinations, not shown). Total number of observations=169,797, and units are \degree C for all three models.} 
 \label{table:dtrtemp}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.19\textwidth}|p{0.07\textwidth}p{0.07\textwidth}|p{0.07\textwidth}p{0.07\textwidth}|p{0.07\textwidth}p{0.07\textwidth}|}
@@ -194,10 +194,10 @@ exp01 & 13.65 & 0.06 & 6.48 & 0.8 & 19.94 & 0.85 \\
 
 
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:01:56 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of linear mixed-effects models of how target warming treatment affects soil daily temperature range (DTR), mimumim, and maximum temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\chi^{2}$ tests of fixed effects for soil minimum temperature ($\chi^{2}$=51.59, df=1, p<0.001) and soil maximum temperature ($\chi^{2}$=66.33, df=1, p<0.001), but not for soil DTR ($\chi^{2}$=0.08, df=1, p=0.78).  Random effects were site (n=10), with a random slope and intercept structure (listed for each model), and year nested within site (n=41 year-site combinations). Total number of observations=168,767, and units are \degree C for all three models.} 
+\caption{\textbf{Summary of linear mixed-effects models of how target warming treatment affects soil daily temperature range (DTR), mimumim, and maximum temperatures in climate change experiments.} We excluded data from plots with precipitation treatments from these analyses, which included data from sites using infrared with feedback control, infrared with constant control, forced air, and combined forced air and soil warming. Estimates (est.) are the intercept and coefficient for target warming from the model; se is the standard error for these estimates. The effect of target warming on observed warming was significant based on Type II Wald $\chi^{2}$ tests of fixed effects for soil minimum temperature ($\chi^{2}$=51.59, df=1, p<0.001) and soil maximum temperature ($\chi^{2}$=66.33, df=1, p<0.001), but not for soil DTR ($\chi^{2}$=0.08, df=1, p=0.78).  Random effects were site (n=10), with a random slope and intercept structure (listed for each model), and year nested within site (n=41 year-site combinations). Total number of observations=168,767, and units are \degree C for all three models.} 
 \label{table:sdtrtemp}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.19\textwidth}|p{0.07\textwidth}p{0.07\textwidth}|p{0.07\textwidth}p{0.07\textwidth}|p{0.07\textwidth}p{0.07\textwidth}|}
@@ -226,10 +226,10 @@ exp01 & 6.45 & 0.24 & 10.29 & 0.79 & 16.29 & 0.96 \\
 \end{table}
 
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:01:56 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Analysis of variance table for temporal linear mixed-effects models} of effect of target warming (temp. treatment), year and their interaction on daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. A significant interaction indicates that warming treatment differs across years in a study. We list degrees of freedom (which are identical across response variables), test statistics, and p-values for Type III Wald $\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=4 for soil temperature model, n=3 for above-ground temperature models) and block nested within site (intercept-only structure; n=18 for soil, n=12 for above-ground); total number of observations=36,813 for soil and 28,875 for above-ground; units are \degree C.} 
+\caption{\textbf{Analysis of variance table for temporal linear mixed-effects models} of effect of target warming (temp. treatment), year and their interaction on daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 2 in the main text. A significant interaction indicates that warming treatment differs across years in a study. We list degrees of freedom (which are identical across response variables), test statistics, and p-values for Type III Wald $\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6 for soil temperature model, n=5 for above-ground temperature models) and block nested within site (intercept-only structure; n=52 for soil, n=55 for above-ground); total number of observations=81,031 for soil and 80,987 for above-ground; units are \degree C.} 
 \label{table:blocks_time}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.20\textwidth}|p{0.01\textwidth}|p{0.09\textwidth}p{0.06\textwidth}|p{0.09\textwidth}p{0.06\textwidth}|p{0.09\textwidth}p{0.06\textwidth}|}
@@ -245,10 +245,10 @@ intercept &   1 & 83.80 & <0.001 & 84.59 & <0.001 & 255.91 & <0.001 \\
 \end{tabular}
 \endgroup
 \end{table}% latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:01:56 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Analysis of variance table for spatial linear mixed-effects models} of effect of target warming (temp.treatment), block, and their interaction on daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 3 in the main text. A significant interaction indicates that warming treatment differs across blocks witin a study. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6) and year nested within site (intercept-only structure; n=6); total number of observations=17,177.} 
+\caption{\textbf{Analysis of variance table for spatial linear mixed-effects models} of effect of target warming (temp.treatment), block, and their interaction on daily mean soil temperature, minimum above-ground temperature, and maximum above-ground temperature, fit by maximum likelihood. See Figure 2 in the main text. A significant interaction indicates that warming treatment differs across blocks witin a study. We list degrees of freedom (which are identical for all models), test statistics, and p-values for Type III Wald $\chi^{2}$ tests of fixed effects in the models. For all models, random effects were site (n=6 for soil temperature model, n=5 for above-ground temperature models) and year nested within site (intercept-only structure; n=16 for soil, n=13 for above-ground); total number of observations=81,031 for soil, 80,987 for above-ground.} 
 \label{table:blocks_space}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.23\textwidth}|p{0.01\textwidth}|p{0.09\textwidth}p{0.06\textwidth}|p{0.09\textwidth}p{0.06\textwidth}|p{0.09\textwidth}p{0.06\textwidth}|}
@@ -256,37 +256,19 @@ intercept &   1 & 83.80 & <0.001 & 84.59 & <0.001 & 255.91 & <0.001 \\
   & &\multicolumn{2}{c |}{mean soil temp.} &\multicolumn{2}{c |}{min above-ground temp.} &\multicolumn{2}{c |}{max above-ground temp.}\\
  \hline predictor & df & $\chi^{2}$ & p & $\chi^{2}$ & p & $\chi^{2}$ & p\\
  \hline
-intercept &   1 & 81.77 & <0.001 & 16.88 & <0.001 & 128.81 & <0.001 \\ 
-  temp. treatment &   1 & 584.87 & <0.001 & 203.95 & <0.001 & 117.07 & <0.001 \\ 
-  year &  40 & 326.05 & <0.001 & 84.76 & <0.001 & 199.44 & <0.001 \\ 
-  temp. treatment*year &  40 & 207.06 & <0.001 & 190.82 & <0.001 & 304.65 & <0.001 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\end{table}\clearpage
-% latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
-\begin{table}[ht]
-\centering
-\caption{\textbf{Comparison of estimated warming (Tdiff) attained in infrared studies, per degree of target warming, with different types of controls}, structural versus ambient. (For three studies [exp06, exp11, exp12] there was no explicit target temperature so reported warming was used.) Tdiff was calculated by substracting mean annual temperature in control plots from mean annual temperature each treatment level among controls, and in seven infrared studies that measured above-ground warming (including canopy, surface, and air temperature). We divided Tdiff by the target warming for the treatment level, to standardize across studies. We then fit a mixed-effects model with Tdiff as the response, control type (structural or ambient) as the predictor, and random effects of site (n=7) and year nested within site (24 year-site combinations), with an intercept-only structure. We list the estimated Tdiff and its standard error (se) for each control type.  Tdiff differed significantly across the two control types, based on Type II Wald $\chi^{2}$ tests of the fixed effects ($\chi^{2}$=19.71 , df=1, p<0.001). Total number of observations was 37.} 
-\label{table:infrared}
-\begingroup\footnotesize
-\begin{tabular}{|p{0.18\textwidth}|p{0.18\textwidth}|p{0.08\textwidth}|}
-  \hline
- & Tdiff (per \degree C of target) & se \\ 
-  \hline
-structural controls & 1.01 & 0.09 \\ 
-   \hline
-ambient controls & 0.41 & 0.09 \\ 
+intercept &   1 & 368.31 & <0.001 & 82.58 & <0.001 & 623.80 & <0.001 \\ 
+  temp. treatment &   1 & 593.81 & <0.001 & 257.56 & <0.001 & 118.96 & <0.001 \\ 
+  block &  39 & 415.60 & <0.001 & 118.67 & <0.001 & 217.86 & <0.001 \\ 
+  temp. treatment*block &  39 & 116.78 & <0.001 & 163.35 & <0.001 & 254.68 & <0.001 \\ 
    \hline
 \end{tabular}
 \endgroup
 \end{table}
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments across the year}. Estimates (est.) are the intercept (representing ambient controls) and coefficient (representing structure effects) from the models; se is the standard error for these estimates. For these annual models, differences between control types were significant based on Type II Wald $\chi^{2}$ tests of fixed effects for mean soil temperature ($\chi^{2}$=5.53, df=1, p=0.02) and minimum soil temperature ($\chi^{2}$=3.87, df=1, p=0.05), but not for maximum soil temperature ($\chi^{2}$=2.08, df=1, p=0.15). For all models, random effects of site (n=5 for mean model, n=4 for min and max models) and year nested within site (n=21 for mean model, n=20 for min and max models) were fit with a random slope and intercept structure; total number of observations= 48,860 for the mean model and 44,530 for the min and max models; units are \degree C.} 
+\caption{\textbf{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature in climate change experiments across the year}. Warming types included soil warming (n=1, exp08), forced air (n=2; exp07, exp10), and combined soil and forced air (n=2; exp03, exp04), all with feedback control.  Estimates (est.) are the intercept (representing ambient controls) and coefficient (representing structure effects) from the models; se is the standard error for these estimates. For these annual models, differences between control types were significant based on Type II Wald $\chi^{2}$ tests of fixed effects for mean soil temperature ($\chi^{2}$=5.53, df=1, p=0.02) and minimum soil temperature ($\chi^{2}$=3.87, df=1, p=0.05), but not for maximum soil temperature ($\chi^{2}$=2.08, df=1, p=0.15). For all models, random effects of site (n=5 for mean model, n=4 for min and max models) and year nested within site (n=21 for mean model, n=20 for min and max models) were fit with a random slope and intercept structure; total number of observations= 48,860 for the mean model and 44,530 for the min and max models; units are \degree C.} 
 \label{table:shamamb_soiltemp}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.15\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|}
@@ -300,10 +282,10 @@ intercept & 11.89 & 1.42 & 10.81 & 1.48 & 13.92 & 1.61 \\
 \end{tabular}
 \endgroup
 \end{table}% latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments, across the year.} Estimates (est.) are the intercept (representing ambient controls) and coefficient (representing structure effects) from the models; se is the standard error for these estimates. For these annual models, differences between control types were not significant based on Type II Wald $\chi^{2}$ tests of fixed effects for minimum air temperature ($\chi^{2}$=1.07, df=1, p=0.30), nor for maximum air temperature ($\chi^{2}$=0.01, df=1, p=0.91). For both models, random effects of site (n=4) and year nested within site (n=20) were fit with a random slope and intercept structure; total number of observations= 44,085; units are \degree C.} 
+\caption{\textbf{Summaries of linear mixed-effects models comparing effects of ambient versus structural controls on daily minimum and maximum air temperature in climate change experiments, across the year.} Warming types included forced air (n=2; exp07, exp10), and combined soil and forced air (n=2; exp03, exp04), all with feedback control. Estimates (est.) are the intercept (representing ambient controls) and coefficient (representing structure effects) from the models; se is the standard error for these estimates. For these annual models, differences between control types were not significant based on Type II Wald $\chi^{2}$ tests of fixed effects for minimum air temperature ($\chi^{2}$=1.07, df=1, p=0.30), nor for maximum air temperature ($\chi^{2}$=0.01, df=1, p=0.91). For both models, random effects of site (n=4) and year nested within site (n=20) were fit with a random slope and intercept structure; total number of observations= 44,085; units are \degree C.} 
 \label{table:shamamb_airtemp}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.13\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|}
@@ -320,7 +302,7 @@ intercept & 6.29 & 1.51 & 17.74 & 1.81 \\
   
 \clearpage
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
 \caption{\textbf{Summaries of linear mixed-effects models, fit to each month of data, comparing effects of ambient versus structural controls on daily mean, minimum, and maximum soil temperature, fit to each month separately}, consistent with Figure 3 in the main text. Estimates (est.) are the intercept (representing ambient controls) and coefficient for structural effects from the models; se is the standard error for these estimates. We list test statistics, and p-values for Type II Wald $\chi^{2}$ tests of fixed effects (df=1 for all tests). Random effects of site (n=5 for all mean soil temperature models; n=4 for all min and max soil temperature models) and year nested within site (n=19 or 20 year-site combinations for all mean soil temperature models; n=18 or 19 for all min and max soil temperature models) were fit with a random slope and intercept structure; total number of observations ranged from 3,814 to 4,186; units are \degree C.} 
@@ -373,10 +355,10 @@ intercept & 6.29 & 1.51 & 17.74 & 1.81 \\
 \clearpage
   %monthly air temperature models
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on daily minimum and maximum above-ground temperature, fit to each month separately}, consistent with Figure 3 in the main text. Estimates (est.) are the intercept (representing ambient controls) and coefficient for structural effects from the models; se is the standard error for these estimates. We list test statistics, and p-values for Type II Wald $\chi^{2}$ tests of fixed effects (df=1 for all tests). Random effects of site (n=4 for both models) and year nested within site (n=18 year-site combinations for both models) were fit with a random slope and intercept structure; total number of observations was 3,726; units are \degree C.} 
+\caption{\textbf{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on daily minimum and maximum above-ground temperature, fit to each month separately}, consistent with Figure 3 in the main text. Warming types included forced air (exp07, exp10) and combined soil and forced air (exp03, exp04), all with feedback control. Estimates (est.) are the intercept (representing ambient controls) and coefficient for structural effects from the models; se is the standard error for these estimates. We list test statistics, and p-values for Type II Wald $\chi^{2}$ tests of fixed effects (df=1 for all tests). Random effects of site (n=4 for both models) and year nested within site (n=18 year-site combinations for both models) were fit with a random slope and intercept structure; total number of observations was 3,726; units are \degree C.} 
 \label{table:shamamb_atempm}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.03\textwidth}|p{0.14\textwidth}|p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.06\textwidth}|p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.06\textwidth}|}
@@ -426,10 +408,10 @@ intercept & 6.29 & 1.51 & 17.74 & 1.81 \\
   \clearpage
 
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture (\% volumetric water content, VWC) in climate change experiments across the year.} Estimates (est.) are the intercept (representing ambient controls) and coefficient for structure effects from the models; se is the standard error for these estimates. For this annual model, the difference between control types was significant based on Type II Wald $\chi^{2}$ tests of fixed effects ($\chi^{2}$=89.95, df=1, p<0.001). Random effects of site (n=5) and year nested within site (n=21 year-site combinations) were fit with a random slope and intercept structure; total number of observations= 44,468.} 
+\caption{\textbf{Summary of a linear mixed-effects model comparing effects of ambient versus structural controls on daily soil moisture (\% volumetric water content, VWC) in climate change experiments across the year.} Warming types included soil cables (exp08), forced air (exp07, exp10), and combined soil and forced air (exp03, exp04), all with feedback control. Estimates (est.) are the intercept (representing ambient controls) and coefficient for structure effects from the models; se is the standard error for these estimates. For this annual model, the difference between control types was significant based on Type II Wald $\chi^{2}$ tests of fixed effects ($\chi^{2}$=89.95, df=1, p<0.001). Random effects of site (n=5) and year nested within site (n=21 year-site combinations) were fit with a random slope and intercept structure; total number of observations= 44,468.} 
 \label{table:shamamb_soilmois}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.18\textwidth}|p{0.10\textwidth}|p{0.05\textwidth}|}
@@ -445,10 +427,10 @@ intercept & 21.20 & 1.86 \\
 \end{table}
 %monthly soil moisture models
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:02:12 2018
+% Fri Oct 12 23:09:00 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on soil moisture (\% VWC), fit to each month separately}, consistent with Figure 3 in the main text. Estimates (est.) are the intercept (representing ambient controls) and coefficient for structural effects from the models; se is the standard error for these estimates. We list test statistics, and p-values for Type II Wald $\chi^{2}$ tests of fixed effects; df=1 for all models. Random effects of site (n=4) and year nested within site (n=18 year-site combinations) were fit with a random slope and intercept structure; total number of observations was 3,829.} 
+\caption{\textbf{Summaries of linear mixed-effects models, fit to each month comparing effects of ambient versus structural controls on soil moisture (\% VWC), fit to each month separately}, consistent with Figure 3 in the main text. Warming types included forced air (exp07, exp10) and combined soil and forced air (exp03, exp04), all with feedback control. Estimates (est.) are the intercept (representing ambient controls) and coefficient for structural effects from the models; se is the standard error for these estimates. We list test statistics, and p-values for Type II Wald $\chi^{2}$ tests of fixed effects; df=1 for all models. Random effects of site (n=4) and year nested within site (n=18 year-site combinations) were fit with a random slope and intercept structure; total number of observations was 3,829.} 
 \label{table:shamamb_soilmoism}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.03\textwidth}|p{0.14\textwidth}p{0.05\textwidth}p{0.04\textwidth}p{0.06\textwidth}p{0.06\textwidth}|}
@@ -496,13 +478,31 @@ mon & predictor & est. & se & $\chi^2$ & p \\
 \end{table}    
 \clearpage
 %a preliminary analysis to look at effects of infrared equipment on temperature (since no studies have both ambient and structural controls)
-
-%how do precip treatments affect above-ground temperature
+\clearpage
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:03:05 2018
+% Fri Oct 12 23:09:14 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of a linear mixed-effects models of how precipitation treatment affects temperature in climate change experiments.} We include data from all studies that manipulated precipitation and measured daily above-ground temperature and/or soil temperature (exp01,exp09,exp12). Estimates (est.) are the intercept and coefficients for precipitation (measured a percentage of ambient conditions) and warming treatments (target or reported warming), as well as their interaction, from the model; se is the standard error for these estimates; p-values represent significance tests for Type III Wald $\chi^{2}$ tests. Random effects were site (n=3), year of study (n=9), and day of year (doy) nested within year (n= 274), with a random intercept structure. Total number of observations was 76481 for soil.} 
+\caption{\textbf{Comparison of estimated warming (Tdiff) attained in infrared studies, per degree of target warming, with different types of controls}, structural versus ambient. (For three studies [exp06, exp11, exp12] there was no explicit target temperature so reported warming was used.) Two studies used feedback control (exp01, exp09); five studies used constant warming control (exp06, exp11, exp12, exp13, exp14). Tdiff was calculated by substracting mean annual temperature in control plots from mean annual temperature each treatment level among controls, and in seven infrared studies that measured above-ground warming (including canopy, surface, and air temperature). We divided Tdiff by the target warming for the treatment level, to standardize across studies. We then fit a mixed-effects model with Tdiff as the response, control type (structural or ambient) as the predictor, and random effects of site (n=7) and year nested within site (24 year-site combinations), with an intercept-only structure. We list the estimated Tdiff and its standard error (se) for each control type.  Tdiff differed significantly across the two control types, based on Type II Wald $\chi^{2}$ tests of the fixed effects ($\chi^{2}$=19.71 , df=1, p<0.001). Total number of observations was 37.} 
+\label{table:infrared}
+\begingroup\footnotesize
+\begin{tabular}{|p{0.18\textwidth}|p{0.18\textwidth}|p{0.08\textwidth}|}
+  \hline
+ & Tdiff (per \degree C of target) & se \\ 
+  \hline
+structural controls & 1.01 & 0.09 \\ 
+   \hline
+ambient controls & 0.41 & 0.09 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\end{table}
+%how do precip treatments affect above-ground temperature
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Fri Oct 12 23:09:56 2018
+\begin{table}[ht]
+\centering
+\caption{\textbf{Summary of a linear mixed-effects models of how precipitation treatment affects temperature in climate change experiments.} We include data from all studies that manipulated precipitation and measured daily above-ground temperature and/or soil temperature (exp01, exp09, exp12). All three studies used infrared heating; two used feedback control and one used constant warming. Estimates (est.) are the intercept and coefficients for precipitation (measured a percentage of ambient conditions) and warming treatments (target or reported warming), as well as their interaction, from the model; se is the standard error for these estimates; p-values represent significance tests for Type III Wald $\chi^{2}$ tests. Random effects were site (n=3), year of study (n=9), and day of year (doy) nested within year (n=2,747), with a random intercept structure. Total number of observations was 76,482 for all models.} 
 \label{table:preciptemp}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.20\textwidth}|p{0.10\textwidth}|p{0.04\textwidth}|p{0.03\textwidth}|p{0.05\textwidth}|p{0.01\textwidth}|p{0.05\textwidth}|}
@@ -533,10 +533,10 @@ max soil temp. & intercept & 18.27 & 0.97 & 356.27 & 1 & <0.001 \\
 \endgroup
 \end{table}  %how soil  moisture is affected by warming treatment
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:03:24 2018
+% Fri Oct 12 23:10:18 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of a linear mixed-effects model comparing soil moisture (\% VWC)} in climate change experiments with different types of active warming and in experimentally warmed plots to two different control types, structural and ambient controls. We excluded data from plots with precipitation treatments from this analysis. Estimates (est.) are the intercept (representing ambient controls in infrared plots) and coefficient (i.e. differences between the ambient for structural controls of different warming types) for structural controls and warmed plots (pooled across all target warming levels); se is the standard error for these estimates. There were significant differences among warming types based on Type II Wald $\chi^{2}$ tests of the fixed effect ($\chi^{2}$=7229.01, df=2, p<0.001). Random effects were site (n=10), year nested within site (n=35 site-year combinations), and doy nested within year (7,979 doy-year-site combinations) with a random intercept structure. Total number of observations was 72,730.} 
+\caption{\textbf{Summary of a linear mixed-effects model comparing soil moisture (\% VWC)} in climate change experiments with different types of active warming and in experimentally warmed plots to two different control types, structural and ambient controls. We excluded data from plots with precipitation treatments from this analysis. Warming types included infrared with feedback control (exp01,exp09), infrared with constant warming (exp05,exp12,exp13,exp14),forced air (exp07, exp10) and combined soil and forced air (exp03, exp04), all with feedback control.  All infrared types were pooled, and forced air plots were pooled with combined forced air and warming.  Estimates (est.) are the intercept (representing ambient controls in infrared plots) and coefficient (i.e. differences between the ambient for structural controls of different warming types) for structural controls and warmed plots (pooled across all target warming levels); se is the standard error for these estimates. There were significant differences among control types (structural versus ambient), based on Type II Wald $\chi^{2}$ tests of the fixed effect ($\chi^{2}$=7962.77, df=2, p<0.001). There was also a significant interaction between control type and warming type (forced air versus infrared; $\chi^{2}$=718.45, df=2, p<0.001). Random effects were site (n=11), year nested within site (n=44 site-year combinations), and doy nested within year (8,894 doy-year-site combinations) with a random intercept structure. Total number of observations was 135,987.} 
 \label{table:warmsoilmois}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.30\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|}
@@ -553,10 +553,10 @@ intercept (infrared) & 19.35 & 1.98 \\
 \end{tabular}
 \endgroup
 \end{table}% latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:03:41 2018
+% Fri Oct 12 23:10:35 2018
 \begin{table}[ht]
 \centering
-\caption{\textbf{Summary of a linear mixed-effects model of how target warming treatment affects soil moisture (\% VWC) in climate change experiments with different types of active warming.} We excluded data from plots with precipitation treatments from this analysis. Estimates (est.) are the intercept (representing infrared sites) and coefficients from the model; se is the standard error for these estimates. Coefficients include: warming type (i.e., the difference in intercepts for for forced air compared with infrared; the intercept for forced air types=20.59 + (-2.50)=18.19 ), target warming (a continuous predictor), and the interaction between warming type and target warming treatment (i.e., the change in the effect of target warming for forced air compared with infrared; the effect of target warming for forced air types=-0.81 + 0.48=-0.33). The effects of warming type was significant ($\chi^{2}$=170.44, df=3, p<0.001), as was target warming ($\chi^{2}$=4271.77, df=1, p<0.001), and the interaction of warming type and target warming ($\chi^{2}$=552.89, df=2, p<0.001), based on Type II Wald $\chi^{2}$ tests of the fixed effects. Random effects were site (n=12), year of study nested within site (45 year-site combinations), and doy nested within year (n=8897 doy-year-site combinations), with a random intercept structure. Total number of observations was 136,041.} 
+\caption{\textbf{Summary of a linear mixed-effects model of how target warming treatment affects soil moisture (\% VWC) in climate change experiments with different types of active warming.} We excluded data from plots with precipitation treatments from this analysis. Estimates (est.) are the intercept (representing infrared sites) and coefficients from the model; se is the standard error for these estimates. Coefficients include: warming type (i.e., the difference in intercepts for for forced air compared with infrared; the intercept for forced air types=20.59 + (-2.50)=18.19 ), target warming (a continuous predictor), and the interaction between warming type and target warming treatment (i.e., the change in the effect of target warming for forced air compared with infrared; the effect of target warming for forced air types=-0.81 + 0.48=-0.33). The effects of warming type was not significant ($\chi^{2}$=0.30, df=1, p<0.001); target warming was significant, , based on Type II Wald $\chi^{2}$ tests of the fixed effects ($\chi^{2}$=4271.78, df=1, p<0.001), as was the interaction of warming type and target warming ($\chi^{2}$=591.70, df=1, p<0.001). Random effects were site (n=11), year of study nested within site (44 year-site combinations), and doy nested within year (n=8894 doy-year-site combinations), with a random intercept structure. Total number of observations was 135,987.} 
 \label{table:targsoilmois}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.20\textwidth}|p{0.05\textwidth}p{0.05\textwidth}|}
@@ -573,7 +573,7 @@ intercept (infrared) & 20.59 & 1.60 \\
 \end{table}\clearpage
 %budburst models
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:04:09 2018
+% Fri Oct 12 23:11:02 2018
 \begin{table}[ht]
 \centering
 \caption{\textbf{Comparison of linear mixed-effects models for budburst day of year} that contain either target warming treatment only as a fixed effect or measured mean annual above-ground temperature (\degree C), mean soil moisture from January through March (in \% VWC), and their interaction as fixed effects. Estimates (est.) are the intercept and coefficients from the models; se is the standard error for these estimates. Both models include random effects of site (n=5), year of study nested within site (n=13 year-site combinations), and plant species (n=54), each with a random intercept structure. Total number of observations was 12,549. Analysis includes all stuides that monitored budburst, and measured soil moisture and above-ground temperature (exp01, exp03, exp04, exp07, exp10)} 
@@ -596,7 +596,7 @@ tmean*soilmois & intercept & 151.02 & 4.67 \\
 \end{table}
   %budburst model comparison
 % latex table generated in R 3.4.2 by xtable 1.8-2 package
-% Fri Sep 28 11:04:09 2018
+% Fri Oct 12 23:11:02 2018
 \begin{table}[ht]
 \centering
 \caption{\textbf{Comparison of budburst model fits} from four models with different fixed effects: 1) target warming only, 2) measured mean annual above-ground temperature (tmean) only, 3) tmean and mean soil moisture from January through March (soilmois), and 4) tmean, soilmois, and their interaction. We additionally compared models with mean annual maximum, mean annual minimum, and seasonal temperature variables; we present only tmean here because this variable provided the best model fit (i.e. lowest AIC).} 
@@ -626,7 +626,7 @@ tmean*soilmois & 8 & 86982.26 & 0.00 \\
 \begin{figure}[h]
 \centering
 \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/figures/blockyearmean_target2.pdf}
-\caption{\textbf{Mean observed warming, for above-ground and soil temperatures,} excluding data from plots that manipulated precipitation. Above-ground temperature includes air, canopy, and surface temperature. Points represent the difference between treatment and control plots averaged across all plots within a treatment and study, over the duration of the study. The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Colors vary by heating type: black represents infrared; red represents soil warming cables; open symbols represent constant warming and filled symbols respresent feedback control. Compare to Figure 2 in the main text.}
+\caption{\textbf{Mean observed warming, for above-ground and soil temperatures,} excluding data from plots that manipulated precipitation. Above-ground temperature includes air, canopy, and surface temperature. Points represent the difference between treatment and control plots averaged across all plots within a treatment and study, over the duration of the study. The solid line is the fitted relationship between observed and target warming and the dashed line shows when observed warming is exactly equal to target warming (1:1). Colors vary by heating type: black represents infrared; red represents soil warming cables; open symbols represent constant warming and filled symbols represent feedback control. Compare to Figure 2 in the main text.}
  \label{fig:blockyear}
  \end{figure}
 \clearpage

@@ -49,7 +49,8 @@ source("Analyses/source/standard_mergesandwrangling.R")
 
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
-source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")
+#source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")#doesn't work for some reason....
+source("Analyses/soilmoisture/climsum_byplot.R")#doesn't work for some reason....
 
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 
@@ -396,6 +397,74 @@ md.mois.cont<-round(median(datalist.bbdcont$mois), digits=4)
 mtext(paste(mn.mois.cont))
 
 cor(datalist.bbd$temp,datalist.bbd$mois)
+
+#Now look ata temperature
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+hist(datalist.bbd$temp, main="All plots")
+mn.temp<-round(mean(datalist.bbd$temp), digits=4)
+md.temp<-round(median(datalist.bbd$temp), digits=4)
+
+var(datalist.bbd$temp)
+mtext(paste(c(mn.temp)))
+
+hist(datalist.bbdcont$temp, main = "Control plots")
+mn.temp.cont<-round(mean(datalist.bbdcont$temp), digits=4)
+md.temp.cont<-round(median(datalist.bbdcont$temp), digits=4)
+
+mtext(paste(mn.temp.cont))
+
+#look at bbdoy
+
+#Now look ata temperature
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+hist(datalist.bbd$y, main="All plots")
+mn.doy<-round(mean(datalist.bbd$y), digits=4)
+md.doy<-round(median(datalist.bbd$y), digits=4)
+
+var(datalist.bbd$y)
+mtext(paste(c(mn.doy)))
+
+hist(datalist.bbdcont$y, main = "Control plots")
+mn.doy.cont<-round(mean(datalist.bbdcont$y), digits=4)
+md.doy.cont<-round(median(datalist.bbdcont$y), digits=4)
+
+mtext(paste(mn.doy.cont))
+
+#Now plot doy~ temp for controls and all
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+plot(datalist.bbd$temp,datalist.bbd$y, main="All plots",xlab="temp",ylab="BB doy")
+abline(a=fixef(testm5.lmer)[1],b=fixef(testm5.lmer)[2], col="red")
+plot(datalist.bbdcont$temp,datalist.bbdcont$y, main="Control plots",xlab="temp",ylab="BB doy")
+abline(a=fixef(testm5cont.lmer)[1],b=fixef(testm5.lmer)[2], col="red")
+
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+plot(datalist.bbd$mois,datalist.bbd$y, main="All plots",xlab="vwc",ylab="BB doy")
+abline(a=fixef(testm5.lmer)[1],b=fixef(testm5.lmer)[3], col="red")
+plot(datalist.bbdcont$mois,datalist.bbdcont$y, main="Control plots",xlab="vwc",ylab="BB doy")
+abline(a=fixef(testm5cont.lmer)[1],b=fixef(testm5.lmer)[3], col="red")
+
+#Now plot doy~ temp for controls and all
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+plot(datalist.bbd$temp,datalist.bbd$y, main="All plots",xlab="temp",ylab="BB doy")
+abline(a=fixef(testm5.lmer)[1],b=fixef(testm5.lmer)[2], col="red")
+plot(datalist.bbdcont$temp,datalist.bbdcont$y, main="Control plots",xlab="temp",ylab="BB doy")
+abline(a=fixef(testm5cont.lmer)[1],b=fixef(testm5.lmer)[2], col="red")
+#look at correlation between mois and temp
+quartz(height=5,width=7)
+par(mfrow=c(1,2))
+plot(datalist.bbd$temp,datalist.bbd$mois, main="All plots, r=0.32",xlab="temp",ylab="vwc")
+abline(lm(datalist.bbd$mois~datalist.bbd$temp), col="red")
+cor(datalist.bbd$mois,datalist.bbd$temp)#0.32
+plot(datalist.bbdcont$temp,datalist.bbdcont$mois, main="Control plots, r=0.37",xlab="temp",ylab="vwc")
+abline(lm(datalist.bbdcont$mois~datalist.bbdcont$temp), col="red")
+cor(datalist.bbdcont$mois,datalist.bbdcont$temp)#0.37
+
+
 #try the model with brms
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects

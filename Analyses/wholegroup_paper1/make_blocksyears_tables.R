@@ -16,6 +16,8 @@ expclimt<-expclim2[which(expclim2$preciptreat==0|is.na(expclim2$preciptreat)),]#
 
 #try doing the below with target warming instead of temp treat....
 blockdat<-expclimt[which(!is.na(expclimt$block)),]#select only sites with blocked design
+blockdat<-expclimt[which(expclimt$block!="none"),]#select only sites with blocked design
+
 blockdat<-blockdat[order(blockdat$site,blockdat$block,blockdat$plot,blockdat$year,blockdat$doy),]
 blockdat2<-subset(blockdat,select=c(site,block,year,styear,doy,temptreat,target,soiltemp1_mean,agtemp_min,agtemp_max))
 blockdat2$block<-as.factor(blockdat2$block)
