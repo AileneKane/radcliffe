@@ -3,7 +3,7 @@
 ##Ailene
 library(ggplot2)
 ##Read in exp clim and phenology files
-setwd("~/GitHub/radcliffe")
+setwd("~/GitHub/radcliffe") # setwd("~/Documents/git/projects/meta_ep2/radcliffe")
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=T)
 expphen<-read.csv("Analyses/exppheno.csv", head=T)
 ##Merge phenology with climate data file 
@@ -21,6 +21,8 @@ boxplot(bbd.dat$cumgdd_soil~bbd.dat$preciptreat, main="soil gdd", xlab="Precip t
 boxplot(bbd.dat$cumgdd_air~bbd.dat$preciptreat, main="air gdd", xlab="Precip treatment")
 bbd.dat$site<-as.factor(bbd.dat$site)
 #
+# ggplot(data=subset(bbd.dat, site=="exp01"), aes(cumchill_air, cumgdd_air, colour=gen.sp)) + geom_point() # quick plot by Lizzie to look at chill vs. GDD
+# 
 library(lme4)
 gddprecip.mod<-lmer(cumgdd_air~preciptreat+(1|site), data=bbd.dat)
 summary(gddprecip.mod)
