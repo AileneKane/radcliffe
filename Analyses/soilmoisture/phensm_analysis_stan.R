@@ -18,7 +18,7 @@ library(bayesplot)
 library(rstanarm)
 library(dplyr)
 library(brms)
-
+library(RColorBrewer)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 
@@ -52,63 +52,98 @@ source("Analyses/source/standard_mergesandwrangling.R")
 #source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")#doesn't work for some reason....
 source("Analyses/soilmoisture/climsum_byplot.R")#doesn't work for some reason....
 
-#1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
+#1) How do warming and precip treatments affect temperature and soil moisture? (Make plots and fit models)
 
 expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
 expclim2$preciptreat_amt_cent<-scale(expclim2$preciptreat_amt, center = TRUE, scale = TRUE)
-expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1))
+expclim2a<-subset(expclim2,select=c(site,year,doy,target_cent,preciptreat_amt,target,preciptreat_amt_cent,soilmois1,agtemp_mean))
 expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+expclim2a$doy<-as.factor(expclim2a$doy)
+expclim2a$year<-as.factor(expclim2a$year)
+expclim2a$site<-as.factor(expclim2a$site)
+#select out only sites that manip both temp and precip
+expclim3<-expclim2a[expclim2a$site=="exp01"|expclim2a$site=="exp05"|expclim2a$site=="exp09"|expclim2a$site=="exp12",]
+expclim3$target_cent<-scale(expclim3$target, center = TRUE, scale = TRUE)
+expclim3$preciptreat_amt_cent<-scale(expclim3$preciptreat_amt, center = TRUE, scale = TRUE)
 
 #fit model in lmer
 ###Fit lmer model for soil moisture~warming*preciptreatment
 #sm_mod<-lmer(soilmois1~target*preciptreat_amt + (target*preciptreat_amt|site)+(1|year/doy), REML=FALSE, data=expclim2a)
 #summary(sm_mod)
-sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + (target_cent*preciptreat_amt_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
-summary(sm_mod_cent)
+sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + 
+                    (target_cent*preciptreat_amt_cent|site)+(1|year/doy),
+                  REML=FALSE, data=expclim2a)
+summary(sm_mod_cent)#convergence warning for both expclim3 and expclim 2a
 
+sm_mod_cent.b<-brm(soilmois1~target_cent*preciptreat_amt_cent + 
+              ((target_cent*preciptreat_amt_cent)|site)+(1|year/doy),
+              data=expclim2a)#
+summary(sm_mod_cent.b)
+#temp mode
+temp_mod_cent<-lmer(agtemp_mean ~ target_cent*preciptreat_amt_cent +#fixed effects
+                       (target_cent*preciptreat_amt_cent|site) + (1|year/doy), #random effects
+                     data=expclim2a)# control = list(max_treedepth = 15,adapt_delta = 0.99)
 
+#fit model with brms
+temp_mod_cent.b<-brm(agtemp_mean ~ target_cent*preciptreat_amt_cent +#fixed effects
+      (target_cent*preciptreat_amt_cent|site) + (1|year/doy), #random effects
+    data=expclim2a,
+    chains = 2)# control = list(max_treedepth = 15,adapt_delta = 0.99)
 
-
+summary(sm_mod_cent.b)
+#save coefficients from models to make a table
+#table<-cbind(fixef(temp_mod_cent.b),fixef(sm_mod_cent.b))
+table<-cbind(summary(temp_mod_cent)$coefficients[,1:2],summary(sm_mod_cent)$coefficients[,1:2])
+table<-round(table, digits=3)
 #sm_tempmod_cent<-lmer(soilmois1~target_cent + (target_cent|site)+(1|year/doy), REML=FALSE, data=expclim2a)
 #summary(sm_tempmod_cent)#model does not fit for noncentered data
 #AIC(sm_tempmod_cent,sm_mod_cent)
+colnames(table)<-c("Tmod.coef","Tmod.se","SMmod.coef","SMmod.se")
+rownames(table)<-c("int","temp.treat","precip.treat","temp.treat*precip.treat")
+write.csv(table,"Analyses/soilmoisture/tempmoislmer.csv", row.names = TRUE)
+
 
 #Figure with lines for each site showing different effects
-quartz(height=5, width=9)
-par(mfrow=c(1,2))
-plot(expclim2a$target_cent[1],expclim2$soilmois1[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Target warming (centered)", bty="l", ylim=c(0,0.4))
+quartz(height=7, width=7)
+par(mfrow=c(2,2))
+#first air temp
+plot(expclim2a$target_cent[1],expclim2a$agtemp_mean[1],type="p", pch=21,col="white", ylab="Above-ground temperature", xlab="Target warming (centered)", bty="l", xlim=c(-1.5,2.5),ylim=c(0,30))
 #site effects
+cols <- brewer.pal(12,"Set3")
+
+for(i in 1:dim(coef(temp_mod_cent)$site)[1]){
+  abline(a=coef(temp_mod_cent)$site[i,1],b=coef(temp_mod_cent)$site[i,2], lwd=1, col= cols[i])
+}
+#main effects
+abline(a=fixef(temp_mod_cent)[1],b=fixef(temp_mod_cent)[2], lwd=2)
+
+plot(expclim2a$preciptreat_amt_cent[1],expclim2a$agtemp_mean[1],type="p", pch=21,col="white", ylab="Above-ground temperature", xlab="Precipitation treatment (centered)", bty="l", xlim=c(-2.5,5),ylim=c(0,30))
+#site effects
+for(i in 1:dim(coef(temp_mod_cent)$site)[1]){
+  abline(a=coef(temp_mod_cent)$site[i,1],b=coef(temp_mod_cent)$site[i,3], lwd=1, col= cols[i])
+}
+abline(a=fixef(temp_mod_cent)[1],b=fixef(temp_mod_cent)[3], lwd=2)
+
+#soil moisture
+plot(expclim2a$target_cent[1],expclim2$soilmois1[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Target warming (centered)", bty="l", ylim=c(0,0.4),xlim=c(-1.5,2.5))
+
 for(i in 1:dim(coef(sm_mod_cent)$site)[1]){
-abline(a=coef(sm_mod_cent)$site[i,1],b=coef(sm_mod_cent)$site[i,2], lwd=1, col= "darkgray")
+abline(a=coef(sm_mod_cent)$site[i,1],b=coef(sm_mod_cent)$site[i,2], lwd=1, col= cols[i])
 }
 #main effects
 abline(a=fixef(sm_mod_cent)[1],b=fixef(sm_mod_cent)[2], lwd=2)
-#Add confidence intervals to line:
-#polygon(c(x,rev(x)),c(Con.Low,rev(Con.High)),col="thistle",border=NA)
-#OR:
-#CI <- predict(model1, newdata=df, interval="confidence")
-#CI <- as.data.frame(CI) # Coerce the matrix to a dataframe, so we can access the column using the $ operator.
 
-#plot(x=iris$Petal.Length, y=iris$Sepal.Length, pch=19, las=1, main="Iris sepal length vs. petal length", xlab="Petal length", ylab="Sepal length", col=color.vector)
-
-# Plot our best fit line. The x values are the Petal.Length column from the 'df' dataframe, and the y values are the 'fit' column from the CI dataframe. 
-# Note that I use the lines() function, which just adds features to an existing plot.
-# The lwd= argument changes the line width
-#lines(x=df$Petal.Length, y=CI$fit, lwd=2)
-
-# Plot the confidence intervals
-# The lty= argument changes the line type. There are 6 different line types, and you can just put a number 1 through 6 if you'd like. Default is "solid" (aka 1)
-#lines(x=df$Petal.Length, y=CI$lwr, lwd=2, lty="dashed", col="red")
-#lines(x=df$Petal.Length, y=CI$upr, lwd=2, lty="dashed", col="red")
-
-plot(expclim2a$preciptreat_amt_cent[1],expclim2$soilmois1[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Precipitation treatment (centered)", bty="l", ylim=c(0,0.4))
+plot(expclim2a$preciptreat_amt_cent[1],expclim2a$soilmois1[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Precipitation treatment (centered)", bty="l", xlim=c(-2.5,5),ylim=c(0,0.4))
 #site effects
 for(i in 1:dim(coef(sm_mod_cent)$site)[1]){
-  abline(a=coef(sm_mod_cent)$site[i,1],b=coef(sm_mod_cent)$site[i,3], lwd=1, col= "darkgray")
+  abline(a=coef(sm_mod_cent)$site[i,1],b=coef(sm_mod_cent)$site[i,3], lwd=1, col= cols[i])
 }
 #main effects
 abline(a=fixef(sm_mod_cent)[1],b=fixef(sm_mod_cent)[3], lwd=2)
-#Need to add interaction somehow...
+#Need to add interaction somehow..
+sites<-unique(expclim2a$site)
+op<-par(cex=.4)
+legend("bottomright",legend=paste(sites),lwd=1,col=cols[1:length(sites)], bty="n")
 
 expclim2$preciptreat_prop<-expclim2$preciptreat_amt/100
 #now compare several models:
@@ -195,6 +230,7 @@ expgdd_lod$ag_min_jm_cent<-scale(expgdd_lod$ag_min_janmar, center = TRUE, scale 
 expgdd_lod$agtmax_cent<-scale(expgdd_lod$agtmax, center = TRUE, scale = TRUE)
 expgdd_lod$ag_min_aprjun_cent<-scale(expgdd_lod$ag_min_aprjun, center = TRUE, scale = TRUE)
 expgdd_lod$soilmois_aprjun_cent<-scale(expgdd_lod$soilmois_aprjun, center = TRUE, scale = TRUE)
+
 
 #expgdd_lud$sm_cent <- scale(expgdd_lud$sm, center=TRUE, scale=TRUE)
 #expgdd_lud$smjm_cent<-scale(expgdd_lud$soilmois_janmar, center = TRUE, scale = TRUE)
@@ -376,7 +412,6 @@ Anova(testm5cent.lmer)
 Anova(testm5cont.lmer)
 Anova(testm5.lmer)
 
-
 #compare coefs in with soil temp versus air temp
 colnames(expgdd)
 #mois not significant in controls; is marginally significant in full dataset
@@ -530,7 +565,7 @@ fix<-sum$fixed
 speff <- coef(mod)
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 4, height = 7)
+quartz(width = 7, height = 7)
 par(mfrow=c(3,1), mar = c(4, 7, .5, 1))
 # One panel: budburst
 plot(seq(-35, #min(meanz[,'mean']*1.1),
@@ -818,9 +853,9 @@ fix<-sum$fixed
 speff <- coef(mod)
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 6, height = 7)
+quartz(width = 8, height = 7)
 par(mfrow=c(2,1), mar = c(4, 7, .5, 1))
-# One panel: budburst
+# One panel: fruiting
 plot(seq(-45, #min(meanz[,'mean']*1.1),
          360, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
@@ -864,7 +899,7 @@ speff <- coef(mod)
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #pdf(file.path("Analyses/soilmoisture/figures/m5.sen.pdf"), width = 8, height = 6)
 
-# One panel: budburst
+# One panel: senescence
 plot(seq(-45, #min(meanz[,'mean']*1.1),
          360, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 

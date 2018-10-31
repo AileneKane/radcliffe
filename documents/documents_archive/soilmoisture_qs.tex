@@ -1,0 +1,110 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[top=1.00in, bottom=1.0in, left=1in, right=1in]{geometry}
+\usepackage{amsmath}
+
+\begin{document} 
+
+\noindent {\bf Question 1:} How do climate manipulations affect soil moisture and temperature?\\
+
+\noindent For this we need two equations where we evaluate the effects of experimenal temperature ($eT$) and experimental preciptation ($eP$) treatments on soil moisture and temperature. We're hoping to nest year within site on the intercept and slopes:
+\begin{equation}
+y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{1 site[i]}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{site[year[doy]]}\sim N(\mu_{site[year]}, \sigma_{site[year]})
+\end{equation}
+
+\begin{equation}
+\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\end{equation}
+
+\begin{equation}
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
+\end{equation}
+
+\begin{equation}
+\beta_{1 site} \sim N(\mu_{\beta1}, \sigma_{\beta1})
+\end{equation}
+
+\begin{equation}
+\beta_{2 site} \sim N(\mu_{\beta2}, \sigma_{\beta2})
+\end{equation}
+
+\begin{equation}
+\beta_{3 site} \sim N(\mu_{\beta3}, \sigma_{\beta3})
+\end{equation}
+\vspace{2ex}\\
+
+\noindent Alternatively we could consider using `site-years' where we combine the site and year coding into one variable:
+
+\begin{equation}
+y_{i}=\alpha_{siteyear[doy[i]]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}P_i+\beta_{3 sp[i]}T_iP_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{siteyear} \sim N(\mu_{sy}, \sigma_{sy})
+\end{equation}
+... need to finish this!
+\vspace{2ex}\\
+
+\noindent {\bf Question 2:} Do these effects differ from non-experimental data?\\
+
+\noindent  So right now we have data from Duke Forest (but probably just soil moisture) and from Harvard Forest (soil moisture and O'Keefe phenology data).\\
+
+\noindent A few things to do here ...
+\begin{enumerate}
+\item Post on ECOLOG to ask for more long-term soil moisture data, ideally with phenology but we'll take what we can get
+\item Think on best model and how to model temperature as $y$ variable ... here's one idea where $y$ could be daily moisture data across multiple years and $T$ would be MAT and $P$ would be \% different than mean for that year:
+\end{enumerate}
+
+\begin{equation}
+y_{i}=\alpha_{doy[i]}+\beta_{1 site[i]}T_i+\beta_{2 site[i]}P_i+\beta_{3 site[i]}T_iP_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{doy} \sim N(\mu_{doy}, \sigma_{doy})
+\end{equation}
+\vspace{2ex}\\
+
+\noindent {\bf Question 3:} How do these effects interact to affect plant phenology (budburst, leafout, flowering)?\\
+
+\noindent First we need to use seasonal or annual temperature ($T$) and soil moisture ($S$) data to predict phenology (so here $y$ is DOY):
+
+\begin{equation}
+y_{i}=\alpha_{site[year[i]]}+ \alpha_{sp[i]}+\beta_{1 sp[i]}T_i+\beta_{2 sp[i]}S_i+\beta_{3 sp[i]}T_iS_i+\epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\alpha_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\end{equation}
+
+\begin{equation}
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
+\end{equation}
+
+\begin{equation}
+\alpha_{sp} \sim N(\mu_{sp}, \sigma_{sp})
+\end{equation}
+
+\begin{equation}
+\beta_{1 sp} \sim N(\mu_{\beta1}, \sigma_{\beta1})
+\end{equation}
+
+\begin{equation}
+\beta_{2 sp} \sim N(\mu_{\beta2}, \sigma_{\beta2})
+\end{equation}
+
+\begin{equation}
+\beta_{3 sp} \sim N(\mu_{\beta3}, \sigma_{\beta3})
+\end{equation}
+\vspace{2ex}\\
+
+\noindent We can then combine equations from Question 1 (which predict MAT and soil moisture on an annual scale, we hope) with equations from Questions 3 (at the annual scale) to answer: how much does 1 degree change in target temperature ($eT$) affect phenology, if this were the only effect of the experiment? Similarly, how much does 50\% change in precipitation ($eP$) affect phenology, if this were the only effect of the experiment? And how big a change does each make acknowledging that they both change moisture and temperature together? We can do this by plugging in different values of $eT$ (e.g., all 1 C, then try with all 2 C) and $eP$ to calculate different outcomes of moisture and temperature which we can evaluate in the equations in Question 3 to assess changes in phenology. \\
+
+\noindent For notation questions (I may have our notation wrong), see also: 12.5 in Gelman \& Hill, pages 262-265.
+
+\end{document}
+
+\begin{equation}
+\end{equation}

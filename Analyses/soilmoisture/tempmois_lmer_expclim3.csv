@@ -1,0 +1,5 @@
+"","Tmod.coef","Tmod.se","SMmod.coef","SMmod.se"
+"int",16.462,1.192,0.22,0.02
+"temp.treat",1.078,0.113,-0.012,0.001
+"precip.treat",-0.341,0.168,0.004,0.009
+"temp.treat*precip.treat",0.06,0.083,0.005,0.003
