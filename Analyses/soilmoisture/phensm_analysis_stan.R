@@ -15,7 +15,7 @@ library(rstan)
 library(ggplot2)
 library(shinystan)
 library(bayesplot)
-library(rstanarm)
+#library(rstanarm)
 library(dplyr)
 library(brms)
 library(RColorBrewer)
@@ -26,7 +26,7 @@ options(mc.cores = parallel::detectCores())
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
 #setwd("~/Documents/GitHub/radcliffe")#noaa
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
@@ -61,33 +61,55 @@ expclim2a<- expclim2a [apply(expclim2a , 1, function(x) all(!is.na(x))),] # only
 expclim2a$doy<-as.factor(expclim2a$doy)
 expclim2a$year<-as.factor(expclim2a$year)
 expclim2a$site<-as.factor(expclim2a$site)
+expclim2a$preciptreat_prop<-expclim2a$preciptreat_amt/100
+
 #select out only sites that manip both temp and precip
 expclim3<-expclim2a[expclim2a$site=="exp01"|expclim2a$site=="exp05"|expclim2a$site=="exp09"|expclim2a$site=="exp12",]
-expclim3$target_cent<-scale(expclim3$target, center = TRUE, scale = TRUE)
-expclim3$preciptreat_amt_cent<-scale(expclim3$preciptreat_amt, center = TRUE, scale = TRUE)
+#expclim3$target_cent<-scale(expclim3$target, center = TRUE, scale = TRUE)
+#expclim3$preciptreat_amt_cent<-scale(expclim3$preciptreat_amt, center = TRUE, scale = TRUE)
+expclim3<- expclim3 [apply(expclim3 , 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
 #fit model in lmer
 ###Fit lmer model for soil moisture~warming*preciptreatment
-#sm_mod<-lmer(soilmois1~target*preciptreat_amt + (target*preciptreat_amt|site)+(1|year/doy), REML=FALSE, data=expclim2a)
-#summary(sm_mod)
-sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + 
-                    (target_cent*preciptreat_amt_cent|site)+(1|year/doy),
-                  REML=FALSE, data=expclim2a)
-summary(sm_mod_cent)#convergence warning for both expclim3 and expclim 2a
+sm_mod<-lmer(soilmois1~target*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim3)
+summary(sm_mod)#doesn't converge for preciptreat_amt or precipttreat_prop with expclim2a but DOES for expclim3
 
-sm_mod_cent.b<-brm(soilmois1~target_cent*preciptreat_amt_cent + 
-              ((target_cent*preciptreat_amt_cent)|site)+(1|year/doy),
-              data=expclim2a)#
-summary(sm_mod_cent.b)
-#temp mode
+smtemp_mod<-lmer(soilmois1~target + (target|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+summary(smtemp_mod)
+
+smprecip_mod<-lmer(soilmois1~preciptreat_prop + (preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2a)
+summary(smprecip_mod)
+
+#sm_mod_cent<-lmer(soilmois1~target_cent*preciptreat_amt_cent + 
+#                    (target_cent*preciptreat_amt_cent|site)+(1|year/doy),
+ #                 REML=FALSE, data=expclim2a)
+#summary(sm_mod_cent)#convergence warning for both expclim3 and expclim 2a
+
+#sm_mod_cent.b<-brm(soilmois1~target_cent*preciptreat_amt_cent + 
+ #             ((target_cent*preciptreat_amt_cent)|site)+(1|year/doy),
+  #            data=expclim3)#
+sm_mod.b<-brm(soilmois1~target*preciptreat_prop + 
+                     (target*preciptreat_prop|site)+(1|year/doy),
+                   data=expclim3,
+              chains = 2)#
+
+smtemp_mod.b<-brm(soilmois1~target + 
+                     (target|site)+(1|year/doy),
+                   data=expclim2a)#
+smprecip_mod.b<-brm(soilmois1~preciptreat_prop + 
+                    (preciptreat_prop|site)+(1|year/doy),
+                  data=expclim2a)#
+
+#summary(sm_mod_cent.b)
+#temp mod
 temp_mod_cent<-lmer(agtemp_mean ~ target_cent*preciptreat_amt_cent +#fixed effects
                        (target_cent*preciptreat_amt_cent|site) + (1|year/doy), #random effects
                      data=expclim2a)# control = list(max_treedepth = 15,adapt_delta = 0.99)
 
 #fit model with brms
-temp_mod_cent.b<-brm(agtemp_mean ~ target_cent*preciptreat_amt_cent +#fixed effects
-      (target_cent*preciptreat_amt_cent|site) + (1|year/doy), #random effects
-    data=expclim2a,
+temp_mod.b<-brm(agtemp_mean ~ target*preciptreat_prop +#fixed effects
+      (target*preciptreat_prop|site) + (1|year/doy), #random effects
+    data=expclim3,
     chains = 2)# control = list(max_treedepth = 15,adapt_delta = 0.99)
 
 summary(sm_mod_cent.b)
@@ -199,7 +221,7 @@ expgdd_ffrd<-expgdd_subs[which(expgdd_subs$event=="ffrd"),]#leaf unfolding data
 expgdd_ffrd <- expgdd_ffrd[apply(expgdd_ffrd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 expgdd_ffrd_cont<-expgdd_ffrd[expgdd_ffrd$target==0,]
 
-expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]#leaf unfolding data
+expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]
 expgdd_sen <- expgdd_sen[apply(expgdd_sen, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 expgdd_sen_cont<-expgdd_sen[expgdd_sen$target==0,]
 
