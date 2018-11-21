@@ -1,6 +1,6 @@
 #Started Sept 2017
 #By Ailene
-#Three questions to address:
+#Two questions to address:
 #1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 #2) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
 
@@ -15,10 +15,12 @@ library(rstan)
 library(ggplot2)
 library(shinystan)
 library(bayesplot)
+
 #library(rstanarm)
 library(dplyr)
 library(brms)
 library(RColorBrewer)
+library(plotrix)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 
@@ -50,7 +52,7 @@ source("Analyses/source/standard_mergesandwrangling.R")
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 #source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")#doesn't work for some reason....
-source("Analyses/soilmoisture/climsum_byplot.R")#doesn't work for some reason....
+source("Analyses/soilmoisture/climsum_byplot.R")
 
 #1) How do warming and precip treatments affect temperature and soil moisture? (Make plots and fit models)
 
@@ -168,18 +170,121 @@ op<-par(cex=.4)
 legend("bottomright",legend=paste(sites),lwd=1,col=cols[1:length(sites)], bty="n")
 
 expclim2$preciptreat_prop<-expclim2$preciptreat_amt/100
-#now compare several models:
+#now fit a model of
 #target warming:
 sm_mod_targ<-lmer(soilmois1~target*preciptreat_prop + (target*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2)
 summary(sm_mod_targ)
+
 #measured warming:
 sm_mod_meas<-lmer(soilmois1~agtemp_mean*preciptreat_prop + (agtemp_mean*preciptreat_prop|site)+(1|year/doy), REML=FALSE, data=expclim2)
 summary(sm_mod_meas)
-#only measured warming
-sm_mod_temp<-lmer(soilmois1~agtemp_mean + (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim2)
-summary(sm_mod_temp)
-#only measured warming in control plots
-expclim_cont<-expclim2[expclim2$target==0,]
+###########################
+############################
+#Fit models of soilmois~measured warming with predictor of treatment type as well 
+#use measured warming and predictor for treatment (control, warmed only, warmedwith precip)
+###########################
+###########################
+#create a new varibale for treatment type (ttype)
+expclim2$ttype<-"cont"
+expclim2$ttype[as.numeric(expclim2$temptreat)>0]<-"warmprecip"
+expclim2$ttype[expclim2$preciptreat==-1 ]<-"warmprecip"
+expclim2$ttype[expclim2$preciptreat==1]<-"warmprecip"
+expclim2$ttype2<-"cont"
+expclim2$ttype2[as.numeric(expclim2$temptreat)>0]<-"warm"
+expclim2$ttype2[expclim2$preciptreat==-1 ]<-"precip"
+expclim2$ttype2[expclim2$preciptreat==1]<-"precip"
+
+#do we want to separate out precip only treatments?
+expclim2$ttype<-as.factor(expclim2$ttype)
+expclim2$ttype2<-as.factor(expclim2$ttype2)
+
+expclim2$agtemp_mean<-as.numeric(expclim2$agtemp_mean)
+expclim2$soilmois1<-as.numeric(expclim2$soilmois1)
+#divide into 2 different datasets
+expclim_cont<-expclim2[expclim2$ttype=="cont",]
+expclim_treat<-expclim2[expclim2$ttype=="warmprecip",]
+#remove exp02, which doesn't measure airtemp
+expclim_cont<-expclim_cont[!expclim_cont$site=="exp02",]
+expclim_treat<-expclim_treat[!expclim_treat$site=="exp02",]
+
+#expclim_precip<-expclim2[expclim2$ttype=="precip",]
+
+sm_mod_temptreat<-lmer(soilmois1~agtemp_mean*ttype + (agtemp_mean*ttype|site)+(1|year/doy), REML=FALSE, data=expclim2)
+summary(sm_mod_temptreat)#no convergence
+#Fit separate model for each treatment type for now?
+
+sm_mod_temptreat_cont<-lmer(soilmois1~agtemp_mean+ (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim_cont)
+summary(sm_mod_temptreat_cont)
+
+sm_mod_temptreat_treat<-lmer(soilmois1~agtemp_mean + (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim_treat)
+summary(sm_mod_temptreat_treat)
+
+#sm_mod_temp.brms<-brm(soilmois1~agtemp_mean 
+#                      + (agtemp_mean|site)+(1|year/doy), 
+ #                     data=expclim2)
+#summary(sm_mod_temp.brms)
+
+#Make a plot of soilmois~agtemp, with lines the length of measured climate
+#different lines for each site
+sites_cont<-rownames(ranef(sm_mod_temptreat_cont)$site)
+sites_treat<-rownames(ranef(sm_mod_temptreat_treat)$site)
+
+#the sites are the same
+#different sites get different colors
+cols <- brewer.pal(8,"Set3")
+
+quartz(height=7, width=7)
+plot(expclim_cont$target_cent[1],expclim_cont$agtemp_mean[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Above-ground temperature", bty="l", xlim=c(min(expclim2$agtemp_mean, na.rm=TRUE)-.5,max(expclim2$agtemp_mean, na.rm=TRUE)),ylim=c(-0,0.5))
+
+#add lines for models fit to control plots
+for(i in 1:length(sites_cont)){
+ site.mod<-coef(sm_mod_temptreat_cont)$site[i,]
+ xsitemax<-max(expclim_cont$agtemp_mean[expclim_cont==sites_cont[i]], na.rm=TRUE) 
+ xsitemin<-min(expclim_cont$agtemp_mean[expclim_cont==sites_cont[i]], na.rm=TRUE) 
+ ysitemax<-max(expclim_cont$soilmois1[expclim_cont==sites_cont[i]], na.rm=TRUE) 
+ ysitemin<-min(expclim_cont$soilmois1[expclim_cont==sites_cont[i]], na.rm=TRUE) 
+ ablineclip(a=as.numeric(site.mod[1]),b=as.numeric(site.mod[2]),x1=xsitemin,x2=xsitemax,y1=-0.5,y2=1.0,col=cols[i])
+ print(site.mod);
+ print(xsitemax); print(xsitemin);
+ 
+ #xvals<-as.vector(seq(xsitemin,xsitemax))
+ #yvals<-as.numeric(site.mod[2])*(xvals)+as.numeric(site.mod[1])
+ #lines(xvals,yvals,col=cols[i], lty=3)
+}
+#main line for control plots
+xmax<-max(expclim_cont$agtemp_mean, na.rm=TRUE) 
+xmin<-min(expclim_cont$agtemp_mean, na.rm=TRUE) 
+
+ablineclip(fixef(sm_mod_temptreat_cont),lwd=2,col="black", x1=xmin, x2=xmax)
+#now add treatment plots
+for(i in 1:length(sites_treat)){
+  site.mod<-coef(sm_mod_temptreat_treat)$site[i,]
+  xsitemax<-max(expclim_treat$agtemp_mean[expclim_treat==sites_treat[i]], na.rm=TRUE) 
+  xsitemin<-min(expclim_treat$agtemp_mean[expclim_treat==sites_treat[i]], na.rm=TRUE) 
+  ysitemax<-max(expclim_treat$soilmois1[expclim_treat==sites_treat[i]], na.rm=TRUE) 
+  ysitemin<-min(expclim_treat$soilmois1[expclim_treat==sites_treat[i]], na.rm=TRUE) 
+  ablineclip(a=as.numeric(site.mod[1]),b=as.numeric(site.mod[2]),x1=xsitemin,x2=xsitemax,y1=-0.5,y2=1.0,col=cols[i], lty=2)
+  print(site.mod);
+  print(xsitemax); print(xsitemin);
+}
+xmax2<-max(expclim_treat$agtemp_mean, na.rm=TRUE) 
+xmin2<-min(expclim_treat$agtemp_mean, na.rm=TRUE) 
+
+ablineclip(fixef(sm_mod_temptreat_treat),lwd=2,col="black", lty=2, x1=xmin2, x2=xmax2)
+###############
+#Try divide into 3 different datasets
+expclim_cont2<-expclim2[expclim2$ttype2=="cont",]
+expclim_warm<-expclim2[expclim2$ttype2=="warm",]
+
+#remove exp02, which doesn't measure airtemp
+expclim_cont2<-expclim_cont2[!expclim_cont2$site=="exp02",]
+expclim_warm<-expclim_warm[!expclim_warm$site=="exp02",]
+
+
+
+
+
+#########Exploring#########
 
 sm_mod_temp_cont<-lmer(soilmois1~agtemp_mean + (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim_cont)
 summary(sm_mod_temp_cont)
@@ -187,6 +292,10 @@ summary(sm_mod_temp_cont)
 modcomp<-rbind(fixef(sm_mod_targ)[,1:2],fixef(sm_mod_meas)[,1:2],c(fixef(sm_mod_temp)[,1],NA,NA),c(fixef(sm_mod_temp)[,2],NA,NA),c(fixef(sm_mod_temp_cont)[,1],NA,NA),c(fixef(sm_mod_temp_cont)[,2],NA,NA))
 
 colnames(modcomp)<-c("eff","se")
+
+
+#####Phenology models#####
+
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
 #Start by looking at which studies have both SM and AG temp data
 #which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
@@ -364,7 +473,7 @@ datalist.bbd <- with(expgdd_bbdmatchcsp,
                           mois = soilmois_janmar, #soil moisture
                           sp = genus.species,
                           site = site,
-                          year = year,
+                          year = styear,
                           N = nrow(expgdd_bbd),
                           n_sp = length(unique(expgdd_bbd$genus.species))
                      )
@@ -410,6 +519,16 @@ testm5.lmer<-lmer(y~temp * mois +
                   data=datalist.bbd)
 summary(testm5.lmer)
 #model fits! a=108.961,temp= -3.734; mois=--33.070; temp:mois= 2.954
+#try adding year as a fixed effect
+testm5yr.lmer<-lmer(y~temp * mois * year +
+                       (temp*mois |sp)+ (1|site/year),
+                     data=datalist.bbd)#lower aic
+
+testm5yr2.lmer<-lmer(y~temp * mois * year +
+                    (temp*mois* year |sp)+ (1|site/year),
+                  data=datalist.bbd)#doesn't converge
+AIC(testm5.lmer,testm5yr.lmer)
+#look at year as a predictor
 
 testm5cent.lmer<-lmer(y~temp * mois +
                       (temp*mois|sp)+ (1|site/year),
@@ -1025,3 +1144,11 @@ datalist.bbd <- with(expgdd_bbd,
 
 m4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data = datalist.bbd,
           iter = 2500, warmup=1500) # 
+
+
+#To do:
+ #Model keeps hanging up: try priors.
+ #does this help model fitting?
+ #noncentered parametrization- this might let model converge
+ #brms could try in stan
+#   
