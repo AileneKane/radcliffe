@@ -12,7 +12,7 @@ library(lme4)
 # Set working directory: 
 #if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/meta_ep2/radcliffe/documents/expwarm") 
 #} else
-#  setwd("/Users/aileneettinger/git/radcliffe/documents/expwarm")
+# setwd("~Documents/radcliffe/documents/expwarm")
 
 #Annual data from c3e
 #Aggregate above-ground observed warming by block (difference between treatment and control within each block)

@@ -94,6 +94,7 @@ soil_warm_stmean<-aggregate(blockdat2$soil_warm, by=list(blockdat2$site,blockdat
 allwarm_stmean<-cbind(ag_warm_stmean,soil_warm_stmean$x)
 colnames(allwarm_stmean)<-c("site","target","agwarm","soilwarm")
 allwarm_stmean<-allwarm_stmean[order(allwarm_stmean$site),]
+##aggregate range of ag warming
 
 
 #plot fitted lines, points, and 1:1 line
@@ -180,6 +181,11 @@ agwarm<-agwarm[1:8,]
 meandiff_type<-aggregate(agwarm$diff, by=list(agwarm$control),mean)
 summary(lm(agwarm$diff~agwarm$control*agwarm$target))
 #no significant interaction, but sample size is so small
+#look at difference per degree of target warming
+agwarm$diff.prop<-agwarm$diff/agwarm$target
+mean(agwarm$diff.prop)
+aggregate(agwarm$diff.prop,list(agwarm$control), mean)
+aggregate(agwarm$diff,list(agwarm$control), mean)
 
 #######REPORTED WARMING#############
 #try with reported warming instead of Target (to address REviewer 1's comments):
