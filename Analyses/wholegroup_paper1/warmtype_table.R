@@ -138,7 +138,7 @@ rownames(alltypes2)<-c("otc","force_air","force_air_soil","infrared","soil")
 alltypes2[5,7]<-" "
 alltypes2[5,6]<-"5.04"
 alltypes2[5,1]<-"5"
-alltypes2$n<-c("0*","2","2","9","1")
+alltypes2$n<-c("0*","3","2","9","1")
 alltypes3<-t(alltypes2)
 alltypes3<-cbind(alltypes3,alltypes3[,1])
 alltypes3<-alltypes3[,-1]

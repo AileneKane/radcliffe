@@ -34,6 +34,8 @@ expsites2$Tsoildepths[expsites2$Tsoildepths=="15, NA"]<-"15"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="12, NA"]<-"12"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="10, NA"]<-"10"
 expsites2$Tsoildepths[expsites2$Tsoildepths=="5, NA"]<-"5"
+expsites2$Tsoildepths[expsites2$DatasetID=="exp05"]<-"15*"
+
 expsites2$Msoildepths<-paste(expsites2$Msoildepth1_cm,expsites2$Msoildepth2_cm, sep=", ")
 expsites2$Msoildepths[expsites2$Msoildepths=="NA, NA"]<-" "
 expsites2$Msoildepths[expsites2$Msoildepths=="30, NA"]<-"30"
