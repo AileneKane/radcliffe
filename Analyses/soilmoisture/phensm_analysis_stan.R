@@ -304,6 +304,7 @@ colnames(modcomp)<-c("eff","se")
 #Prep the data for Stan model
 expgdd_subs$sp.name<-expgdd_subs$genus.species
 expgdd_subs$genus.species<-as.numeric(as.factor(expgdd_subs$genus.species))
+expgdd_subs$site2<-expgdd_subs$site
 expgdd_subs$site<-as.numeric(as.factor(expgdd_subs$site))
 expgdd_subs$year<-as.numeric(as.factor(expgdd_subs$year))
 
