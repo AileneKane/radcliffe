@@ -1,8 +1,8 @@
 #Started Sept 2017
 #By Ailene
 #Two questions to address:
-#1) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
-#2) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
+#1) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
+#2) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
 
 #Use brms/Stan to fit soil moisture- phenology model to radcliffe data 
 ## housekeeping
@@ -468,7 +468,7 @@ expgdd_bbdmatchcsp$smjm_cent<-scale(expgdd_bbdmatchcsp$soilmois_janmar, center =
 expgdd_bbdmatchcsp$ag_min_jm_cent<-scale(expgdd_bbdmatchcsp$ag_min_janmar, center = TRUE, scale = TRUE)
 expgdd_bbdmatchcsp$agtmax_cent<-scale(expgdd_bbdmatchcsp$agtmax, center = TRUE, scale = TRUE)
 
-datalist.bbd <- with(expgdd_bbdmatchcsp, 
+datalist.bbd <- with(expgdd_bbd, 
                      list(y = doy, 
                           temp = ag_min_janmar, #above-ground minimum air temp
                           mois = soilmois_janmar, #soil moisture
@@ -1078,7 +1078,28 @@ points(fix[,'Estimate'],
 abline(v = 0, lty = 2)
 #dev.off()
 
+#Now explore the implications of this model a bit:
+#To do:
+#1) Does soil moisture have a stronger effect in experimental than non experimental data?
+#Why might it? possibly because experiments are often with smaller/younger stages/less developed root systems whereas observational studies are 
+#more likely to be of adult individuals with well-developed roots.
+#Are individuals in the studies in our data set small? large? young/old?
+unique(expgdd_subs$site2[expgdd_subs$event=="bbd"])
+unique(expgdd_subs$site2[expgdd_subs$event=="lod"])
 
+#"exp01" "exp03" "exp04" "exp07" "exp10"
+#What stage/age/size are plants in these experiments?
+bbdset<-expgdd_subs[expgdd_subs$event=="bbd",]
+# exp01- has a mix of established plants (forbs and grasses) 
+# and planted tree seedlings (Acer rubrum, Betula lenta, Pinus strobus, Quercus rubra)
+# exp03: tree seeds sowed
+# exp04: tree seeds sowed
+# exp07: pre-existing vegetation
+# exp10: pre-existing vegetation
+table(bbdset$site2,bbdset$styear)
+table(expgdd_subs$sp.name[expgdd_subs$site2 =="exp01"],expgdd_subs$year[expgdd_subs$site2 =="exp01"])
+
+#does effect of soil moisture diminish with time (for bace)?
 
 
 
@@ -1146,10 +1167,3 @@ datalist.bbd <- with(expgdd_bbd,
 m4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data = datalist.bbd,
           iter = 2500, warmup=1500) # 
 
-
-#To do:
- #Model keeps hanging up: try priors.
- #does this help model fitting?
- #noncentered parametrization- this might let model converge
- #brms could try in stan
-#   

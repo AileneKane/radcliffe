@@ -62,6 +62,12 @@ expclim2[which(is.na(expclim2$agtemp_mean) & !is.na(expclim2$surftemp_mean)),]$a
 expclim2[which(is.na(expclim2$block)),]$block<-"none"
 expgdd[which(is.na(expgdd$block)),]$block<-"none"
 
+#Remove conifers
+if(remove.conifers==TRUE){
+  expgdd<-expgdd[expgdd$genus!="Pinus",]
+  }#6 species of pines from 4 sites...removing them makes model fail to converge. also makes interaction significant...
+print(dim(expgdd))
 #make a column for combined genus species
 expgdd$genus.species<-paste(expgdd$genus,expgdd$species,sep=".")
+
 
