@@ -221,13 +221,14 @@ datalist.bbdcont.cent <- with(expgdd_bbd_cont,
                               )
 )
 
-testm5.lmer<-lmer(y~temp * mois +
-                    (temp*mois|sp)+ (1|site/year),
-                  REML=FALSE,
-                  data=datalist.bbd)
-summary(testm5.lmer)
+# testm5.lmer<-lmer(y~temp * mois +
+#                     (temp*mois|sp)+ (1|site/year),
+#                   REML=FALSE,
+#                   data=datalist.bbd)
+# summary(testm5.lmer)
+#fails to converge wihtout conifers
 
-Anova(testm5.lmer)
+# Anova(testm5.lmer)
 # #model fits! a=108.961,temp= -3.734; mois=--33.070; temp:mois= 2.954
 # #try adding year as a fixed effect
 # testm5yr.lmer<-lmer(y~temp * mois * year +
@@ -379,6 +380,17 @@ testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                           (temp * mois|sp) + (1|site/year), #random effects
                         data=datalist.bbd.cent,
                         chains = 2)#control = list(max_treedepth = 15,adapt_delta = 0.99)
+save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
+
+#stanarm
+testm5cent.rstan <- stan_lmer(formula = doy ~ ag_min_jm_cent[,1] * smjm_cent[,1] +#fixed effects
+                        (ag_min_jm_cent[,1] * smjm_cent|genus.species) + (1|site/year), 
+                         data = expgdd_bbd, chains=2)
+summary(testm5cent.rstan)
+coef(testm5cent.rstan)
+head(testm5cent.rstan$stan_summary)
+save(testm5cent.rstan, file="Analyses/output/brms/testm5.rstanarm.bb.Rda")
+
 # # without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
 
 # stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
@@ -511,7 +523,16 @@ testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
                            chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
 
 
-mod<-testm5cent.lod.brms
+testm5cent.lod.rstan <- stan_lmer(formula = doy ~ ag_min_aprjun_cent * soilmois_aprjun_cent +#fixed effects
+                                (ag_min_jm_cent * soilmois_aprjun_cent|genus.species) + (1|site/year), 
+                              data = expgdd_lod)
+
+summary(testm5cent.rstan)
+coef(testm5cent.rstan)
+head(testm5cent.rstan$stan_summary)
+save(testm5cent.rstan, file="Analyses/output/brms/testm5.rstanarm.lo.Rda")
+
+mod<-testm5cent.lod.rstan
 sum<-summary(mod)
 fix<-sum$fixed
 speff <- coef(mod)

@@ -2,7 +2,7 @@
 // with test data
 
 // 3 level model for budburst day (or other phenophase)  as a function of above-ground temperature, soil moisture, and their interaction
-// Levels: Species and site (crossed)
+// Levels: Species, site (crossed with species), and year nested within site
 
 // generated with brms 2.1.8
 // soil moisture phenology  analysis

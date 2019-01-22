@@ -20,11 +20,11 @@ library(brms)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 
-#options(mc.cores = parallel::detectCores()) # added by Andrew
+options(mc.cores = parallel::detectCores()) # added by Andrew
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/git/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("~/Documents/GitHub/radcliffe")}
 
 #Goal: Fit a multimodel to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
@@ -219,16 +219,12 @@ summary(testm4.brms)
 marginal_effects(testm4.brms, surface = TRUE)
 #looks good!!! but took a really long time to fit...
 
-#testm4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
-#Warning messages:
-#  1: There were 3999 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
-#http://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded 
-#2: There were 4 chains where the estimated Bayesian Fraction of Missing Information was low. See
-#http://mc-stan.org/misc/warnings.html#bfmi-low 
-#3: Examine the pairs() plot to diagnose sampling problems
-#beta_draws<-as.matrix(testm4,pars=c("b_temp","b_mois","b_tm","sigma_y","sigma_a_sp","sigma_a_site"))
-#mcmc_intervals(beta_draws)
-#head(summary(testm4)$summary)
+testm4 = stan('Analyses/soilmoisture/M4_bbd_testdata.stan', data=list(y=y,sp=sp,site=site,temp=temp, mois=mois,n_sp=n_sp,n_site=n_site,N=N)) 
+testm4.sum <- summary(testm4)$summary
+testm4.sum[grep("mu_", rownames(testm4.sum)),]
+testm4[grep("sigma_", rownames(testm4.sum)),]
+
+
 
 #launch_shinystan(testm4)#this can be slo
 
@@ -240,3 +236,32 @@ marginal_effects(testm4.brms, surface = TRUE)
 #head(summary(testm4_ncp)$summary)
 
 #launch_shinystan(testm4_ncp)#this can be slow
+
+#M5: With year nested within site as intercept only random effect
+n_site_yr=3#number of years within each site
+obs_site_yr=(N/n_site)/n_site_yr#number of obs (plots, years) per site (N is defined above) per year
+sigma_a_site_yr<-2
+
+mu_a_site<-unique(a_site)
+for(j in 1:mu_a_site){
+  a_site_yr<-as.integer(rnorm(n_site_yr,mu_a_site,sigma_a_site))#site specific day of year for bb
+  
+}
+#is this right? use grand mean again (as for species? just variance is different)
+#not sure if more variance among site or species makes more sense...i made site-level variance smaller for now
+
+site<-rep(seq(1:n_site), each=obs_site)#site ids
+yr<-rep(seq(1:n_site_yr), each=obs_site_yr)
+ypred<-c()
+for(i in 1:N){
+  ypred[i] = a_site_yr[site_yr[i]] + a_sp[sp[i]] + b_temp[sp[i]] * temp[i] + b_mois[sp[i]] * mois[i]+ b_tm[sp[i]]*temp[i] * mois[i]
+}
+
+y<-rnorm(N,ypred,sigma_y)
+#check that test data look ok
+plot(temp,y)
+plot(mois,y)
+hist(mois)
+
+testm5.lmer<-lmer(y~temp * mois +(temp*mois|sp)+ (1|site/yr))#
+summary(testm5.lmer)#fixed effects look pretty good
