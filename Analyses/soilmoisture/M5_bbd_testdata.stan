@@ -52,15 +52,15 @@ parameters {
 
 transformed parameters {
    real yhat[N];
-     //site level
-  //   for (k in 1:n_site){
+     site level
+    for (k in 1:n_site){
 	
-		//a_site = a_0 + mu_a_site[j]
-    // }
+		a_site = a_0 + mu_a_site[j]
+     }
       //year
       	for (j in 1:n_yr){
 	
-		a_site_yr = a_site[siteyr] + mu_a_site_yr[j]
+		a_site_yr = a_site[sitelookup] + mu_a_site_yr[j]
      }
      
        	//species and individual level
