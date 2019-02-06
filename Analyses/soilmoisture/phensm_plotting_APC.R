@@ -15,7 +15,7 @@ library(dplyr)
 # Setting working directory.
   setwd("~/Documents/Github/radcliffe/")
 
-figpath <- "figures"
+figpath <- "Analyses/soilmoisture/figures"
 
 
 #Read in experimental climate and phenology data
@@ -51,17 +51,19 @@ alphahere = 0.4
 #load budburst model
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==FALSE & phen=="BB"){
   load("Analyses/output/brms/testm5.rstanarm.bb.Rda")
-  mod<-testm5.rstan}
-if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="LO"){
-  load("Analyses/output/brms/testm5.rstanarm.locent.Rda")
-  mod<-testm5.rstan}
+  mod<-testm5.rstan
+  fit <- testm5.rstan$stan_summary
+  sitetemp<-mean(expgdd_bbd$ag_min_jm[expgdd_bbd$site==site], na.rm=TRUE)#mean spring temp (current)
+  sitemois<-mean(expgdd_bbd$soilmois_janmar[expgdd_bbd$site==site], na.rm=TRUE)#mean soil mois (current)
+}
+if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
+  load("Analyses/output/brms/testm5.rstanarm.bbcent.Rda")
+  mod<-testm5cent.rstan}
 
-fit <- testm5.rstan$stan_summary
+
 rownameshere <- c("mu_a_sp", "mu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
 rownames(fit)[1:length(rownameshere)]<-rownameshere
 #For main effects of model:
-sitetemp<-mean(expgdd_bbd$ag_min_jm_cent[expgdd_bbd$site==site], na.rm=TRUE)#mean spring temp (current)
-sitemois<-mean(expgdd_bbd$smjm_cent[expgdd_bbd$site==site], na.rm=TRUE)#mean soil mois (current)
 tempforecast.raw<-seq(0,5, by=0.5)#enter in the amount of warming (in degrees C) you want to forecast 
 #centered version of temperature change
 #tempforecast.cent<-seq(0,1.6,by=0.16)#not sure how to do this automatically 
@@ -132,12 +134,13 @@ predictsbb.25per<-predictsbb.25per[,-2]
 predictsbb.75per<-predicts.75per
 predictsbb.75per<-predictsbb.75per[,-2]
 xlim = c(range(tempforecast.raw))
-ylim = c(82, 122)
-figname<-paste("tempforecast","bb",min(tempforecast),max(tempforecast),"degwarm.pdf", sep="_")
+ylim = c(min(round(predictsbb.25per[,-1], digits=0)), max(round(predictsbb.75per[,-1], digits=0)))
+
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),"degwarm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 9, height = 6)
 
 #pdf(paste(figpath,"/tempforecast",min(tempforecast),"-",max(tempforecast),"_deg_",lat,"_",long,".pdf",sep=""))
-quartz()
+#quartz()
 par(mar=c(8,7,3,5))
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
      ylab="Days to BB", main="BB", bty="l")
@@ -168,5 +171,5 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
   #         col=cols[i-2], lwd=1, lty=2)
   # }
 legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
-
+dev.off()
 #Just check a few things
