@@ -45,6 +45,8 @@ if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/Gi
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
+remove.conifers=TRUE
+use.airtemp=TRUE
 
 #standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
 source("Analyses/source/standard_mergesandwrangling.R")
@@ -52,8 +54,178 @@ source("Analyses/source/standard_mergesandwrangling.R")
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 #source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")#doesn't work for some reason....
-source("Analyses/soilmoisture/climsum_byplot.R")
+source("Analyses/source/climsum_byplot.R")
+#Realized that I need to look at the microclimate data that as they are summarized for the phenology models (not the daily data)
+#Prepare data for phenology models in stan#####
+source("Analyses/source/stanprep_phenmods.R")
 
+#look at relationship between soil moisture and aboveground temperature
+sm.mod.target<-lmer(soilmois_janmar~target + (target|site)+(1|year), REML=FALSE, data=expgdd_bbd)
+sm.mod.meas<-lmer(soilmois_janmar~ag_min_janmar+ (ag_min_janmar|site)+(1|year), REML=FALSE, data=expgdd_bbd)
+#slightly stronger effect of measured agtemp than target
+summary(sm.mod.target)
+summary(sm.mod.meas)
+fixef(sm.mod.target)
+fixef(sm.mod.meas)
+range(expgdd_bbd$soilmois_janmar)
+range(expgdd_bbd$soilmois_aprjun)#lower soil moistures
+range(expgdd_bbd$ag_min_janmar)
+range(expgdd_bbd$ag_min_aprjun)
+
+sm.mod.meas2<-lmer(soilmois_aprjun~ag_min_aprjun+ (ag_min_aprjun|site)+(1|year), REML=FALSE, data=expgdd_bbd)
+
+#Is relationship between target warming or measured warming and soil moisture different between controls and warming treatments
+expgdd_bbd$ttype<-"cont"
+expgdd_bbd$ttype[as.numeric(expgdd_bbd$target)>0]<-"warm"
+expgdd_lod$ttype<-"cont"
+expgdd_lod$ttype[as.numeric(expgdd_lod$target)>0]<-"warm"
+
+#Is relationship between target warming or measured warming and soil moisture different between controls and warming/precip treatments
+expgdd_bbd$ptype<-"cont"
+expgdd_bbd$ptype[expgdd_bbd$preciptreat_amt==50]<-"dry"
+expgdd_bbd$ptype[expgdd_bbd$preciptreat_amt==150]<-"wet"
+#fit models
+#sm.mod.target2<-lmer(soilmois_janmar~target*ttype + (target*ttype|site)+(1|year), REML=FALSE, data=expgdd_bbd)
+#above failed to coverge
+#sm.mod.target2<-lmer(soilmois_janmar~target*ttype + (1|site)+(1|year), REML=FALSE, data=expgdd_bbd)
+expgdd_bbd$ttype<-as.factor(expgdd_bbd$ttype)
+sm.mod.ttype<-lmer(soilmois_janmar~ag_min_janmar*ttype + (ag_min_janmar*ttype|site)+(1|styear), REML=FALSE, data=expgdd_bbd)
+summary(sm.mod.ttype)
+
+sm.mod.ttype2<-lmer(soilmois_aprjun~ag_min_aprjun*ttype + (ag_min_aprjun*ttype|site)+(1|styear), REML=FALSE, data=expgdd_bbd)
+summary(sm.mod.ttype2)
+
+#Make a plot of soilmois~agtemp, with lines the length of measured climate
+#different lines for each site
+#first for jan-mar(bbd)
+sites_cont<-rownames(ranef(sm.mod.ttype)$site)
+sites_treat<-rownames(ranef(sm.mod.ttype)$site)
+
+#different sites get different colors
+cols <- brewer.pal(8,"Set3")
+
+quartz(height=7, width=10)
+par(mfrow=c(1,2))
+plot(expgdd_bbd$ag_min_janmar[1],expgdd_bbd$soilmois_janmar[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Above-ground temperature", bty="l", xlim=c(min(expgdd_bbd$ag_min_janmar, na.rm=TRUE)-.5,max(expgdd_bbd$ag_min_janmar, na.rm=TRUE)),ylim=c(0,0.5), main="BB sites: Jan-Mar")
+
+#add lines for models fit to control plots
+for(i in 1:length(sites_cont)){
+  site.mod<-coef(sm.mod.ttype)$site[i,]
+  xsitemax<-max(expgdd_bbd$ag_min_janmar[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  xsitemin<-min(expgdd_bbd$ag_min_janmar[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  ysitemax<-max(expgdd_bbd$soilmois_janmar[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  ysitemin<-min(expgdd_bbd$soilmois_janmar[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  ablineclip(a=as.numeric(site.mod[1]),b=as.numeric(site.mod[2]),x1=xsitemin,x2=xsitemax,y1=0,y2=1.0,col=cols[i])
+  print(site.mod);
+  print(xsitemax); print(xsitemin);
+  
+  #xvals<-as.vector(seq(xsitemin,xsitemax))
+  #yvals<-as.numeric(site.mod[2])*(xvals)+as.numeric(site.mod[1])
+  #lines(xvals,yvals,col=cols[i], lty=3)
+}
+#main line for control plots
+xmax<-max(expgdd_bbd$ag_min_janmar, na.rm=TRUE) 
+xmin<-min(expgdd_bbd$ag_min_janmar, na.rm=TRUE) 
+
+ablineclip(fixef(sm.mod.ttype)[1:2],lwd=2,col="black", x1=xmin, x2=xmax)
+#main line for treatment plots
+
+ablineclip(c(fixef(sm.mod.ttype)[1]+fixef(sm.mod.ttype)[3],fixef(sm.mod.ttype)[2]+fixef(sm.mod.ttype)[4]),lwd=2,col="black", lty=2,x1=xmin, x2=xmax)
+
+#now add site-level treatment plots
+for(i in 1:length(sites_treat)){
+  site.mod<-coef(sm.mod.ttype)$site[i,]
+  xsitemax<-max(expgdd_bbd$ag_min_janmar[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  xsitemin<-min(expgdd_bbd$ag_min_janmar[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  ysitemax<-max(expgdd_bbd$soilmois_janmar[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  ysitemin<-min(expgdd_bbd$soilmois_janmar[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  ablineclip(a=as.numeric(site.mod[1]+site.mod[3]),b=as.numeric(site.mod[2]+site.mod[4]),x1=xsitemin,x2=xsitemax,y1=-0.5,y2=1.0,col=cols[i], lty=2)
+  print(site.mod);
+  print(xsitemax); print(xsitemin);
+}
+
+
+#now apr-jun
+plot(expgdd_bbd$ag_min_aprjun[1],expgdd_bbd$soilmois_aprjun[1],type="p", pch=21,col="white", ylab="Soil moisture", xlab="Above-ground temperature", bty="l", xlim=c(min(expgdd_bbd$ag_min_aprjun, na.rm=TRUE)-.5,max(expgdd_bbd$ag_min_aprjun, na.rm=TRUE)),ylim=c(0,0.5), main="BB sites: Apr-Jun")
+
+#add lines for models fit to control plots
+for(i in 1:length(sites_cont)){
+  site.mod<-coef(sm.mod.ttype2)$site[i,]
+  xsitemax<-max(expgdd_bbd$ag_min_aprjun[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  xsitemin<-min(expgdd_bbd$ag_min_aprjun[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  ysitemax<-max(expgdd_bbd$soilmois_aprjun[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  ysitemin<-min(expgdd_bbd$soilmois_aprjun[expgdd_bbd==sites_cont[i]], na.rm=TRUE) 
+  ablineclip(a=as.numeric(site.mod[1]),b=as.numeric(site.mod[2]),x1=xsitemin,x2=xsitemax,y1=0,y2=1.0,col=cols[i])
+  print(site.mod);
+  print(xsitemax); print(xsitemin);
+  
+  #xvals<-as.vector(seq(xsitemin,xsitemax))
+  #yvals<-as.numeric(site.mod[2])*(xvals)+as.numeric(site.mod[1])
+  #lines(xvals,yvals,col=cols[i], lty=3)
+}
+#main line for control plots
+xmax<-max(expgdd_bbd$ag_min_aprjun, na.rm=TRUE) 
+xmin<-min(expgdd_bbd$ag_min_aprjun, na.rm=TRUE) 
+
+ablineclip(fixef(sm.mod.ttype2)[1:2],lwd=2,col="black", x1=xmin, x2=xmax)
+#main line for treatment plots
+ablineclip(c(fixef(sm.mod.ttype2)[1]+fixef(sm.mod.ttype2)[3],fixef(sm.mod.ttype2)[2]+fixef(sm.mod.ttype2)[4]),lwd=2,col="black", lty=2,x1=xmin, x2=xmax)
+
+#now add treatment plots
+for(i in 1:length(sites_treat)){
+  site.mod<-coef(sm.mod.ttype2)$site[i,]
+  xsitemax<-max(expgdd_bbd$ag_min_aprjun[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  xsitemin<-min(expgdd_bbd$ag_min_aprjun[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  ysitemax<-max(expgdd_bbd$soilmois_aprjun[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  ysitemin<-min(expgdd_bbd$soilmois_aprjun[expgdd_bbd==sites_treat[i]], na.rm=TRUE) 
+  ablineclip(a=as.numeric(site.mod[1]+site.mod[3]),b=as.numeric(site.mod[2]+site.mod[4]),x1=xsitemin,x2=xsitemax,y1=-0.5,y2=1.0,col=cols[i], lty=2)
+  print(site.mod);
+  print(xsitemax); print(xsitemin);
+}
+sitnames<-unique(expgdd_bbd$site2)
+legend("topright",legend=paste(sitnames),lwd=1,col=cols[1:length(sites_treat)], bty="n")
+legend("topright",legend=c("control","treatment"),lwd=2,col="black", lty=c(1,2),bty="n")
+
+
+
+
+
+
+
+
+
+
+expgdd_lod$ttype<-as.factor(expgdd_lod$ttype)
+
+sm.mod.meas2.lod<-lmer(soilmois_janmar~ag_min_janmar*ttype + (1|site)+(1|year), REML=FALSE, data=expgdd_lod)
+
+summary(sm.mod.meas2.lod)#strong interaction between
+#no interaction between agmin and warming type (control vs warmed)
+fixef(sm.mod.target2)
+fixef(sm.mod.meas2)
+#check some things:
+unique(expgdd_bbd$site2)
+unique(expgdd_bbd[expgdd_bbd$site2=="exp01",]$ptype)#checked target, ttype, ptype
+unique(expgdd_bbd[expgdd_bbd$site2=="exp03",]$ptype)#only control for ptype
+unique(expgdd_bbd[expgdd_bbd$site2=="exp03",]$preciptreat_amt)#only control for ptype
+
+unique(expgdd_bbd[expgdd_bbd$site2=="exp04",]$ptype)
+unique(expgdd_bbd[expgdd_bbd$site2=="exp04",]$preciptreat_amt)#only control for ptype
+
+unique(expgdd_bbd[expgdd_bbd$site2=="exp07",]$ptype)
+unique(expgdd_bbd[expgdd_bbd$site2=="exp07",]$preciptreat_amt)#only control for ptype
+
+unique(expgdd_bbd[expgdd_bbd$site2=="exp10",]$ptype)
+unique(expgdd_bbd[expgdd_bbd$site2=="exp10",]$preciptreat_amt)#only control for ptype
+
+
+
+expgdd_bbd$ag_min_janmar, #above-ground minimum air temp = temp in bb mods
+expgdd_bbd$soilmois_janmar#soil moisture
+
+
+
+####Old code
 #1) How do warming and precip treatments affect temperature and soil moisture? (Make plots and fit models)
 
 expclim2$target_cent<-scale(expclim2$target, center = TRUE, scale = TRUE)
@@ -219,6 +391,7 @@ summary(sm_mod_temptreat_cont)
 sm_mod_temptreat_treat<-lmer(soilmois1~agtemp_mean + (agtemp_mean|site)+(1|year/doy), REML=FALSE, data=expclim_treat)
 summary(sm_mod_temptreat_treat)
 
+
 #sm_mod_temp.brms<-brm(soilmois1~agtemp_mean 
 #                      + (agtemp_mean|site)+(1|year/doy), 
  #                     data=expclim2)
@@ -267,6 +440,10 @@ for(i in 1:length(sites_treat)){
   print(site.mod);
   print(xsitemax); print(xsitemin);
 }
+
+
+
+
 xmax2<-max(expclim_treat$agtemp_mean, na.rm=TRUE) 
 xmin2<-min(expclim_treat$agtemp_mean, na.rm=TRUE) 
 

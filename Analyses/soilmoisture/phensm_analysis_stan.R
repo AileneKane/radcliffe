@@ -46,13 +46,17 @@ expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
 
+remove.conifers=TRUE
+use.airtemp=TRUE
+use.centmod=FALSE
+
 #standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
 source("Analyses/source/standard_mergesandwrangling.R")
 
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 #source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")#doesn't work for some reason....
-source("Analyses/soilmoisture/climsum_byplot.R")
+source("Analyses/source/climsum_byplot.R")
 
 #1) How do warming and precip treatments affect temperature and soil moisture? (Make plots and fit models)
 
@@ -480,7 +484,7 @@ datalist.bbd <- with(expgdd_bbd,
                      )
 )
 
-datalist.bbd.cent <- with(expgdd_bbdmatchcsp, 
+datalist.bbd.cent <- with(expgdd_bbd, 
                           list(y = doy, 
                                temp = ag_min_jm_cent[,1], #above-ground minimum air temp
                                mois = smjm_cent[,1], #soil moisture
@@ -675,6 +679,8 @@ stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the ot
 summary(testm5cent.brms)
 stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
 #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
+save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bb.Rda")
+round(fixef(testm5cent.brms, probs=c(.90,0.10)), digits=2)
 
 #make plots of main effects and species- level effects of this model 
 
@@ -701,6 +707,8 @@ points(fixef(testm5cent.brms)[,1],coefs,pch=21,bg=c("gray","darkred","darkblue",
 axis(2,at=c(95,85,75,65,50),labels=c("intercept","temp","mois","temp*mois","species"), las=2)
 
 #use lizzies code now
+load("Analyses/output/brms/testm5cent.brms.bb.Rda")
+
 mod<-testm5cent.brms
 sum<-summary(mod)
 fix<-sum$fixed
@@ -711,7 +719,7 @@ quartz(width = 7, height = 7)
 par(mfrow=c(3,1), mar = c(4, 7, .5, 1))
 # One panel: budburst
 plot(seq(-35, #min(meanz[,'mean']*1.1),
-         300, #max(meanz[,'mean']*1.1),
+         150, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
      type="n",
@@ -746,12 +754,35 @@ points(fix[,'Estimate'],
 abline(v = 0, lty = 2)
 #dev.off()
 
+#Pull out species with strongest effects of moisture
+spofint<-c(30,104,98,134,182,25,24,21,1,23,139)
+spofit<-sort(spofint)
+spofint2<-unique(expgdd_bbd$sp.name[expgdd_bbd$genus.species==spofint])
+spofint2<-c("Carya.glabra",spofint2)
+spofit2<-sort(spofint2)
+ranef(mod)$sp[30,,]
+ranef(mod)$sp[rownames(ranef(mod)$sp)=="30",,]
+#"Carya.glabra"#30 (-4.341) moisture effect, temo effect=-11.9
+#at "exp03" "exp04" Duke and HF
 
-
+#104 (-6.04) "exp03" "exp04" Duke and HF
+ranef(mod)$sp[rownames(ranef(mod)$sp)=="104",,]#"Magnolia.grandiflora"
+#98 (-2.94)
+#134: 2.10
+#182: 2.21
+#25: 4.35#Betula.sp (only at Harvard Forest "exp04")
+#24: 3.6#Betula.populifolia (only at BACE "exp01")
+#21: 4.94#Betula.alleghaniensis (only at Harvard Forest "exp04")
+#1: 2.11
+# and strongest interacttions:
+#
+#21: -2.33
+#23: -1.37
+#104: 1.31
+#139: 1.02
 
 #LUD and LOD in lmer
 mean(expgdd_bbd$doy, na.rm=TRUE)#99.95649
-mean(expgdd_lud$doy, na.rm=TRUE)#106.
 mean(expgdd_lod$doy, na.rm=TRUE)#145.7179= april/may
 summary(expgdd_bbd$doy)
 datalist.lod<- with(expgdd_lod, 
@@ -790,6 +821,9 @@ testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.lod.cent,
                        chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
+save(testm5cent.lod.brms, file="Analyses/output/brms/testm5cent.brms.lo.Rda")
+load("Analyses/output/brms/testm5cent.brms.lo.Rda")
+round(fixef(testm5cent.lod.brms, probs=c(.90,0.10)), digits=2)
 
 mod<-testm5cent.lod.brms
 sum<-summary(mod)
@@ -802,7 +836,7 @@ rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
 # One panel: budburst
 plot(seq(-30, 
-         300, 
+         200, 
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
      type="n",
@@ -889,6 +923,7 @@ testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                            data=datalist.ffd.cent,
                            chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
 
+save(testm5cent.ffd.brms, file="Analyses/output/brms/testm5cent.brms.ff.Rda")
 
 mod<-testm5cent.ffd.brms
 sum<-summary(mod)

@@ -57,12 +57,12 @@ if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==FALSE & phen=="BB"){
   sitemois<-mean(expgdd_bbd$soilmois_janmar[expgdd_bbd$site==site], na.rm=TRUE)#mean soil mois (current)
 }
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
-  load("Analyses/output/brms/testm5.rstanarm.bbcent.Rda")
-  mod<-testm5cent.rstan}
+  load("Analyses/output/brms/testm5cent.brms.bb.Rda")
+  mod<-testm5cent.brms}
 
 
 rownameshere <- c("mu_a_sp", "mu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
-rownames(fit)[1:length(rownameshere)]<-rownameshere
+rownames(mod)[1:length(rownameshere)]<-rownameshere
 #For main effects of model:
 tempforecast.raw<-seq(0,5, by=0.5)#enter in the amount of warming (in degrees C) you want to forecast 
 #centered version of temperature change
@@ -72,7 +72,7 @@ smforecast<-seq(-2,2, by=0.5)
 drysm<- -0.10#proportion change
 dry2sm<- -1
 wetsm<- 0.10
-wet2sm<- 1
+#wet2sm<- 1
 #range(mean(expgdd_bbd$soilmois_janmar))#0.1020346 0.3879270
 #mean(expgdd_bbd$soilmois_janmar)#0.2146834
 #so 10% reduction in soil moisture would be 
@@ -136,6 +136,7 @@ predictsbb.75per<-predictsbb.75per[,-2]
 xlim = c(range(tempforecast.raw))
 ylim = c(min(round(predictsbb.25per[,-1], digits=0)), max(round(predictsbb.75per[,-1], digits=0)))
 
+
 figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),"degwarm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 9, height = 6)
 
@@ -172,4 +173,173 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
   # }
 legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
 dev.off()
-#Just check a few things
+
+
+#Now look at effect of soil moisture on the x axis, at different temperatures, using the main model
+temps<-c(quantile(expgdd_bbd$ag_min_janmar))#enter in the amount of warming (in degrees C) you want to forecast 
+
+range(expgdd_bbd$ag_min_janmar)
+range(expgdd_bbd$soilmois_janmar)
+
+sm<-seq(from=0, to=0.4, by=0.05)
+getest.bb <- function(mod, temp, sm, cold2temp, cold1temp, warm1temp, warm2temp){
+  listofdraws <-as.data.frame(as.matrix(mod))
+  colnames(listofdraws)[1:length(rownameshere)]<-rownameshere
+  avgbb <- listofdraws$mu_a_sp + listofdraws$mu_b_temp_sp*temp + 
+    listofdraws$mu_b_mois_sp*sm + listofdraws$mu_b_tsm_sp*temp*sm
+   warm1bb <- listofdraws$mu_a_sp + listofdraws$mu_b_temp_sp*(warm1temp) + 
+    listofdraws$mu_b_mois_sp*sm + listofdraws$mu_b_tsm_sp*(warm1temp)*sm
+  warm2bb <- listofdraws$mu_a_sp + listofdraws$mu_b_temp_sp*(warm2temp) + 
+    listofdraws$mu_b_mois_sp*sm + listofdraws$mu_b_tsm_sp*(warm2temp)*sm
+  cold1bb <- listofdraws$mu_a_sp + listofdraws$mu_b_temp_sp*(cold1temp) + 
+    listofdraws$mu_b_mois_sp*sm + listofdraws$mu_b_tsm_sp*(cold1temp)*sm
+  cold2bb <- listofdraws$mu_a_sp + listofdraws$mu_b_temp_sp*(cold2temp) + 
+    listofdraws$mu_b_mois_sp*sm + listofdraws$mu_b_tsm_sp*(cold2temp)*sm
+  
+  yebbest <- list(sm,cold2bb,cold1bb,avgbb, warm1bb, warm2bb)
+  return(yebbest)
+}
+
+#make blank dataframe to fill with estimates
+predicts <- as.data.frame(matrix(NA,ncol=6,nrow=length(temps)))
+
+predicts.loper <- as.data.frame(matrix(NA,ncol=6,nrow=length(temps)))
+predicts.hiper <- as.data.frame(matrix(NA,ncol=6,nrow=length(temps)))
+colnames(predicts)<-colnames(predicts.loper) <-colnames(predicts.hiper) <-
+  c("sm","bb.cold2","bb.cold1","bb.mean","bb.warm1","bb.warm2")
+for (i in 1:length(sm)){  
+  temp<-mean(expgdd_bbd$ag_min_janmar)
+  cold2temp<-temps[1]
+  cold1temp<-temps[2]
+  warm1temp<-temps[4]
+  warm2temp<-temps[5]
+  alltemps<-c(temp,warm1temp,warm2temp,cold1temp,cold2temp)
+  bbposteriors <- getest.bb(testm5.rstan, temp, sm[i], cold2temp, cold1temp, warm1temp, warm2temp)
+  meanz <- unlist(lapply(bbposteriors, mean))
+  quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.25, 0.5, 0.75)))
+  quantlo <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.25))))
+  quanthi <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.75))))
+  predicts[i,]<-meanz
+  predicts.loper[i,]<-quantlo
+  predicts.hiper[i,]<-quanthi
+}
+xlim = c(range(sm))
+ylim = c(min(round(predicts.loper[,-1], digits=0)), max(round(predicts.hiper[,-1], digits=0)))
+
+
+figname<-paste("tempforecast","bb",min(sm),max(sm),"vwc.pdf", sep="_")
+pdf(file.path(figpath,figname), width = 9, height = 6)
+
+#pdf(paste(figpath,"/tempforecast",min(tempforecast),"-",max(tempforecast),"_deg_",lat,"_",long,".pdf",sep=""))
+#quartz()
+cols <- adjustcolor(c("darkblue","lightskyblue","gray","salmon","darkred"), alpha.f = 0.8) 
+use<-c(1,3,5)
+par(mar=c(8,7,3,5))
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Soil moisture (VWC)", ylim=ylim,
+     ylab="Days to BB", main="BB", bty="l")
+#Add shading around line for credible intervals
+
+#for(i in 3:7){
+#  polygon(c(rev(predicts$sm), predicts$sm), c(rev(predicts.hiper[,i]), predicts.loper[,i]), col = alpha(cols[i-1], 0.2), border = NA)
+#}
+#i=3
+#i=5
+
+for(i in use){
+  lines(predicts$sm, predicts[,i+1], 
+        col=cols[i], lwd=2)
+}
+
+axis(side=1,at=c(0,0.1,0.2,0.3,0.4), labels=c(0,0.1,0.2,0.3,0.4))
+#axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+
+# intervals
+ for(i in use){
+   lines(predicts.loper$sm, predicts.loper[,i+1], 
+         col=cols[i], lwd=1, lty=2)
+ }
+ for(i in use){
+   lines(predicts.hiper$sm, predicts.hiper[,i+1], 
+         col=cols[i], lwd=1, lty=2)
+ }
+legend(.3,140,legend=round(c(cold2temp,temp,warm2temp), digits=0),lty=1,lwd=2,col=cols[use],bty="n", cex=0.9)
+mtext("Mean temp (C)", side=3,line=-3,adj=1)
+dev.off()
+
+#Make same plot for first flower
+#load budburst model
+if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="FF"){
+  load("Analyses/output/brms/testm5cent.brms.ff.Rda")
+  mod<-testm5cent.ffd.brms
+  fit <- testm5cent.ffd.brms$stan_summary
+  sitetemp<-mean(expgdd_ffd$ag_min_aprjun [expgdd_ffd$site==site], na.rm=TRUE)#mean spring temp (current)
+  sitemois<-mean(expgdd_ffd$soilmois_aprjun[expgdd_ffd$site==site], na.rm=TRUE)#mean soil mois (current)
+  temps<-c(quantile(expgdd_ffd$ag_min_janmar))#enter in the amount of warming (in degrees C) you want to forecast 
+  
+  }
+
+#make blank dataframe to fill with estimates
+predicts <- as.data.frame(matrix(NA,ncol=6,nrow=length(temps)))
+
+predicts.loper <- as.data.frame(matrix(NA,ncol=6,nrow=length(temps)))
+predicts.hiper <- as.data.frame(matrix(NA,ncol=6,nrow=length(temps)))
+colnames(predicts)<-colnames(predicts.loper) <-colnames(predicts.hiper) <-
+  c("sm","bb.cold2","bb.cold1","bb.mean","bb.warm1","bb.warm2")
+for (i in 1:length(sm)){  
+  temp<-mean(expgdd_ffd$ag_min_aprjun)
+  cold2temp<-temps[1]
+  cold1temp<-temps[2]
+  warm1temp<-temps[4]
+  warm2temp<-temps[5]
+  alltemps<-c(temp,warm1temp,warm2temp,cold1temp,cold2temp)
+  bbposteriors <- getest.bb(testm5.rstan, temp, sm[i], cold2temp, cold1temp, warm1temp, warm2temp)
+  meanz <- unlist(lapply(bbposteriors, mean))
+  quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.25, 0.5, 0.75)))
+  quantlo <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.25))))
+  quanthi <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.75))))
+  predicts[i,]<-meanz
+  predicts.loper[i,]<-quantlo
+  predicts.hiper[i,]<-quanthi
+}
+xlim = c(range(sm))
+ylim = c(min(round(predicts.loper[,-1], digits=0)), max(round(predicts.hiper[,-1], digits=0)))
+
+
+figname<-paste("tempforecast","bb",min(sm),max(sm),"vwc.pdf", sep="_")
+pdf(file.path(figpath,figname), width = 9, height = 6)
+
+#pdf(paste(figpath,"/tempforecast",min(tempforecast),"-",max(tempforecast),"_deg_",lat,"_",long,".pdf",sep=""))
+#quartz()
+cols <- adjustcolor(c("darkblue","lightskyblue","gray","salmon","darkred"), alpha.f = 0.8) 
+use<-c(1,3,5)
+par(mar=c(8,7,3,5))
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Soil moisture (VWC)", ylim=ylim,
+     ylab="Days to BB", main="BB", bty="l")
+#Add shading around line for credible intervals
+
+#for(i in 3:7){
+#  polygon(c(rev(predicts$sm), predicts$sm), c(rev(predicts.hiper[,i]), predicts.loper[,i]), col = alpha(cols[i-1], 0.2), border = NA)
+#}
+#i=3
+#i=5
+
+for(i in use){
+  lines(predicts$sm, predicts[,i+1], 
+        col=cols[i], lwd=2)
+}
+
+axis(side=1,at=c(0,0.1,0.2,0.3,0.4), labels=c(0,0.1,0.2,0.3,0.4))
+#axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+
+# intervals
+for(i in use){
+  lines(predicts.loper$sm, predicts.loper[,i+1], 
+        col=cols[i], lwd=1, lty=2)
+}
+for(i in use){
+  lines(predicts.hiper$sm, predicts.hiper[,i+1], 
+        col=cols[i], lwd=1, lty=2)
+}
+legend(.3,140,legend=round(c(cold2temp,temp,warm2temp), digits=0),lty=1,lwd=2,col=cols[use],bty="n", cex=0.9)
+mtext("Mean temp (C)", side=3,line=-3,adj)
+dev.off()
