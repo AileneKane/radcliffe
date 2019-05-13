@@ -1,7 +1,7 @@
 
 #This code does this following:
-#1.Summarizes soil moisture and air temperature by plot, seasonally and annually
-#2. Merge summarized climate variables in to phenology data file (expgdd) for analyses
+#1. Summarizes soil moisture and air temperature by plot, seasonally and annually
+#2. Merges summarized climate variables in to phenology data file (expgdd) for analyses
 
 #start by aggregating observed above-ground min and max and soil temperature by plot and year to get annual values
 ag_max_plot<-aggregate(expclim2$agtemp_max, by=list(expclim2$site,expclim2$block,expclim2$plot,expclim2$target,expclim2$preciptreat_amt,expclim2$year), FUN=mean,na.rm=TRUE)
@@ -44,7 +44,7 @@ expgdd3<-left_join(expgdd2,tempsm_janmar,by=c("site", "block", "plot","target","
 expgdd4<-left_join(expgdd3,tempsm_aprjun,by=c("site", "block", "plot","target","preciptreat_amt","year"), copy=TRUE)
 #dim(expgdd4)#63734    44
 
-#The following sites have both soil moisture and abg temperature data so just use these temperature data: exp01 exp02 exp03 exp04 exp07 exp09 exp10 exp12 
+#The following sites have both soil moisture and abg temperature data so just use these: exp01 exp02 exp03 exp04 exp07 exp09 exp10 exp12 
 #check which sites have both soil moisture and abg te
 ag<-tapply(expgdd4$ag_mean_aprjun,expgdd4$site,mean, na.rm=TRUE)
 agsites<-names(ag[!is.na(ag)])

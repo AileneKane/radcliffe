@@ -29,9 +29,6 @@ if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/Gi
 #setwd("~/Documents/GitHub/radcliffe")#noaa
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
-#
-###Now with the data
-###try without ncp if treedepth issue doesn't solve things.
 
 #source('Analyses/soilmoisture/savestan.R')
 
@@ -53,6 +50,7 @@ source("Analyses/source/standard_mergesandwrangling.R")
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
   #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 #source("Analyses/soilmoisture/climsum_byplot_soiltoo.R")#doesn't work for some reason....
+
 source("Analyses/source/climsum_byplot.R")
 
 #1) How do warming and precip treatments affect temperature and soil moisture? (Make plots and fit models)
@@ -383,42 +381,7 @@ expgdd_sen$agtmin_cent<-scale(expgdd_sen$agtmin, center = TRUE, scale = TRUE)
 expgdd_sen$agtmax_cent<-scale(expgdd_sen$agtmax, center = TRUE, scale = TRUE)
 
 #2) Make a list out of the processed data. It will be input for the model.
-datalist.bbd <- with(expgdd_bbd, 
-                    list(y = doy, 
-                         temp = ag_min_janmar, #above-ground minimum air temp
-                         mois = soilmois_janmar, #soil moisture
-                         sp = genus.species,
-                         site = site,
-                         N = nrow(expgdd_bbd),
-                         n_sp = length(unique(expgdd_bbd$genus.species))
-                    )
-)
-
-datalist.bbd.cent <- with(expgdd_bbd, 
-                          list(y = doy, 
-                               temp = ag_min_jm_cent[,1], #above-ground minimum air temp
-                               mois = smjm_cent[,1], #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
-                          )
-)
-datalist.bbdcont <- with(expgdd_bbd_cont, 
-                     list(y = doy, 
-                          temp = ag_min_janmar, #above-ground minimum air temp
-                          mois = soilmois_janmar, #soil moisture
-                          sp = genus.species,
-                          site = site,
-                          N = nrow(expgdd_bbd),
-                          n_sp = length(unique(expgdd_bbd$genus.species))
-                     )
-)
-
-##################
-# Fit m5 to data #
-##################
-#make sure that species match between control-only and full dataset
+make sure that species match between control-only and full dataset
 contsp<-unique(expgdd_bbd_cont$genus.species)
 expgdd_bbdmatchcsp<-expgdd_bbd[expgdd_bbd$genus.species %in% contsp,]
 #only lose 9 rows of data (5 species)
@@ -482,27 +445,51 @@ datalist.bbdcont.cent <- with(expgdd_bbd_cont,
                          )
 )
 
+##################
+# Fit m5 to data #
+##################
+#
 testm5cent.lmer<-lmer(y~temp * mois +  (temp*mois|sp)+ (1|site/year),
                   data=datalist.bbd.cent)
 summary(testm5cent.lmer)
 
-testm5cent.int.lmer<-lmer(y~temp * mois + (1|sp)+ (1|site/year),data=datalist.bbd.cent)
-testm5cent.intsq.lmer<-lmer(y~ mois*(temp + I(temp^2)) + (1|sp)+ (1|site/year),data=datalist.bbd.cent)
-testm5cent.intsq.lmer2<-lmer(y~ mois*(temp + I(temp^2)) + (mois*(temp + I(temp^2))|sp)+ (1|site/year),data=datalist.bbd.cent)
-fe <- summary(testm5cent.intsq.lmer2)$coefficients[1:6,1]
-quartz()
-plot_df <- expand.grid(temp=datalist.bbd.cent$temp, mois=c(min(datalist.bbd.cent$mois), mean(datalist.bbd.cent$mois), max(datalist.bbd.cent$mois))) %>% 
-  mutate(doy = fe[1] + fe[2]*mois + fe[3]*temp + fe[4]*temp*temp + fe[5]*mois*temp + fe[6]*mois*temp*temp)
-plot_interaction %+% plot_df
-# full range of heat, and selected low, med and high values for year
-
-anova(testm5cent.intsq.lmer,testm5cent.intsq.lmer2,testm5cent.lmer)
-testm5tempcent.int.lmer<-lmer(y~temp + (1|sp)+ (1|site/year),data=datalist.bbd.cent)
+testm5cent.int.lmer<-lmer(y~temp * mois + (1|sp)+ (1|site/year),data=datalist.bbd.cent, REML=FALSE)
+testm5cent.intsq.lmer<-lmer(y~ mois*(temp + I(temp^2)) + (1|sp)+ (1|site/year),data=datalist.bbd.cent, REML=FALSE)
+testm5cent.intsq.lmer2<-lmer(y~ mois*(temp + I(temp^2)) + (mois*(temp + I(temp^2))|sp)+ (1|site/year),data=datalist.bbd.cent, REML=FALSE)
 testm5tempcent.intsq.lmer<-lmer(y~temp + temp2 + (1|sp)+ (1|site/year),data=datalist.bbd.cent)
 testm5tempcent.lmer<-lmer(y~temp + (temp|sp)+ (1|site/year),data=datalist.bbd.cent)
 testm5tempcent.sq.lmer<-lmer(y~temp + temp2 + (temp + temp2|sp)+ (1|site/year),data=datalist.bbd.cent)
 anova(testm5cent.int.lmer,testm5cent.intsq.lmer,testm5tempcent.int.lmer,testm5tempcent.intsq.lmer,
-      testm5tempcent.lmer,testm5tempcent.sq.lmer)
+      testm5tempcent.lmer,testm5tempcent.sq.lmer,testm5cent.intsq.lmer2)
+#best model is testm5cent.intsq.lmer2 
+#try to fit it in rstandarm 
+bbd.cent <- with(expgdd_bbd, 
+                          data.frame(y = doy, 
+                               temp = ag_min_jm_cent[,1], #above-ground minimum air temp
+                               temp2 = ag_min_jm_cent[,1]*ag_min_jm_cent[,1], #above-ground minimum air temp
+                               mois = smjm_cent[,1], #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_bbd),
+                               n_sp = length(unique(expgdd_bbd$genus.species))
+                          )
+)
+testm5cent.intsq.rstan2<-stan_lmer(
+    y~ mois*(temp + I(temp^2)) + #fixed
+      (mois*(temp + I(temp^2))|sp)+ (1|site/year),#random
+    data=bbd.cent)#data, etc
+
+
+
+
+fe <- summary(testm5cent.intsq.lmer2)$coefficients[1:6,1]
+#below doesnt' work
+quartz()
+plot_df <- expand.grid(temp=datalist.bbd.cent$temp, mois=c(min(datalist.bbd.cent$mois), mean(datalist.bbd.cent$mois), max(datalist.bbd.cent$mois))) %>% 
+  mutate(doy = fe[1] + fe[2]*mois + fe[3]*temp + fe[4]*temp*temp + fe[5]*mois*temp + fe[6]*mois*temp*temp)
+plot_interaction %+% plot_df
+
 #look at quadratic fit:
 quartz()
 ggplot(expgdd_bbd, aes(ag_min_jm_cent, doy)) + geom_point() + geom_smooth(method="lm", formula=y~poly(x, 2))
@@ -513,6 +500,11 @@ testm5cent.lmer<-lmer(y~temp * mois +
                         (temp*mois|sp)+ (1|site/year),
                       data=datalist.bbd.cent)
 summary(testm5cent.lmer)
+
+
+#now try fitting quadratic model in rstanarm
+
+
 #model fits- onyl when centered! a=96.4445,temp= -9.3089; mois=-1.5954; temp:mois= 0.7739
 #try adding year as a fixed effect
 testm5yr.lmer<-lmer(y~temp * mois * year +

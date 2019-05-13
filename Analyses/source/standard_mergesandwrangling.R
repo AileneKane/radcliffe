@@ -1,5 +1,5 @@
 #Standard data wrangling to merge expclim and treats, and expclim and expheno
-#plus to get one column for above ground temperature
+#AND to get one column for above ground temperature (COMBINING SURFACE, CANOPY, AND AIR)
 #uses three files () to get two commonly used databases:
 #1) experimental climate with one variable for above ground warming and all treatments added in
 #2) exppgdd database with climate data (gddcrit,etc)
@@ -62,7 +62,7 @@ expclim2[which(is.na(expclim2$agtemp_mean) & !is.na(expclim2$surftemp_mean)),]$a
 expclim2[which(is.na(expclim2$block)),]$block<-"none"
 expgdd[which(is.na(expgdd$block)),]$block<-"none"
 
-#Remove conifers
+#Remove conifers, IF DESIRED
 if(remove.conifers==TRUE){
   expgdd<-expgdd[expgdd$genus!="Pinus",]
   }#6 species of pines from 4 sites...removing them makes model fail to converge. also makes interaction significant...
