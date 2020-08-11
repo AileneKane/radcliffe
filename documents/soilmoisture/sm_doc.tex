@@ -54,13 +54,10 @@
 \begin{document}
 
 %\SweaveOpts{concordance=FALSE}
-\input{soilmoisture_doc-concordance}
+\input{sm_doc-concordance}
 
-\bibliographystyle{../../Bibliography/bibstyles/amnat.bst}
-
-\title{Soil moisture interacts with temperature to affect plant phenology}
-\begin{singlespace}
-
+\bibliographystyle{amnat.bst}
+\title{Soil moisture interacts with temperature to affect plant phenology} % perspective paper for OSPREE analyses
 \author[1,2,a]{A.K. Ettinger}
 \author[3,b]{J.S. Dukes}
 \author[4,c]{M.R. Johnston}
@@ -82,38 +79,41 @@
 
 \affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 1300 Centre Street, Boston, Massachusetts 02140, USA }
 
-%\affil[d]{jsdukes@purdue.edu}
-
-%\affil[f]{mjohnston@g.harvard.edu}
-
-%\affil[h]{crollinson@mortonarb.org}
-
-%\affil[j]{e.wolkovich@ubc.ca}
-
 \date{\today}
 \maketitle %put the fancy title on
 %\tableofcontents %add a table of contents
-
-%\textbf{Statement of authorship} 
 %All authors conceived of this manuscript, which began at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. AKE and EMW conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar. AKE compiled the datasets; AKE analyzed the data and created the figures.
 
 \textbf{Data Accessibility} %Data accessibility statement: The statement must confirm that, should the manuscript be accepted, the data supporting the results will be archived in an appropriate public repository such as Dryad or Figshare and the data DOI will be included at the end of the article.
-The data reported in this paper are from the MC3E and ExPhen databases, which are available at KNB \citep{ettinger2018,ettinger2019}
+The data reported in this paper are from the MC3E and ExPhen databases, which are available at KNB \citep{ettinger2018,ettinger2018a}
 
 \textbf{Running title} Soil moisture affects phenology
 
-
 \textbf{Key words} global warming, warming experiment, microclimate, phenology, bud-burst, leaf-out, flowering, fruiting, senescence 
-\end{singlespace}
 
 
-\clearpage
+\textbf{Paper type} `Brevia' or `Viewpoint'
+
+%\textbf{Number of words in abstract} 200
+
+%\textbf{Number of words in main text} 3,481
+
+%\textbf{Number of references} 116
+
+%\textbf{Number of tables} 0
+
+%\textbf{Number of figures} 4
+
+%\textbf{Number of text boxes} 2
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\linenumbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\linenumbers
 \section*{Abstract}
 Past studies of phenology responses to recent climate change have focused on temperature as a driver of observed shifts. However, soil moisture is also affected by climate change and likely to alter biological responses. Here we synthesize microclimate and phenology data from climate change experiments to show how soil moisture interacts with temperature to affect plant phenology. We find that soil drying generally delays delays plant phenology, especially for budburst, a rate of XX days per percent VWC, on average. These effects vary widely across sites and species. This rate suggests that, on average, climate change- induced shifts soil moisture will play only a small role in altering future phenology, compared to shifts in temperature. This is both because of the strong sensitivity of plant phenology to temperature and because of the large magnitude of projected shifts in temperature, compared to shifts in soil moisture. Nonetheless, although effects of soil moisture are comparably small on average, sensitivity to soil moisture varied dramatically by species, and soil moisture levels differed by site and among years. Thus, soil moisture is likely to play a role in phenological shifts with climate change for some species, at some sites and years. Quantifying phenological sensitivity to changes in soil moisture will be useful for improving forecasts of shifts in phenology with future climate change.  
 
-
+\newpage
 \section* {Main}
 \par Climate change is affecting organisms by altering temperature and soil moisture around the world \citep{parmesan2006,chen2010}. One of most widespread biological responses to climate change is a shift in phenology, the timing of recurring biological events, which has occurred at rates of 2.3-5.1 days per decade \citep{parmesan2006,poloczanska2013,root2003}. Shifts in plant phenology are the most widely documented, with spring phenology (budburst, leaf-out, and flowering) occurring earlier in recent years \citep{wolkovich2012}, and senescence occurring later (citation). 
 \par Phenological shifts are typically attributed to warming temperature, a known and well-studied driver of plant phenology. The timing of spring budburst, for example, depends on temperature through both chilling (the prolonged exposure to cold temperatures after growth cessation in the fall) and forcing (exposure to warm temperatures). Recent trends of advancing phenology may be due to increases in both/either chilling and/or forcing with global warming \cite{fujisawa2010, ibanez2010,cook2012b}. In places where delays in spring phenology have occurred, reductions in winter chilling are thought to be the cause \cite{yu2010}. 
@@ -151,95 +151,10 @@ Past studies of phenology responses to recent climate change have focused on tem
 \par To understand how soil moisture interacts with temperature to affect phenology, we fit models with measured soil moisture, measured temperature, and their interaction to phenology response data (budburst, leafout, flowering, fruiting, senescence). Microclimate data came from the MC3E database, and phenology data came from the ExPhen database. We excluded conifers from the analysis, because their phenology has distinct differences from angiosperm phenology \cite{polgar2014} and conifer data existed from only one site in the database. For all phenology variables, the response variable was day-of-year of the phenological event. Predictors for our primary models were measured air temperature, soil moisture, and their interaction. We also fit model(s) with soil temperature in place of air temperature. Random effects for all phenology models were species (with random slopes and intercepts), site (random intercept), and year nested within site (random intercept). Equations for these models can be found in the Supplemental Methods. 
 To better understand the interactive effects of measured temperature and soil moisture, we conducted follow-up analyses in which we fit the same phenology models subsets of the data (controls only, low temperature treatments only, and high temperature treatments only).
 \par To quantify how climate manipulations affect temperature and soil moisture, we used microclimate data from the 4 sites in the MC3E database that manipulated both precipitation and temperature, and measured both above-ground temperature and soil moisture data (exp01,exp05,exp07,exp12). (OR use all 8 studies that measured soil moisture and above-ground temp?) We then fit two groups of hierarchical models to microclimate data from these sites: one group with temperature response variables (including mean annual, and mean seasonal temperatures), and the other group with soil moisture as response variables (including mean annual, and mean seasonal soil moisture). For both groups of models, explanatory variables were temperature treatment, precipitation treatment, and their interaction. The models included a random effect of site, with a random slope and intercept structure, to allow effects of experimental treatments to vary across sites. Models also included random effects of day-of-year, nested within year, on the intercept only, to account for non-independence of measurements taken on the same day within the same year. Equations for these models can be found in the Supplemental Methods. 
-\bibliography{...//..//Bibliography/mylibrary.bib}
-mylibrary
 
+\bibliography{mylibrary}
 \clearpage
-\section* {Figures}
-\clearpage
- \begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
- \caption{\textbf{Effects of target temperature and precipitation treatments on above-ground temperature and soil moisture.}} 
- \label{fig:soilmois}
- \end{figure}
 
-\begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/m5bbdlodffd.pdf}
- \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors).}} 
- \label{fig:bb}
- \end{figure}
-
-\begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/soilmoishist_mn.pdf}
- \caption{\textbf{Observed daily soil moisture in all plots versus control plots.}} 
- \label{fig:sm}
- \end{figure}
-
-\section* {To do}
-\begin{enumerate}
-\item Test Yann's theory (that soil moisture affects phenology through its effects on air temperature): fit models with soil temperature instead of air temperature (using same data)- compare coefficients
-
-\item Figure 2: color code dots by species (by BB day of year, from early to late)
-\end{enumerate}
-\section*{References to include}
-\begin{enumerate}
-\item Later flowering is  associated with low precipitation, at least in part (Crimmins et al 2010)
-\item soil moisture is important for crop models: https://climate.nasa.gov/news/2742/nasa-soil-moisture-data-advances-global-crop-forecasts/
-%\item National climate assessment for western US (https://nca2014.globalchange.gov/highlights/report-findings/future-climate/graphics/projected-changes-soil-moisture#image-tab2)
-
-
-\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-% It would help me work through an outline and then return to the text ... To get that going I have just jotted down below topics I think we should consider covering in the paper. This is NOT well organized currently. 
-There are several ways to open the paper (e.g., the one below, or focus on soil moisture/mutiple drivers) ... not sure which is best. 
-
-\begin{enumerate}
-\begin{enumerate} Intro paragraphs
-\item Phenology most reported bio indicator of climate change etc.
-\item How plant phenology works (see current text)
-\item Decades of focus on warm temperatures has left significant questions:
-\begin{enumerate}
-\item Experiments differ from observations
-\item Non-linearities in some places (Tibet, Europe etc.)
-\end{enumerate}
-\item Somehow loop to moisture ...
-\item Need to cover re: moisture
-\begin{enumerate}
-\item {\bf Temp and moisture are inherently linked, that's climate} *I think we should cover this more strongly than we do. 
-\item Forecasts of moisture (do we need to mention snow?)
-\item Precip experiments (maybe? And precip x warming?)
-\item Phenology and moisture ... how many studies outside semi-arid/arid and grassland sites?
-\end{enumerate}
-\item Temp and precip/soil moisture are (not sure we need this, maybe an alternative opening? Anyway, I had jotted it down, so keeping for now)
-\begin{enumerate}
-\item Shifting already, and expected to see more changes due to climate change
-\item Well studied experimentally
-\item But often considered in isolation in most other studies. Esp. for phenology?
-\item Yet, climatically they are strongly intertwined.
-\end{enumerate}
-\end{enumerate}
-
-\item Results & Conclusions
-\begin{enumerate}
-\item Relationship between temp and moisture (in control and all plots)
-\item Overall effects of temp and moisture on phenology, by stage
-\item By species
-\item Biome effects? (How many studies for each main model? Add n to plots, and check moisture x temp for control vs. all plots for subset of data in each model)
-\item Depth of sensors and/or planted versus unplanted results
-\item Forecasts
-\item Are we novel in showing moisture effects in temperate sites? 
-\end{enumerate}
-\item Miscellaneous: Do we need to cover?
-\begin{enumerate}
-\item Why no long-term data included?
-\item Evidence of non-linearities in responses?
-\end{enumerate}
-\end{enumerate}
