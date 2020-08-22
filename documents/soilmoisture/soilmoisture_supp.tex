@@ -17,7 +17,7 @@
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
  %put your figures in one place
-\SweaveOpts{prefix.string=figures/, eps=FALSE} 
+ 
 %you'll want these for pretty captioning
 \usepackage[small]{caption}
 
@@ -51,7 +51,7 @@
 
 %Start of the document
 \begin{document}
-\SweaveOpts{concordance=FALSE}
+
 % \SweaveOpts{concordance=TRUE}
 \bibliographystyle{amnat.bst}
 
@@ -213,54 +213,59 @@ y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{temp_{sp[i]}}+\beta_{mois_{ sp[i]}}+\
 
 \clearpage
 \section* {Supplemental Tables}
-<<label=xtable1a, echo=FALSE, results=tex>>=
-library(xtable)
-compcoefs<-read.csv("../../Analyses/soilmoisture/comp.coefs.lmer.csv")
-
-wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
-               
-               "|p{0.09\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.10\\textwidth}|"
-               
-               ))
-print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
-@
-
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Aug 11 15:00:22 2020
+\begin{table}[ht]
+\centering
+\caption{\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.} 
+\label{tab:warmtech}
+\begin{tabular}{|p{0.08\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|}
+  \hline
+X & m5.cent & m5cont.cent \\ 
+  \hline
+(Intercept) & 96.44 & 95.33 \\ 
+  temp & -9.31 & -9.57 \\ 
+  mois & -1.59 & 0.27 \\ 
+  temp:mois & 0.77 & 1.74 \\ 
+   \hline
+\end{tabular}
+\end{table}
 \clearpage
-<<label=xtable1a, echo=FALSE, results=tex>>=
-compcoefs<-read.csv("../../Analyses/soilmoisture/tempmoisbrms.csv")
-
-wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
-               
-               "|p{0.09\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.10\\textwidth}|"
-               
-               ))
-print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
-@
-
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Aug 11 15:00:22 2020
+\begin{table}[ht]
+\centering
+\caption{\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.} 
+\label{tab:warmtech}
+\begin{tabular}{|p{0.08\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|}
+  \hline
+X & Tmod.coef & Tmod.se & SMmod.coef & SMmod.se \\ 
+  \hline
+int & 14.38 & 1.28 & 0.18 & 0.02 \\ 
+  temp.treat & 1.25 & 0.09 & -0.01 & 0.00 \\ 
+  precip.treat & -0.19 & 0.15 & 0.02 & 0.01 \\ 
+  temp.treat*precip.treat & 0.04 & 0.06 & -0.00 & 0.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
 %comparison of control plots vs all plots
-<<label=xtablecont, echo=FALSE, results=tex>>=
-library(xtable)
-compcoefs<-read.csv("../../Analyses/soilmoisture/comp.coefs.lmer.csv")
-
-wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
-               
-               "|p{0.09\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.10\\textwidth}|"
-               
-               ))
-print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
-@
-
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Tue Aug 11 15:00:22 2020
+\begin{table}[ht]
+\centering
+\caption{\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.} 
+\label{tab:warmtech}
+\begin{tabular}{|p{0.08\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|}
+  \hline
+X & m5.cent & m5cont.cent \\ 
+  \hline
+(Intercept) & 96.44 & 95.33 \\ 
+  temp & -9.31 & -9.57 \\ 
+  mois & -1.59 & 0.27 \\ 
+  temp:mois & 0.77 & 1.74 \\ 
+   \hline
+\end{tabular}
+\end{table}
 \section*{Supplemental Figures}
 \clearpage
  \begin{figure}[h]

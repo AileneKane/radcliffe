@@ -16,7 +16,7 @@ library(ggplot2)
 library(shinystan)
 library(bayesplot)
 
-#library(rstanarm)
+library(rstanarm)
 library(dplyr)
 library(brms)
 library(RColorBrewer)
@@ -247,7 +247,7 @@ testm5tempcent.sq.lmer<-lmer(y~temp + temp2 + (temp + temp2|sp)+ (1|site/year),d
 anova(testm5cent.int.lmer,testm5cent.intsq.lmer,testm5tempcent.int.lmer,testm5tempcent.intsq.lmer,
       testm5tempcent.lmer,testm5tempcent.sq.lmer,testm5cent.intsq.lmer2)
 #best model is testm5cent.intsq.lmer2 
-#try to fit it in rstandarm 
+#try to fit it in rstanarm 
 bbd.cent <- with(expgdd_bbd, 
                           data.frame(y = doy, 
                                temp = ag_min_jm_cent[,1], #above-ground minimum air temp
