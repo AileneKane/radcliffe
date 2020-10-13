@@ -30,10 +30,10 @@ if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/Gi
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
 
-#source('Analyses/soilmoisture/savestan.R')
+source('Analyses/soilmoisture/savestan.R')
 
-#rstan_options(auto_write = TRUE)
-#options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
 #Read in experimental climate and phenology data
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
@@ -41,7 +41,7 @@ exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
 
 remove.conifers=TRUE
-use.airtemponly=FALSE
+use.airtemponly=TRUE
 use.centmod=FALSE
 
 #standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
@@ -60,167 +60,8 @@ if(use.airtemponly==FALSE) {source("Analyses/source/climsum_byplot_soiltoo.R")}
 #which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
 #which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
 
-#Prep the data for Stan model
-expgdd_subs$sp.name<-expgdd_subs$genus.species
-expgdd_subs$genus.species<-as.numeric(as.factor(expgdd_subs$genus.species))
-expgdd_subs$site2<-expgdd_subs$site
-expgdd_subs$site<-as.numeric(as.factor(expgdd_subs$site))
-expgdd_subs$year<-as.numeric(as.factor(expgdd_subs$year))
-
-
-#1) Divide by phenophase:
-
-expgdd_bbd<-expgdd_subs[which(expgdd_subs$event=="bbd"),]#bud burst data
-expgdd_bbd <- expgdd_bbd[apply(expgdd_bbd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-expgdd_bbd_cont<-expgdd_bbd[expgdd_bbd$target==0,]
-
-
-expgdd_lod<-expgdd_subs[which(expgdd_subs$event=="lod"),]#leaf out data
-expgdd_lod <- expgdd_lod[apply(expgdd_lod, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-expgdd_lod_cont<-expgdd_lod[expgdd_lod$target==0,]
-
-#expgdd_lud<-expgdd_subs[which(expgdd_subs$event=="lud"),]#leaf unfolding data
-#expgdd_lud <- expgdd_lud[apply(expgdd_lud, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-
-expgdd_ffd<-expgdd_subs[which(expgdd_subs$event=="ffd"),]#leaf unfolding data
-expgdd_ffd <- expgdd_ffd[apply(expgdd_ffd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-expgdd_ffd_cont<-expgdd_ffd[expgdd_ffd$target==0,]
-
-expgdd_ffrd<-expgdd_subs[which(expgdd_subs$event=="ffrd"),]#leaf unfolding data
-expgdd_ffrd <- expgdd_ffrd[apply(expgdd_ffrd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-expgdd_ffrd_cont<-expgdd_ffrd[expgdd_ffrd$target==0,]
-
-expgdd_sen<-expgdd_subs[which(expgdd_subs$event=="sen"),]
-expgdd_sen <- expgdd_sen[apply(expgdd_sen, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-expgdd_sen_cont<-expgdd_sen[expgdd_sen$target==0,]
-
-#For lod and lud, use only species which have all lod and lud, to see what is driving differences between these two models
-#unique(expgdd_lud$genus.species)#many fewer species have lud- do not use this one!
-#unique(expgdd_lod$genus.species)
-#common.spp<-unique(expgdd_lud$genus.species[expgdd_lud$genus.species%in%expgdd_lod$genus.species])
-#unique(expgdd_sen$genus.species)
-#expgdd_lod_cs<-expgdd_lod[which(expgdd_lod$genus.species%in%common.spp),]
-#expgdd_lud_cs<-expgdd_lud[which(expgdd_lud$genus.species%in%common.spp),]
-
-# For centering data:
-expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
-expgdd_bbd$smjm_cent<-scale(expgdd_bbd$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd$ag_min_jm_cent<-scale(expgdd_bbd$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd$agtmax_cent<-scale(expgdd_bbd$agtmax, center = TRUE, scale = TRUE)
-expgdd_bbd$bg_min_jm_cent<-scale(expgdd_bbd$bg_min_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd$bgtmax_cent<-scale(expgdd_bbd$bgtmax, center = TRUE, scale = TRUE)
-
-
-#centering control only data
-# For centering data:
-expgdd_bbd_cont$sm_cent <- scale(expgdd_bbd_cont$sm, center=TRUE, scale=TRUE)
-expgdd_bbd_cont$smjm_cent<-scale(expgdd_bbd_cont$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd_cont$ag_min_jm_cent<-scale(expgdd_bbd_cont$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd_cont$agtmax_cent<-scale(expgdd_bbd_cont$agtmax, center = TRUE, scale = TRUE)
-
-
-expgdd_lod$sm_cent <- scale(expgdd_lod$sm, center=TRUE, scale=TRUE)
-expgdd_lod$smjm_cent<-scale(expgdd_lod$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_lod$ag_min_jm_cent<-scale(expgdd_lod$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_lod$agtmax_cent<-scale(expgdd_lod$agtmax, center = TRUE, scale = TRUE)
-expgdd_lod$ag_min_aprjun_cent<-scale(expgdd_lod$ag_min_aprjun, center = TRUE, scale = TRUE)
-expgdd_lod$soilmois_aprjun_cent<-scale(expgdd_lod$soilmois_aprjun, center = TRUE, scale = TRUE)
-
-
-#expgdd_lud$sm_cent <- scale(expgdd_lud$sm, center=TRUE, scale=TRUE)
-#expgdd_lud$smjm_cent<-scale(expgdd_lud$soilmois_janmar, center = TRUE, scale = TRUE)
-#expgdd_lud$ag_min_jm_cent<-scale(expgdd_lud$ag_min_janmar, center = TRUE, scale = TRUE)
-#expgdd_lud$agtmax_cent<-scale(expgdd_lud$agtmax, center = TRUE, scale = TRUE)
-
-expgdd_ffd$sm_cent <- scale(expgdd_ffd$sm, center=TRUE, scale=TRUE)
-expgdd_ffd$agtmin_cent<-scale(expgdd_ffd$agtmin, center = TRUE, scale = TRUE)
-expgdd_ffd$agtmax_cent<-scale(expgdd_ffd$agtmax, center = TRUE, scale = TRUE)
-
-expgdd_ffrd$sm_cent <- scale(expgdd_ffrd$sm, center=TRUE, scale=TRUE)
-expgdd_ffrd$agtmin_cent<-scale(expgdd_ffrd$agtmin, center = TRUE, scale = TRUE)
-expgdd_ffrd$agtmax_cent<-scale(expgdd_ffrd$agtmax, center = TRUE, scale = TRUE)
-
-expgdd_sen$sm_cent <- scale(expgdd_sen$sm, center=TRUE, scale=TRUE)
-expgdd_sen$agtmin_cent<-scale(expgdd_sen$agtmin, center = TRUE, scale = TRUE)
-expgdd_sen$agtmax_cent<-scale(expgdd_sen$agtmax, center = TRUE, scale = TRUE)
-
-#2) Make a list out of the processed data. It will be input for the model.
-#make sure that species match between control-only and full dataset
-contsp<-unique(expgdd_bbd_cont$genus.species)
-expgdd_bbdmatchcsp<-expgdd_bbd[expgdd_bbd$genus.species %in% contsp,]
-#only lose 9 rows of data (5 species)
-
-# Centering data:
-expgdd_bbd_cont$sm_cent <- scale(expgdd_bbd_cont$sm, center=TRUE, scale=TRUE)
-expgdd_bbd_cont$smjm_cent<-scale(expgdd_bbd_cont$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd_cont$ag_min_jm_cent<-scale(expgdd_bbd_cont$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_bbd_cont$agtmax_cent<-scale(expgdd_bbd_cont$agtmax, center = TRUE, scale = TRUE)
-
-expgdd_bbdmatchcsp$sm_cent <- scale(expgdd_bbdmatchcsp$sm, center=TRUE, scale=TRUE)
-expgdd_bbdmatchcsp$smjm_cent<-scale(expgdd_bbdmatchcsp$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_bbdmatchcsp$ag_min_jm_cent<-scale(expgdd_bbdmatchcsp$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_bbdmatchcsp$agtmax_cent<-scale(expgdd_bbdmatchcsp$agtmax, center = TRUE, scale = TRUE)
-
-datalist.bbd <- with(expgdd_bbd, 
-                     list(y = doy, 
-                          temp = ag_min_janmar, #above-ground minimum air temp
-                          mois = soilmois_janmar, #soil moisture
-                          sp = genus.species,
-                          site = site,
-                          year = styear,
-                          N = nrow(expgdd_bbd),
-                          n_sp = length(unique(expgdd_bbd$genus.species))
-                     )
-)
-
-datalist.bbd.cent <- with(expgdd_bbd, 
-                          list(y = doy, 
-                               temp = ag_min_jm_cent[,1], #above-ground minimum air temp
-                               temp2 = ag_min_jm_cent[,1]*ag_min_jm_cent[,1], #above-ground minimum air temp
-                               mois = smjm_cent[,1], #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
-                          )
-)
-datalist.bbdcont <- with(expgdd_bbd_cont, 
-                     list(y = doy, 
-                          temp = ag_min_janmar, #above-ground minimum air temp
-                          mois = soilmois_janmar, #soil moisture
-                          sp = genus.species,
-                          site = site,
-                          year = year,
-                          N = nrow(expgdd_bbd_cont),
-                          n_sp = length(unique(expgdd_bbd_cont$genus.species))
-                     )
-)
-
-datalist.bbdcont.cent <- with(expgdd_bbd_cont, 
-                         list(y = doy, 
-                              temp = ag_min_jm_cent, #above-ground minimum air temp
-                              mois = smjm_cent, #soil moisture
-                              sp = genus.species,
-                              site = site,
-                              year = year,
-                              N = nrow(expgdd_bbd_cont),
-                              n_sp = length(unique(expgdd_bbd_cont$genus.species))
-                         )
-)
-
-datalist.bbdsoil.cent <- with(expgdd_bbd, 
-                          list(y = doy, 
-                               temp = bg_min_jm_cent[,1], #above-ground minimum air temp
-                               temp2 = bg_min_jm_cent[,1]*bg_min_jm_cent[,1], #above-ground minimum air temp
-                               mois = smjm_cent[,1], #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
-                          )
-)
+#Prep the data for models and divide into datasets by phenophase
+source("Analyses/source/phensm_modprep.R")
 ##################
 # Fit m5 to data #
 ##################

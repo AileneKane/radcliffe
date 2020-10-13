@@ -66,7 +66,7 @@ expgdd_bbd$sm_cent <- scale(expgdd_bbd$sm, center=TRUE, scale=TRUE)
 expgdd_bbd$smjm_cent<-scale(expgdd_bbd$soilmois_janmar, center = TRUE, scale = TRUE)
 expgdd_bbd$ag_min_jm_cent<-scale(expgdd_bbd$ag_min_janmar, center = TRUE, scale = TRUE)
 expgdd_bbd$agtmax_cent<-scale(expgdd_bbd$agtmax, center = TRUE, scale = TRUE)
-#centering control only data
+
 # For centering data:
 expgdd_bbd_cont$sm_cent <- scale(expgdd_bbd_cont$sm, center=TRUE, scale=TRUE)
 expgdd_bbd_cont$smjm_cent<-scale(expgdd_bbd_cont$soilmois_janmar, center = TRUE, scale = TRUE)
@@ -100,17 +100,17 @@ expgdd_sen$agtmin_cent<-scale(expgdd_sen$agtmin, center = TRUE, scale = TRUE)
 expgdd_sen$agtmax_cent<-scale(expgdd_sen$agtmax, center = TRUE, scale = TRUE)
 
 
-#make sure that species match between control-only and full dataset
-contsp<-unique(expgdd_bbd_cont$genus.species)
-expgdd_bbdmatchcsp<-expgdd_bbd[expgdd_bbd$genus.species %in% contsp,]
-#only lose 9 rows of data (5 species)
 
-# Centering data:
+# Centering control only data:
 expgdd_bbd_cont$sm_cent <- scale(expgdd_bbd_cont$sm, center=TRUE, scale=TRUE)
 expgdd_bbd_cont$smjm_cent<-scale(expgdd_bbd_cont$soilmois_janmar, center = TRUE, scale = TRUE)
 expgdd_bbd_cont$ag_min_jm_cent<-scale(expgdd_bbd_cont$ag_min_janmar, center = TRUE, scale = TRUE)
 expgdd_bbd_cont$agtmax_cent<-scale(expgdd_bbd_cont$agtmax, center = TRUE, scale = TRUE)
 
+#make sure that species match between control-only and full dataset
+contsp<-unique(expgdd_bbd_cont$genus.species)
+expgdd_bbdmatchcsp<-expgdd_bbd[expgdd_bbd$genus.species %in% contsp,]
+#only lose 9 rows of data (5 species)
 expgdd_bbdmatchcsp$sm_cent <- scale(expgdd_bbdmatchcsp$sm, center=TRUE, scale=TRUE)
 expgdd_bbdmatchcsp$smjm_cent<-scale(expgdd_bbdmatchcsp$soilmois_janmar, center = TRUE, scale = TRUE)
 expgdd_bbdmatchcsp$ag_min_jm_cent<-scale(expgdd_bbdmatchcsp$ag_min_janmar, center = TRUE, scale = TRUE)
@@ -162,3 +162,92 @@ datalist.bbdcont.cent <- with(expgdd_bbd_cont,
                                    n_sp = length(unique(expgdd_bbd_cont$genus.species))
                               )
 )
+
+datalist.lod<- with(expgdd_lod, 
+                    list(y = doy, 
+                         temp = ag_min_aprjun, #above-ground minimum air temp
+                         mois = soilmois_aprjun, #soil moisture
+                         sp = genus.species,
+                         site = site,
+                         year = year,
+                         N = nrow(expgdd_bbd),
+                         n_sp = length(unique(expgdd_bbd$genus.species))
+                    )
+)
+
+
+datalist.lod.cent <- with(expgdd_lod, 
+                          list(y = doy, 
+                               temp = ag_min_aprjun_cent, #above-ground minimum air temp
+                               mois = soilmois_aprjun_cent, #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_bbd),
+                               n_sp = length(unique(expgdd_bbd$genus.species))
+                          )
+)
+
+
+#datalist.lud.cent <- with(expgdd_lud, 
+#                         list(y = doy, 
+#                             temp = ag_min_jm_cent, #above-ground minimum air temp
+#                            mois = smjm_cent, #soil moisture
+#                           sp = genus.species,
+#                          site = site,
+#                         year = year,
+#                        N = nrow(expgdd_bbd),
+#                       n_sp = length(unique(expgdd_bbd$genus.species))
+#                 )
+#)
+
+#datalist.lud <- with(expgdd_lud, 
+#                          list(y = doy, 
+#                               temp = ag_min_janmar, #above-ground minimum air temp
+#                               mois = soilmois_janmar, #soil moisture
+#                               sp = genus.species,
+#                               site = site,
+#                               year = year,
+#                               N = nrow(expgdd_bbd),
+#                               n_sp = length(unique(expgdd_bbd$genus.species))
+#                          )
+#)
+
+datalist.ffd.cent <- with(expgdd_ffd, 
+                          list(y = doy, 
+                               temp = agtmin_cent, #above-ground minimum air temp
+                               mois = sm_cent, #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_bbd),
+                               n_sp = length(unique(expgdd_bbd$genus.species))
+                          )
+)
+
+datalist.ffrd.cent <- with(expgdd_ffrd, 
+                           list(y = doy, 
+                                temp = agtmin_cent, #above-ground minimum air temp
+                                mois = sm_cent, #soil moisture
+                                sp = genus.species,
+                                site = site,
+                                year = year,
+                                N = nrow(expgdd_bbd),
+                                n_sp = length(unique(expgdd_bbd$genus.species))
+                           )
+)
+
+datalist.sen.cent <- with(expgdd_sen, 
+                          list(y = doy, 
+                               temp = agtmin_cent, #above-ground minimum air temp
+                               mois = sm_cent, #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_bbd),
+                               n_sp = length(unique(expgdd_bbd$genus.species))
+                          )
+)
+
+
+
