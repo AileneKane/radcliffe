@@ -1,4 +1,4 @@
-# Plotting BB vs soil moisture, bt site
+# Plotting BB vs soil moisture, by site
 #Does there appear to be a threshold in soil moisture effect on budburst
 
 ## housekeeping

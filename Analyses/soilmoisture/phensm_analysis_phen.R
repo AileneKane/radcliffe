@@ -94,29 +94,29 @@ save(testm5.lod.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
 
 testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
-                           data=datalist.lod.cent,
+                           data=datalist.lod.cent,iter = 3000,
                            chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
 
 save(testm5cent.lod.brms, file="Analyses/output/brms/testm5cent.brms.lo.Rda")
 
 testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
-                           data=datalist.ffd.cent,
+                           data=datalist.ffd.cent,iter = 3000,
                            chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
 save(testm5cent.ffd.brms, file="Analyses/output/brms/testm5cent.brms.ff.Rda")
 
 testm5cent.ffrd.brms <- brm(y ~ temp * mois +#fixed effects
                               (temp * mois|sp) + (1|site/year), #random effects
-                            data=datalist.ffrd.cent,
+                            data=datalist.ffrd.cent,iter = 3000,
                             chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
 
 
-save(testm5cent.ffr.brms, file="Analyses/output/brms/testm5cent.brms.fr.Rda")
+save(testm5cent.ffrd.brms, file="Analyses/output/brms/testm5cent.brms.fr.Rda")
 
 
 testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
-                           data=datalist.sen.cent,
+                           data=datalist.sen.cent,iter = 5000,
                            chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
 save(testm5cent.sen.brms, file="Analyses/output/brms/testm5cent.brms.se.Rda")
 

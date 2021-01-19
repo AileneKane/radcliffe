@@ -61,7 +61,7 @@ if(use.airtemponly==FALSE) {source("Analyses/source/climsum_byplot_soiltoo.R")}
 #which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
 
 #Prep the data for models and divide into datasets by phenophase
-source("Analyses/source/phensm_modprep.R")
+source("Analyses/source/phensm_modprep.R")#should this be "stanprep_phenmods.R"?
 ##################
 # Fit m5 to data #
 ##################
