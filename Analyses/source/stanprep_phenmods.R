@@ -170,8 +170,8 @@ datalist.lod<- with(expgdd_lod,
                          sp = genus.species,
                          site = site,
                          year = year,
-                         N = nrow(expgdd_bbd),
-                         n_sp = length(unique(expgdd_bbd$genus.species))
+                         N = nrow(expgdd_lod),
+                         n_sp = length(unique(expgdd_lod$genus.species))
                     )
 )
 
@@ -183,8 +183,8 @@ datalist.lod.cent <- with(expgdd_lod,
                                sp = genus.species,
                                site = site,
                                year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
+                               N = nrow(expgdd_lod),
+                               n_sp = length(unique(expgdd_lod$genus.species))
                           )
 )
 
@@ -220,8 +220,8 @@ datalist.ffd.cent <- with(expgdd_ffd,
                                sp = genus.species,
                                site = site,
                                year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
+                               N = nrow(expgdd_ffd),
+                               n_sp = length(unique(expgdd_ffd$genus.species))
                           )
 )
 
@@ -232,8 +232,8 @@ datalist.ffrd.cent <- with(expgdd_ffrd,
                                 sp = genus.species,
                                 site = site,
                                 year = year,
-                                N = nrow(expgdd_bbd),
-                                n_sp = length(unique(expgdd_bbd$genus.species))
+                                N = nrow(expgdd_ffrd),
+                                n_sp = length(unique(expgdd_ffrd$genus.species))
                            )
 )
 
@@ -244,10 +244,64 @@ datalist.sen.cent <- with(expgdd_sen,
                                sp = genus.species,
                                site = site,
                                year = year,
-                               N = nrow(expgdd_bbd),
-                               n_sp = length(unique(expgdd_bbd$genus.species))
+                               N = nrow(expgdd_sen),
+                               n_sp = length(unique(expgdd_sen$genus.species))
                           )
 )
 
+#set up datalists for bb and lo with matching sepcies
 
+splegbb<- expgdd_bbd %>% # start with the data frame
+  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+  dplyr::select(sp.name,genus.species)
+splegbb<-splegbb[order(splegbb$genus.species),]
+colnames(splegbb)[2]<-"spnumbb"
+spleglo<-expgdd_lod %>% # start with the data frame
+  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+  dplyr::select(sp.name,genus.species)    
+spleglo<-spleglo[order(spleglo$genus.species),]
+colnames(spleglo)[2]<-"spnumlo"
+
+splegfl<-expgdd_ffd %>% # start with the data frame
+  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+  dplyr::select(sp.name,genus.species)    
+splegfl<-splegfl[order(splegfl$genus.species),]
+colnames(splegfl)[2]<-"spnumfl"
+
+spbblo<-full_join(splegbb,spleglo,by = "sp.name")
+spbblo<- spbblo [apply(spbblo, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+dim(spbblo)
+
+splofl<-full_join(spleglo,splegfl,by = "sp.name")
+splofl<- splofl [apply(splofl, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+
+
+#datalists for these more models fit to these more limited datasets
+expgdd_bbdlo<-expgdd_bbd[expgdd_bbd$genus.species %in% spbblo$spnumbb,]
+
+datalist.bbdlo.cent <- with(expgdd_bbdlo, 
+                          list(y = doy, 
+                               temp = ag_min_jm_cent[,1], #above-ground minimum air temp
+                               mois = smjm_cent[,1], #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_bbdlo),
+                               n_sp = length(unique(expgdd_bbdlo$genus.species))
+                          )
+)
+
+expgdd_lodbb<-expgdd_lod[expgdd_lod$genus.species %in% spbblo$spnumlo,]
+
+datalist.lodbb.cent <- with(expgdd_lodbb, 
+                            list(y = doy, 
+                                 temp = ag_min_jm_cent[,1], #above-ground minimum air temp
+                                 mois = smjm_cent[,1], #soil moisture
+                                 sp = genus.species,
+                                 site = site,
+                                 year = year,
+                                 N = nrow(expgdd_lodbb),
+                                 n_sp = length(unique(expgdd_lodbb$genus.species))
+                            )
+)
 

@@ -58,7 +58,7 @@ splegbb<- expgdd_bbd %>% # start with the data frame
               dplyr::select(sp.name,genus.species)
 splegbb<-splegbb[order(splegbb$genus.species),]
 colnames(splegbb)[2]<-"spnumbb"
-
+table(expgdd_bbd$site)
 spleglo<-expgdd_lod %>% # start with the data frame
   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
   dplyr::select(sp.name,genus.species)    
@@ -81,8 +81,8 @@ sum<-summary(mod)
 fix<-sum$fixed[2:4,]
 speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
-#pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 7, height = 10)
+pdf(file.path("Analyses/soilmoisture/figures/m5.bbdlo.pdf"), width = 10, height = 12)
+#quartz(width = 10, height = 10)
 par(mfrow=c(2,1), mar = c(10, 10, 5, 10))
 
 # One panel: budburst
@@ -121,24 +121,15 @@ for(i in 1:nrow(fix)){
 }
 #fixed effects
 arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "darkblue", lwd = 2)
+       len = 0, col = "green", lwd = 2)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
        cex = 1.5,
-       col = "darkblue")
+       col = "green")
 
 abline(v = 0, lty = 2)
-
-par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+6
-leg2<-5*(nrow(fix):1)[1]+7
-legend(leg1, leg2, splegbb$sp.name,
-       pch=my.pch,
-       col=alpha(my.pal, .5),
-       bty = "n",
-       cex=0.50, text.font=3)
 
 #dev.off()
 
@@ -150,8 +141,8 @@ fix<-sum$fixed[2:4,]
 speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-minx<-min(speff$sp[,2:4,2:4])
-maxx<-max(speff$sp[,2:4,2:4])
+#minx<-min(speff$sp[,2:4,2:4])
+#maxx<-max(speff$sp[,2:4,2:4])
 #minx<--20
 #maxx<-20
 plot(seq(minx, #min(meanz[,'mean']*1.1),
@@ -194,7 +185,16 @@ points(fix[,'Estimate'],
        col = "darkgreen")
 
 abline(v = 0, lty = 2)
-#dev.off()
+par(xpd=TRUE) # so I can plot legend outside
+leg1<-maxx+6
+leg2<-5*(nrow(fix):1)[1]+5
+legend(leg1, leg2, splegbb$sp.name,
+       pch=my.pch,
+       col=alpha(my.pal, .5),
+       bty = "n",
+       cex=0.60, text.font=3)
+
+dev.off()
 
 
 
