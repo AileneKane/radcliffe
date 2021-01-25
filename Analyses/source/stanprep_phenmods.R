@@ -307,14 +307,14 @@ datalist.lodbb.cent <- with(expgdd_lodbb,
                             )
 )
 
-datalist.lodbb.cent <- with(expgdd_lodfl, 
+datalist.lodfl.cent <- with(expgdd_lodfl, 
                             list(y = doy, 
                                  temp = ag_min_jm_cent[,1], #above-ground minimum air temp
                                  mois = smjm_cent[,1], #soil moisture
                                  sp = genus.species,
                                  site = site,
                                  year = year,
-                                 N = nrow(expgdd_lodbb),
-                                 n_sp = length(unique(expgdd_lodbb$genus.species))
+                                 N = nrow(expgdd_lodfl),
+                                 n_sp = length(unique(expgdd_lodfl$genus.species))
                             )
 )
