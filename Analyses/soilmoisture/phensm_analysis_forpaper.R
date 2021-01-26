@@ -26,7 +26,7 @@ options(mc.cores = parallel::detectCores())
 
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
-#setwd("~/Documents/GitHub/radcliffe")#noaa
+#setwd("~/GitHub/radcliffe")#tnc
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
 
@@ -90,15 +90,11 @@ round(fixef(testm5cent.brms, probs=c(.90,0.10)), digits=2)
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.bbdlo.cent,
-                       chains = 2,iter = 3000,
-                       control = list(max_treedepth = 15,adapt_delta = 0.99))
-# without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
+                       chains = 2,iter = 4000,
+                       control = list(max_treedepth = 15,adapt_delta = 0.999))
 # 
 # 
-# stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
-# summary(testm5cent.brms)
-# stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
-# #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
+
 save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bblo.Rda")
 
 #make plots of main effects and species- level effects of this model
@@ -128,7 +124,7 @@ save(testm5cent.lod.brms, file="Analyses/output/brms/testm5cent.brms.lo.Rda")
 testm5cent.lodbb.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.lodbb.cent,
-                       chains = 2,iter = 3000,
+                       chains = 2,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 # without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
 # 
@@ -137,28 +133,48 @@ testm5cent.lodbb.brms <- brm(y ~ temp * mois +#fixed effects
 # summary(testm5cent.brms)
 # stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
-save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bblo.Rda")
+save(testm5cent.lodbb.brms, file="Analyses/output/brms/testm5cent.brms.lobb.Rda")
 
 
+testm5cent.lodfl.brms <- brm(y ~ temp * mois +#fixed effects
+                               (temp * mois|sp) + (1|site/year), #random effects
+                             data=datalist.lodfl.cent,
+                             chains = 2,iter = 4000,
+                             control = list(max_treedepth = 15,adapt_delta = 0.9999))
+save(testm5cent.lodfl.brms, file="Analyses/output/brms/testm5cent.brms.lofl.Rda")
+#1 divergent transition of warmup with 
 
 testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
                            data=datalist.ffd.cent,
-                           chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
+                           chains = 2,iter = 4000,
+                           control = list(max_treedepth = 15,adapt_delta = .999))
 
 save(testm5cent.ffd.brms, file="Analyses/output/brms/testm5cent.brms.ff.Rda")
 
 
+testm5cent.ffdlo.brms <- brm(y ~ temp * mois +#fixed effects
+                             (temp * mois|sp) + (1|site/year), #random effects
+                           data=datalist.ffdlo.cent,
+                           chains = 2,iter = 4000,control = list(max_treedepth = 15,adapt_delta = .9999))
+
+save(testm5cent.ffdlo.brms, file="Analyses/output/brms/testm5cent.brms.fflo.Rda")
+
 testm5cent.ffrd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
                            data=datalist.ffrd.cent,
-                           chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
+                           chains = 2,iter = 4000,
+                           control = list(max_treedepth = 15,adapt_delta = .9999))
+save(testm5cent.ffrd.brms, file="Analyses/output/brms/testm5cent.brms.frd.Rda")
+#8 divergent transitions...
 
 testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
                               (temp * mois|sp) + (1|site/year), #random effects
                             data=datalist.sen.cent,
-                            chains = 2,control = list(max_treedepth = 15,adapt_delta = .999))
+                            chains = 2,iter = 4000,
+                           control = list(max_treedepth = 15,adapt_delta = .9999))
 
+save(testm5cent.sen.brms, file="Analyses/output/brms/testm5cent.brms.sen.Rda")
 
 #Are individuals in the studies in our data set small? large? young/old?
 unique(expgdd_subs$site2[expgdd_subs$event=="bbd"])

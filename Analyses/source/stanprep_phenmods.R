@@ -78,6 +78,7 @@ expgdd_lod$sm_cent <- scale(expgdd_lod$sm, center=TRUE, scale=TRUE)
 expgdd_lod$smjm_cent<-scale(expgdd_lod$soilmois_janmar, center = TRUE, scale = TRUE)
 expgdd_lod$ag_min_jm_cent<-scale(expgdd_lod$ag_min_janmar, center = TRUE, scale = TRUE)
 expgdd_lod$agtmax_cent<-scale(expgdd_lod$agtmax, center = TRUE, scale = TRUE)
+
 expgdd_lod$ag_min_aprjun_cent<-scale(expgdd_lod$ag_min_aprjun, center = TRUE, scale = TRUE)
 expgdd_lod$soilmois_aprjun_cent<-scale(expgdd_lod$soilmois_aprjun, center = TRUE, scale = TRUE)
 
@@ -90,6 +91,8 @@ expgdd_lod$soilmois_aprjun_cent<-scale(expgdd_lod$soilmois_aprjun, center = TRUE
 expgdd_ffd$sm_cent <- scale(expgdd_ffd$sm, center=TRUE, scale=TRUE)
 expgdd_ffd$agtmin_cent<-scale(expgdd_ffd$agtmin, center = TRUE, scale = TRUE)
 expgdd_ffd$agtmax_cent<-scale(expgdd_ffd$agtmax, center = TRUE, scale = TRUE)
+expgdd_ffd$smjm_cent<-scale(expgdd_ffd$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_ffd$ag_min_jm_cent<-scale(expgdd_ffd$ag_min_janmar, center = TRUE, scale = TRUE)
 
 expgdd_ffrd$sm_cent <- scale(expgdd_ffrd$sm, center=TRUE, scale=TRUE)
 expgdd_ffrd$agtmin_cent<-scale(expgdd_ffrd$agtmin, center = TRUE, scale = TRUE)
@@ -278,11 +281,13 @@ splofl<- splofl [apply(splofl, 1, function(x) all(!is.na(x))),] # only keep rows
 
 #datalists for these more models fit to these more limited datasets
 expgdd_bbdlo<-expgdd_bbd[expgdd_bbd$genus.species %in% spbblo$spnumbb,]
+expgdd_bbdlo$ag_min_jm_cent<-scale(expgdd_bbdlo$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_bbdlo$smjm_cent<-scale(expgdd_bbdlo$soilmois_janmar, center = TRUE, scale = TRUE)
 
 datalist.bbdlo.cent <- with(expgdd_bbdlo, 
                           list(y = doy, 
-                               temp = ag_min_jm_cent[,1], #above-ground minimum air temp
-                               mois = smjm_cent[,1], #soil moisture
+                               temp = ag_min_jm_cent, #above-ground minimum air temp
+                               mois = smjm_cent, #soil moisture
                                sp = genus.species,
                                site = site,
                                year = year,
@@ -294,6 +299,10 @@ datalist.bbdlo.cent <- with(expgdd_bbdlo,
 expgdd_lodbb<-expgdd_lod[expgdd_lod$genus.species %in% spbblo$spnumlo,]
 expgdd_lodfl<-expgdd_lod[expgdd_lod$genus.species %in% splofl$spnumlo,]
 expgdd_ffdlo<-expgdd_ffd[expgdd_ffd$genus.species %in% splofl$spnumlo,]
+expgdd_ffdlo$ag_min_jm_cent<-scale(expgdd_ffdlo$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_ffdlo$smjm_cent<-scale(expgdd_ffdlo$soilmois_janmar, center = TRUE, scale = TRUE)
+expgdd_lodfl$ag_min_jm_cent<-scale(expgdd_lodfl$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_lodfl$smjm_cent<-scale(expgdd_lodfl$soilmois_janmar, center = TRUE, scale = TRUE)
 
 datalist.lodbb.cent <- with(expgdd_lodbb, 
                             list(y = doy, 
@@ -309,12 +318,23 @@ datalist.lodbb.cent <- with(expgdd_lodbb,
 
 datalist.lodfl.cent <- with(expgdd_lodfl, 
                             list(y = doy, 
-                                 temp = ag_min_jm_cent[,1], #above-ground minimum air temp
-                                 mois = smjm_cent[,1], #soil moisture
+                                 temp = ag_min_jm_cent, #above-ground minimum air temp
+                                 mois = smjm_cent, #soil moisture
                                  sp = genus.species,
                                  site = site,
                                  year = year,
                                  N = nrow(expgdd_lodfl),
                                  n_sp = length(unique(expgdd_lodfl$genus.species))
+                            )
+)
+datalist.ffdlo.cent <- with(expgdd_ffdlo, 
+                            list(y = doy, 
+                                 temp = ag_min_jm_cent, #above-ground minimum air temp
+                                 mois = smjm_cent, #soil moisture
+                                 sp = genus.species,
+                                 site = site,
+                                 year = year,
+                                 N = nrow(expgdd_ffdlo),
+                                 n_sp = length(unique(expgdd_ffdlo$genus.species))
                             )
 )
