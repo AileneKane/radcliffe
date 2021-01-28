@@ -116,7 +116,8 @@ save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bblo.Rda")
 testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.lod.cent,
-                       chains = 2,control = list(max_treedepth = 15,adapt_delta = 0.99))
+                       chains = 2,iter = 4000,
+                       control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5cent.lod.brms, file="Analyses/output/brms/testm5cent.brms.lo.Rda")
 
 #now fit with data containing same species as lo
