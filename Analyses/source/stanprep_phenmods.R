@@ -273,7 +273,7 @@ colnames(splegfl)[2]<-"spnumfl"
 
 spbblo<-full_join(splegbb,spleglo,by = "sp.name")
 spbblo<- spbblo [apply(spbblo, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
-dim(spbblo)
+#dim(spbblo)
 
 splofl<-full_join(spleglo,splegfl,by = "sp.name")
 splofl<- splofl [apply(splofl, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
@@ -281,33 +281,38 @@ splofl<- splofl [apply(splofl, 1, function(x) all(!is.na(x))),] # only keep rows
 
 #datalists for these more models fit to these more limited datasets
 expgdd_bbdlo<-expgdd_bbd[expgdd_bbd$genus.species %in% spbblo$spnumbb,]
-expgdd_bbdlo$ag_min_jm_cent<-scale(expgdd_bbdlo$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_bbdlo$smjm_cent<-scale(expgdd_bbdlo$soilmois_janmar, center = TRUE, scale = TRUE)
-
-datalist.bbdlo.cent <- with(expgdd_bbdlo, 
-                          list(y = doy, 
-                               temp = ag_min_jm_cent, #above-ground minimum air temp
-                               mois = smjm_cent, #soil moisture
-                               sp = genus.species,
-                               site = site,
-                               year = year,
-                               N = nrow(expgdd_bbdlo),
-                               n_sp = length(unique(expgdd_bbdlo$genus.species))
-                          )
-)
-
 expgdd_lodbb<-expgdd_lod[expgdd_lod$genus.species %in% spbblo$spnumlo,]
 expgdd_lodfl<-expgdd_lod[expgdd_lod$genus.species %in% splofl$spnumlo,]
 expgdd_ffdlo<-expgdd_ffd[expgdd_ffd$genus.species %in% splofl$spnumlo,]
-expgdd_ffdlo$ag_min_jm_cent<-scale(expgdd_ffdlo$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_ffdlo$smjm_cent<-scale(expgdd_ffdlo$soilmois_janmar, center = TRUE, scale = TRUE)
-expgdd_lodfl$ag_min_jm_cent<-scale(expgdd_lodfl$ag_min_janmar, center = TRUE, scale = TRUE)
-expgdd_lodfl$smjm_cent<-scale(expgdd_lodfl$soilmois_janmar, center = TRUE, scale = TRUE)
+
+expgdd_bbdlo$ag_min_jm_cent<-scale(expgdd_bbdlo$ag_min_janmar, center = TRUE, scale = TRUE)
+expgdd_bbdlo$smjm_cent<-scale(expgdd_bbdlo$soilmois_janmar, center = TRUE, scale = TRUE)
+
+expgdd_lodbb$ag_min_aprjun_cent<-scale(expgdd_lodbb$ag_min_aprjun, center = TRUE, scale = TRUE)
+expgdd_lodbb$soilmois_aprjun_cent<-scale(expgdd_lodbb$soilmois_aprjun, center = TRUE, scale = TRUE)
+
+expgdd_ffdlo$agtmin_cent<-scale(expgdd_ffdlo$agtmin, center = TRUE, scale = TRUE)
+expgdd_ffdlo$sm_cent<-scale(expgdd_ffdlo$sm, center = TRUE, scale = TRUE)
+
+expgdd_lodfl$ag_min_aprjun_cent <-scale(expgdd_lodfl$ag_min_aprjun, center = TRUE, scale = TRUE)
+expgdd_lodfl$soilmois_aprjun_cent<-scale(expgdd_lodfl$soilmois_aprjun, center = TRUE, scale = TRUE)
+
+datalist.bbdlo.cent <- with(expgdd_bbdlo, 
+                            list(y = doy, 
+                                 temp = ag_min_jm_cent, #above-ground minimum air temp
+                                 mois = smjm_cent, #soil moisture
+                                 sp = genus.species,
+                                 site = site,
+                                 year = year,
+                                 N = nrow(expgdd_bbdlo),
+                                 n_sp = length(unique(expgdd_bbdlo$genus.species))
+                            )
+)
 
 datalist.lodbb.cent <- with(expgdd_lodbb, 
                             list(y = doy, 
-                                 temp = ag_min_jm_cent[,1], #above-ground minimum air temp
-                                 mois = smjm_cent[,1], #soil moisture
+                                 temp = ag_min_aprjun_cent, #above-ground minimum air temp
+                                 mois = soilmois_aprjun_cent, #soil moisture
                                  sp = genus.species,
                                  site = site,
                                  year = year,
@@ -318,8 +323,8 @@ datalist.lodbb.cent <- with(expgdd_lodbb,
 
 datalist.lodfl.cent <- with(expgdd_lodfl, 
                             list(y = doy, 
-                                 temp = ag_min_jm_cent, #above-ground minimum air temp
-                                 mois = smjm_cent, #soil moisture
+                                 temp = ag_min_aprjun_cent, #above-ground minimum air temp
+                                 mois = soilmois_aprjun_cent, #soil moisture
                                  sp = genus.species,
                                  site = site,
                                  year = year,
@@ -329,8 +334,8 @@ datalist.lodfl.cent <- with(expgdd_lodfl,
 )
 datalist.ffdlo.cent <- with(expgdd_ffdlo, 
                             list(y = doy, 
-                                 temp = ag_min_jm_cent, #above-ground minimum air temp
-                                 mois = smjm_cent, #soil moisture
+                                 temp = agtmin_cent, #above-ground minimum air temp
+                                 mois = sm_cent, #soil moisture
                                  sp = genus.species,
                                  site = site,
                                  year = year,

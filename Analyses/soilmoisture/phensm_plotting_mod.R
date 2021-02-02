@@ -141,10 +141,10 @@ fix<-sum$fixed[2:4,]
 speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-#minx<-min(speff$sp[,2:4,2:4])
-#maxx<-max(speff$sp[,2:4,2:4])
-#minx<--20
-#maxx<-20
+minx<-min(speff$sp[,2:4,2:4])
+maxx<-max(speff$sp[,2:4,2:4])
+minx<--20
+maxx<-20
 plot(seq(minx, #min(meanz[,'mean']*1.1),
          maxx, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
@@ -476,6 +476,139 @@ legend(leg1, leg2, spleglofl$sp.name,
 
 dev.off()
 
+
+
+pdf(file.path("Analyses/soilmoisture/figures/m5.alllomods3.pdf"), width = 8, height = 12)
+#quartz(width = 10, height = 10)
+par(mfrow=c(3,1), mar = c(10, 10, 5, 10))
+
+# First panel: leafout with all species
+load("Analyses/output/brms/testm5cent.brms.lo.Rda")
+
+mod<-testm5cent.lod.brms
+sum<-summary(mod)
+fix<-sum$fixed[2:4,]
+speff <- coef(mod)
+rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
+
+minx<-min(speff$sp[,2:4,2:4])
+maxx<-max(speff$sp[,2:4,2:4])
+plot(seq(minx, #min(meanz[,'mean']*1.1),
+         maxx, #max(meanz[,'mean']*1.1),
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate, change in day of leafout",
+     ylab = "",
+     yaxt = "n")
+
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+
+#colors differ by species
+nsp<-dim(speff$sp)[1]
+my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
+my.pch <- rep(15:18, each=12)[1:nsp]
+
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha(my.pal, 0.5)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = my.pch,
+         col = alpha(my.pal, 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "darkgreen", lwd = 2)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 1.5,
+       col = "darkgreen")
+
+abline(v = 0, lty = 2)
+par(xpd=TRUE) # so I can plot legend outside
+leg1<-maxx+6
+leg2<-5*(nrow(fix):1)[1]+5
+legend(leg1, leg2, splegbb$sp.name,
+       pch=my.pch,
+       col=alpha(my.pal, .5),
+       bty = "n",
+       cex=0.60, text.font=3)
+
+#3rd panel: leafout from bb dataset
+load("Analyses/output/brms/testm5cent.brms.lobb.Rda")
+
+mod<-testm5cent.lodbb.brms
+sum<-summary(mod)
+fix<-sum$fixed[2:4,]
+speff <- coef(mod)
+rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
+
+# One panel: budburst
+minx<-min(speff$sp[,2:4,2:4])
+maxx<-max(speff$sp[,2:4,2:4])
+
+plot(seq(minx, #min(meanz[,'mean']*1.1),
+         maxx, #max(meanz[,'mean']*1.1),
+         length.out = nrow(fix)), 
+     seq(1, 5*nrow(fix), length.out = nrow(fix)),
+     type="n",
+     xlab = "Model estimate, change in day of leafout from bb dataset",
+     ylab = "",
+     yaxt = "n")
+
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+
+#i=1
+#Plot species estimate for each predictor
+sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+
+#colors differ by species
+nsp<-dim(speff$sp)[1]
+my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
+my.pch <- rep(15:18, each=12)[1:nsp]
+
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha(my.pal, 0.5)) 
+}
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = my.pch,
+         col = alpha(my.pal, 0.5))
+}
+#fixed effects
+arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
+       len = 0, col = "darkgreen", lwd = 2)
+
+points(fix[,'Estimate'],
+       5*(nrow(fix):1),
+       pch = 16,
+       cex = 1.5,
+       col = "darkgreen")
+
+abline(v = 0, lty = 2)
+
+
+
+
+par(xpd=TRUE) # so I can plot legend outside
+leg1<-maxx+6
+leg2<-5*(nrow(fix):1)[1]+5
+legend(leg1, leg2, splegbblo$sp.name,
+       pch=my.pch,
+       col=alpha(my.pal, .5),
+       bty = "n",
+       cex=0.60, text.font=3)
+
+#3rd panel, leafout with flowering dataset
 #Now compare leaf out estimates fit to two leafot datasets vs this subset
 mod<-testm5cent.lodfl.brms
 sum<-summary(mod)
@@ -483,12 +616,6 @@ fix<-sum$fixed[2:4,]
 speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-
-pdf(file.path("Analyses/soilmoisture/figures/m5.alllomods.pdf"), width = 10, height = 12)
-#quartz(width = 10, height = 10)
-par(mfrow=c(2,1), mar = c(10, 10, 5, 10))
-
-# One panel: leafout
 minx<-min(speff$sp[,2:4,2:4])
 maxx<-max(speff$sp[,2:4,2:4])
 #minx<--20
@@ -542,71 +669,5 @@ legend(leg1, leg2, spleglofl$sp.name,
        bty = "n",
        cex=0.60, text.font=3)
 
-
-load("Analyses/output/brms/testm5cent.brms.lobb.Rda")
-
-mod<-testm5cent.lodbb.brms
-sum<-summary(mod)
-fix<-sum$fixed[2:4,]
-speff <- coef(mod)
-rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
-
-# One panel: budburst
-minx<-min(speff$sp[,2:4,2:4])
-maxx<-max(speff$sp[,2:4,2:4])
-#minx<--20
-#maxx<-20
-plot(seq(minx, #min(meanz[,'mean']*1.1),
-         maxx, #max(meanz[,'mean']*1.1),
-         length.out = nrow(fix)), 
-     seq(1, 5*nrow(fix), length.out = nrow(fix)),
-     type="n",
-     xlab = "Model estimate, change in day of leafout from bb dataset",
-     ylab = "",
-     yaxt = "n")
-
-axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
-
-#i=1
-#Plot species estimate for each predictor
-sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
-
-#colors differ by species
-nsp<-dim(speff$sp)[1]
-my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
-my.pch <- rep(15:18, each=12)[1:nsp]
-
-for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
-         len = 0, col = alpha(my.pal, 0.5)) 
-}
-for(i in 1:nrow(fix)){
-  points(speff$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
-         pch = my.pch,
-         col = alpha(my.pal, 0.5))
-}
-#fixed effects
-arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "darkgreen", lwd = 2)
-
-points(fix[,'Estimate'],
-       5*(nrow(fix):1),
-       pch = 16,
-       cex = 1.5,
-       col = "darkgreen")
-
-abline(v = 0, lty = 2)
-
-
-
-
-par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+6
-leg2<-5*(nrow(fix):1)[1]+5
-legend(leg1, leg2, splegbblo$sp.name,
-       pch=my.pch,
-       col=alpha(my.pal, .5),
-       bty = "n",
-       cex=0.60, text.font=3)
 
 dev.off()
