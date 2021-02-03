@@ -477,8 +477,8 @@ legend(leg1, leg2, spleglofl$sp.name,
 dev.off()
 
 
-
-pdf(file.path("Analyses/soilmoisture/figures/m5.alllomods3.pdf"), width = 8, height = 12)
+#Plot all three versions of leaf out model together
+pdf(file.path("Analyses/soilmoisture/figures/m5.alllomods.pdf"), width = 8, height = 12)
 #quartz(width = 10, height = 10)
 par(mfrow=c(3,1), mar = c(10, 10, 5, 10))
 
@@ -542,7 +542,7 @@ legend(leg1, leg2, splegbb$sp.name,
        bty = "n",
        cex=0.60, text.font=3)
 
-#3rd panel: leafout from bb dataset
+#2nd panel: leafout from bb dataset
 load("Analyses/output/brms/testm5cent.brms.lobb.Rda")
 
 mod<-testm5cent.lodbb.brms
@@ -552,8 +552,9 @@ speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
 # One panel: budburst
-minx<-min(speff$sp[,2:4,2:4])
-maxx<-max(speff$sp[,2:4,2:4])
+
+#minx<-min(speff$sp[,2:4,2:4])
+#maxx<-max(speff$sp[,2:4,2:4])
 
 plot(seq(minx, #min(meanz[,'mean']*1.1),
          maxx, #max(meanz[,'mean']*1.1),
@@ -616,8 +617,8 @@ fix<-sum$fixed[2:4,]
 speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-minx<-min(speff$sp[,2:4,2:4])
-maxx<-max(speff$sp[,2:4,2:4])
+#minx<-min(speff$sp[,2:4,2:4])
+#maxx<-max(speff$sp[,2:4,2:4])
 #minx<--20
 #maxx<-20
 plot(seq(minx, #min(meanz[,'mean']*1.1),
