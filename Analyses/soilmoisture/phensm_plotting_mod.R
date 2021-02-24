@@ -23,8 +23,8 @@ options(mc.cores = parallel::detectCores())
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
-#setwd("~/GitHub/radcliffe")#rnc
+if(length(grep("ailene", getwd()))>0) {setwd("~/GitHub/radcliffe")}#Tnc
+
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
 treats<-read.csv("Analyses/treats_detail.csv", header=T)
@@ -73,7 +73,7 @@ colnames(splegfl)[2]<-"spnumfl"
 
 splegall<-full_join(splegbb,spleglo,by = "sp.name")
 splegall2<-full_join(splegall,splegfl,by = "sp.name")
-load("Analyses/output/brms/testm5cent.brms.bb.Rda")#need to rerun the centered model- divergent transitions
+load("Analyses/output/brms/testm5cent.brms.bb.Rda")
 #load("Analyses/output/brms/testm5.brms.bb.Rda")#no divergent transistions
 
 mod<-testm5cent.brms
@@ -82,7 +82,7 @@ fix<-sum$fixed[2:4,]
 speff <- coef(mod)
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 pdf(file.path("Analyses/soilmoisture/figures/m5.bbdlo.pdf"), width = 10, height = 12)
-#quartz(width = 10, height = 10)
+#windows(width = 10, height = 10)
 par(mfrow=c(2,1), mar = c(10, 10, 5, 10))
 
 # One panel: budburst
@@ -672,3 +672,42 @@ legend(leg1, leg2, spleglofl$sp.name,
 
 
 dev.off()
+
+
+#Compare species level estimates in full models vs models with subset of sepcies
+#For leafout:
+
+full_lomod<-testm5cent.lod.brms
+full_lotemp<-as.data.frame(cbind(rownames(coef(full_lomod)$sp[,,'temp']),coef(full_lomod)$sp[,,'temp']))
+full_lomois<-as.data.frame(cbind(rownames(coef(full_lomod)$sp[,,'mois']), coef(full_lomod)$sp[,,'mois']))
+
+full_loint<-as.data.frame(cbind(rownames(coef(full_lomod)$sp[,,'temp:mois']),coef(full_lomod)$sp[,,'temp:mois']))
+
+colnames(full_lotemp)<-colnames(full_lomois)<-colnames(full_loint)<-c("sp","Est","Est.Er","Q2.5","Q97.5")
+
+fl_lomod<-testm5cent.lodfl.brms
+fl_lotemp<-as.data.frame(cbind(rownames(coef(fl_lomod)$sp[,,'temp']),coef(fl_lomod)$sp[,,'temp']))
+fl_lomois<-as.data.frame(cbind(rownames(coef(fl_lomod)$sp[,,'mois']), coef(fl_lomod)$sp[,,'mois']))
+fl_loint<-as.data.frame(cbind(rownames(coef(fl_lomod)$sp[,,'temp:mois']),coef(fl_lomod)$sp[,,'temp:mois']))
+colnames(fl_lotemp)<-colnames(fl_lomois)<-colnames(fl_loint)<-c("sp","Est.fl","Est.Er.fl","Q2.5.fl","Q97.5.fl")
+
+bb_lomod<-testm5cent.lodbb.brms
+bb_lotemp<-as.data.frame(cbind(rownames(coef(bb_lomod)$sp[,,'temp']),coef(bb_lomod)$sp[,,'temp']))
+bb_lomois<-as.data.frame(cbind(rownames(coef(bb_lomod)$sp[,,'mois']), coef(bb_lomod)$sp[,,'mois']))
+bb_loint<-as.data.frame(cbind(rownames(coef(bb_lomod)$sp[,,'temp:mois']),coef(bb_lomod)$sp[,,'temp:mois']))
+colnames(bb_lotemp)<-colnames(bb_lomois)<-colnames(bb_loint)<-c("sp","Est.bb","Est.Er.bb","Q2.5.bb","Q97.5.bb")
+
+fullbb_lotemp<-left_join(bb_lotemp,full_lotemp, by = "sp")
+fullbb_lomois<-left_join(bb_lomois,full_lomois)
+fullbb_loint<-left_join(bb_loint,full_loint)
+pdf(file.path("Analyses/soilmoisture/figures/compests_leafout.pdf"), width = 10, height = 12)
+    
+par(mfrow=c(1,3))
+plot(fullbb_lotemp$Est,fullbb_lotemp$Est.bb, xlab = "Temp Effects (Full dataset)",ylab = "Temp Effects (BB species only",typ = "p", pch = 16)
+lines(fullbb_lotemp$Est,fullbb_lotemp$Est)
+
+plot(fullbb_lomois$Est,fullbb_lomois$Est.bb, xlab = "Mois Effects (Full dataset)",ylab = "Temp Effects (BB species only",typ = "p", pch = 16)
+lines(fullbb_lomois$Est,fullbb_lomois$Est)
+
+plot(fullbb_lomois$Est,fullbb_lomois$Est.bb, xlab = "Mois Effects (Full dataset)",ylab = "Temp Effects (BB species only",typ = "p", pch = 16)
+lines(fullbb_lomois$Est,fullbb_lomois$Est)
