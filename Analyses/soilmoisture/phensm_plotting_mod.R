@@ -706,8 +706,12 @@ par(mfrow=c(1,3))
 plot(fullbb_lotemp$Est,fullbb_lotemp$Est.bb, xlab = "Temp Effects (Full dataset)",ylab = "Temp Effects (BB species only",typ = "p", pch = 16)
 lines(fullbb_lotemp$Est,fullbb_lotemp$Est)
 
-plot(fullbb_lomois$Est,fullbb_lomois$Est.bb, xlab = "Mois Effects (Full dataset)",ylab = "Temp Effects (BB species only",typ = "p", pch = 16)
+plot(fullbb_lomois$Est,fullbb_lomois$Est.bb, xlab = "Mois Effects (Full dataset)",ylab = "Mois Effects (BB species only",typ = "p", pch = 16)
 lines(fullbb_lomois$Est,fullbb_lomois$Est)
 
-plot(fullbb_lomois$Est,fullbb_lomois$Est.bb, xlab = "Mois Effects (Full dataset)",ylab = "Temp Effects (BB species only",typ = "p", pch = 16)
-lines(fullbb_lomois$Est,fullbb_lomois$Est)
+plot(fullbb_loint$Est,fullbb_loint$Est.bb, xlab = "Int Effects (Full dataset)",ylab = "Int Effects (BB species only",typ = "p", pch = 16)
+lines(fullbb_loint$Est,fullbb_loint$Est)
+dev.off()
+
+  
+)
