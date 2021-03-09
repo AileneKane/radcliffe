@@ -66,7 +66,7 @@
 
 \affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts 02131, USA}
 
-\affil[2]{Tufts University, Medford, Massachusetts 02155, USA}
+\affil[2]{The Nature Conservancy,Seattle, Washington, USA}
 
 
 \affil[3]{Department of Forestry \& Natural Resources and Department of Biological Sciences, Purdue University, West Lafayette, Indiana 47907, USA}
@@ -77,7 +77,7 @@
 
 \affil[6]{Forest \& Conservation Sciences, Faculty of Forestry, University of British Columbia, Vancouver, BC, Canada}
 
-\affil[a]{Corresponding author; email: aettinger@fas.harvard.edu; phone: 781-296-4821; mailing address: 1300 Centre Street, Boston, Massachusetts 02140, USA }
+\affil[a]{Corresponding author; email: ailene.ettinger@tnc.org; phone: 781-296-4821; mailing address: 73 Wall Street. Seattle, WA 98121, USA }
 
 \date{\today}
 \maketitle %put the fancy title on
@@ -93,7 +93,7 @@ The data reported in this paper are from the MC3E and ExPhen databases, which ar
 
 
 \textbf{Paper type} `Brief communication' for \emph{American Journal of Botany}
-
+%Brief Communications-Brief Communications are short (c 3000-4000 word) research articles reporting exciting, significant new findings. They include no more than 4 figures and tables, combined. Manuscripts, and their abstracts, should be organized as described for Research articles. Authors must adhere to the same membership and page charge requirements as for regular Research Articles.
 %\textbf{Number of words in abstract} 200
 
 %\textbf{Number of words in main text} 3,481
@@ -111,7 +111,7 @@ The data reported in this paper are from the MC3E and ExPhen databases, which ar
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \linenumbers
 \section*{Abstract}
-Past studies of phenology responses to recent climate change have focused on temperature as a driver of observed shifts. However, soil moisture is also affected by climate change and likely to alter biological responses. Here we synthesize microclimate and phenology data from climate change experiments to show how soil moisture interacts with temperature to affect plant phenology. We find that soil drying generally delays plant phenology, especially for budburst, a rate of 0.42 days per percent reduction in soil VWC, on average. These effects vary widely across sites and species. This rate suggests that, on average, climate change-induced shifts soil moisture will play only a small role in altering future phenology, compared to shifts in temperature. This is both because of the strong sensitivity of plant phenology to temperature and because of the large magnitude of projected shifts in temperature, compared to shifts in soil moisture. Nonetheless, although effects of soil moisture are comparably small on average, sensitivity to soil moisture varied dramatically by species, and soil moisture levels differed by site and among years. Thus, soil moisture is likely to play a role in phenological shifts with climate change for some species, in some locations and years. Quantifying phenological sensitivity to changes in soil moisture will be useful for improving forecasts of shifts in phenology with future climate change.  
+Past studies of phenology responses to recent climate change have focused on temperature as a driver of observed shifts. However, soil moisture is also affected by climate change and likely to alter biological responses. Here we synthesize microclimate and phenology data from climate change experiments to show how soil moisture interacts with temperature to affect plant phenology. We find that soil drying generally delays plant phenology, especially for budburst for which this delay occurs at a rate of 0.42 days per percent reduction in soil VWC, on average. The magnitude of effects we quantify suggest that, on average, climate change-induced shifts in soil moisture will play a small role in altering future phenology, compared to shifts in temperature, both because of the strong sensitivity of plant phenology to temperature and because of the large magnitude of projected shifts in temperature, compared to shifts in soil moisture. Nonetheless, although effects of soil moisture are comparably small on average, sensitivity to soil moisture varied dramatically by species, and soil moisture levels differed by site and among years. Thus, soil moisture is likely to play a role in phenological shifts with climate change for some species, particularly in some locations and years. Quantifying phenological sensitivity to changes in soil moisture will therefore improve forecasts of shifts in phenology with future climate change.  
 
 \newpage
 \section* {INTRODUCTION}
