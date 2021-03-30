@@ -201,6 +201,20 @@ table(expgdd_subs$sp.name[expgdd_subs$site2 =="exp01"],expgdd_subs$year[expgdd_s
 
 #does effect of soil moisture diminish with time (for bace)?
 
+#uncentered bb mod
+testm5.brms <- brm(y ~ temp * mois +#fixed effects
+                         (temp * mois|sp) + (1|site/year), #random effects
+                       data=datalist.bbd,
+                       chains = 2,iter = 3000,
+                       control = list(max_treedepth = 15,adapt_delta = 0.99))
+
+# stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
+# summary(testm5cent.brms)
+# stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
+# #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
+save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bb.Rda")
+round(fixef(testm5cent.brms, probs=c(.90,0.10)), digits=2)
+
 
 
 

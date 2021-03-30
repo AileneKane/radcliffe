@@ -343,3 +343,7 @@ for(i in use){
 legend(.3,140,legend=round(c(cold2temp,temp,warm2temp), digits=0),lty=1,lwd=2,col=cols[use],bty="n", cex=0.9)
 mtext("Mean temp (C)", side=3,line=-3,adj)
 dev.off()
+
+
+
+#Make version of figure with two species
