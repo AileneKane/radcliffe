@@ -146,10 +146,10 @@ We found that soil drying delays phenology and warming temperatures advance phen
 \par Mean annual soil moisture is negatively affected by target temperature treatment, and positively affected by precipitation treatment. (Figure \ref {fig:soilmois}). These effects varied by site; for example, at exp07 soil moisture was positively affected by temperature treatment. Air temperature is positively affected by target temperature treatment, and negatively affected by precipitation treatment. (Figure \ref {fig:temp}).
 
 \section* {DISCUSSION}
-\par  Across the ecosystems included in the ExPhen database, soil moisture affects phenology, budburst, and  leaf-out. Soil moisture had previously been investigated primarily in grassland ecosystems (e.g. XXX), and has not been a focus of experiments and meta-analyses (e.g. Wolkovich). We quantify effects of soil moisture across forest, grassland, other ecosystems.
--Show estimated effects by manipulating posterios by biome?
+\par  Across the ecosystems included in the ExPhen database (Table \ref{tab:studylocs}), soil moisture affects phenology of budburst, and  leaf-out. Soil moisture had previously been investigated primarily in grassland ecosystems (e.g. XXX), and has not been a focus of experiments and meta-analyses (e.g. Wolkovich). We quantify effects of soil moisture across forest, grassland, other ecosystems.
+-Show estimated effects by manipulating posteriors by biome?
 -group species by biome and show 
--3 biomes- histograms of effects of oil moisture across species of different 
+-3 biomes- histograms of effects of soil moisture across species of different 
 
 \par Species differences.- people may ask about phylogeny. why to think about this? functional groups- trees, shrubs, grasses, forbs. This may be confounded with biome and that's ok.
  -Make histogram for each biome with stacked bars or transparent for each functional group. For soil moisture and temperature effects.
@@ -164,19 +164,23 @@ include datapoints,
 
 
 \bibliography{mylibrary.bib}
-\clearpage
-\section*{Tables}
 
 \section*{Figures}
 \par map of studies with symbols varying by ecosystem
 
 \begin{figure}[h]
 \centering
- \includegraphics{../../Analyses/soilmoisture/figures/m5bbdlodffd.pdf}
- \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors).}} 
- \label{fig:bb}
+ \includegraphics{../../Analyses/soilmoisture/figures/m5.bbdlo.pdf}
+ \caption{\textbf{Model coefficients from budburst and leafout models (with centered predictors).}} 
+ \label{fig:bblo}
  \end{figure}
  
+ begin{figure}[h]
+\centering
+ \includegraphics{../../Analyses/soilmoisture/figures/m5.bbdlo.pdf}
+ \caption{\textbf{Model coefficients from flowering and fruiting models (with centered predictors).}} 
+ \label{fig:}
+ \end{figure}
  \begin{figure}[h]
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/bbmod_forecast_uncent_wCI.pdf}

@@ -23,7 +23,7 @@ options(mc.cores = parallel::detectCores())
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("~/GitHub/radcliffe")}#Tnc
+if(length(grep("ailene", getwd()))>0) {setwd("~/Documents/GitHub/radcliffe")}#Tnc
 
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
@@ -72,22 +72,25 @@ splegfl<-splegfl[order(splegfl$genus.species),]
 colnames(splegfl)[2]<-"spnumfl"
 
 splegall<-full_join(splegbb,spleglo,by = "sp.name")
+splegall<-splegall[order(splegall$sp.name),]
+
 splegall2<-full_join(splegall,splegfl,by = "sp.name")
+
 load("Analyses/output/brms/testm5cent.brms.bb.Rda")
 #load("Analyses/output/brms/testm5.brms.bb.Rda")#no divergent transistions
 
 mod<-testm5cent.brms
-sum<-summary(mod)
+sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2:4,]
-speff <- coef(mod)
+speffbb <- coef(mod, probs = c(.10,.90))
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 pdf(file.path("Analyses/soilmoisture/figures/m5.bbdlo.pdf"), width = 10, height = 12)
 #windows(width = 10, height = 10)
-par(mfrow=c(2,1), mar = c(10, 10, 5, 10))
+par(mfrow=c(2,1), mar = c(5, 10, 2, 10))
 
 # One panel: budburst
-minx<-min(speff$sp[,2:4,2:4])
-maxx<-max(speff$sp[,2:4,2:4])
+minx<-min(speffbb$sp[,2:4,2:4])
+maxx<-max(speffbb$sp[,2:4,2:4])
 #minx<--20
 #maxx<-20
 plot(seq(minx, #min(meanz[,'mean']*1.1),
@@ -96,6 +99,7 @@ plot(seq(minx, #min(meanz[,'mean']*1.1),
      seq(1, 5*nrow(fix), length.out = nrow(fix)),
      type="n",
      xlab = "Model estimate, change in day of budburst",
+     xlim =c(-90,40),
      ylab = "",
      yaxt = "n")
 
@@ -103,31 +107,33 @@ axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
 
 #i=1
 #Plot species estimate for each predictor
-sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
+sp<-4*(seq(1:dim(speffbb$sp)[1])/dim(speffbb$sp)[1])
 
 #colors differ by species
-nsp<-dim(speff$sp)[1]
-my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
-my.pch <- rep(15:18, each=12)[1:nsp]
-  
+nsp<-dim(speffbb$sp)[1]
+nspall<-dim(splegall)[1]
+my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nspall]
+my.pch <- rep(21:25, each=30)[1:nspall]
+greens<-brewer.pal(8,"Greens")
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speffbb$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speffbb$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
-  points(speff$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
+  points(speffbb$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
          pch = my.pch,
-         col = alpha(my.pal, 0.5))
+         col = alpha(my.pal, 0.5),
+          bg=alpha(my.pal, .5))
 }
 #fixed effects
-arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "green", lwd = 2)
+arrows(fix[,"u-80% CI"], 5*(nrow(fix):1), fix[,"l-80% CI"], 5*(nrow(fix):1),
+       len = 0, col = greens[7], lwd = 3)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
-       cex = 1.5,
-       col = "green")
+       cex = 2.5,
+       col = greens[7])
 
 abline(v = 0, lty = 2)
 
@@ -136,21 +142,21 @@ abline(v = 0, lty = 2)
 load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 
 mod<-testm5cent.lod.brms
-sum<-summary(mod)
+sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2:4,]
-speff <- coef(mod)
+speff <- coef(mod, probs=c(0.10,.90))
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-minx<-min(speff$sp[,2:4,2:4])
-maxx<-max(speff$sp[,2:4,2:4])
-minx<--20
-maxx<-20
+minx<-min(speffbb$sp[,2:4,2:4])
+maxx<-max(speffbb$sp[,2:4,2:4])
+
 plot(seq(minx, #min(meanz[,'mean']*1.1),
          maxx, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix), length.out = nrow(fix)),
      type="n",
      xlab = "Model estimate, change in day of leafout",
+     xlim =c(-90,40),
      ylab = "",
      yaxt = "n")
 
@@ -162,35 +168,35 @@ sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 
 #colors differ by species
 nsp<-dim(speff$sp)[1]
-my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
-my.pch <- rep(15:18, each=12)[1:nsp]
 
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
   points(speff$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
          pch = my.pch,
+         bg=alpha(my.pal, .5),
          col = alpha(my.pal, 0.5))
 }
 #fixed effects
-arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "darkgreen", lwd = 2)
+arrows(fix[,"u-80% CI"], 5*(nrow(fix):1), fix[,"l-80% CI"], 5*(nrow(fix):1),
+       len = 0, col = greens[8], lwd = 3)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
-       cex = 1.5,
-       col = "darkgreen")
+       cex = 2.5,
+       col = greens[8])
 
 abline(v = 0, lty = 2)
 par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+6
+leg1<-maxx+26
 leg2<-5*(nrow(fix):1)[1]+5
-legend(leg1, leg2, splegbb$sp.name,
+legend(leg1, leg2, splegall$sp.name,
        pch=my.pch,
        col=alpha(my.pal, .5),
+       pt.bg=alpha(my.pal, .5),
        bty = "n",
        cex=0.60, text.font=3)
 
@@ -392,7 +398,7 @@ my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
 my.pch <- rep(15:18, each=12)[1:nsp]
 
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
@@ -446,7 +452,7 @@ sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 # my.pch <- rep(15:18, each=12)[1:nsp]
 
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
@@ -514,7 +520,7 @@ my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
 my.pch <- rep(15:18, each=12)[1:nsp]
 
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
@@ -577,7 +583,7 @@ my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
 my.pch <- rep(15:18, each=12)[1:nsp]
 
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
@@ -642,7 +648,7 @@ my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 4)[1:nsp]
 my.pch <- rep(15:18, each=12)[1:nsp]
 
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
 }
 for(i in 1:nrow(fix)){
@@ -667,6 +673,7 @@ leg2<-5*(nrow(fix):1)[1]+5
 legend(leg1, leg2, spleglofl$sp.name,
        pch=my.pch,
        col=alpha(my.pal, .5),
+       bg=alpha(my.pal, .5),
        bty = "n",
        cex=0.60, text.font=3)
 
@@ -683,19 +690,19 @@ full_lomois<-as.data.frame(cbind(rownames(coef(full_lomod)$sp[,,'mois']), coef(f
 
 full_loint<-as.data.frame(cbind(rownames(coef(full_lomod)$sp[,,'temp:mois']),coef(full_lomod)$sp[,,'temp:mois']))
 
-colnames(full_lotemp)<-colnames(full_lomois)<-colnames(full_loint)<-c("sp","Est","Est.Er","Q2.5","Q97.5")
+colnames(full_lotemp)<-colnames(full_lomois)<-colnames(full_loint)<-c("sp","Est","Est.Er","Q10","Q90")
 
 fl_lomod<-testm5cent.lodfl.brms
 fl_lotemp<-as.data.frame(cbind(rownames(coef(fl_lomod)$sp[,,'temp']),coef(fl_lomod)$sp[,,'temp']))
 fl_lomois<-as.data.frame(cbind(rownames(coef(fl_lomod)$sp[,,'mois']), coef(fl_lomod)$sp[,,'mois']))
 fl_loint<-as.data.frame(cbind(rownames(coef(fl_lomod)$sp[,,'temp:mois']),coef(fl_lomod)$sp[,,'temp:mois']))
-colnames(fl_lotemp)<-colnames(fl_lomois)<-colnames(fl_loint)<-c("sp","Est.fl","Est.Er.fl","Q2.5.fl","Q97.5.fl")
+colnames(fl_lotemp)<-colnames(fl_lomois)<-colnames(fl_loint)<-c("sp","Est.fl","Est.Er.fl","Q10.fl","Q90.fl")
 
 bb_lomod<-testm5cent.lodbb.brms
 bb_lotemp<-as.data.frame(cbind(rownames(coef(bb_lomod)$sp[,,'temp']),coef(bb_lomod)$sp[,,'temp']))
 bb_lomois<-as.data.frame(cbind(rownames(coef(bb_lomod)$sp[,,'mois']), coef(bb_lomod)$sp[,,'mois']))
 bb_loint<-as.data.frame(cbind(rownames(coef(bb_lomod)$sp[,,'temp:mois']),coef(bb_lomod)$sp[,,'temp:mois']))
-colnames(bb_lotemp)<-colnames(bb_lomois)<-colnames(bb_loint)<-c("sp","Est.bb","Est.Er.bb","Q2.5.bb","Q97.5.bb")
+colnames(bb_lotemp)<-colnames(bb_lomois)<-colnames(bb_loint)<-c("sp","Est.bb","Est.Er.bb","Q10.bb","Q90.bb")
 
 fullbb_lotemp<-left_join(bb_lotemp,full_lotemp, by = "sp")
 fullbb_lomois<-left_join(bb_lomois,full_lomois)

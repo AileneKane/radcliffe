@@ -137,12 +137,15 @@ y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{temp_{site[i]}}eT_i+\beta_{2 site[i]}e
 \beta_{3 site} \sim N(\mu_{\beta3}, \sigma_{\beta3})\label{eq:7}
 \end{equation}
 
+
 \underline{Equations for phenology models}: 
  Response variable (\textit{y}) is day of year of the phenological event (budburst, leafout, flowering, fruiting, or senesence). Predictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (sp, random slopes and intercepts); site and year nested within site (random intercepts).
 
+%\begin{equation}
 \begin{equation}
-y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{temp_{sp[i]}}+\beta_{mois_{ sp[i]}}+\beta_{temp:mois_{sp[i]}+\epsilon_{i}
+y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} + \beta_{temp:mois_{sp[i]}}+\epsilon_{i}\label{eq:8}
 \end{equation}
+
 \begin{equation}
 \alpha_{sp}\sim N(\mu_{sp}, \sigma_{sp})
 \end{equation}
@@ -166,6 +169,7 @@ y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{temp_{sp[i]}}+\beta_{mois_{ sp[i]}}+\
 \begin{equation}
 \beta_{temp:mois_{sp}} \sim N(\mu_{\beta_{temp:mois}}, \sigma_{\beta_{temp:mois}})
 \end{equation}
+
 
 \section* {Results}
 \begin{singlespace}
@@ -213,8 +217,33 @@ y_{i}=\alpha_{sp[i],site[year[i]]}+ \beta_{temp_{sp[i]}}+\beta_{mois_{ sp[i]}}+\
 
 \clearpage
 \section* {Supplemental Tables}
-<<label=xtable1a, echo=FALSE, results=tex>>=
+
+<<label=studylocs, echo=FALSE, results=tex>>=
 library(xtable)
+#study info, phenophases, and biome
+
+library(dplyr)
+
+source("../../Analyses/exps_table_sm.R")
+site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here.", 
+        label="tab:studylocs",align=c(
+               "p{0.01\\textwidth}|",
+                "|p{0.04\\textwidth}|",
+               "p{0.18\\textwidth}|",
+               "p{0.2\\textwidth}|",
+               "p{0.08\\textwidth}|",
+               "p{0.1\\textwidth}|",
+               "p{0.07\\textwidth}|",
+               "p{0.09\\textwidth}|"))
+
+print(site.table, include.rownames=FALSE, hline.after = c(-1,0,1,2,3,4,5,6,7,8),caption.placement="top",size="\\footnotesize")
+
+@
+%\end{footnotesize} 
+
+\clearpage
+
+<<label=xtable1a, echo=FALSE, results=tex>>=
 compcoefs<-read.csv("../../Analyses/soilmoisture/comp.coefs.lmer.csv")
 
 wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
@@ -247,7 +276,6 @@ print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
 
 %comparison of control plots vs all plots
 <<label=xtablecont, echo=FALSE, results=tex>>=
-library(xtable)
 compcoefs<-read.csv("../../Analyses/soilmoisture/comp.coefs.lmer.csv")
 
 wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(

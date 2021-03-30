@@ -32,9 +32,6 @@ if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/Gi
 
 source('Analyses/soilmoisture/savestan.R')
 
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
-
 #Read in experimental climate and phenology data
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
@@ -75,9 +72,7 @@ testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                    data=datalist.bbd.cent,
                    chains = 2,iter = 3000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
-# without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
-# 
-# 
+
 # stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
 # summary(testm5cent.brms)
 # stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
@@ -90,7 +85,7 @@ round(fixef(testm5cent.brms, probs=c(.90,0.10)), digits=2)
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.bbdlo.cent,
-                       chains = 2,iter = 4000,
+                       chains = 1,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.999))
 # 
 # 
@@ -119,6 +114,7 @@ testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
                        chains = 2,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5cent.lod.brms, file="Analyses/output/brms/testm5cent.brms.lo.Rda")
+round(fixef(testm5cent.lod.brms, probs=c(.90,0.10)), digits=2)
 
 #now fit with data containing same species as lo
 #try the model with brms
@@ -127,12 +123,13 @@ testm5cent.lodbb.brms <- brm(y ~ temp * mois +#fixed effects
                        data=datalist.lodbb.cent,
                        chains = 2,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
+
 # without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
 # 
 # 
-# stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
-# summary(testm5cent.brms)
-# stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
+# stancode(testm5cent.lodbb.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
+# summary(testm5cent.lodbb.brms)
+# stanplot(testm5cent.lodbb.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
 save(testm5cent.lodbb.brms, file="Analyses/output/brms/testm5cent.brms.lobb.Rda")
 
@@ -172,14 +169,23 @@ save(testm5cent.ffrd.brms, file="Analyses/output/brms/testm5cent.brms.frd.Rda")
 testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
                               (temp * mois|sp) + (1|site/year), #random effects
                             data=datalist.sen.cent,
-                            chains = 2,iter = 4000,
+                            chains = 2,iter = 5000,
                            control = list(max_treedepth = 15,adapt_delta = .9999))
 
 save(testm5cent.sen.brms, file="Analyses/output/brms/testm5cent.brms.sen.Rda")
+summary(testm5cent.sen.brms)
+
+
+#table with sites, phenophases
+phentab<-table(exppheno$site,exppheno$event)
+
+unique(datalist.bbd.cent$site)# "exp01" "exp03" "exp04" "exp07" "exp10",1 3 4 5 7
 
 #Are individuals in the studies in our data set small? large? young/old?
 unique(expgdd_subs$site2[expgdd_subs$event=="bbd"])
 unique(expgdd_subs$site2[expgdd_subs$event=="lod"])
+#how many species for exp07 and exp09
+length(unique(expgdd_subs$sp.name[expgdd_subs$site2=="exp07"]))
 
 #"exp01" "exp03" "exp04" "exp07" "exp10"
 #What stage/age/size are plants in these experiments?
