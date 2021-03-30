@@ -13,7 +13,7 @@ options(stringsAsFactors = FALSE)
 library(RColorBrewer)
 library(dplyr)
 # Setting working directory.
-  setwd("~/Documents/Github/radcliffe/")
+  setwd("~/Github/radcliffe")
 
 figpath <- "Analyses/soilmoisture/figures"
 
@@ -52,17 +52,22 @@ alphahere = 0.4
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==FALSE & phen=="BB"){
   load("Analyses/output/brms/testm5.rstanarm.bb.Rda")
   mod<-testm5.rstan
-  fit <- testm5.rstan$stan_summary
+  fit <- fixef(mod)
   sitetemp<-mean(expgdd_bbd$ag_min_jm[expgdd_bbd$site==site], na.rm=TRUE)#mean spring temp (current)
   sitemois<-mean(expgdd_bbd$soilmois_janmar[expgdd_bbd$site==site], na.rm=TRUE)#mean soil mois (current)
 }
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
   load("Analyses/output/brms/testm5cent.brms.bb.Rda")
-  mod<-testm5cent.brms}
+  mod<-testm5cent.brms
+  }
 
-
+#find species with largest response to moisture and smallest response to moisture
+sp<-ranef(mod)$sp
+mois<-sp[1:47,,3]
+mois[which(mois[,1]==min(mois[,1])),]
+sp[25,,]
 rownameshere <- c("mu_a_sp", "mu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
-rownames(mod)[1:length(rownameshere)]<-rownameshere
+rownames(fit)[1:length(rownameshere)]<-rownameshere
 #For main effects of model:
 tempforecast.raw<-seq(0,5, by=0.5)#enter in the amount of warming (in degrees C) you want to forecast 
 #centered version of temperature change
@@ -72,7 +77,7 @@ smforecast<-seq(-2,2, by=0.5)
 drysm<- -0.10#proportion change
 dry2sm<- -1
 wetsm<- 0.10
-#wet2sm<- 1
+wet2sm<- 1
 #range(mean(expgdd_bbd$soilmois_janmar))#0.1020346 0.3879270
 #mean(expgdd_bbd$soilmois_janmar)#0.2146834
 #so 10% reduction in soil moisture would be 
@@ -117,7 +122,7 @@ for (i in 1:length(tempforecast.raw)){
   warmtemp <-tempforecast.raw[i]
   sm <-  sitemois
   drysm<-drysm
-  bbposteriors <- getest.bb(testm5.rstan, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm)
+  bbposteriors <- getest.bb(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm)
   meanz <- unlist(lapply(bbposteriors, mean))
   quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.25, 0.5, 0.75)))
   quant25per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.25))))
@@ -214,7 +219,7 @@ for (i in 1:length(sm)){
   warm1temp<-temps[4]
   warm2temp<-temps[5]
   alltemps<-c(temp,warm1temp,warm2temp,cold1temp,cold2temp)
-  bbposteriors <- getest.bb(testm5.rstan, temp, sm[i], cold2temp, cold1temp, warm1temp, warm2temp)
+  bbposteriors <- getest.bb(mod, temp, sm[i], cold2temp, cold1temp, warm1temp, warm2temp)
   meanz <- unlist(lapply(bbposteriors, mean))
   quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.25, 0.5, 0.75)))
   quantlo <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.25))))
@@ -265,6 +270,10 @@ axis(side=1,at=c(0,0.1,0.2,0.3,0.4), labels=c(0,0.1,0.2,0.3,0.4))
 legend(.3,140,legend=round(c(cold2temp,temp,warm2temp), digits=0),lty=1,lwd=2,col=cols[use],bty="n", cex=0.9)
 mtext("Mean temp (C)", side=3,line=-3,adj=1)
 dev.off()
+
+#Make version of figure with two species
+
+
 
 #Make same plot for first flower
 #load budburst model
@@ -346,4 +355,3 @@ dev.off()
 
 
 
-#Make version of figure with two species
