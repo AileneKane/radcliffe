@@ -208,15 +208,12 @@ testm5.brms <- brm(y ~ temp * mois +#fixed effects
                        chains = 2,iter = 3000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 
-# stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
-# summary(testm5cent.brms)
+# stancode(testm5.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
+# summary(testm5.brms)
 # stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
-save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bb.Rda")
-round(fixef(testm5cent.brms, probs=c(.90,0.10)), digits=2)
-
-
-
+save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
+round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
 
 

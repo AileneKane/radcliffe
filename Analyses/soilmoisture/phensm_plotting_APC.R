@@ -12,8 +12,10 @@ options(stringsAsFactors = FALSE)
 #libraries
 library(RColorBrewer)
 library(dplyr)
+library(brms)
+library(scales)
 # Setting working directory.
-  setwd("~/Github/radcliffe")
+  setwd("~/Documents/GitHub/radcliffe")
 
 figpath <- "Analyses/soilmoisture/figures"
 
@@ -42,7 +44,7 @@ source("Analyses/source/stanprep_phenmods.R")
 
 
 # Set up colors (more than used currently ...)
-cols <- adjustcolor(c("gray","salmon","darkred","lightskyblue","darkblue"), alpha.f = 0.8) 
+cols <- adjustcolor(c("darkgray","salmon","darkred","lightskyblue","darkblue"), alpha.f = 0.8) 
 my.pal <- rep(brewer.pal(n = 12, name = "Paired"), 4)
 # display.brewer.all()
 my.pch <- rep(15:18, each=12)
@@ -50,8 +52,8 @@ alphahere = 0.4
 
 #load budburst model
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==FALSE & phen=="BB"){
-  load("Analyses/output/brms/testm5.rstanarm.bb.Rda")
-  mod<-testm5.rstan
+  load("Analyses/output/brms/testm5.brms.bb.Rda")
+  mod<-testm5.brms
   fit <- fixef(mod)
   sitetemp<-mean(expgdd_bbd$ag_min_jm[expgdd_bbd$site==site], na.rm=TRUE)#mean spring temp (current)
   sitemois<-mean(expgdd_bbd$soilmois_janmar[expgdd_bbd$site==site], na.rm=TRUE)#mean soil mois (current)
@@ -62,10 +64,13 @@ if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
   }
 
 #find species with largest response to moisture and smallest response to moisture
-sp<-ranef(mod)$sp
-mois<-sp[1:47,,3]
-mois[which(mois[,1]==min(mois[,1])),]
-sp[25,,]
+sp<-coef(mod,probs=c(0.1,0.9))$sp
+intercepts<-sp[1:47,,1]
+moisef<-sp[1:47,,3]
+tempef<-sp[1:47,,2]
+moissenssp<-sp[which(moisef[,1]==min(moisef[,1])),,]
+tempsenssp<-sp[which(tempef[,1]==min(tempef[,1])),,]
+
 rownameshere <- c("mu_a_sp", "mu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
 rownames(fit)[1:length(rownameshere)]<-rownameshere
 #For main effects of model:
@@ -78,16 +83,12 @@ drysm<- -0.10#proportion change
 dry2sm<- -1
 wetsm<- 0.10
 wet2sm<- 1
-#range(mean(expgdd_bbd$soilmois_janmar))#0.1020346 0.3879270
+#range(expgdd_bbd$soilmois_janmar)#0.1020346 0.3879270
 #mean(expgdd_bbd$soilmois_janmar)#0.2146834
 #so 10% reduction in soil moisture would be 
 #mean(expgdd_bbd$soilmois_janmar)+(mean(expgdd_bbd$soilmois_janmar)*-0.1)
 ## Plotting
 # First, we estimate the posteriors for each thing we want to plot...
-
-#list_of_draws <-as.data.frame(as.matrix(testm5cent.rstan))
-
-
 
 getest.bb <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm){
   listofdraws <-as.data.frame(as.matrix(mod))
@@ -112,9 +113,9 @@ getest.bb <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm){
 #make blank dataframe to fill with estimates
 predicts <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
 
-predicts.25per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
-predicts.75per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
-colnames(predicts)<-colnames(predicts.25per) <-colnames(predicts.75per) <-
+predicts.10per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+predicts.90per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+colnames(predicts)<-colnames(predicts.10per) <-colnames(predicts.90per) <-
   c("amt.warming","bb.nowarm","bb.warm","warm.dry","warm.dry2","warm.wet","warm.wet2")
 
 for (i in 1:length(tempforecast.raw)){
@@ -124,22 +125,22 @@ for (i in 1:length(tempforecast.raw)){
   drysm<-drysm
   bbposteriors <- getest.bb(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm)
   meanz <- unlist(lapply(bbposteriors, mean))
-  quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.25, 0.5, 0.75)))
-  quant25per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.25))))
-  quant75per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.75))))
+  quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.10, 0.5, 0.90)))
+  quant10per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.1))))
+  quant90per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.9))))
    predicts[i,]<-c(warmtemp,meanz)
-  predicts.25per[i,]<-c(warmtemp,quant25per)
-  predicts.75per[i,]<-c(warmtemp,quant75per)
+  predicts.10per[i,]<-c(warmtemp,quant10per)
+  predicts.90per[i,]<-c(warmtemp,quant90per)
 }
 
 predictsbb<-predicts
 predictsbb<-predictsbb[,-2]
-predictsbb.25per<-predicts.25per
-predictsbb.25per<-predictsbb.25per[,-2]
-predictsbb.75per<-predicts.75per
-predictsbb.75per<-predictsbb.75per[,-2]
+predictsbb.10per<-predicts.10per
+predictsbb.10per<-predictsbb.10per[,-2]
+predictsbb.90per<-predicts.90per
+predictsbb.90per<-predictsbb.90per[,-2]
 xlim = c(range(tempforecast.raw))
-ylim = c(min(round(predictsbb.25per[,-1], digits=0)), max(round(predictsbb.75per[,-1], digits=0)))
+ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
 
 
 figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),"degwarm.pdf", sep="_")
@@ -153,7 +154,7 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
    #Add shading around line for credible intervals
   
   for(i in 3:7){
-  polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.75per[,i-1]), predictsbb.25per[,i-1]), col = alpha(cols[i-2], 0.2), border = NA)
+  polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.90per[,i-1]), predictsbb.10per[,i-1]), col = alpha(cols[i-2], 0.2), border = NA)
   }
   #i=3
   #i=5
@@ -162,8 +163,7 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
           col=cols[i-2], lwd=2)
     }
   #i=3
-  lines(predictsbb$amt.warming, predictsbb[,i-1], 
-      col=cols[i-2], lwd=3)
+  
   #axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
   axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
   
@@ -178,6 +178,195 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
   # }
 legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
 dev.off()
+
+#Make version of figure with two species
+
+getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum){
+  listofdraws <-as.data.frame(as.matrix(mod))
+  int_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",Intercept]", sep=""))
+  b_temp_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",temp]", sep=""))
+  b_mois_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",mois]", sep=""))
+  b_tsm_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",temp:mois]", sep=""))
+  
+  spavgbb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*temp + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*sm + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*temp*sm
+  
+  avgbb <- listofdraws$mu_a_sp + listofdraws$b_Intercept+ (listofdraws[,b_temp_sp]+listofdraws$b_temp)*temp + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*sm + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*temp*sm
+  
+  spwarmbb <- listofdraws[,int_sp] + listofdraws$b_Intercept+ (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*sm + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*sm
+  
+  spwarmdrybb <-listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(drysm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(drysm*sm))
+  
+  spwarmdry2bb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(dry2sm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(dry2sm*sm))
+  
+  spwarmwetbb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(wetsm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(wetsm*sm))
+  
+  spwarmwet2bb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+    (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(wet2sm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(wet2sm*sm))
+  
+  yebbest <- list(spavgbb, spwarmbb, spwarmdrybb,spwarmdry2bb,spwarmwetbb,spwarmwet2bb)
+  return(yebbest)
+}
+
+#make blank dataframe to fill with estimates
+predicts <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+
+predicts.10per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+predicts.90per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+colnames(predicts)<-colnames(predicts.10per) <-colnames(predicts.90per) <-
+  c("amt.warming","bb.nowarm","bb.warm","warm.dry","warm.dry2","warm.wet","warm.wet2")
+#21 = Betula allegh
+#104 = Magnolia.grandiflora  
+#sptype<-c("tempsenssp","moissenssp")
+#get sp.name/number set up
+splegbb<- expgdd_bbd %>% # start with the data frame
+  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+  dplyr::select(sp.name,genus.species)
+splegbb<-splegbb[order(splegbb$genus.species),]
+colnames(splegbb)[2]<-"spnumbb"
+table(expgdd_bbd$site)
+
+spnum<-c(21,104)
+spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],"degwarm.pdf", sep="_")
+pdf(file.path(figpath,figname), width = 14, height = 6)
+#quartz()
+par(mar=c(8,7,3,5),mfrow=c(1,length(spnum)))
+
+for(s in 1:length(spnum)){
+for (i in 1:length(tempforecast.raw)){
+  temp<-sitetemp
+  warmtemp <-tempforecast.raw[i]
+  sm <-  sitemois
+  drysm<-drysm
+  bbposteriors <- getest.bb.sp(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm,spnum[s])
+  meanz <- unlist(lapply(bbposteriors, mean))
+  quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.10, 0.5, 0.90)))
+  quant10per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.1))))
+  quant90per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.9))))
+  predicts[i,]<-c(warmtemp,meanz)
+  predicts.10per[i,]<-c(warmtemp,quant10per)
+  predicts.90per[i,]<-c(warmtemp,quant90per)
+}
+
+predictsbb<-predicts
+predictsbb<-predictsbb[,-2]
+predictsbb.10per<-predicts.10per
+predictsbb.10per<-predictsbb.10per[,-2]
+predictsbb.90per<-predicts.90per
+predictsbb.90per<-predictsbb.90per[,-2]
+xlim = c(range(tempforecast.raw))
+ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
+
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
+     ylab="Days to BB", main=paste(spname[s]), bty="l")
+#Add shading around line for credible intervals
+
+for(j in c(3,5,7)){
+  polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.90per[,j-1]), predictsbb.10per[,j-1]), col = alpha(cols[j-2], 0.2), border = NA)
+}
+
+for(j in c(3,5,7)){
+  lines(predictsbb$amt.warming, predictsbb[,j-1], 
+        col=cols[j-2], lwd=2)
+}
+
+#axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
+axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+
+# intervals
+# for(i in 3:5){
+#   lines(predicts.25per$warming, predicts.25per[,i-1], 
+#         col=cols[i-2], lwd=1, lty=2)
+# }
+# for(i in 3:5){
+#   lines(predicts.75per$warming, predicts.75per[,i-1], 
+#         col=cols[i-2], lwd=1, lty=2)
+# }
+
+
+if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier","100% Wetter"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)}
+
+}
+dev.off()
+#make blank dataframe to fill with estimates
+predicts <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+
+predicts.10per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+predicts.90per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
+colnames(predicts)<-colnames(predicts.10per) <-colnames(predicts.90per) <-
+  c("amt.warming","bb.nowarm","bb.warm","warm.dry","warm.dry2","warm.wet","warm.wet2")
+spnum<-c(104,25)
+for (i in 1:length(tempforecast.raw)){
+  temp<-sitetemp
+  warmtemp <-tempforecast.raw[i]
+  sm <-  sitemois
+  drysm<-drysm
+  bbposteriors <- getest.bb.sp(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm,spnum[2])
+  meanz <- unlist(lapply(bbposteriors, mean))
+  quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.10, 0.5, 0.90)))
+  quant10per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.1))))
+  quant90per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.9))))
+  predicts[i,]<-c(warmtemp,meanz)
+  predicts.10per[i,]<-c(warmtemp,quant10per)
+  predicts.90per[i,]<-c(warmtemp,quant90per)
+}
+
+predictsbb<-predicts
+predictsbb<-predictsbb[,-2]
+predictsbb.10per<-predicts.10per
+predictsbb.10per<-predictsbb.10per[,-2]
+predictsbb.90per<-predicts.90per
+predictsbb.90per<-predictsbb.90per[,-2]
+xlim = c(range(tempforecast.raw))
+ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
+
+
+
+dev.off()
+
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),"degwarm.pdf", sep="_")
+pdf(file.path(figpath,figname), width = 9, height = 6)
+
+#pdf(paste(figpath,"/tempforecast",min(tempforecast),"-",max(tempforecast),"_deg_",lat,"_",long,".pdf",sep=""))
+#quartz()
+par(mar=c(8,7,3,5), mfrow=c(1,2))
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
+     ylab="Days to BB", main="BB", bty="l")
+#Add shading around line for credible intervals
+
+for(i in 3:7){
+  polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.90per[,i-1]), predictsbb.10per[,i-1]), col = alpha(cols[i-2], 0.2), border = NA)
+}
+#i=3
+#i=5
+for(i in 3:7){
+  lines(predictsbb$amt.warming, predictsbb[,i-1], 
+        col=cols[i-2], lwd=2)
+}
+#i=3
+lines(predictsbb$amt.warming, predictsbb[,i-1], 
+      col=cols[i-2], lwd=3)
+#axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
+axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+
+# intervals
+# for(i in 3:5){
+#   lines(predicts.25per$warming, predicts.25per[,i-1], 
+#         col=cols[i-2], lwd=1, lty=2)
+# }
+# for(i in 3:5){
+#   lines(predicts.75per$warming, predicts.75per[,i-1], 
+#         col=cols[i-2], lwd=1, lty=2)
+# }
+legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
+dev.off()
+
 
 
 #Now look at effect of soil moisture on the x axis, at different temperatures, using the main model
@@ -232,6 +421,7 @@ xlim = c(range(sm))
 ylim = c(min(round(predicts.loper[,-1], digits=0)), max(round(predicts.hiper[,-1], digits=0)))
 
 
+
 figname<-paste("tempforecast","bb",min(sm),max(sm),"vwc.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 9, height = 6)
 
@@ -271,7 +461,6 @@ legend(.3,140,legend=round(c(cold2temp,temp,warm2temp), digits=0),lty=1,lwd=2,co
 mtext("Mean temp (C)", side=3,line=-3,adj=1)
 dev.off()
 
-#Make version of figure with two species
 
 
 

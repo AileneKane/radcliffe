@@ -158,7 +158,7 @@ We found that soil drying delays phenology and warming temperatures advance phen
 include datapoints, 
 \par Phenophases
 \par 
-\par Variable responses to moisture (and precip) may be caused by temporal and spatial variation in the most limiting resource (e.g., temperature vs moisture).As global warming reduces temperature limitation, importance of moisture limitation in plant phenology may increase. 
+\par Variable responses to moisture (and precip) may be caused by temporal and spatial variation in the most limiting resource (e.g., temperature vs moisture). As global warming reduces temperature limitation, importance of moisture limitation in plant phenology may increase. 
 
 \section* {Conclusions}
 
@@ -190,7 +190,7 @@ include datapoints,
  %To do:
  %1. Figures
     % Make 
- %2. Reach out to Christy and Jeff when the figures are done and be clear that 
+ %2. Reach out to Christy, Miriam and Jeff when the figures are done and be clear that 
  
  %3. Make it clear that this is pretty finished. 
  
