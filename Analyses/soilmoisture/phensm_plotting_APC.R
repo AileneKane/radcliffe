@@ -70,8 +70,9 @@ moisef<-sp[1:47,,3]
 tempef<-sp[1:47,,2]
 moissenssp<-sp[which(moisef[,1]==min(moisef[,1])),,]
 tempsenssp<-sp[which(tempef[,1]==min(tempef[,1])),,]
-
-rownameshere <- c("mu_a_sp", "mu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
+speftab<-as.data.frame(cbind(tempef[,1],moisef[,1]))
+colnames(speftab)<-c("temp","mois")
+rownameshere <- c("mu_a_sp", "mtempu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
 rownames(fit)[1:length(rownameshere)]<-rownameshere
 #For main effects of model:
 tempforecast.raw<-seq(0,5, by=0.5)#enter in the amount of warming (in degrees C) you want to forecast 
@@ -86,7 +87,7 @@ wet2sm<- 1
 #range(expgdd_bbd$soilmois_janmar)#0.1020346 0.3879270
 #mean(expgdd_bbd$soilmois_janmar)#0.2146834
 #so 10% reduction in soil moisture would be 
-#mean(expgdd_bbd$soilmois_janmar)+(mean(expgdd_bbd$soilmois_janmar)*-0.1)
+#mean(expgdd_bbd$soilmois_janmar)+(mean(expgdd_bbd$soilmois_janmar)*-0.1)#0.1938242
 ## Plotting
 # First, we estimate the posteriors for each thing we want to plot...
 
@@ -179,34 +180,35 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
 legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
 dev.off()
 
-#Make version of figure with two species
+#Make version of figure with two species, and accounting for site effects too
 
-getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum){
+getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
   listofdraws <-as.data.frame(as.matrix(mod))
   int_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",Intercept]", sep=""))
+  int_site<-which(colnames(listofdraws)==paste("r_site[",sitenum,",Intercept]", sep=""))
   b_temp_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",temp]", sep=""))
   b_mois_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",mois]", sep=""))
   b_tsm_sp<-which(colnames(listofdraws)==paste("r_sp[",spnum,",temp:mois]", sep=""))
   
-  spavgbb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*temp + 
+  spavgbb <- listofdraws[,int_sp] + listofdraws[,int_site] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*temp + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*sm + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*temp*sm
   
-  avgbb <- listofdraws$mu_a_sp + listofdraws$b_Intercept+ (listofdraws[,b_temp_sp]+listofdraws$b_temp)*temp + 
+  avgbb <- listofdraws$mu_a_sp + listofdraws[,int_site]+ listofdraws$b_Intercept+ (listofdraws[,b_temp_sp]+listofdraws$b_temp)*temp + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*sm + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*temp*sm
   
-  spwarmbb <- listofdraws[,int_sp] + listofdraws$b_Intercept+ (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+  spwarmbb <- listofdraws[,int_sp] + listofdraws[,int_site]+ listofdraws$b_Intercept+ (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*sm + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*sm
   
-  spwarmdrybb <-listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+  spwarmdrybb <-listofdraws[,int_sp]+ listofdraws[,int_site] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(drysm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(drysm*sm))
   
-  spwarmdry2bb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+  spwarmdry2bb <- listofdraws[,int_sp] + listofdraws[,int_site]+ listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(dry2sm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(dry2sm*sm))
   
-  spwarmwetbb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+  spwarmwetbb <- listofdraws[,int_sp] + listofdraws[,int_site]+ listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(wetsm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(wetsm*sm))
   
-  spwarmwet2bb <- listofdraws[,int_sp] + listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
+  spwarmwet2bb <- listofdraws[,int_sp] + listofdraws[,int_site]+ listofdraws$b_Intercept + (listofdraws[,b_temp_sp]+listofdraws$b_temp)*(temp+warmtemp) + 
     (listofdraws[,b_mois_sp]+listofdraws$b_mois)*(sm+(wet2sm*sm)) + (listofdraws[,b_tsm_sp]+listofdraws$`b_temp:mois`)*(temp+warmtemp)*(sm+(wet2sm*sm))
   
   yebbest <- list(spavgbb, spwarmbb, spwarmdrybb,spwarmdry2bb,spwarmwetbb,spwarmwet2bb)
@@ -231,9 +233,17 @@ splegbb<-splegbb[order(splegbb$genus.species),]
 colnames(splegbb)[2]<-"spnumbb"
 table(expgdd_bbd$site)
 
-spnum<-c(21,104)
+spnum<-c(23,104,98,106)
+sitenum = 4
 spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
-figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],"degwarm.pdf", sep="_")
+
+#which sites are associated with each species?
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==99])#3,4
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==21])#1,4,5
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==106])#1,4,5
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==98])#1,4,5
+
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],sitenum,"degwarm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 14, height = 6)
 #quartz()
 par(mar=c(8,7,3,5),mfrow=c(1,length(spnum)))
@@ -244,7 +254,7 @@ for (i in 1:length(tempforecast.raw)){
   warmtemp <-tempforecast.raw[i]
   sm <-  sitemois
   drysm<-drysm
-  bbposteriors <- getest.bb.sp(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm,spnum[s])
+  bbposteriors <- getest.bb.sp(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm,spnum[s],sitenum)
   meanz <- unlist(lapply(bbposteriors, mean))
   quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.10, 0.5, 0.90)))
   quant10per <- unlist(lapply(bbposteriors, function(x) quantile(x,  c(0.1))))
@@ -294,6 +304,25 @@ if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier","100% Wetter"
 
 }
 dev.off()
+
+
+
+
+
+##Now something with functional group- do either lo or fl for this?
+spleglo<-expgdd_lod %>% # start with the data frame
+  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+  dplyr::select(sp.name,genus.species)    
+spleglo<-spleglo[order(spleglo$genus.species),]
+
+funcgroup<-spleglo
+funcgroup$func<-"tree"
+funcgroup$func[grep("Alli",funcgroup$sp.name)]<-"forb"
+funcgroup$func[grep("Alli",funcgroup$sp.name)]<-"forb"
+Ambrosia.artemisiifolia
+#could do annual vs perenial forb
+
+funcgroup$func[]
 #make blank dataframe to fill with estimates
 predicts <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
 

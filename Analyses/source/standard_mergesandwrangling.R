@@ -1,6 +1,6 @@
 #Standard data wrangling to merge expclim and treats, and expclim and expheno
 #AND to get one column for above ground temperature (COMBINING SURFACE, CANOPY, AND AIR)
-#uses three files () to get two commonly used databases:
+#uses three files to get two commonly used databases:
 #1) experimental climate with one variable for above ground warming and all treatments added in
 #2) exppgdd database with climate data (gddcrit,etc)
 
@@ -66,8 +66,54 @@ expgdd[which(is.na(expgdd$block)),]$block<-"none"
 if(remove.conifers==TRUE){
   expgdd<-expgdd[expgdd$genus!="Pinus",]
   }#6 species of pines from 4 sites...removing them makes model fail to converge. also makes interaction significant...
-print(dim(expgdd))
 #make a column for combined genus species
 expgdd$genus.species<-paste(expgdd$genus,expgdd$species,sep=".")
 
+#for exp 4, when species is unknown, remve those rows of data:
+#dim(expgdd[expgdd$genus.species=="Acer.sp",])#22 rows
+#unique(expgdd$site[expgdd$genus.species=="Acer.sp"])#exp03 and exp04
 
+#dim(expgdd[expgdd$genus.species=="Betula.sp",])#717 rows! That's a lot- but not I think we need to remove tham...
+#unique(expgdd$site[expgdd$genus.species=="Betula.sp"])#all exp04
+#dim(expgdd[expgdd$genus.species=="Carya.sp",])#26 rows
+#unique(expgdd$site[expgdd$genus.species=="Carya.sp"])#exp03 and exp09
+#dim(expgdd[expgdd$genus.species=="Cornus.sp",])#26 rows
+#dim(expgdd[expgdd$genus.species=="Crataegus.sp",])#33 rows
+#unique(expgdd$site[expgdd$genus.species=="Crataegus.sp"])#exp09 but keep it-treat as all one species since it is always in the dataset this way
+#dim(expgdd[expgdd$genus.species=="Magnolia.sp",])#only 4 rows
+#unique(expgdd$site[expgdd$genus.species=="Cornus.sp"])#exp09
+#dim(expgdd[expgdd$genus.species=="Fraxinus.sp",])#42 rows
+#unique(expgdd$site[expgdd$genus.species=="Fraxinus.sp"])#exp09 but keep it-treat as all one species since it is always in the dataset this way
+#dim(expgdd[expgdd$genus.species=="Galium.sp",])#15 rows
+#unique(expgdd$site[expgdd$genus.species=="Galium.sp"])#exp09
+
+#dim(expgdd[expgdd$genus.species=="Magnolia.sp",])#only 4 rows
+#unique(expgdd$site[expgdd$genus.species=="Magnolia.sp"])#exp03 and exp04
+#dim(expgdd[expgdd$genus.species=="Prunus.sp",])# only 4  rows
+#unique(expgdd$site[expgdd$genus.species=="Prunus.sp"])#exp04
+#dim(expgdd[expgdd$genus.species=="Quercus.sp",])#63 rows
+#unique(expgdd$site[expgdd$genus.species=="Quercus.sp"])#exp03 and exp04
+#dim(expgdd[expgdd$genus.species=="Vaccinium.sp",])#36 rows
+#unique(expgdd$site[expgdd$genus.species=="Vaccinium.sp"])#exp07, ut keep it-treat as all one species since it is always in the dataset this way
+
+#look at what phenophases/models this will affect
+unique(expgdd$event[expgdd$genus.species=="Acer.sp"])#"lud" "lod" "bbd"
+unique(expgdd$event[expgdd$genus.species=="Betula.sp"])#"bbd" "lod" "lud"
+unique(expgdd$event[expgdd$genus.species=="Carya.sp"])#"bbd" "lod" "lud" "sen"
+unique(expgdd$event[expgdd$genus.species=="Cornus.sp"])#" "lod" "ffrd"
+unique(expgdd$event[expgdd$genus.species=="Galium.sp"])#"lod" "
+unique(expgdd$event[expgdd$genus.species=="Magnolia.sp"])#lud" "lod" "bbd"
+unique(expgdd$event[expgdd$genus.species=="Prunus.sp"])#"lod" "bbd"
+unique(expgdd$event[expgdd$genus.species=="Quercus.sp"])#"bbd" "lod" "lud"
+
+expgdd<-expgdd[expgdd$genus.species!="Acer.sp",]# rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Betula.sp",]#717 rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Carya.sp",]# rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Cornus.sp",]# rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Galium.sp",]# rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Magnolia.sp",]# rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Prunus.sp",]# rows! That's a lot- but not sure what else to do...
+expgdd<-expgdd[expgdd$genus.species!="Quercus.sp",]# rows! That's a lot- but not sure what else to do...
+
+dim(expgdd[expgdd$site=="exp04",])#8663
+print(dim(expgdd))
