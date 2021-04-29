@@ -169,7 +169,7 @@ save(testm5cent.ffrd.brms, file="Analyses/output/brms/testm5cent.brms.frd.Rda")
 testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
                               (temp * mois|sp) + (1|site/year), #random effects
                             data=datalist.sen.cent,
-                            chains = 2,iter = 5000,
+                            chains = 2,iter = 6000,
                            control = list(max_treedepth = 15,adapt_delta = .9999))
 
 save(testm5cent.sen.brms, file="Analyses/output/brms/testm5cent.brms.sen.Rda")

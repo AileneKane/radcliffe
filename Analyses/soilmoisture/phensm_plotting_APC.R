@@ -23,7 +23,8 @@ figpath <- "Analyses/soilmoisture/figures"
 #Read in experimental climate and phenology data
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
-treats<-read.csv("Analyses/treats_detail.csv", header=T)
+treats<-read.csv("Analyses/treats_detail.csv", header=TRUE)
+forms<-read.csv("Analyses/output/lifeform.csv", header=TRUE)
 #Make some choices about how to restrict the data and which model to use:
 remove.conifers=TRUE
 use.airtemp=TRUE
@@ -65,14 +66,15 @@ if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
 
 #find species with largest response to moisture and smallest response to moisture
 sp<-coef(mod,probs=c(0.1,0.9))$sp
-intercepts<-sp[1:47,,1]
-moisef<-sp[1:47,,3]
-tempef<-sp[1:47,,2]
+intercepts<-sp[1:41,,1]
+moisef<-sp[1:41,,3]
+tempef<-sp[1:41,,2]
 moissenssp<-sp[which(moisef[,1]==min(moisef[,1])),,]
 tempsenssp<-sp[which(tempef[,1]==min(tempef[,1])),,]
 speftab<-as.data.frame(cbind(tempef[,1],moisef[,1]))
 colnames(speftab)<-c("temp","mois")
-rownameshere <- c("mu_a_sp", "mtempu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
+speftab[order(speftab$mois),]
+rownameshere <- c("mu_a_sp", "mu_b_temp_sp", "mu_b_mois_sp", "mu_b_tsm_sp")
 rownames(fit)[1:length(rownameshere)]<-rownameshere
 #For main effects of model:
 tempforecast.raw<-seq(0,5, by=0.5)#enter in the amount of warming (in degrees C) you want to forecast 
@@ -233,18 +235,21 @@ splegbb<-splegbb[order(splegbb$genus.species),]
 colnames(splegbb)[2]<-"spnumbb"
 table(expgdd_bbd$site)
 
-spnum<-c(23,104,98,106)
+spnum<-c(20,28,93,106)
 sitenum = 4
 spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
 
 #which sites are associated with each species?
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==99])#3,4
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==21])#1,4,5
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==20])#3,4
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==28])#1,4,5
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==99])#1,4,5
 unique(expgdd_bbd$site[expgdd_bbd$genus.species==106])#1,4,5
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==98])#1,4,5
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==174])#1
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==93])#134
+
 
 figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],sitenum,"degwarm.pdf", sep="_")
-pdf(file.path(figpath,figname), width = 14, height = 6)
+pdf(file.path(figpath,figname), width = 18, height = 6)
 #quartz()
 par(mar=c(8,7,3,5),mfrow=c(1,length(spnum)))
 
@@ -306,23 +311,22 @@ if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier","100% Wetter"
 dev.off()
 
 
-
-
-
 ##Now something with functional group- do either lo or fl for this?
-spleglo<-expgdd_lod %>% # start with the data frame
-  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(sp.name,genus.species)    
-spleglo<-spleglo[order(spleglo$genus.species),]
+source("Analyses/source/get_lifeform.R")
 
-funcgroup<-spleglo
-funcgroup$func<-"tree"
-funcgroup$func[grep("Alli",funcgroup$sp.name)]<-"forb"
-funcgroup$func[grep("Alli",funcgroup$sp.name)]<-"forb"
-Ambrosia.artemisiifolia
-#could do annual vs perenial forb
+lomod<- load("Analyses/output/brms/testm5cent.brms.lo.Rda")
+mod<- testm5cent.lod.brms
+fit <- fixef(mod)
+#getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
+listofdraws <-as.data.frame(as.matrix(mod))
+myVectorOfStrings <- c("foo", "bar")
+matchExpression <- paste(loform$spnumlo[loform$form=="tree"],",mois]", collapse = "|",sep="")
+treem<-as.matrix(listofdraws%>% select(matches(matchExpression)))
+quartz()
+par(mfrow=c(1,4))
+hist(treem)
 
-funcgroup$func[]
+
 #make blank dataframe to fill with estimates
 predicts <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
 

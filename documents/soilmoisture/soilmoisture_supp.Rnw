@@ -294,6 +294,14 @@ print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
  \begin{figure}[h]
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
+ \caption{\textbf{Locations of experiments included in the meta-analysis.}} 
+ \label{fig:soilmois}
+ \end{figure}
+
+\clearpage
+ \begin{figure}[h]
+\centering
+ \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
  \caption{\textbf{Effects of target temperature and precipitation treatments on soil moisture.}} 
  \label{fig:soilmois}
  \end{figure}
