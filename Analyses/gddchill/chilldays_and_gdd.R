@@ -1,13 +1,17 @@
 ##Code to estimate chilling days
 ##by Ailene
 ##April 6, 2016
+rm(list=ls()) 
 options(stringsAsFactors=FALSE)
-#library(RColorBrewer)
-#library(lme4)
-#library(car)
+
+#Choose whether or not to use the gapfilled data:
+gapfill=FALSE#if true, uses expclim_gapfill; if false, uses expclim.csv
+
 ##Read in climate and phenology data
-setwd("~/git/radcliffe")
-expclim<-read.csv("Analyses/expclim.csv", header=T)
+setwd("~/GitHub/radcliffe")
+if(gapfill==FALSE){expclim<-read.csv("Analyses/expclim.csv", header=T)}
+if(gapfill==TRUE){expclim<-read.csv("Analyses/expclim_gapfill.csv", header=T)}
+
 ##Calculate chilling days. We want to use a base of 5 (<5 degrees C=chilling day)
 #For all sites/years/blocks/plots that we have data from previous year (starting sept 1), calculate chilling days from sept 1 through December 31
 #First, create new column for chilling year and chilling doy  (starting sept 1 from the previous year)

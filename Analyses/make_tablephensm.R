@@ -11,7 +11,6 @@ remove.conifers=TRUE
 use.airtemp=TRUE
 use.centmod=TRUE
 #data of interest for plotting (phenophase, site, sp, if applicable)
-phen="BB"#options that work are "BB" or "LO"
 #standard data wrangling to get expclim2 for climate analyses and expgdd
 #for phenology analyses (with gddcrit)
 source("Analyses/source/standard_mergesandwrangling.R")

@@ -311,22 +311,6 @@ if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier","100% Wetter"
 dev.off()
 
 
-##Now something with functional group- do either lo or fl for this?
-source("Analyses/source/get_lifeform.R")
-
-lomod<- load("Analyses/output/brms/testm5cent.brms.lo.Rda")
-mod<- testm5cent.lod.brms
-fit <- fixef(mod)
-#getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
-listofdraws <-as.data.frame(as.matrix(mod))
-myVectorOfStrings <- c("foo", "bar")
-matchExpression <- paste(loform$spnumlo[loform$form=="tree"],",mois]", collapse = "|",sep="")
-treem<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-quartz()
-par(mfrow=c(1,4))
-hist(treem)
-
-
 #make blank dataframe to fill with estimates
 predicts <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
 

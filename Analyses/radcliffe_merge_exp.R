@@ -1,6 +1,6 @@
 ### Started 8 December 2015 ##
 ### By Ailene Ettinger ###
-setwd("~/git/radcliffe") 
+setwd("~/Documents/GitHub/radcliffe")
 rm(list=ls()) 
 options(stringsAsFactors=FALSE)
 ##load packages
@@ -301,6 +301,7 @@ clean.raw$bace <- function(filename="BACE_deciduous2010_originaltrees.csv", path
   baceall[baceall$genusspecies=="Erigeron annuus ",]$genusspecies<-"Erigeron annuus"
   baceall[baceall$genusspecies=="Festuca spp. ",]$genusspecies<-"Festuca sp."
   baceall[baceall$genusspecies=="lepidium virginicum",]$genusspecies<-"Lepidium virginicum"
+  baceall[baceall$genusspecies=="Lamium amplexicaula",]$genusspecies<-"Lamium amplexicaule"
   baceall[baceall$genusspecies=="Oxalis stricta ",]$genusspecies<-"Oxalis stricta"
   baceall[baceall$genusspecies=="Rumex crispus ",]$genusspecies<-"Rumex crispus"
   baceall[baceall$genusspecies=="Silene alba ",]$genusspecies<-"Silene alba"
@@ -671,7 +672,7 @@ clean.raw$sherry <- function(filename, path) {
   sherryspp<-c("SherryPhenology2003_Achillea.csv","SherryPhenology2003_Ambrosia.csv","SherryPhenology2003_Andropogon.csv","SherryPhenology2003_Erigeron.csv","SherryPhenology2003_Panicum.csv","SherryPhenology2003_Schizachyrium.csv")
   sherry <- NA
   gen<-c("Achillea","Ambrosia","Andropogon","Erigeron","Panicum","Schizachyrium")
-  sp<-c("millefolium","psilostchya","gerardii","strigosus","virgatum","scoparium")
+  sp<-c("millefolium","psilostachya","gerardii","strigosus","virgatum","scoparium")
   for (i in 1:length(sherryspp)){
     file <- file.path(path, paste(sherryspp[i]))
     sherry1 <- read.csv(file, skip=3, header=TRUE)
@@ -964,6 +965,17 @@ clean.raw$force <- function(filename="FORCE_Inventories_2009_2010_clean.csv", pa
   }
   force4<-force3 %>% separate(genussp, c("genus", "species"), sep=" ", remove=F)
   force4[which(force4$genus=="Sisynchium"),]$genus<-"Sisyrinchium"
+  force4[which(force4$genus=="Dianthus"),]$species<-"armeria"
+  force4[which(force4$genus=="Amphicarpa"),]$genus<-"Amphicarpaea"
+  force4[which(force4$genus=="Actea"),]$genus<-"Actaea"
+  force4[which(force4$species=="soria"),]$species<-"sororia"
+  force4[which(force4$species=="lavae"),]$species<-"laeve"
+  force4[which(force4$species=="abortivis"),]$species<-"abortivus"
+  force4[which(force4$species=="gramanifolia"),]$species<-"graminifolia"
+  force4[which(force4$genus=="Rubus"),]$species<-"occidentalis"
+  force4[which(force4$species=="anuus"),]$species<-"annuus"
+  force4[which(force4$genus=="Ceanothus"),]$species<-"americanus"
+  force4[which(force4$species=="hieraciifolia"),]$species<-"hieraciifolius"
   #force4[which(force4$genus=="Oenethera"),]$genus<-"Oenothera"
   force4$site<-"exp09"
   force<-subset(force4, select=c("site","block","plot","event","year","genus","species", "doy"))
@@ -1182,7 +1194,7 @@ head(expphendb)
 expphendb <- expphendb[order(expphendb$site,expphendb$block,expphendb$plot,expphendb$year,expphendb$doy,expphendb$genus),] 
 write.csv(expphendb,"analyses/exppheno.csv",row.names=F, eol="\r\n")
 
-unique(expphendb$site)#14 experiments across 9 sites
+sort(unique(expphendb$site))#14 experiments across 9 sites
 sort(unique(expphendb$genus))#161 genera
 expphendb$genus.species<-paste(expphendb$genus,expphendb$species,sep=".")
 sort(unique(expphendb$genus.species))#268 species
