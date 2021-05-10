@@ -81,13 +81,13 @@ rast.table$rgb <- with(rast.table, rgb(HYP_50M_SR_W.1,
                                        1))
 
 
-levels(expsites$warming_type) <- c("infrared", "forced air", "soil warming", "forced air & \nsoil warming")
+#levels(expsites$warming_type) <- c("infrared", "forced air", "soil warming", "forced air & \nsoil warming")
 warming.shapes <- c(5, 1, 2, 0)
 warming.cols <- c("black", "blue2", "red3", "purple3")
 
 # Note: the natural earth data takes quite a while to plot!
 # set.seed(1134)
-png("soilmoisLocations_Experiments_Open.png", width=8, height=4, units="in", res=220)
+png("soilmoisLocations_Experiments.png", width=8, height=4, units="in", res=220)
 ggplot(data=expsites) +
   theme_bw() +
   guides(fill="none") +

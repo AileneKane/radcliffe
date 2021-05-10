@@ -150,6 +150,7 @@ testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
 
 save(testm5cent.ffd.brms, file="Analyses/output/brms/testm5cent.brms.ff.Rda")
 
+round(fixef(testm5cent.ffd.brms, probs=c(.90,0.10)), digits=2)
 
 testm5cent.ffdlo.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
@@ -161,10 +162,11 @@ save(testm5cent.ffdlo.brms, file="Analyses/output/brms/testm5cent.brms.fflo.Rda"
 testm5cent.ffrd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
                            data=datalist.ffrd.cent,
-                           chains = 2,iter = 4000,
+                           chains = 2,iter = 5000,
                            control = list(max_treedepth = 15,adapt_delta = .9999))
 save(testm5cent.ffrd.brms, file="Analyses/output/brms/testm5cent.brms.frd.Rda")
-#8 divergent transitions...
+round(fixef(testm5cent.ffrd.brms, probs=c(.90,0.10)), digits=2)
+
 
 testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
                               (temp * mois|sp) + (1|site/year), #random effects
@@ -205,7 +207,7 @@ table(expgdd_subs$sp.name[expgdd_subs$site2 =="exp01"],expgdd_subs$year[expgdd_s
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.bbd,
-                       chains = 2,iter = 3000,
+                       chains = 2,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 
 # stancode(testm5.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)

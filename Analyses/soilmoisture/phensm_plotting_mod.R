@@ -84,7 +84,7 @@ sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2:4,]
 speffbb <- coef(mod, probs = c(.10,.90))
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
-pdf(file.path("Analyses/soilmoisture/figures/m5.bbdlo.pdf"), width = 10, height = 12)
+pdf(file.path("Analyses/soilmoisture/figures/m5_bbdlo_pdf"), width = 10, height = 12)
 #windows(width = 10, height = 10)
 par(mfrow=c(2,1), mar = c(5, 10, 2, 10))
 
@@ -203,19 +203,20 @@ legend(leg1, leg2, splegall$sp.name,
 dev.off()
 
 
-
+load("Analyses/output/brms/testm5cent.brms.ff.Rda")
 mod<-testm5cent.ffd.brms
 sum<-summary(mod)
 fix<-sum$fixed
 speff <- coef(mod)
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 
-#pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
+pdf(file.path("Analyses/soilmoisture/figures/m5_ffd_frd_sen.pdf"), width = 8, height = 16)
 #quartz(width = 8, height = 6)
-#par(mfrow=c(1,1), mar = c(6, 10, 2, 1))
-# One panel: budburst
-plot(seq(-25, #min(meanz[,'mean']*1.1),
-         300, #max(meanz[,'mean']*1.1),
+#Panel 1: Flowering
+
+par(mfrow=c(3,1))
+plot(seq(-50, #min(meanz[,'mean']*1.1),
+         25, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
      type="n",
@@ -223,16 +224,16 @@ plot(seq(-25, #min(meanz[,'mean']*1.1),
      ylab = "",
      yaxt = "n")
 
-axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+axis(2, at = 5*(nrow(fix):2), labels = rownames(fix)[2:4], las = 1, cex.axis = 0.8)
 
 #i=1
 #Plot species estimate for each predictor
 sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
-for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+for(i in 2:nrow(fix)){
+  arrows(speff$sp[,"Q97.5",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha("darkgray", 0.2)) 
 }
-for(i in 1:nrow(fix)){
+for(i in 2:nrow(fix)){
   points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
          pch = 16,
          col = alpha("darkgray", 0.5))
@@ -248,20 +249,19 @@ points(fix[,'Estimate'],
        col = "purple3")
 
 abline(v = 0, lty = 2)
-#dev.off()
 
 
-###For supplement
+###Panel 2 Fruiting
+load("Analyses/output/brms/testm5cent.brms.frd.Rda")
 
-##Figure of FFRD and SEN
 mod<-testm5cent.ffrd.brms 
 sum<-summary(mod)
 fix<-sum$fixed
 speff <- coef(mod)
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #pdf(file.path("Analyses/soilmoisture/figures/m5.bbd.pdf"), width = 8, height = 6)
-quartz(width = 8, height = 7)
-par(mfrow=c(2,1), mar = c(4, 7, .5, 1))
+#quartz(width = 8, height = 7)
+#par(mfrow=c(2,1), mar = c(4, 7, .5, 1))
 # One panel: fruiting
 plot(seq(-45, #min(meanz[,'mean']*1.1),
          360, #max(meanz[,'mean']*1.1),
@@ -278,7 +278,7 @@ axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
 #Plot species estimate for each predictor
 sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q97.5",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha("darkgray", 0.2)) 
 }
 for(i in 1:nrow(fix)){
@@ -298,7 +298,7 @@ points(fix[,'Estimate'],
 
 abline(v = 0, lty = 2)
 #dev.off()
-
+load("Analyses/output/brms/testm5cent.brms.sen.Rda")
 mod<-testm5cent.sen.brms 
 sum<-summary(mod)
 fix<-sum$fixed
@@ -322,7 +322,7 @@ axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
 #Plot species estimate for each predictor
 sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 for(i in 1:nrow(fix)){
-  arrows(speff$sp[,"97.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"2.5%ile",i],  5*(nrow(fix):1)[i]-.5-sp,
+  arrows(speff$sp[,"Q97.5",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha("darkgray", 0.2)) 
 }
 for(i in 1:nrow(fix)){
@@ -341,7 +341,7 @@ points(fix[,'Estimate'],
        col = "burlywood4")
 
 abline(v = 0, lty = 2)
-#dev.off()
+dev.off()
 
 
 

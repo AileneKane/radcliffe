@@ -107,37 +107,6 @@
 %\linenumbers
 
 \section* {Supplemental Methods}
-\underline{Equations for soil moisture and temeprature models}: 
-The equations below represent the models we used to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments treatments on soil moisture and temperature. Since the model structures for our analyses of moisture and temperature were identical, \textit{y} represents either moisture or temperature. 
-
-\begin{equation}
-y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{temp_{site[i]}}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}\label{eq:1}
-\end{equation}
-\begin{equation}
-\alpha_{site[year[doy]]}\sim N(\mu_{site[year]}, \sigma_{site[year]})\label{eq:2}
-\end{equation}
-
-\begin{equation}
-\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})\label{eq:3}
-\end{equation}
-
-\begin{equation}
-\mu_{sy} \sim N(\mu_{s}, \sigma_{s})\label{eq:4}
-\end{equation}
-
-\begin{equation}
-\beta_{1 site} \sim N(\mu_{\beta1}, \sigma_{\beta1})\label{eq:5}
-\end{equation}
-
-\begin{equation}
-\beta_{2 site} \sim N(\mu_{\beta2}, \sigma_{\beta2})\label{eq:6}
-\end{equation}
-
-\begin{equation}
-\beta_{3 site} \sim N(\mu_{\beta3}, \sigma_{\beta3})\label{eq:7}
-\end{equation}
-
-
 \underline{Equations for phenology models}: 
  Response variable (\textit{y}) is day of year of the phenological event (budburst, leafout, flowering, fruiting, or senesence). Predictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (sp, random slopes and intercepts); site and year nested within site (random intercepts).
 
@@ -171,6 +140,38 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \end{equation}
 
 
+\underline{Equations for soil moisture and temeprature models}: 
+The equations below represent the models we used to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments treatments on soil moisture and temperature. Since the model structures for our analyses of moisture and temperature were identical, \textit{y} represents either moisture or temperature. 
+
+\begin{equation}
+y_{i}=\alpha_{site[year[doy[i]]]}+ \beta_{temp_{site[i]}}eT_i+\beta_{2 site[i]}eP_i+\beta_{3 site[i]}eT_ieP_i+\epsilon_{i}\label{eq:1}
+\end{equation}
+\begin{equation}
+\alpha_{site[year[doy]]}\sim N(\mu_{site[year]}, \sigma_{site[year]})\label{eq:2}
+\end{equation}
+
+\begin{equation}
+\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})\label{eq:3}
+\end{equation}
+
+\begin{equation}
+\mu_{sy} \sim N(\mu_{s}, \sigma_{s})\label{eq:4}
+\end{equation}
+
+\begin{equation}
+\beta_{1 site} \sim N(\mu_{\beta1}, \sigma_{\beta1})\label{eq:5}
+\end{equation}
+
+\begin{equation}
+\beta_{2 site} \sim N(\mu_{\beta2}, \sigma_{\beta2})\label{eq:6}
+\end{equation}
+
+\begin{equation}
+\beta_{3 site} \sim N(\mu_{\beta3}, \sigma_{\beta3})\label{eq:7}
+\end{equation}
+
+
+
 \section* {Results}
 \begin{singlespace}
 
@@ -198,15 +199,14 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \end{enumerate}
 \end{singlespace}
 
-\bibliography{mylibrary.bib}
+\bibliography{../../Bibliography/mylibrary.bib}
 
 \section* {To do}
 \begin{enumerate}
 \item Clean up code
 \item Model tables for supplement
 \item Figure 2: color code dots by species (by BB day of year, from early to late)
-\item Figure showing effects with forecasted shifts in temp and moisture...
-
+\item Figure of histograms by life form
 \end{enumerate}
 \section*{References to include}
 \begin{itemize}

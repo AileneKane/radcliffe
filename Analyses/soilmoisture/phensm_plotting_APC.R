@@ -69,8 +69,14 @@ sp<-coef(mod,probs=c(0.1,0.9))$sp
 intercepts<-sp[1:41,,1]
 moisef<-sp[1:41,,3]
 tempef<-sp[1:41,,2]
+intef<-sp[1:41,,4]
+
 moissenssp<-sp[which(moisef[,1]==min(moisef[,1])),,]
 tempsenssp<-sp[which(tempef[,1]==min(tempef[,1])),,]
+#identify species with smallest interaction term
+lowintsp<-sp[which(intef[,1]==min(abs(0-intef[,1]))),,]#32 or 135?
+maxnegintsp<-sp[which(intef[,1]==min(intef[,1])),,]#32 or 135?
+
 speftab<-as.data.frame(cbind(tempef[,1],moisef[,1]))
 colnames(speftab)<-c("temp","mois")
 speftab[order(speftab$mois),]
@@ -224,10 +230,7 @@ predicts.10per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
 predicts.90per <- as.data.frame(matrix(NA,ncol=7,nrow=length(tempforecast.raw)))
 colnames(predicts)<-colnames(predicts.10per) <-colnames(predicts.90per) <-
   c("amt.warming","bb.nowarm","bb.warm","warm.dry","warm.dry2","warm.wet","warm.wet2")
-#21 = Betula allegh
-#104 = Magnolia.grandiflora  
-#sptype<-c("tempsenssp","moissenssp")
-#get sp.name/number set up
+
 splegbb<- expgdd_bbd %>% # start with the data frame
   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
   dplyr::select(sp.name,genus.species)
@@ -235,23 +238,29 @@ splegbb<-splegbb[order(splegbb$genus.species),]
 colnames(splegbb)[2]<-"spnumbb"
 table(expgdd_bbd$site)
 
-spnum<-c(20,28,93,106)
+spnum<-c(28,105,135)
+#choose:
+
+#105:Nyssa sylvatica: +inxn, - effects of both moisture and temp
+#28: Carya glabra, -inxn, - effects of both moisture and temp
+#Or 22: Betula, -inxn, - effects of both moisture and temp
+#135 = Quercus nigra,  inxn term close to 0, wide incertainty intervales effects of both moisture and temp
 sitenum = 4
 spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
 
 #which sites are associated with each species?
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==20])#3,4
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==28])#1,4,5
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==99])#1,4,5
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==106])#1,4,5
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==174])#1
-unique(expgdd_bbd$site[expgdd_bbd$genus.species==93])#134
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==28])#3,4
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==3])#1,3,4,5,7
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==105])#3,4
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==135])#3,4
 
 
-figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],sitenum,"degwarm.pdf", sep="_")
-pdf(file.path(figpath,figname), width = 18, height = 6)
+#spnum<-splegbb$spnumbb[25:36]
+#spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],spnum[4],sitenum,"degwarm.pdf", sep="_")
+pdf(file.path(figpath,figname), width = 12, height = 5)
 #quartz()
-par(mar=c(8,7,3,5),mfrow=c(1,length(spnum)))
+par(mar=c(8,7,3,5),mfrow=c(1,3))
 
 for(s in 1:length(spnum)){
 for (i in 1:length(tempforecast.raw)){
@@ -279,7 +288,8 @@ xlim = c(range(tempforecast.raw))
 ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
 
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
-     ylab="Days to BB", main=paste(spname[s]), bty="l")
+     ylab="Budburst Day", main=paste(spname[s],spnum[s],sep=","), bty="l")
+
 #Add shading around line for credible intervals
 
 for(j in c(3,5,7)){
@@ -305,7 +315,7 @@ axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
 # }
 
 
-if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier","100% Wetter"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)}
+if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier soil","100% Wetter soil"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)}
 
 }
 dev.off()

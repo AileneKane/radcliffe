@@ -44,7 +44,8 @@ source("Analyses/source/stanprep_phenmods.R")
 source("Analyses/source/get_lifeform.R")
 
 #First, Leaf-Out
-figname<-"hist.loform.pdf"
+figname<-"histloform.pdf"
+#figname<-"histbbloform.pdf"
 
 lomod<- load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 mod<- testm5cent.lod.brms
@@ -66,7 +67,9 @@ grassm<-as.matrix(listofdraws%>% select(matches(matchExpression)))
 #temp
 matchExpression <- paste(loform$spnumlo[loform$form=="tree"],",temp]", collapse = "|",sep="")
 treet<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-mean(treet)
+meanz <- unlist(lapply(treet, mean))
+dim(treet)
+hist(colMeans(treet))
 quantile(treet,probs=c(0.1,.9))
 matchExpression <- paste(loform$spnumlo[loform$form=="shrub"],",temp]", collapse = "|",sep="")
 shrubt<-as.matrix(listofdraws%>% select(matches(matchExpression)))
@@ -90,10 +93,57 @@ hist(treem, main="Trees",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effe
 hist(shrubm, main="Shrubs",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effects")
 hist(forbm, main="Herbs",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effects")
 hist(grassm, main="Grass",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effects")
+
 dev.off()
 mean(treet);mean(shrubt);mean(forbt);mean(grasst)
 mean(treem);mean(shrubm);mean(forbm);mean(grassm)
 
+
+#same figure but not using posterior samples- just species random effects, as I'm not sure that the above is working
+sp<-coef(mod,probs=c(0.1,0.9))$sp
+intercepts<-sp[,,1]
+moisef<-as.data.frame(sp[,,3])
+moisef$spnumlo<-rownames(moisef)
+
+tempef<-as.data.frame(sp[,,2])
+tempef$spnumlo<-rownames(tempef)
+
+intef<-as.data.frame(sp[,,4])
+intef$spnumlo<-rownames(intef)
+
+#getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
+loform$spnumlo<-as.character(loform$spnumlo)
+
+tempform<-left_join(tempef,loform)
+moisform<-left_join(moisef,loform)
+intform<-left_join(intef,loform)
+figname<-"histbbloform_spef.pdf"
+pdf(file.path(figpath,figname), height=8,width=10)
+#quartz(height=4,width=10)
+par(mfrow=c(2,3))
+hist(tempform$Estimate[tempform$form=="forb"],main="Temperature Effect",xlim=c(-35,35),ylim=c(0,20),col=alpha("darkgreen",.5),xlab="Temp effects")
+hist(tempform$Estimate[tempform$form=="tree"],col=alpha("darkred",.7),add=TRUE)
+hist(tempform$Estimate[tempform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
+hist(tempform$Estimate[tempform$form=="grass"], main="Grass",col=alpha("goldenrod",.7), add=TRUE)
+abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+legend("topright",legend=c("trees","shrubs","herbs","grasses"),fill=alpha(c("darkred","blue","darkgreen","goldenrod"),.7))
+abline(v=0, lwd=1,col="black",lty=2)
+
+hist(moisform$Estimate[moisform$form=="forb"],main="Moisture Effect",xlim=c(-7,7),ylim=c(0,20),col=alpha("darkgreen",.5),xlab="Temp effects")
+hist(moisform$Estimate[moisform$form=="tree"],col=alpha("darkred",.5),add=TRUE)
+hist(moisform$Estimate[moisform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
+hist(moisform$Estimate[moisform$form=="grass"], main="Grass",col=alpha("goldenrod",.7), add=TRUE)
+abline(v=fixef(mod)[3,1], lwd=2,col="red",lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+
+hist(intform$Estimate[intform$form=="forb"],main="Temp*Mois",xlim=c(-15,15),ylim=c(0,20),col=alpha("darkgreen",.5),xlab="Temp effects")
+hist(intform$Estimate[intform$form=="tree"],col=alpha("darkred",.5),add=TRUE)
+hist(intform$Estimate[intform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
+hist(intform$Estimate[intform$form=="grass"], main="Grass",col=alpha("goldenrod",.9), add=TRUE)
+abline(v=fixef(mod)[4,1], lwd=2,col="red",lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+
+dev.off()
 
 #Second, Budburst
 figname<-"hist.bbform.pdf"
@@ -129,6 +179,49 @@ hist(shrubm, main="Shrubs",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois ef
 dev.off()
 mean(treet);mean(shrubt)
 mean(treem);mean(shrubm)
+
+
+#same figure but not using posterior samples- just species random effects, as I'm not sure that the above is working
+sp<-coef(mod,probs=c(0.1,0.9))$sp
+intercepts<-sp[,,1]
+moisef<-as.data.frame(sp[,,3])
+moisef$spnumbb<-rownames(moisef)
+
+tempef<-as.data.frame(sp[,,2])
+tempef$spnumbb<-rownames(tempef)
+
+intef<-as.data.frame(sp[,,4])
+intef$spnumbb<-rownames(intef)
+
+#getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
+bbform$spnumbb<-as.character(bbform$spnumbb)
+
+tempform<-left_join(tempef,bbform)
+moisform<-left_join(moisef,bbform)
+intform<-left_join(intef,bbform)
+figname<-"histbbform_spef.pdf"
+pdf(file.path(figpath,figname), height=4,width=10)
+#quartz(height=4,width=10)
+par(mfcol=c(1,3))
+hist(tempform$Estimate[tempform$form=="tree"],main="Temperature Effect",xlim=c(-60,35),ylim=c(0,20),col=alpha("darkred",.5),xlab="Temp effects")
+hist(tempform$Estimate[tempform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
+abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+legend("topright",legend=c("trees","shrubs"),fill=alpha(c("darkred","blue"),.7))
+abline(v=0, lwd=1,col="black",lty=2)
+
+hist(moisform$Estimate[moisform$form=="tree"],main="Moisture Effect",xlim=c(-7,7),ylim=c(0,20),col=alpha("darkred",.5),xlab="Temp effects")
+hist(moisform$Estimate[moisform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
+abline(v=fixef(mod)[3,1], lwd=2,col="red",lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+
+hist(intform$Estimate[intform$form=="tree"],main="Temp*Mois",xlim=c(-15,15),ylim=c(0,20),col=alpha("darkred",.5),xlab="Temp effects")
+hist(intform$Estimate[intform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
+abline(v=fixef(mod)[4,1], lwd=2,col="red",lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+
+dev.off()
+
+
 
 #Third,Flowering
 figname<-"hist.ffform.pdf"
