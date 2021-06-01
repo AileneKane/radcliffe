@@ -216,6 +216,17 @@ datalist.lod.cent <- with(expgdd_lod,
 #                          )
 #)
 
+datalist.ffd <- with(expgdd_ffd, 
+                          list(y = doy, 
+                               temp = agtmin, #above-ground minimum air temp
+                               mois = sm, #soil moisture
+                               sp = genus.species,
+                               site = site,
+                               year = year,
+                               N = nrow(expgdd_ffd),
+                               n_sp = length(unique(expgdd_ffd$genus.species))
+                          )
+)
 datalist.ffd.cent <- with(expgdd_ffd, 
                           list(y = doy, 
                                temp = agtmin_cent, #above-ground minimum air temp
