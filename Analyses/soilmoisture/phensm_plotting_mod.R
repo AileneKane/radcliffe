@@ -302,7 +302,7 @@ load("Analyses/output/brms/testm5cent.brms.sen.Rda")
 mod<-testm5cent.sen.brms 
 sum<-summary(mod)
 fix<-sum$fixed
-speff <- coef(mod)
+speff <- coef(mod)$sp
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
 #pdf(file.path("Analyses/soilmoisture/figures/m5.sen.pdf"), width = 8, height = 6)
 
