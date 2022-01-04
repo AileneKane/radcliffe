@@ -10,6 +10,8 @@ expclim2a$year<-as.factor(expclim2a$year)
 expclim2a$site<-as.factor(expclim2a$site)
 expclim2a$preciptreat_prop<-expclim2a$preciptreat_amt/100
 
+#Remove conifers, if desired
+#if(remove.conifers=TRUE){}
 
 #Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
 #Start by looking at which studies have both SM and AG temp data
@@ -290,7 +292,7 @@ splofl<-full_join(spleglo,splegfl,by = "sp.name")
 splofl<- splofl [apply(splofl, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
 
 
-#datalists for these more models fit to these more limited datasets
+#datalists for models fit to these more limited datasets
 expgdd_bbdlo<-expgdd_bbd[expgdd_bbd$genus.species %in% spbblo$spnumbb,]
 expgdd_lodbb<-expgdd_lod[expgdd_lod$genus.species %in% spbblo$spnumlo,]
 expgdd_lodfl<-expgdd_lod[expgdd_lod$genus.species %in% splofl$spnumlo,]

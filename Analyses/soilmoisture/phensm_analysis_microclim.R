@@ -28,7 +28,7 @@ options(mc.cores = parallel::detectCores())
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("~GitHub/radcliffe")}
 #setwd("~/Documents/GitHub/radcliffe")#noaa
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.

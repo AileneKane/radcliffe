@@ -26,7 +26,8 @@ options(mc.cores = parallel::detectCores())
 
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
-#setwd("~/GitHub/radcliffe")#tnc
+
+#setwd("~GitHub/radcliffe")#tnc
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
 
@@ -244,8 +245,70 @@ save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
 
+#GDD models
+expgdd_bb<-expgdd_gdd[expgdd_gdd$event=="bbd",]
+gddmbb.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
+                               (soilmois_janmar|genus.species) + (1|site/year), #random effects
+                             data=expgdd_bb,
+                             chains = 2,iter = 2000,control = list(max_treedepth = 15,adapt_delta = 0.99))
 
-# 
+gddmbb <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
+                     (soilmois_janmar|genus.species) + (1|site/year), #random effects
+                   data=expgdd_bb)
+gddmbb2 <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
+                 (1|genus.species) + (1|site/year), #random effects
+               data=expgdd_bb)
+
+gddmbbnull <- lmer(cumgdd_air ~ 1 +#fixed effects
+                 (1|genus.species) + (1|site/year), #random effects
+               data=expgdd_bb)
+AIC(gddmbb,gddmbb2,gddmbbnull)
+summary(gddmbb2)
+
+
+#LOD
+expgdd_lo<-expgdd_gdd[expgdd_gdd$event=="lod",]
+gddmlo.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                     (soilmois_janmar|genus.species) + (1|site/year), #random effects
+                   data=expgdd_lo,
+                   chains = 2,iter = 4000,
+                   control = list(max_treedepth = 15,adapt_delta = 0.99))
+
+gddmlo <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                 (soilmois_aprjun|genus.species) + (1|site/year), #random effects
+               data=expgdd_lo)
+gddmlo2 <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                 (1|genus.species) + (1|site/year), #random effects
+               data=expgdd_lo)
+gddmlonull <- lmer(cumgdd_air ~ 1 +#fixed effects
+                     (1|genus.species) + (1|site/year), #random effects
+                   data=expgdd_lo)
+AIC(gddmlo,gddmlo2,gddmlonull)
+summary(gddmlo)
+
+#LOD
+expgdd_fl<-expgdd_gdd[expgdd_gdd$event=="ffd",]
+gddmfl.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                     (soilmois_janmar|genus.species) + (1|site/year), #random effects
+                   data=expgdd_fl,
+                   chains = 2,iter = 4000,
+                   control = list(max_treedepth = 15,adapt_delta = 0.99))
+
+gddmfl <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
+                 (soilmois_janmar|genus.species) + (1|site), #random effects
+               data=expgdd_fl)
+gddmfl3 <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                 (soilmois_aprjun|genus.species) + (1|site), #random effects
+               data=expgdd_fl)
+gddmflnull <- lmer(cumgdd_air ~ 1 +#fixed effects
+                     (1|genus.species) + (1|site), #random effects
+                   data=expgdd_fl)
+AIC(gddmfl,gddmfl3)
+summary(gddmfl)
+
+plot(expgdd_bb$soilmois_janmar,expgdd_bb$cumgdd_air,col=as.factor(expgdd_bb$site))
+plot(expgdd_lo$soilmois_aprjun,expgdd_lo$cumgdd_air,col=as.factor(expgdd_lo$site))
+
 # 
 # #Old stan model code
 # #################################################################
@@ -550,3 +613,6 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 # 
 # colnames(modcomp)<-c("eff","se")
 # 
+
+#Try fitting models of gdd~soil moisture
+boxplot(expgdd_bbd$)

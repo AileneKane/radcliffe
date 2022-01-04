@@ -75,3 +75,9 @@ expgdd_subs <- expgdd_subs2[apply(expgdd_subs2, 1, function(x) all(!is.na(x))),]
 #expgdd_subs <- expgdd_subs2
 expgdd_subs_struct<-expgdd_subs3[expgdd_subs3$temptreat!="ambient",]
 expgdd_subs_struct <- expgdd_subs_struct[apply(expgdd_subs_struct, 1, function(x) all(!is.na(x))),] # only keep rows of all not na
+
+#dataset that keeps gdd for running gdd models
+expgdd_gdd<-expgdd4[which(expgdd4$site=="exp01"|expgdd4$site=="exp02"|expgdd4$site=="exp03"|expgdd4$site=="exp04"|expgdd4$site=="exp07"|expgdd4$site=="exp09"|expgdd4$site=="exp10"|expgdd4$site=="exp12"|expgdd4$site=="exp13"|expgdd4$site=="exp14"),]#exclude plots that do not have above-ground temperature, or for which we have no phenology data (exp15)
+expgdd_gdd<-subset(expgdd_gdd,select=c(site,block, plot,year,styear,target,preciptreat_amt,agtmax,agtmin,agtmean,sm,doy,genus.species,event,ag_max_janmar,ag_min_janmar,ag_mean_janmar,soilmois_janmar,ag_max_aprjun,ag_min_aprjun,ag_mean_aprjun,soilmois_aprjun,cumgdd_air))
+
+expgdd_gdd <- expgdd_gdd[apply(expgdd_gdd, 1, function(x) all(!is.na(x))),] # only keep rows of all not na

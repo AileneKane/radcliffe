@@ -5,12 +5,12 @@ rm(list=ls())
 options(stringsAsFactors=FALSE)
 
 #Choose whether or not to use the gapfilled data:
-gapfill=FALSE#if true, uses expclim_gapfill; if false, uses expclim.csv
+gapfill=FALSE#if true, uses expclim_gapfill; if false, uses expclim.csv. Note:True does not work yet!
 
 ##Read in climate and phenology data
 setwd("~/GitHub/radcliffe")
 if(gapfill==FALSE){expclim<-read.csv("Analyses/expclim.csv", header=T)}
-#if(gapfill==TRUE){expclim<-read.csv("Analyses/expclim_gapfill.csv", header=T)}
+if(gapfill==TRUE){expclim<-read.csv("Analyses/expclim_gapfillairtemp2021.csv", header=T)}
 
 ##Calculate chilling days. We want to use a base of 5 (<5 degrees C=chilling day)
 #For all sites/years/blocks/plots that we have data from previous year (starting sept 1), calculate chilling days from sept 1 through December 31
@@ -113,4 +113,5 @@ cummean2<-function(x){cumsum(x)/ seq_along(x)}
 #expclim3$cummean_sm<-NA
 #expclim3$cummean_sm<-ave(expclim3$soilmois1,list(expclim3$site,expclim3$block,expclim3$plot,expclim3$year), FUN=cummean)
 #cbind(expclim3$year,expclim3$doy,expclim3$soilmois1,expclim3$cummean_sm)[30:100,]
-write.csv(expclim3,"Analyses/gddchill/expclim.wchillgdd.csv", row.names=FALSE)
+if(gapfill==FALSE){write.csv(expclim3,"Analyses/gddchill/expclim.wchillgdd.csv", row.names=FALSE)}
+if(gapfill==TRUE){write.csv(expclim3,"Analyses/gddchill/expclim_gapfillairtemp2021.wchillgdd.csv", row.names=FALSE)}
