@@ -1,10 +1,10 @@
 #Started Sept 2017
 #By Ailene
-#Two questions to address:
-#1) How do soil moisture and temperature affect doy of bud burst, leaf out, etc?
-#2) How do warming and precip treatments affect soil moisture? (Make plots and fit models)
+#Questions addressed with the models below:
+#1) How do soil moisture and temperature affect doy of bud burst, leaf out, flowering, fruiting, and senescence?
+#2) How does GDD at the time of an event vary with soil moisture? Do effects of soil moisture differ for bb, lo, and fl?
+#Approach: Use brms/Stan to fit soil moisture- phenology model to radcliffe data 
 
-#Use brms/Stan to fit soil moisture- phenology model to radcliffe data 
 ## housekeeping
 rm(list=ls()) 
 options(stringsAsFactors = FALSE)
@@ -27,7 +27,8 @@ options(mc.cores = parallel::detectCores())
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
 
-#setwd("~GitHub/radcliffe")#tnc
+#setwd("~/GitHub/radcliffe")#tnc
+
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
 
@@ -45,17 +46,19 @@ use.centmod=FALSE
 
 #standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
 source("Analyses/source/standard_mergesandwrangling.R")
+#54352    51
 
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
-  #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
+#merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
 
 if(use.airtemponly==TRUE) {source("Analyses/source/climsum_byplot.R")}
 if(use.airtemponly==FALSE) {source("Analyses/source/climsum_byplot_soiltoo.R")}
 
-#####Phenology models#####
+##################################
+#####Fit DOY Phenology Models#####
+##################################
 
-#Want to fit a model with soil moisture and above-ground temperature as predictors for doy of phenological event
-#Start by looking at which studies have both SM and AG temp data
+#Check: Look at which studies have both SM and AG temp data
 #which(tapply(expclim2$agtemp_mn,expclim2$site,mean,na.rm=T)>0)
 #which(tapply(expclim2$soilmois1,expclim2$site,mean,na.rm=T)>0)
 
@@ -244,49 +247,75 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
+#############################
+####     GDD models     #####
+#############################
 
-#GDD models
+#Budburst
 expgdd_bb<-expgdd_gdd[expgdd_gdd$event=="bbd",]
 gddmbb.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
                                (soilmois_janmar|genus.species) + (1|site/year), #random effects
                              data=expgdd_bb,
                              chains = 2,iter = 2000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+save(gddmbb.brms, file="Analyses/output/brms/gddmbb.Rda")
+round(fixef(gddmbb.brms, probs=c(.90,0.10)), digits=2)
+summary(gddmbb.brms)
+gddmbb2.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
+                     (1|genus.species) + (1|site/year), #random effects
+                   data=expgdd_bb,
+                   chains = 2,iter = 2000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+save(gddmbb2.brms, file="Analyses/output/brms/gddmbb_ranint.Rda")
+round(fixef(gddmbb2.brms, probs=c(.90,0.10)), digits=2)
+summary(gddmbb2.brms)
+plot(gddmbb2.brms)
+## GDD lmer models for quicker run/comparison
+# gddmbb <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
+#                      (soilmois_janmar|genus.species) + (1|site/year), #random effects
+#                    data=expgdd_bb)#explains more variation, but error around main effect of soil mois is larger than ran intercept mod...not sure about this
+# gddmbb2 <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
+#                  (1|genus.species) + (1|site/year), #random effects
+#                data=expgdd_bb)
+# 
+# gddmbbnull <- lmer(cumgdd_air ~ 1 +#fixed effects
+#                  (1|genus.species) + (1|site/year), #random effects
+#                data=expgdd_bb)
+# AIC(gddmbb,gddmbb2,gddmbbnull)
+# summary(gddmbb)
 
-gddmbb <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
-                     (soilmois_janmar|genus.species) + (1|site/year), #random effects
-                   data=expgdd_bb)
-gddmbb2 <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
-                 (1|genus.species) + (1|site/year), #random effects
-               data=expgdd_bb)
 
-gddmbbnull <- lmer(cumgdd_air ~ 1 +#fixed effects
-                 (1|genus.species) + (1|site/year), #random effects
-               data=expgdd_bb)
-AIC(gddmbb,gddmbb2,gddmbbnull)
-summary(gddmbb2)
-
-
-#LOD
+#Leafout
 expgdd_lo<-expgdd_gdd[expgdd_gdd$event=="lod",]
 gddmlo.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
                      (soilmois_janmar|genus.species) + (1|site/year), #random effects
                    data=expgdd_lo,
-                   chains = 2,iter = 4000,
+                   chains = 2,iter = 2000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
+save(gddmlo.brms, file="Analyses/output/brms/gddmlo_ranslope.Rda")
+round(fixef(gddmlo.brms, probs=c(.90,0.10)), digits=2)
+summary(gddmlo.brms)
+gddmlo2.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
+                      (1|genus.species) + (1|site/year), #random effects
+                    data=expgdd_lo,
+                    chains = 2,iter = 2000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+save(gddmlo2.brms, file="Analyses/output/brms/gddmlo_ranint.Rda")
+round(fixef(gddmlo2.brms, probs=c(.90,0.10)), digits=2)
+summary(gddmlo2.brms)
+plot(gddmlo2.brms)
+# # GDD lmer models for quicker run/comparison
+# gddmlo <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
+#                  (soilmois_aprjun|genus.species) + (1|site/year), #random effects
+#                data=expgdd_lo)
+# gddmlo2 <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
+#                  (1|genus.species) + (1|site/year), #random effects
+#                data=expgdd_lo)
+# gddmlonull <- lmer(cumgdd_air ~ 1 +#fixed effects
+#                      (1|genus.species) + (1|site/year), #random effects
+#                    data=expgdd_lo)
+# AIC(gddmlo,gddmlo2,gddmlonull)
+# summary(gddmlo)
 
-gddmlo <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                 (soilmois_aprjun|genus.species) + (1|site/year), #random effects
-               data=expgdd_lo)
-gddmlo2 <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                 (1|genus.species) + (1|site/year), #random effects
-               data=expgdd_lo)
-gddmlonull <- lmer(cumgdd_air ~ 1 +#fixed effects
-                     (1|genus.species) + (1|site/year), #random effects
-                   data=expgdd_lo)
-AIC(gddmlo,gddmlo2,gddmlonull)
-summary(gddmlo)
+#Flowering
 
-#LOD
 expgdd_fl<-expgdd_gdd[expgdd_gdd$event=="ffd",]
 gddmfl.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
                      (soilmois_janmar|genus.species) + (1|site/year), #random effects
@@ -294,22 +323,26 @@ gddmfl.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
                    chains = 2,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 
-gddmfl <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
-                 (soilmois_janmar|genus.species) + (1|site), #random effects
-               data=expgdd_fl)
-gddmfl3 <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                 (soilmois_aprjun|genus.species) + (1|site), #random effects
-               data=expgdd_fl)
-gddmflnull <- lmer(cumgdd_air ~ 1 +#fixed effects
-                     (1|genus.species) + (1|site), #random effects
-                   data=expgdd_fl)
-AIC(gddmfl,gddmfl3)
-summary(gddmfl)
+# GDD lmer models for quicker run/comparison
+# gddmfl <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
+#                  (soilmois_janmar|genus.species) + (1|site), #random effects
+#                data=expgdd_fl)
+# gddmfl3 <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
+#                  (soilmois_aprjun|genus.species) + (1|site), #random effects
+#                data=expgdd_fl)
+# gddmflnull <- lmer(cumgdd_air ~ 1 +#fixed effects
+#                      (1|genus.species) + (1|site), #random effects
+#                    data=expgdd_fl)
+# AIC(gddmfl,gddmfl3)
+# summary(gddmfl)
 
+#Some basic plots
 plot(expgdd_bb$soilmois_janmar,expgdd_bb$cumgdd_air,col=as.factor(expgdd_bb$site))
 plot(expgdd_lo$soilmois_aprjun,expgdd_lo$cumgdd_air,col=as.factor(expgdd_lo$site))
 
-# 
+####################################################################################
+##########OLD CODE: TO DELETE####################################################
+#################################################################################
 # #Old stan model code
 # #################################################################
 # # m1: a(sp) + t(sp) + m(sp) + t*m(sp) (ran eff only of species) #
@@ -613,6 +646,3 @@ plot(expgdd_lo$soilmois_aprjun,expgdd_lo$cumgdd_air,col=as.factor(expgdd_lo$site
 # 
 # colnames(modcomp)<-c("eff","se")
 # 
-
-#Try fitting models of gdd~soil moisture
-boxplot(expgdd_bbd$)

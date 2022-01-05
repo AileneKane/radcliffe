@@ -1,5 +1,8 @@
-# Plotting BB vs soil moisture, by site
-#Does there appear to be a threshold in soil moisture effect on budburst
+# Plotting two things:
+# 1) DOY (of BB, LO, FL) vs soil moisture, by site
+# 2) GDD (of BB, LO, FL) vs soil moisture, by site
+# Does there appear to be a threshold in soil moisture effect on phenology?
+
 
 ## housekeeping
 rm(list=ls()) 
@@ -24,11 +27,9 @@ options(mc.cores = parallel::detectCores())
 
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
-#setwd("~/Documents/GitHub/radcliffe")#noaa
-#Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
-#their interaction as explanatory variables.
+#setwd("~/GitHub/radcliffe")#tnc
+
 #
-###Now with the data
 
 #source('Analyses/soilmoisture/savestan.R')
 
@@ -84,3 +85,5 @@ for(i in 1:length(sites)){
        xlim=c(min(expgdd_ffd$soilmois_janmar), max(expgdd_ffd$soilmois_janmar)))
 }
 dev.off()
+
+#Add plots of GDD

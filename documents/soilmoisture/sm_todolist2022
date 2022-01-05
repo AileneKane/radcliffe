@@ -4,5 +4,7 @@
 # 2. Fit Fruiting model again- get rid of divergent transitions
 # 3. Fit models with gapfilled data
 # 4. Decide what to do about Jasper Ridge and Cedar Creek data. Currently, we do not have Jasper Ridge above ground temperature, which is why it is not included. Cedar Creek has flowering and fruiting data, but not budburst or leafout, and only has above-ground temperature for days 100-332
-#5. Fit gdd models in brms
-#6. Exclude conifers
+Decision: do not add them.
+# 5. Fit gdd models in brms for BB, LO, FL
+# 6. Check that conifers excluded
+
