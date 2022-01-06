@@ -158,22 +158,24 @@ We found that soil drying delays phenology and warming temperatures advance phen
 \section* {DISCUSSION}
 \par  Across the life forms included in the ExPhen database (Table \ref{tab:studylocs}), soil moisture affects phenology. Soil moisture had previously been investigated primarily in arid ecosystems (e.g. XXX), and has not been a focus of experiments and meta-analyses (e.g. Wolkovich). We quantify effects of soil moisture across forest and grassland ecosystems.
 
-\par Effects of temperature and soil moisture, and their interaction, on phenology vary across phenophases and species .
-- Discussion of functional groups- trees, shrubs, grasses, forbs.
+\par Effects of temperature and soil moisture on phenology vary across phenophases and species.
+- Perhaps mention briefly functional groups- trees, shrubs, grasses, forbs?- but don't make a major point since there are not big differences
 
- \par Global change factors interact to affect phenology.  
- -temperature and soil moisture here
- -also interactions with CO2
+\par Perhaps surprisingly, interactive effects of temperature and soil moisture were weak.
+
+\par Multiple global change factors affect phenology (temperature and soil moisture here, also CO2?, nitrogen?, photoperiod)
  -limiting resources: Variable responses to moisture (and precip) may be caused by temporal and spatial variation in the most limiting resource (e.g., temperature vs moisture). As global warming reduces temperature limitation, importance of moisture limitation in plant phenology may increase. 
 
-\par Relating experiements to "real world:
+\par Although multiple environmental conditions affect phenology,  interactive effects of soil moisture and temperature were weak for most phenophases. Interactions were strong for flowering and senescence day of year, but were weak for budburst, leafout, and fruiting. 
+
+\par Relating experiments to "real world:
     -Moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments
     -how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments
-
-\par What is per unit effect of soil moisture change on different phenophases? (We do say this one already and it seems mostly done?)
+\par \underline{Other possible questions to incorporate/address more strongly (from Lizzie)}
+\par What is per unit effect of soil moisture change on different phenophases? 
 \par What is the effect of soil moisture change relative to temperature on different phenophases? That is, can we compare them given a 10\% increase in mean temperature or a 1 SD change? (Lizzie think this would be cool if we can think of a good way to do it ... 
 \par Are the temp and moisture effects synergistic or mainly acting alone? (Lizzie thinks lots of ecologists -- herself included -- think there will or should be a big interaction so we should test it explicitly. If we don't see one, that's interesting.)
-\par How consistent are the effects across sites, phenophases, life forms and species? (I don't think we want to answer all of these a priori based on the data, but might want to spell ou what we do want to compare)
+\par How consistent are the effects across sites, phenophases, life forms and species? (I don't think we want to answer all of these a priori based on the data, but might want to spell out what we do want to compare)
 \par Under what circumstances will forecasting moisture effects on plant phenology matter the most? (I think our answer for now is that it's mainly about some species -- Figure 3? I like this answer, we may just want to back it up some and think if we can use the posteriors better to put some numbers on species-level variance versus site or such?) [Are species nested within site? Also, should we plot the mu values as one panel in Fig 3 so then it would be a four figure panel? Not sure if this possible, I often dream up stuff that we can't get out of models, but wanted to suggest it in case.]
 
 
@@ -181,9 +183,11 @@ We found that soil drying delays phenology and warming temperatures advance phen
 
 \section* {Questions for Lizzie at this stage}
 
+1) What do you think about adding GDD models for BB, LO, FL?
+
 2) What other figures do you think would strengthen/support the paper?
 
-3) Target Journal: New Phytologist? Or somewhere else?
+3) Target Journal: New Phytologist? GCB? Or somewhere else?
 
 
 \bibliography{../../Bibliography/mylibrary.bib}
