@@ -268,6 +268,8 @@ save(gddmbb2.brms, file="Analyses/output/brms/gddmbb_ranint.Rda")
 round(fixef(gddmbb2.brms, probs=c(.90,0.10)), digits=2)
 summary(gddmbb2.brms)
 plot(gddmbb2.brms)
+conditional_effects(gddmbb2.brms)
+
 ## GDD lmer models for quicker run/comparison
 # gddmbb <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects
 #                      (soilmois_janmar|genus.species) + (1|site/year), #random effects
@@ -286,14 +288,14 @@ plot(gddmbb2.brms)
 #Leafout
 expgdd_lo<-expgdd_gdd[expgdd_gdd$event=="lod",]
 gddmlo.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                     (soilmois_janmar|genus.species) + (1|site/year), #random effects
+                     (soilmois_aprjun|genus.species) + (1|site/year), #random effects
                    data=expgdd_lo,
                    chains = 2,iter = 2000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(gddmlo.brms, file="Analyses/output/brms/gddmlo_ranslope.Rda")
 round(fixef(gddmlo.brms, probs=c(.90,0.10)), digits=2)
 summary(gddmlo.brms)
-gddmlo2.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
+gddmlo2.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
                       (1|genus.species) + (1|site/year), #random effects
                     data=expgdd_lo,
                     chains = 2,iter = 2000,control = list(max_treedepth = 15,adapt_delta = 0.99))
@@ -301,6 +303,7 @@ save(gddmlo2.brms, file="Analyses/output/brms/gddmlo_ranint.Rda")
 round(fixef(gddmlo2.brms, probs=c(.90,0.10)), digits=2)
 summary(gddmlo2.brms)
 plot(gddmlo2.brms)
+conditional_effects(gddmlo2.brms)
 # # GDD lmer models for quicker run/comparison
 # gddmlo <- lmer(cumgdd_air ~ soilmois_aprjun +#fixed effects
 #                  (soilmois_aprjun|genus.species) + (1|site/year), #random effects
@@ -318,9 +321,14 @@ plot(gddmlo2.brms)
 
 expgdd_fl<-expgdd_gdd[expgdd_gdd$event=="ffd",]
 gddmfl.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                     (soilmois_janmar|genus.species) + (1|site/year), #random effects
+                     (soilmois_aprjun|genus.species) + (1|site/year), #random effects
                    data=expgdd_fl,
                    chains = 2,iter = 4000,
+                   control = list(max_treedepth = 15,adapt_delta = 0.99))
+gddmfl2.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                     (1|genus.species) + (1|site/year), #random effects
+                   data=expgdd_fl,
+                   chains = 2,iter = 2000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 
 # GDD lmer models for quicker run/comparison
