@@ -320,16 +320,24 @@ conditional_effects(gddmlo2.brms)
 #Flowering
 
 expgdd_fl<-expgdd_gdd[expgdd_gdd$event=="ffd",]
-gddmfl.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                     (soilmois_aprjun|genus.species) + (1|site/year), #random effects
+# gddmfl.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
+#                      (soilmois_aprjun|genus.species) + (1|site/year), #random effects
+#                    data=expgdd_fl,
+#                    chains = 2,iter = 4000,
+#                    control = list(max_treedepth = 15,adapt_delta = 0.99))
+## random slopes model not possible for fl, 
+gddmfl2.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
+                     (1|genus.species) + (1|site), #random effects
                    data=expgdd_fl,
                    chains = 2,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
-gddmfl2.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
-                     (1|genus.species) + (1|site/year), #random effects
-                   data=expgdd_fl,
-                   chains = 2,iter = 2000,
-                   control = list(max_treedepth = 15,adapt_delta = 0.99))
+#get 2-3 divergent transitions, wide error
+save(gddmfl2.brms, file="Analyses/output/brms/gddmfl_ranint.Rda")
+round(fixef(gddmfl2.brms, probs=c(.90,0.10)), digits=2)
+summary(gddmfl2.brms)
+plot(gddmfl2.brms)
+conditional_effects(gddmfl2.brms)
+# # GDD lmer models for quicker run/comparison
 
 # GDD lmer models for quicker run/comparison
 # gddmfl <- lmer(cumgdd_air ~ soilmois_janmar +#fixed effects

@@ -2,9 +2,8 @@
 ##########################################
 # 1. Make model plots for Flowering/Fruiting/Senescence for sup (color by species)
 # 2. Fit Fruiting model again- get rid of divergent transitions
-# 3. Fit models with gapfilled data
-# 4. Decide what to do about Jasper Ridge and Cedar Creek data. Currently, we do not have Jasper Ridge above ground temperature, which is why it is not included. Cedar Creek has flowering and fruiting data, but not budburst or leafout, and only has above-ground temperature for days 100-332
-Decision: do not add them.
-# 5. Fit gdd models in brms for BB, LO, FL
+# 3. Decide what to do about Jasper Ridge and Cedar Creek data. Currently, we do not have Jasper Ridge above ground temperature, which is why it is not included. Cedar Creek has flowering and fruiting data, but not budburst or leafout, and only has above-ground temperature for days 100-332
+Decision: do not add them. Confirm with Lizzie.
+# 5. Fit gdd models for BB, LO, FL- done. share with Lizzie. Doesnt make sense to include other phenophases right? maybe even FL doesn't make sense...
 # 6. Check that conifers excluded
-
+# 7. Should we only include species that are present at more than 1 site? Do complex or something similar as we did for OSPREE, or keep as is? (Flowering more of an issue than BB or LO)
