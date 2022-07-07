@@ -662,3 +662,32 @@ plot(expgdd_lo$soilmois_aprjun,expgdd_lo$cumgdd_air,col=as.factor(expgdd_lo$site
 # 
 # colnames(modcomp)<-c("eff","se")
 # 
+#Checking inclusion criteria- species had to be present at more than one site
+#sen- only 2 sites (5,6), 4/93 species found at both sites
+sentab<-table(datalist.sen.cent$site,datalist.sen.cent$sp)
+sen<-apply(sentab,2,function(x) sum(x > 0))
+length(sen[which(sen>1)])
+length(sen)
+#fr- 3 sites (2,6,8), 0/77 species found at >1 site
+frdtab<-table(datalist.ffrd.cent$site,datalist.ffrd.cent$sp)
+fr<-apply(frdtab,2,function(x) sum(x > 0))
+length(fr[which(fr>1)])
+length(fr)
+#fl-5 sites (1,2,6,7,8), 10/125 species found at >1 site
+fldtab<-table(datalist.ffd.cent$site,datalist.ffd.cent$sp)
+fl<-apply(fldtab,2,function(x) sum(x > 0))
+length(fl[which(fl>1)])
+length(fl)
+# dim(table(datalist.lod.cent$site,datalist.lod.cent$sp))
+lodtab<-table(datalist.lod.cent$site,datalist.lod.cent$sp)
+lo<-apply(lodtab,2,function(x) sum(x > 0))
+length(lo[which(lo>1)])
+length(lo)
+#lo-5 sites (1,3,4,5,6), 23/138 species found at >1 site
+bbdtab<-table(datalist.bbd.cent$site,datalist.bbd.cent$sp)
+bb<-apply(bbdtab,2,function(x) sum(x > 0))
+length(bb[which(bb>1)])
+length(bb)
+#bb-5 sites (1,3,4,5,7), 19/41 species found at >1 site
+
+          

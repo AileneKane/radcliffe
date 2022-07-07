@@ -157,6 +157,7 @@ pdf(file.path(figpath,figname), width = 9, height = 6)
 
 #pdf(paste(figpath,"/tempforecast",min(tempforecast),"-",max(tempforecast),"_deg_",lat,"_",long,".pdf",sep=""))
 #quartz()
+#windows()
 par(mar=c(8,7,3,5))
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
      ylab="Days to BB", main="BB", bty="l")
@@ -188,7 +189,7 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
 legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
 dev.off()
 
-#Make version of figure with two species, and accounting for site effects too
+#Make version of figure with main effects and 3 species, and accounting for site effects too
 
 getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
   listofdraws <-as.data.frame(as.matrix(mod))
@@ -237,10 +238,11 @@ splegbb<- expgdd_bbd %>% # start with the data frame
 splegbb<-splegbb[order(splegbb$genus.species),]
 colnames(splegbb)[2]<-"spnumbb"
 table(expgdd_bbd$site)
+table(expgdd_bbd$site,expgdd_bbd$genus.species)
 
 spnum<-c(28,105,135)
 #choose:
-
+#3:Acer rubrum: +inxn, - effects of both moisture and temp
 #105:Nyssa sylvatica: +inxn, - effects of both moisture and temp
 #28: Carya glabra, -inxn, - effects of both moisture and temp
 #Or 22: Betula, -inxn, - effects of both moisture and temp
@@ -257,10 +259,38 @@ unique(expgdd_bbd$site[expgdd_bbd$genus.species==135])#3,4
 
 #spnum<-splegbb$spnumbb[25:36]
 #spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
-figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],spnum[4],sitenum,"degwarm.pdf", sep="_")
-pdf(file.path(figpath,figname), width = 12, height = 5)
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],sitenum,"degwarm.pdf", sep="_")
+pdf(file.path(figpath,figname), width = 12, height = 4)
 #quartz()
-par(mar=c(8,7,3,5),mfrow=c(1,3))
+par(mar=c(8,7,3,5),mfrow=c(1,4))
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
+     ylab="Days to BB", bty="l")
+#Add shading around line for credible intervals
+
+for(i in c(3,5,7)){
+  polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.90per[,i-1]), predictsbb.10per[,i-1]), col = alpha(cols[i-2], 0.2), border = NA)
+}
+#i=3
+#i=5
+for(i in c(3,5,7)){
+  lines(predictsbb$amt.warming, predictsbb[,i-1], 
+        col=cols[i-2], lwd=2)
+}
+#i=3
+
+#axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
+axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+
+# intervals
+# for(i in 3:5){
+#   lines(predicts.25per$warming, predicts.25per[,i-1], 
+#         col=cols[i-2], lwd=1, lty=2)
+# }
+# for(i in 3:5){
+#   lines(predicts.75per$warming, predicts.75per[,i-1], 
+#         col=cols[i-2], lwd=1, lty=2)
+# }
+legend("bottomleft",legend=c("Warming only","-100% Drier soil","100% Wetter soil"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)
 
 for(s in 1:length(spnum)){
 for (i in 1:length(tempforecast.raw)){
@@ -288,7 +318,7 @@ xlim = c(range(tempforecast.raw))
 ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
 
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
-     ylab="Budburst Day", main=paste(spname[s],spnum[s],sep=","), bty="l")
+     ylab="Budburst Day", main=paste(spname[s],sep=","), bty="l")
 
 #Add shading around line for credible intervals
 
@@ -315,7 +345,7 @@ axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
 # }
 
 
-if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier soil","100% Wetter soil"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)}
+#if(s==1){legend("bottomleft",legend=c("Warming only","-100% Drier soil","100% Wetter soil"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)}
 
 }
 dev.off()

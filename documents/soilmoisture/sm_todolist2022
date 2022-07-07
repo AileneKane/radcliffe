@@ -1,9 +1,13 @@
 ##Soil Moisture Analyses To Do List 2022##
 ##########################################
-# 1. Make model plots for Flowering/Fruiting/Senescence for sup (color by species)
-# 2. Fit Fruiting model again- get rid of divergent transitions
-# 3. Decide what to do about Jasper Ridge and Cedar Creek data. Currently, we do not have Jasper Ridge above ground temperature, which is why it is not included. Cedar Creek has flowering and fruiting data, but not budburst or leafout, and only has above-ground temperature for days 100-332
-Decision: do not add them. Confirm with Lizzie.
-# 5. Fit gdd models for BB, LO, FL- done. share with Lizzie. Doesnt make sense to include other phenophases right? maybe even FL doesn't make sense...
-# 6. Check that conifers excluded
-# 7. Should we only include species that are present at more than 1 site? Do complex or something similar as we did for OSPREE, or keep as is? (Flowering more of an issue than BB or LO)
+# 3. Make figures  for GDD models
+# 4. Make tables for all models in supp
+# 5. Make a map of study sites for supp
+# 6. Review recent papers published on soil moisture and phenology
+# 
+# 9. Plots of (mean?) soil moisture and temperature by site, year, phenophase for supp
+# 
+# 11. Move fig 2 to supp
+
+# 13. Remove Fig. 4?
+

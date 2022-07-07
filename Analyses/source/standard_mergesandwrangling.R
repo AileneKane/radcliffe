@@ -65,7 +65,7 @@ expgdd[which(is.na(expgdd$block)),]$block<-"none"
 #Remove conifers, IF DESIRED
 if(remove.conifers==TRUE){
   expgdd<-expgdd[expgdd$genus!="Pinus",]
-  }#6 species of pines from 4 sites...removing them makes model fail to converge. also makes interaction significant...
+  }#6 species of pines from 4 sites...
 #make a column for combined genus species
 expgdd$genus.species<-paste(expgdd$genus,expgdd$species,sep=".")
 
@@ -116,6 +116,9 @@ expgdd<-expgdd[expgdd$genus.species!="Magnolia.sp",]#
 expgdd<-expgdd[expgdd$genus.species!="Prunus.sp",]# 
 expgdd<-expgdd[expgdd$genus.species!="Quercus.sp",]# 
 expgdd<-expgdd[expgdd$genus.species!="Viburnum.sp",]# 
+expgdd<-expgdd[expgdd$genus.species!="Viola.sp",]# 
+
+#unique(expgdd$site[expgdd$genus=="Vaccinium"]) #"exp07" "exp08" "exp10"# three sites have this genus, nad one of them does not id down to species level- what to do?
 
 dim(expgdd[expgdd$site=="exp04",])#8663
 print(dim(expgdd))

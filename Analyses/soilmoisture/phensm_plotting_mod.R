@@ -23,7 +23,7 @@ options(mc.cores = parallel::detectCores())
 #update.packages()
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("~/Documents/GitHub/radcliffe")}#Tnc
+if(length(grep("ailene", getwd()))>0) {setwd("~/GitHub/radcliffe")}#Tnc
 
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
 exppheno<-read.csv("Analyses/exppheno.csv", header=TRUE)
@@ -84,9 +84,9 @@ sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2:4,]
 speffbb <- coef(mod, probs = c(.10,.90))
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
-pdf(file.path("Analyses/soilmoisture/figures/m5_bbdlo_pdf"), width = 10, height = 12)
+pdf(file.path("Analyses/soilmoisture/figures/m5_bbdlofl.pdf"), width = 15, height = 5)
 #windows(width = 10, height = 10)
-par(mfrow=c(2,1), mar = c(5, 10, 2, 10))
+par(mfrow=c(1,3), mar = c(5, 10, 2, 15))
 
 # One panel: budburst
 minx<-min(speffbb$sp[,2:4,2:4])
@@ -98,8 +98,9 @@ plot(seq(minx, #min(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix), length.out = nrow(fix)),
      type="n",
+     main="Budburst",
      xlab = "Model estimate, change in day of budburst",
-     xlim =c(-90,40),
+     #xlim =c(-90,40),
      ylab = "",
      yaxt = "n")
 
@@ -112,8 +113,8 @@ sp<-4*(seq(1:dim(speffbb$sp)[1])/dim(speffbb$sp)[1])
 #colors differ by species
 nsp<-dim(speffbb$sp)[1]
 nspall<-dim(splegall)[1]
-my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nspall]
-my.pch <- rep(21:25, each=30)[1:nspall]
+my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
+my.pch <- rep(21:25, each=30)[1:nsp]
 greens<-brewer.pal(8,"Greens")
 for(i in 1:nrow(fix)){
   arrows(speffbb$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speffbb$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
@@ -136,6 +137,16 @@ points(fix[,'Estimate'],
        col = greens[7])
 
 abline(v = 0, lty = 2)
+mtext("A)", side=3, line =0,adj=-.3)
+par(xpd=TRUE) # so I can plot legend outside
+leg1<-maxx+5
+leg2<-5*(nrow(fix):1)[1]+1
+legend(leg1, leg2, splegbb$sp.name,
+       pch=my.pch,
+       col=alpha(my.pal, .5),
+       pt.bg=alpha(my.pal, .5),
+       bty = "n",
+       cex=0.70, text.font=3)
 
 #dev.off()
 
@@ -147,20 +158,22 @@ fix<-sum$fixed[2:4,]
 speff <- coef(mod, probs=c(0.10,.90))
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-minx<-min(speffbb$sp[,2:4,2:4])
-maxx<-max(speffbb$sp[,2:4,2:4])
+minx<-min(speff$sp[,2:4,2:4])
+maxx<-max(speff$sp[,2:4,2:4])
 
 plot(seq(minx, #min(meanz[,'mean']*1.1),
          maxx, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix), length.out = nrow(fix)),
      type="n",
+     main="Leafout",
      xlab = "Model estimate, change in day of leafout",
-     xlim =c(-90,40),
+     #xlim =c(-90,40),
      ylab = "",
      yaxt = "n")
 
 axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+mtext("B)", side=3, line =0,adj=-.3)
 
 #i=1
 #Plot species estimate for each predictor
@@ -168,7 +181,8 @@ sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 
 #colors differ by species
 nsp<-dim(speff$sp)[1]
-
+my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
+my.pch <- rep(21:25, each=30)[1:nsp]
 for(i in 1:nrow(fix)){
   arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
@@ -188,74 +202,119 @@ points(fix[,'Estimate'],
        pch = 16,
        cex = 2.5,
        col = greens[8])
+par(xpd=FALSE) # so line stays within plot bounds
 
 abline(v = 0, lty = 2)
 par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+26
-leg2<-5*(nrow(fix):1)[1]+5
-legend(leg1, leg2, splegall$sp.name,
-       pch=my.pch,
-       col=alpha(my.pal, .5),
-       pt.bg=alpha(my.pal, .5),
+leg1<-maxx+3
+leg2<-5*(nrow(fix):1)[1]+1
+leg1a<-maxx+30
+
+legend(leg1, leg2, spleglo$sp.name[1:as.integer(length(spleglo$sp.name)/2)+1],
+       pch=my.pch[1:as.integer(length(spleglo$sp.name)/2)+1],
+       col=alpha(my.pal, .5)[1:as.integer(length(spleglo$sp.name)/2)+1],
+       pt.bg=alpha(my.pal, .5)[1:as.integer(length(spleglo$sp.name)/2)+1],
        bty = "n",
-       cex=0.60, text.font=3)
+       cex=0.45, text.font=3)
+legend(leg1a, leg2, spleglo$sp.name[(as.integer(length(spleglo$sp.name)/2)+2):length(spleglo$sp.name)],
+       pch=my.pch[(as.integer(length(spleglo$sp.name)/2)+2):length(spleglo$sp.name)],
+       col=alpha(my.pal, .5)[(as.integer(length(spleglo$sp.name)/2)+2):length(spleglo$sp.name)],
+       pt.bg=alpha(my.pal, .5)[(as.integer(length(spleglo$sp.name)/2)+2):length(spleglo$sp.name)],
+       bty = "n",
+       cex=0.45, text.font=3)
+#dev.off()
 
-dev.off()
-
-
+#Flowering
 load("Analyses/output/brms/testm5cent.brms.ff.Rda")
 mod<-testm5cent.ffd.brms
-sum<-summary(mod)
-fix<-sum$fixed
-speff <- coef(mod)
-rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
+sum<-summary(mod, prob =.8)
+fix<-sum$fixed[2:4,]
+speff <- coef(mod, probs=c(0.10,.90))
+rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
-pdf(file.path("Analyses/soilmoisture/figures/m5_ffd_frd_sen.pdf"), width = 8, height = 16)
-#quartz(width = 8, height = 6)
-#Panel 1: Flowering
-
-par(mfrow=c(3,1))
-plot(seq(-50, #min(meanz[,'mean']*1.1),
-         25, #max(meanz[,'mean']*1.1),
+minx<-min(speff$sp[,2:4,2:4])
+maxx<-max(speff$sp[,2:4,2:4])
+#minx<--20
+#maxx<-20
+plot(seq(minx, #min(meanz[,'mean']*1.1),
+         maxx, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
-     seq(1, 5*nrow(fix)+1, length.out = nrow(fix)),
+     seq(1, 5*nrow(fix), length.out = nrow(fix)),
      type="n",
+     main="Flowering",
      xlab = "Model estimate, change in day of flowering",
+     #xlim =c(-90,40),
      ylab = "",
      yaxt = "n")
 
-axis(2, at = 5*(nrow(fix):2), labels = rownames(fix)[2:4], las = 1, cex.axis = 0.8)
+axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
+mtext("C)", side=3, line =0,adj=-.3)
 
 #i=1
 #Plot species estimate for each predictor
 sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
-for(i in 2:nrow(fix)){
-  arrows(speff$sp[,"Q97.5",i],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q2.5",i],  5*(nrow(fix):1)[i]-.5-sp,
-         len = 0, col = alpha("darkgray", 0.2)) 
+
+#colors differ by species
+nsp<-dim(speff$sp)[1]
+nspall<-dim(splegall)[1]
+my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
+my.pch <- rep(21:25, each=30)[1:nsp]
+greens<-brewer.pal(8,"Greens")
+for(i in 1:nrow(fix)){
+  arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
+         len = 0, col = alpha(my.pal, 0.5)) 
 }
-for(i in 2:nrow(fix)){
-  points(speff$sp[,"Estimate",i], 5*(nrow(fix):1)[i]-.5-sp,
-         pch = 16,
-         col = alpha("darkgray", 0.5))
+for(i in 1:nrow(fix)){
+  points(speff$sp[,"Estimate",i+1], 5*(nrow(fix):1)[i]-.5-sp,
+         pch = my.pch,
+         col = alpha(my.pal, 0.5),
+         bg=alpha(my.pal, .5))
 }
 #fixed effects
-arrows(fix[,"u-95% CI"], 5*(nrow(fix):1), fix[,"l-95% CI"], 5*(nrow(fix):1),
-       len = 0, col = "black", lwd = 2)
+arrows(fix[,"u-80% CI"], 5*(nrow(fix):1), fix[,"l-80% CI"], 5*(nrow(fix):1),
+       len = 0, col = "purple3", lwd = 3)
 
 points(fix[,'Estimate'],
        5*(nrow(fix):1),
        pch = 16,
-       cex = 1.2,
+       cex = 2.5,
        col = "purple3")
+par(xpd=FALSE) # so line stays within plot bounds
 
 abline(v = 0, lty = 2)
+
+par(xpd=TRUE) # so I can plot legend outside
+leg1<-maxx+2
+leg2<-5*(nrow(fix):1)[1]+1
+leg1a<-maxx+25
+
+legend(leg1, leg2, splegfl$sp.name[1:as.integer(length(splegfl$sp.name)/2)+1],
+       pch=my.pch[1:as.integer(length(splegfl$sp.name)/2)+1],
+       col=alpha(my.pal, .5)[1:as.integer(length(splegfl$sp.name)/2)+1],
+       pt.bg=alpha(my.pal, .5)[1:as.integer(length(splegfl$sp.name)/2)+1],
+       bty = "n",
+       cex=0.45, text.font=3)
+legend(leg1a, leg2, splegfl$sp.name[(as.integer(length(splegfl$sp.name)/2)+2):length(splegfl$sp.name)],
+       pch=my.pch[(as.integer(length(splegfl$sp.name)/2)+2):length(splegfl$sp.name)],
+       col=alpha(my.pal, .5)[(as.integer(length(splegfl$sp.name)/2)+2):length(splegfl$sp.name)],
+       pt.bg=alpha(my.pal, .5)[(as.integer(length(splegfl$sp.name)/2)+2):length(splegfl$sp.name)],
+       bty = "n",
+       cex=0.45, text.font=3)
+
+dev.off()
+
+
+
+
+
+
 
 
 ###Panel 2 Fruiting
 load("Analyses/output/brms/testm5cent.brms.frd.Rda")
 
 mod<-testm5cent.ffrd.brms 
-sum<-summary(mod)
+sum<-summary(mod,prob =.8)
 fix<-sum$fixed
 speff <- coef(mod)
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
@@ -300,7 +359,7 @@ abline(v = 0, lty = 2)
 #dev.off()
 load("Analyses/output/brms/testm5cent.brms.sen.Rda")
 mod<-testm5cent.sen.brms 
-sum<-summary(mod)
+sum<-summary(mod,prob =.8)
 fix<-sum$fixed
 speff <- coef(mod)$sp
 rownames(fix)<-c("Intercept","Temperature","Moisture","Temp*Mois")
@@ -348,11 +407,11 @@ dev.off()
 
 #Make figures with reduced dataset (only those that are the same between lo and bb, anbd between lo and fl)
 #get sp.name/number set up
-splegbblo<- expgdd_bbdlo%>% # start with the data frame
+splegbb<- expgdd_bbd%>% # start with the data frame
   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
   dplyr::select(sp.name,genus.species)
-splegbblo<-splegbblo[order(splegbblo$sp.name),]
-colnames(splegbblo)[2]<-"spnumbb"
+splegbb<-splegbb[order(splegbb$sp.name),]
+colnames(splegbb)[2]<-"spnumbb"
 
 spleglofl<-expgdd_lodfl %>% # start with the data frame
   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
