@@ -8,7 +8,6 @@
 ## housekeeping
 rm(list=ls()) 
 options(stringsAsFactors = FALSE)
-
 # dostan = TRUE
 library(lme4)
 library(rstan)
@@ -23,9 +22,10 @@ library(RColorBrewer)
 library(plotrix)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
+rstan_options(disable_march_warning = TRUE)
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("~/GitHub/radcliffe")}
 
 #setwd("~/GitHub/radcliffe")#tnc
 
@@ -250,16 +250,15 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 #############################
 ####     GDD models     #####
 #############################
+#source("Analyses/source/stanprep_gddmods.R")
 
 #Budburst
-expgdd_bb<-expgdd_gdd[expgdd_gdd$event=="bbd",]
-expgdd_bb$site<-as.factor(expgdd_bb$site)
-expgdd_bb$year<-as.factor(expgdd_bb$year)
 
-gddmbb.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
-                               (soilmois_janmar|genus.species) + (1|site/year), #random effects
-                             data=expgdd_bb,
-                             chains = 2,iter = 2000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+gddmbb.brms <- brm(y ~ mois +#fixed effects
+                               (mois|sp) + (mois|site/year), #random effects
+                             data=datalist.gddbb,
+                             chains = 2,iter = 3000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+
 save(gddmbb.brms, file="Analyses/output/brms/gddmbb.Rda")
 round(fixef(gddmbb.brms, probs=c(.90,0.10)), digits=2)
 summary(gddmbb.brms)
@@ -289,7 +288,6 @@ conditional_effects(gddmbb2.brms)
 
 
 #Leafout
-expgdd_lo<-expgdd_gdd[expgdd_gdd$event=="lod",]
 gddmlo.brms <- brm(cumgdd_air ~ soilmois_aprjun +#fixed effects
                      (soilmois_aprjun|genus.species) + (1|site/year), #random effects
                    data=expgdd_lo,

@@ -83,18 +83,16 @@ pdf(file.path("Analyses/soilmoisture/figures/gddbbdlo.pdf"), width = 15, height 
 par(mfrow=c(1,3), mar = c(5, 10, 2, 15))
 
 # One panel: budburst
-minx<-min(speffbb$sp[,2])
-maxx<-max(speffbb$sp[,2:4,2:4])
-#minx<--20
-#maxx<-20
+minx<-min(speffbb$genus.species[,,2])
+maxx<-max(speffbb$genus.species[,,2])
+
 plot(seq(minx, #min(meanz[,'mean']*1.1),
          maxx, #max(meanz[,'mean']*1.1),
          length.out = nrow(fix)), 
      seq(1, 5*nrow(fix), length.out = nrow(fix)),
      type="n",
      main="Budburst",
-     xlab = "Model estimate, change in day of budburst",
-     #xlim =c(-90,40),
+     xlab = "Model estimate, change in GDD",
      ylab = "",
      yaxt = "n")
 
@@ -102,11 +100,12 @@ axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
 
 #i=1
 #Plot species estimate for each predictor
-sp<-4*(seq(1:dim(speffbb$sp)[1])/dim(speffbb$sp)[1])
+sp<-4*(seq(1:dim(speffbb$genus.species)[1])/dim(speffbb$genus.species)[1])
 
 #colors differ by species
-nsp<-dim(speffbb$sp)[1]
-nspall<-dim(splegall)[1]
+nsp<-dim(speffbb$genus.species)[1]
+speffbb$sp<speffbb$genus.species
+#nspall<-dim(splegall)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
 my.pch <- rep(21:25, each=30)[1:nsp]
 greens<-brewer.pal(8,"Greens")
