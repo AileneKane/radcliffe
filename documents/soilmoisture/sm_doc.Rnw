@@ -56,7 +56,7 @@
 \SweaveOpts{concordance=TRUE}
 
 \bibliographystyle{../../Bibliography/bibstyles/amnat.bst}
-\title{Soil moisture interacts with temperature to affect plant phenology} %
+\title{Soil moisture affects plant phenology} %
 \author[1,2,a]{A.K. Ettinger}
 \author[3,b]{J.S. Dukes}
 \author[4,c]{M.R. Johnston}
@@ -91,8 +91,8 @@ The data reported in this paper are from the MC3E and ExPhen databases, which ar
 \textbf{Key words} global warming, warming experiment, microclimate, phenology, bud-burst, leaf-out, flowering, fruiting, senescence 
 
 
-\textbf{Paper type} New Phytologist
-%Brief Communications-Brief Communications are short (c 3000-4000 word) research articles reporting exciting, significant new findings. They include no more than 4 figures and tables, combined. Manuscripts, and their abstracts, should be organized as described for Research articles. Authors must adhere to the same membership and page charge requirements as for regular Research Articles.
+\textbf{Paper type} New Phytologist or Am Bot
+
 %\textbf{Number of words in abstract} 
 
 %\textbf{Number of words in main text} 
@@ -168,6 +168,7 @@ We found that soil drying delays phenology and warming temperatures advance phen
 
 \par Although multiple environmental conditions affect phenology,  interactive effects of soil moisture and temperature were weak for most phenophases. Interactions were strong for flowering and senescence day of year, but were weak for budburst, leafout, and fruiting. 
 
+
 \par Relating experiments to "real world:
     -Moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments
     -how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments
@@ -189,6 +190,13 @@ We found that soil drying delays phenology and warming temperatures advance phen
 
 3) Target Journal: American Journal of Botany? New Phytologist? GCB? Or somewhere else?
 
+\par Additional Figures to make:
+ \begin{itemize}
+ \item Plots of (mean?) soil moisture and temperature by site, year, and phenophase
+\item Histograms by form and/or ecosystem?
+ \item Map of studies with symbols varying by ecosystem? (for Supp)
+\item Tables of models (for Supp)
+\end{itemize}
 
 \bibliography{../../Bibliography/mylibrary.bib}
 
@@ -211,7 +219,7 @@ We found that soil drying delays phenology and warming temperatures advance phen
  
  \begin{figure}[h]
 \centering
- \includegraphics{../../Analyses/soilmoisture/figures/tempforecast_bb_0_5_28_105_135_NA_4_degwarm.pdf}
+ \includegraphics{../../Analyses/soilmoisture/figures/tempforecast_bb_0_5_28_105_135_4_degwarm.pdf}
  
  \caption{\textbf{Patterns of forecasted changes in budburst date with warming and shifts in soil moisture vary across species}. Across all species, our model estimated negative effects (i.e., earlier) of both temperature and soil moisture on budburst (A); however, the magnitude of these effects, as well as the sign and magnitude of the estimated interaction between soil moisture and temperature, differed across species, potentially resulting in divergent patterns with forecasting changes in climate change.  Budburst may occur much earlier in wetter vs drier soils with warming for species such as \textit{Carya glabra} (B), with a strong estimated negative interaction between soil moisture and temperature. Other species, such as \textit{Nyssa sylvatica}(C), may experience delayed budburst in wet soils but advances in dry soils, with a strong positive interaction between moisture and temp. Still other species' budburst, such as \textit{Quercus nigra} (D), exhibits weak interactive effects of temperature and soil moisture and are therefore likely to advance with warming regardless of changes in soil moisture.}
  \label{fig:bbsp}
@@ -224,16 +232,8 @@ We found that soil drying delays phenology and warming temperatures advance phen
  \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms}.}
  \label{fig:forms}
  \end{figure}
+
  
-
- \par Additional Figures to make:
- \begin{itemize}
- \item Plots of (mean?) soil moisture and temperature by site, year, and phenophase
-\item Histograms by form and/or ecosystem
- \item Map of studies with symbols varying by ecosystem? (for Supp)
-\item Tables of models (for Supp)
-\end{itemize}
-
  %2. Reach out to Christy, Miriam and Jeff when the figures are done and be clear that  Make it clear that this is pretty finished. 
  
  
