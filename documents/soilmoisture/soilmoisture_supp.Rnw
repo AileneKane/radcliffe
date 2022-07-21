@@ -214,8 +214,7 @@ print(site.table, include.rownames=FALSE, hline.after = c(-1,0,1,2,3,4,5,6,7,8),
 \clearpage
 <<label=xtable1a, echo=FALSE, results=tex>>=
 
-speff <- coef(mod)
-mode.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
+mod.table <- xtable(bbmod, caption="\\textbf{Summaries of budburst, leafout, and flowering models}.", label="tab:mods",align=c(
                
                "|p{0.09\\textwidth}",
                "|p{0.08\\textwidth}",
@@ -225,7 +224,7 @@ mode.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients fro
                "|p{0.10\\textwidth}|"
                
                ))
-print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
+print(mod.table, include.rownames=FALSE, ,caption.placement="top",)
 @
 
 %comparison of control plots vs all plots

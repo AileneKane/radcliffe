@@ -20,14 +20,12 @@ library(dplyr)
 library(brms)
 library(RColorBrewer)
 library(plotrix)
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
 rstan_options(disable_march_warning = TRUE)
 
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("~/GitHub/radcliffe")}
 
-#setwd("~/GitHub/radcliffe")#tnc
+#setwd("~/Documents/GitHub/radcliffe")
 
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
