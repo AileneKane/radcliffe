@@ -15,7 +15,7 @@ library(dplyr)
 library(brms)
 library(scales)
 # Setting working directory.
-  setwd("~/Documents/GitHub/radcliffe")
+  setwd("~/GitHub/radcliffe")
 
 figpath <- "Analyses/soilmoisture/figures"
 
@@ -280,7 +280,7 @@ for(i in c(3,5,7)){
 
 #axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
 axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
-
+mtext("A)", side=3, line =1,adj=-.3)
 # intervals
 # for(i in 3:5){
 #   lines(predicts.25per$warming, predicts.25per[,i-1], 
@@ -291,7 +291,7 @@ axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
 #         col=cols[i-2], lwd=1, lty=2)
 # }
 legend("bottomleft",legend=c("Warming only","-100% Drier soil","100% Wetter soil"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)
-
+let<-c("B)","C)","D)")
 for(s in 1:length(spnum)){
 for (i in 1:length(tempforecast.raw)){
   temp<-sitetemp
@@ -330,6 +330,8 @@ for(j in c(3,5,7)){
   lines(predictsbb$amt.warming, predictsbb[,j-1], 
         col=cols[j-2], lwd=2)
 }
+
+mtext(paste(let[s]), side=3, line =1,adj=-.3)
 
 #axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
 axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))

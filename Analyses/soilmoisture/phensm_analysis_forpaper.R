@@ -253,6 +253,9 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
 #Budburst
 expgdd_bb<-expgdd_gdd[expgdd_gdd$event=="bbd",]
+expgdd_bb$site<-as.factor(expgdd_bb$site)
+expgdd_bb$year<-as.factor(expgdd_bb$year)
+
 gddmbb.brms <- brm(cumgdd_air ~ soilmois_janmar +#fixed effects
                                (soilmois_janmar|genus.species) + (1|site/year), #random effects
                              data=expgdd_bb,
