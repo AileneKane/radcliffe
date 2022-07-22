@@ -314,14 +314,93 @@ dev.off()
 
 
 ###Plot intercepts vs slopes of species effects
+#start with bbmod
+pdf(file.path("Analyses/soilmoisture/figures/slopeintcors_bb.pdf"), width = 15, height = 5)
+
+par(mfrow=c(1,3))
+
+for(i in 2:4){
+  plot(speffbb$sp[,"Estimate",1],speffbb$sp[,"Estimate",i],
+         pch = my.pch,
+         col = alpha(my.pal, 0.5),
+         bg=alpha(my.pal, .5),
+        xlab="Intercept",ylab=paste(rownames(fix)[i-1]),
+        main="Budburst")
+  r<-lm(speffbb$sp[,"Estimate",i]~speffbb$sp[,"Estimate",1])
+  if(summary(r)$coef[2,4]<.1){abline(r)}
+}
+dev.off()
+
+pdf(file.path("Analyses/soilmoisture/figures/slopeintcors_lo.pdf"), width = 15, height = 5)
+
+#windows()
+par(mfrow=c(1,3))
+
+for(i in 2:4){
+  plot(spefflo$sp[,"Estimate",1],spefflo$sp[,"Estimate",i],
+       pch = my.pch,
+       col = alpha(my.pal, 0.5),
+       bg=alpha(my.pal, .5),
+       xlab="Intercept",ylab=paste(rownames(fix)[i-1]),
+       main="Leafout")
+  r<-lm(spefflo$sp[,"Estimate",i]~spefflo$sp[,"Estimate",1])
+  if(summary(r)$coef[2,4]<.1){abline(r)}
+}
+dev.off()
+pdf(file.path("Analyses/soilmoisture/figures/slopeintcors_fl.pdf"), width = 15, height = 5)
+
+#windows()par(mfrow=c(1,3))
+
+for(i in 2:4){
+  plot(spefffl$sp[,"Estimate",1],spefffl$sp[,"Estimate",i],
+       pch = my.pch,
+       col = alpha(my.pal, 0.5),
+       bg=alpha(my.pal, .5),
+       xlab="Intercept",ylab=paste(rownames(fix)[i-1]),
+       main="Flowering")
+  r<-lm(spefffl$sp[,"Estimate",i]~spefffl$sp[,"Estimate",1])
+  if(summary(r)$coef[2,4]<.1){abline(r)}
+}
+dev.off()
 
 
+##Plot correlations between moisture and temperature data that go into the models
+pdf(file.path("Analyses/soilmoisture/figures/tempmoiscor_bbloffdat.pdf"), width = 15, height = 5)
 
+#windows()
+par(mfrow=c(1,3))
+#bb
+  plot(datalist.bbd$temp,datalist.bbd$mois,
+       pch = 16,
+       col =greens[7],
+       xlab="Temperature",ylab="Soil Moisture",
+       main="Budburst")
+  r<-lm(datalist.bbd$mois~datalist.bbd$temp)
+  print(summary(r))
+  if(summary(r)$coef[2,4]<.1){abline(r)}
+#lo greens[8]
+  plot(datalist.lod$temp,datalist.lod$mois,
+       pch = 16,
+       col =greens[8],
+       xlab="Temperature",ylab="Soil Moisture",
+       main="Leafout")
+  r<-lm(datalist.lod$mois~datalist.lod$temp)
+  print(summary(r))
+  
+  if(summary(r)$coef[2,4]<.1){abline(r)}
+#ff
+  plot(datalist.ffd$temp,datalist.ffd$mois,
+       pch = 16,
+       col ="purple3",
+       xlab="Temperature",ylab="Soil Moisture",
+       main="Flowering")
+  r<-lm(datalist.ffd$mois~datalist.ffd$temp)
+  print(summary(r))
+  
+  if(summary(r)$coef[2,4]<.1){abline(r)}
+  
 
-
-
-
-
+  dev.off()
 
 
 
