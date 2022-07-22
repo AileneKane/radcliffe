@@ -240,3 +240,24 @@ We found that soil drying delays phenology and warming temperatures advance phen
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+probably worth mentioning lots of work on soil moisture from snowpack systems somewhere \citep[e.g.,][]{dunne2004,sherwood2017}
+
+\citep{howell202} "Altered precipitation treatments were only applied in early years of the study and neither precipitation treatments nor the treatments’ legacies significantly affected B. tectorum phenology." But warming did  advance flowering and shorten the vegetative season. % https://www.frontiersin.org/articles/10.3389/fpls.2020.570001/full
+
+\citep{wang2022} "decreases in Pfreq during the past three decades positively contributed to the advance in LOD [leafout date] ... Notably, almost one-third of significant correlations (Pfreq versus LOD) for in situ and satellite data were negative (Fig. 2j-l), meaning that, for example, a decreased Pfreq comes with a delayed LOD"
+
+\citep{tao2020} generally find same as us (they say negative relationship, but I finally tracked down what they mean -- "every 1\% m3/m3 increase in soil moisture led to a green-up date that was 3 to 6 days earlier"
+
+\citep{Vitass2021} Did not get differences in soil moisture in their treatments
+
+\citep{Crimmins:2010lv} "the decrease in autumn precipitation observed over the study period appears to explain the delay in onset observed for many of the species across the elevation gradient. "
+
+\citep{tao2020} "However, effects of precipitation and soil moisture on BBD varied among [herbacous] species [in Inner Mongolia grassland]." ... "correlations between BBD and SM were negative, suggesting that greater soil moisture
+would result in an earlier BBD." and it seems like mostly they did not find correlations otherwise; also their data are a gridded product
+
+\cite{cabon2020} Good paper to cite for temperature and moisture being co-limiting
+
+\cite{liu2022} If we need another example of complicated results from an experiment. 
+
+\cite{seyed2018} "Across the entire study area, slow phenological development was associated with high MAT and moisture deficit (Fig. 4-a)."
