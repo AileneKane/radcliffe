@@ -1,22 +1,29 @@
 ##Soil Moisture Analyses To Do List 2022##
 ##########################################
-# 1. Make figures  for GDD models
 
-# 2. Make tables for all models in supp
+# 1. Changes to Figures in Main text	
+	-Move model figure to supplement- subset species to show only most common
+	-Map of sites
+# 2. Figures to make
+	-plot intercept vs slope of species as this would suggest differences of early vs late
+	-GDD models -Include as a sentence (We found the same trends), and add figures to support	-present as fairly consistent with main models and just as a sentence or so
 
-# 3. Make a map of study sites for supp
 
-# 4. Review recent papers published on soil moisture and phenology
-# 
-# 5. Plots of (mean?) soil moisture and temperature by site, year, phenophase for supp
-# 
-# 6. Move fig 2 to supp
+# 3. Make tables for all models in supplement- 
+	-add number of sites per model to table
+	
+# 4. Make a map of study sites for supp
 
-# 7. Remove Fig. 4?
+# 5. Review recent papers published on soil moisture and phenology
+ 
+# 6. Plots of (mean?) soil moisture and temperature by site, year, phenophase for supp
 
-# 8. Send to co-authors!
-
+# 7. Send to co-authors!
 
 # 8. Post ExPhen database to knb 
 
 
+Figures for Ailene to make
+1) Correlations between moisture and temperature from what goes into model
+2) Pull out species by ecosystem (grasses vs forests) and look at effects of sm and temp
+3) Intercept vs slope of species

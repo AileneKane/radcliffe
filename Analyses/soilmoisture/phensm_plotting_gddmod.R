@@ -78,13 +78,13 @@ sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2,]
 speffbb <- coef(mod, probs = c(.10,.90))
 rownames(fix)<-c("Moisture")
-pdf(file.path("Analyses/soilmoisture/figures/gddbbdlo.pdf"), width = 15, height = 5)
-#windows(width = 10, height = 10)
-par(mfrow=c(1,3), mar = c(5, 10, 2, 15))
+pdf(file.path("Analyses/soilmoisture/figures/gddbbmod.pdf"), width = 5, height = 5)
+#quartz(width = 10, height = 10)
+par(mar = c(5, 10, 2, 15))
 
 # One panel: budburst
-minx<-min(speffbb$genus.species[,,2])
-maxx<-max(speffbb$genus.species[,,2])
+minx<-min(speffbb$sp[,,2])
+maxx<-max(speffbb$sp[,,2])
 
 plot(seq(minx, #min(meanz[,'mean']*1.1),
          maxx, #max(meanz[,'mean']*1.1),
@@ -100,11 +100,11 @@ axis(2, at = 5*(nrow(fix):1), labels = rownames(fix), las = 1, cex.axis = 0.8)
 
 #i=1
 #Plot species estimate for each predictor
-sp<-4*(seq(1:dim(speffbb$genus.species)[1])/dim(speffbb$genus.species)[1])
+sp<-4*(seq(1:dim(speffbb$sp)[1])/dim(speffbb$sp)[1])
 
 #colors differ by species
-nsp<-dim(speffbb$genus.species)[1]
-speffbb$sp<speffbb$genus.species
+nsp<-dim(speffbb$sp)[1]
+
 #nspall<-dim(splegall)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
 my.pch <- rep(21:25, each=30)[1:nsp]
@@ -141,7 +141,7 @@ legend(leg1, leg2, splegbb$sp.name,
        bty = "n",
        cex=0.70, text.font=3)
 
-#dev.off()
+dev.off()
 
 load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 
