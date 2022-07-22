@@ -1,6 +1,6 @@
 #Make table of sites, phenophases, airtemp, soiltemp etc
 library(dplyr)
-if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("~GitHub/radcliffe")}
 
 #Read in experimental climate and phenology data
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
@@ -24,25 +24,30 @@ source("Analyses/source/stanprep_phenmods.R")
 
 
 #load budburst model
-if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==FALSE & phen=="BB"){
-  load("Analyses/output/brms/testm5.rstanarm.bb.Rda")
-  mod<-testm5.rstan
-  }
-if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
+
+if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
   load("Analyses/output/brms/testm5cent.brms.bb.Rda")
   mod<-testm5cent.brms}
 
 summary(mod)
 mod$fit
 bbtab<-round(fixef(mod,probs = c(0.25,0.75,0.025, 0.975)), digits = 2)
+
 rownames(nonztab)[10]<-"n_sp"
 row.names(bbtab)<-c("$\\mu_{\\alpha}$","$\\mu_{temp}$","$\\mu_{mois}$",   
-                    "$\\mu_{temp:mois}$","$\\sigma_{\\alpha}$", "$\\sigma_{forcing}$"
-                    , "$\\sigma_{photoperiod}$","$\\sigma_{chilling}$","$\\sigma_{y}$","$N_{sp}$")
+                    "$\\mu_{temp:mois}$","$\\sigma_{\\alpha}$", "$\\sigma_{temp}$"
+                    , "$\\sigma_{mois}$","$\\sigma_{temp*mois}$","$\\sigma_{y}$","$N_{sp}$")
 colnames(bbtab)<- c("mean","25%", "75%","2.5%","97.5%")
 #add leafout
-if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE & phen=="BB"){
+if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
   load("Analyses/output/brms/testm5cent.brms.lo.Rda")
   mod<-testm5cent.lod.brms
   summary(mod)
   mod$fit
+  lotab<-round(fixef(mod,probs = c(0.25,0.75,0.025, 0.975)), digits = 2)
+  rownames(nonztab)[10]<-"n_sp"
+  row.names(lotab)<-c("$\\mu_{\\alpha}$","$\\mu_{temp}$","$\\mu_{mois}$",   
+                      "$\\mu_{temp:mois}$","$\\sigma_{\\alpha}$", "$\\sigma_{forcing}$"
+                      , "$\\sigma_{photoperiod}$","$\\sigma_{chilling}$","$\\sigma_{y}$","$N_{sp}$")
+  colnames(lotab)<- c("mean","25%", "75%","2.5%","97.5%")
+}

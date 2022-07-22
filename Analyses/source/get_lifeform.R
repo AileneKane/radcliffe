@@ -120,59 +120,60 @@ flform$form[flform$sp.name=="Silene.alba"]<-"forb"
 flform$form[flform$sp.name=="Symphyotrichum.lavae"]<-"forb"#should be laeve
 flform$form[flform$sp.name=="Viola.soria"]<-"forb"
 flform$form[flform$sp.name=="Viola.sp"]<-"forb"
-#
-splegfr<- expgdd_ffrd %>% # start with the data frame
-  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(sp.name,genus.species)
-splegfr<-splegfr[order(splegfr$genus.species),]
-colnames(splegfr)[2]<-"spnumfr"
-dim(splegfr)
-frform<-left_join(splegfr,forms)
-frform$form[frform$sp.name=="Anemone.americana"]<-"forb"
-frform$form[frform$sp.name=="Actea.racemosa"]<-"forb"
-frform$form[frform$sp.name=="Ambrosia.psilostchya"]<-"forb"#should be Ambrosia psilostachy
-frform$form[frform$sp.name=="Amphicarpa.bracteata"]<-"forb"#should be Amphicarpaea bracteata
 
-frform$form[frform$sp.name=="Ceanothus.americana"]<-"shrub"
-frform$form[frform$sp.name=="Circaea.canadensis"]<-"forb"
-
-frform$form[frform$sp.name=="Dianthus.ameria"]<-"grass"#should be armeria
-frform$form[frform$sp.name=="Erechtites.hieraciifolia"]<-"forb"
-frform$form[frform$sp.name=="Erigeron.anuus"]<-"forb"
-frform$form[frform$sp.name=="Euthamia.gramanifolia"]<-"forb"
-
-frform$form[frform$sp.name=="Lonicera.sp"]<-"shrub"
-frform$form[frform$sp.name=="Ranunculus.abortivis"]<-"forb"#should be "ranunculus abortivus
-frform$form[frform$sp.name=="Rosa.multiflora"]<-"shrub"
-frform$form[frform$sp.name=="Rubus.occidentalis"]<-"shrub"
-frform$form[frform$sp.name=="Rubus.sp"]<-"shrub"
-frform$form[frform$sp.name=="Symphyotrichum.lavae"]<-"forb"#should be laeve
-frform$form[frform$sp.name=="Viola.soria"]<-"forb"
-#
-splegsen<- expgdd_sen %>% # start with the data frame
-  distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(sp.name,genus.species)
-splegsen<-splegsen[order(splegsen$genus.species),]
-colnames(splegsen)[2]<-"spnumsen"
-dim(splegsen)
-senform<-left_join(splegsen,forms)
-senform$form[senform$sp.name=="Lonicera.sp"]<-"shrub"
-senform$form[senform$sp.name=="Fraxinus.sp"]<-"shrub"
-senform$form[senform$sp.name=="Acer.pensylvanicum "]<-"tree"
-senform$form[senform$sp.name=="Actea.racemosa"]<-"forb"
-senform$form[senform$sp.name=="Amphicarpa.bracteata"]<-"forb"
-
-senform$form[senform$sp.name=="Ranunculus.abortivis"]<-"forb"
-senform$form[senform$sp.name=="Rosa.multiflora"]<-"shrub"
-senform$form[senform$sp.name=="Rubus.occidentalis"]<-"shrub"
-senform$form[senform$sp.name=="Rubus.sp"]<-"shrub"
-
-senform$form[senform$sp.name=="Rubus.sp"]<-"shrub"
-senform$form[senform$sp.name=="Smilax.sp"]<-"shrub"
-
-senform$form[senform$sp.name=="Symphyotrichum.lavae"]<-"forb"#should be laeve
-senform$form[senform$sp.name=="Vaccinium.sp "]<-"shrub"
-senform$form[senform$sp.name=="Viburnum.cassinoides"]<-"shrub"
-senform$form[senform$sp.name=="Viola.soria"]<-"forb"
-senform$form[senform$sp.name=="Vitis.sp"]<-"shrub"
+#Fruiting and senescence- ignoring for now
+# splegfr<- expgdd_ffrd %>% # start with the data frame
+#   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+#   dplyr::select(sp.name,genus.species)
+# splegfr<-splegfr[order(splegfr$genus.species),]
+# colnames(splegfr)[2]<-"spnumfr"
+# dim(splegfr)
+# frform<-left_join(splegfr,forms)
+# frform$form[frform$sp.name=="Anemone.americana"]<-"forb"
+# frform$form[frform$sp.name=="Actea.racemosa"]<-"forb"
+# frform$form[frform$sp.name=="Ambrosia.psilostchya"]<-"forb"#should be Ambrosia psilostachy
+# frform$form[frform$sp.name=="Amphicarpa.bracteata"]<-"forb"#should be Amphicarpaea bracteata
+# 
+# frform$form[frform$sp.name=="Ceanothus.americana"]<-"shrub"
+# frform$form[frform$sp.name=="Circaea.canadensis"]<-"forb"
+# 
+# frform$form[frform$sp.name=="Dianthus.ameria"]<-"grass"#should be armeria
+# frform$form[frform$sp.name=="Erechtites.hieraciifolia"]<-"forb"
+# frform$form[frform$sp.name=="Erigeron.anuus"]<-"forb"
+# frform$form[frform$sp.name=="Euthamia.gramanifolia"]<-"forb"
+# 
+# frform$form[frform$sp.name=="Lonicera.sp"]<-"shrub"
+# frform$form[frform$sp.name=="Ranunculus.abortivis"]<-"forb"#should be "ranunculus abortivus
+# frform$form[frform$sp.name=="Rosa.multiflora"]<-"shrub"
+# frform$form[frform$sp.name=="Rubus.occidentalis"]<-"shrub"
+# frform$form[frform$sp.name=="Rubus.sp"]<-"shrub"
+# frform$form[frform$sp.name=="Symphyotrichum.lavae"]<-"forb"#should be laeve
+# frform$form[frform$sp.name=="Viola.soria"]<-"forb"
+# #
+# splegsen<- expgdd_sen %>% # start with the data frame
+#   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables
+#   dplyr::select(sp.name,genus.species)
+# splegsen<-splegsen[order(splegsen$genus.species),]
+# colnames(splegsen)[2]<-"spnumsen"
+# dim(splegsen)
+# senform<-left_join(splegsen,forms)
+# senform$form[senform$sp.name=="Lonicera.sp"]<-"shrub"
+# senform$form[senform$sp.name=="Fraxinus.sp"]<-"shrub"
+# senform$form[senform$sp.name=="Acer.pensylvanicum "]<-"tree"
+# senform$form[senform$sp.name=="Actea.racemosa"]<-"forb"
+# senform$form[senform$sp.name=="Amphicarpa.bracteata"]<-"forb"
+# 
+# senform$form[senform$sp.name=="Ranunculus.abortivis"]<-"forb"
+# senform$form[senform$sp.name=="Rosa.multiflora"]<-"shrub"
+# senform$form[senform$sp.name=="Rubus.occidentalis"]<-"shrub"
+# senform$form[senform$sp.name=="Rubus.sp"]<-"shrub"
+# 
+# senform$form[senform$sp.name=="Rubus.sp"]<-"shrub"
+# senform$form[senform$sp.name=="Smilax.sp"]<-"shrub"
+# 
+# senform$form[senform$sp.name=="Symphyotrichum.lavae"]<-"forb"#should be laeve
+# senform$form[senform$sp.name=="Vaccinium.sp "]<-"shrub"
+# senform$form[senform$sp.name=="Viburnum.cassinoides"]<-"shrub"
+# senform$form[senform$sp.name=="Viola.soria"]<-"forb"
+# senform$form[senform$sp.name=="Vitis.sp"]<-"shrub"
 

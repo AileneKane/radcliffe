@@ -53,5 +53,5 @@ sitetable2<-subset(sitetable, select=c(DatasetID, location, source,data_years,ha
 
 colnames(sitetable2)<-c("study","location","source","data years", "ecosystem","species","phenophases")
 sitetable2<-sitetable2[!sitetable2$phenophase=="",]
-
+write.csv(sitetable2,"../../Analyses/output/exps_table_sm.csv", row.names=FALSE)
                        
