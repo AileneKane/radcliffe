@@ -6,7 +6,6 @@ rm(list=ls())
 options(stringsAsFactors = FALSE)
 
 # dostan = TRUE
-library(lme4)
 library(rstan)
 library(ggplot2)
 library(shinystan)
@@ -80,6 +79,8 @@ load("Analyses/output/brms/testm5cent.brms.bb.Rda")
 #load("Analyses/output/brms/testm5.brms.bb.Rda")#no divergent transistions
 
 mod<-testm5cent.brms
+bbmod<-testm5cent.brms
+
 sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2:4,]
 speffbb <- coef(mod, probs = c(.10,.90))
@@ -153,9 +154,13 @@ legend(leg1, leg2, splegbb$sp.name,
 load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 
 mod<-testm5cent.lod.brms
+lomod<-testm5cent.lod.brms
+
 sum<-summary(mod, prob =.8)
 fix<-sum$fixed[2:4,]
 speff <- coef(mod, probs=c(0.10,.90))
+spefflo <- coef(mod, probs=c(0.10,.90))
+
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
 minx<-min(speff$sp[,2:4,2:4])
@@ -227,9 +232,13 @@ legend(leg1a, leg2, spleglo$sp.name[(as.integer(length(spleglo$sp.name)/2)+2):le
 #Flowering
 load("Analyses/output/brms/testm5cent.brms.ff.Rda")
 mod<-testm5cent.ffd.brms
-sum<-summary(mod, prob =.8)
+flmod<-testm5cent.ffd.brms
+
+sum<-summary(flmod, prob =.8)
 fix<-sum$fixed[2:4,]
 speff <- coef(mod, probs=c(0.10,.90))
+spefffl <- coef(mod, probs=c(0.10,.90))
+
 rownames(fix)<-c("Temperature","Moisture","Temp*Mois")
 
 minx<-min(speff$sp[,2:4,2:4])
@@ -302,6 +311,12 @@ legend(leg1a, leg2, splegfl$sp.name[(as.integer(length(splegfl$sp.name)/2)+2):le
        cex=0.45, text.font=3)
 
 dev.off()
+
+
+###Plot intercepts vs slopes of species effects
+
+
+
 
 
 
