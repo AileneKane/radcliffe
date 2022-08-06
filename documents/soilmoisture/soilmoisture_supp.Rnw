@@ -120,11 +120,11 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \end{equation}
 
 \begin{equation}
-\mu_{site[year]} \sim N(\mu_{sy}, \sigma_{sy})
+\mu_{site[year]} \sim N(\mu_{siteyr}, \sigma_{siteyr})
 \end{equation}
 
 \begin{equation}
-\mu_{sy} \sim N(\mu_{s}, \sigma_{s})
+\mu_{site} \sim N(\mu_{site}, \sigma_{site})
 \end{equation}
 
 \begin{equation}
@@ -273,20 +273,20 @@ print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
  \caption{\textbf{Model coefficients from fruiting and senescence models (with centered predictors).}} 
  \label{fig:ff}
  \end{figure}
+ 
+ \begin{figure}[h]
+\centering
+ \includegraphics{../../Analyses/soilmoisture/figures/histbbloform_spef.pdf}
+ \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms}.}
+ \label{fig:forms}
+ \end{figure}
 
-%begin{figure}[h]
-%\centering
-% \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5lod.pdf}
-% \caption{\textbf{Model coefficients from leafout model (with centered predictors).}} 
-% \label{fig:lo}
-% \end{figure}
-
-%\begin{figure}[h]
-%\centering
-% \includegraphics{/Users/aileneettinger/git/radcliffe/Analyses/soilmoisture/figures/m5ffd.pdf}
-% \caption{\textbf{Model coefficients from first flower model (with centered predictors).}} 
-% \label{fig:ff}
- %\end{figure}
+ \begin{figure}[h]
+\centering
+ \includegraphics{../../Analyses/soilmoisture/figures/histloecos.pdf}
+ \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across ecosystem (forest vs grassland)}.}
+ \label{fig:forms}
+ \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

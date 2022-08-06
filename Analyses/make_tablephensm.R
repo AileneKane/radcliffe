@@ -30,14 +30,24 @@ if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
   mod<-testm5cent.brms}
 
 summary(mod)
-mod$fit
+names(mod)
 bbtab<-round(fixef(mod,probs = c(0.25,0.75,0.025, 0.975)), digits = 2)
 
-rownames(nonztab)[10]<-"n_sp"
 row.names(bbtab)<-c("$\\mu_{\\alpha}$","$\\mu_{temp}$","$\\mu_{mois}$",   
-                    "$\\mu_{temp:mois}$","$\\sigma_{\\alpha}$", "$\\sigma_{temp}$"
-                    , "$\\sigma_{mois}$","$\\sigma_{temp*mois}$","$\\sigma_{y}$","$N_{sp}$")
-colnames(bbtab)<- c("mean","25%", "75%","2.5%","97.5%")
+                    "$\\mu_{temp:mois}$")
+colnames(bbtab)<- c("mean",'error',"25%", "75%","2.5%","97.5%")
+#groups
+
+sigmas<-round(rbind(summary(mod)$random$site[1:2],summary(mod)$random$`site:year`[1:2],summary(mod)$random$sp[1:4,1:2]), digits=2)
+ns<-rbind(summary(mod)$ngrps$site,summary(mod)$ngrps$`site:year`,summary(mod)$ngrps$sp,"","","")
+bbtab_ran<-cbind(c("site","site:year","species","","",""),
+        c("$\\sigma_{Isite}$","$\\sigma_{siteyr}$", "$\\sigma_{sp}$", "$\\sigma_{temp_{sp}}$", "$\\sigma_{mois_{sp}}$","$\\sigma_{temp*mois_{sp}}$"),
+                    sigmas,ns)
+rownames(bbtab_ran)<-NULL
+
+ysignma<-c("$\\sigma_{y}$",summary(mod)$spec_pars[1:2],summary(mod)$nobs)
+
+
 #add leafout
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
   load("Analyses/output/brms/testm5cent.brms.lo.Rda")
@@ -51,3 +61,13 @@ if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
                       , "$\\sigma_{photoperiod}$","$\\sigma_{chilling}$","$\\sigma_{y}$","$N_{sp}$")
   colnames(lotab)<- c("mean","25%", "75%","2.5%","97.5%")
 }
+
+
+if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
+  load("Analyses/output/brms/gddmbb.Rda")
+  gddmod<-gddmbb.brms}
+
+
+#add leafout, flowering to same table
+#alltab<-rcbind(bbtab, lotab,fltab)
+

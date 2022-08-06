@@ -72,7 +72,7 @@ source("Analyses/source/stanprep_phenmods.R")
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd.cent,
-                   chains = 2,iter = 3000,
+                   chains = 2,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.999))
 
 # stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
@@ -248,7 +248,7 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 #############################
 ####     GDD models     #####
 #############################
-#source("Analyses/source/stanprep_gddmods.R")
+source("Analyses/source/stanprep_gddmods.R")
 
 #Budburst
 
@@ -270,7 +270,7 @@ conditional_effects(gddmbb.brms)
 gddmlo.brms <- brm(y ~ mois +#fixed effects
                      (mois|sp) + (1|site/year), #random effects
                    data=datalist.gddlo,
-                   chains = 2,iter = 3000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+                   chains = 2,iter = 4000,control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(gddmlo.brms, file="Analyses/output/brms/gddmlo_ranslope.Rda")
 round(fixef(gddmlo.brms, probs=c(.90,0.10)), digits=2)
 summary(gddmlo.brms)
