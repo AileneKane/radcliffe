@@ -28,13 +28,13 @@ datalist.gddlo<- with(expgdd_lo,
 
 
 
-datalist.ffd <- with(expgdd_fl, 
-                          list(y = doy, 
+datalist.gddfl <- with(expgdd_fl, 
+                          list(y = cumgdd_air, 
                                mois = sm, #soil moisture
                                sp = genus.species,
                                site = site,
                                year = year,
-                               N = nrow(expgdd_ffd),
-                               n_sp = length(unique(expgdd_ffd$genus.species))
+                               N = nrow(expgdd_fL),
+                               n_sp = length(unique(expgdd_fL$genus.species))
                           )
 )

@@ -276,7 +276,19 @@ round(fixef(gddmlo.brms, probs=c(.90,0.10)), digits=2)
 summary(gddmlo.brms)
 
 plot(gddmlo.brms)
-conditional_effects(gddmlo2.brms)
+conditional_effects(gddmlo.brms)
+
+#Flowering
+gddmfl.brms <- brm(y ~ mois +#fixed effects
+                     (mois|sp) + (1|site/year), #random effects
+                   data=datalist.gddfl,
+                   chains = 2,iter = 5000,control = list(max_treedepth = 15,adapt_delta = 0.99))
+save(gddmfl.brms, file="Analyses/output/brms/gddmfl_ranslope.Rda")
+round(fixef(gddmfl.brms, probs=c(.90,0.10)), digits=2)
+summary(gddmfl.brms)
+
+plot(gddmfl.brms)
+conditional_effects(gddmfl.brms)
 
 #Checking inclusion criteria- species had to be present at more than one site
 #sen- only 2 sites (5,6), 4/93 species found at both sites
