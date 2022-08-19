@@ -1,6 +1,7 @@
 #Make table of sites, phenophases, airtemp, soiltemp etc
 library(dplyr)
 if(length(grep("ailene", getwd()))>0) {setwd("~GitHub/radcliffe")}
+setwd("C:/Users/ailene.ettinger.TNC/OneDrive - The Nature Conservancy/Documents/GitHub/radcliffe")
 
 #Read in experimental climate and phenology data
 expclim<-read.csv("Analyses/gddchill/expclim.wchillgdd.csv", header=TRUE)
@@ -45,7 +46,7 @@ bbtab_ran<-cbind(c("site","site:year","species","","",""),
                     sigmas,ns)
 rownames(bbtab_ran)<-NULL
 
-ysignma<-c("$\\sigma_{y}$",summary(mod)$spec_pars[1:2],summary(mod)$nobs)
+ysigma<-c("$\\sigma_{y}$",summary(mod)$spec_pars[1:2],summary(mod)$nobs)
 
 
 #add leafout
@@ -61,6 +62,8 @@ if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
                       , "$\\sigma_{photoperiod}$","$\\sigma_{chilling}$","$\\sigma_{y}$","$N_{sp}$")
   colnames(lotab)<- c("mean","25%", "75%","2.5%","97.5%")
 }
+
+
 
 
 if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
