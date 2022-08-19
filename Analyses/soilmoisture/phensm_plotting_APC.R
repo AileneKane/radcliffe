@@ -240,7 +240,7 @@ colnames(splegbb)[2]<-"spnumbb"
 table(expgdd_bbd$site)
 table(expgdd_bbd$site,expgdd_bbd$genus.species)
 
-spnum<-c(28,105,135)
+spnum<-c(135,28,105)
 #choose:
 #3:Acer rubrum: +inxn, - effects of both moisture and temp
 #105:Nyssa sylvatica: +inxn, - effects of both moisture and temp
@@ -264,7 +264,7 @@ pdf(file.path(figpath,figname), width = 12, height = 4)
 #quartz()
 par(mar=c(8,7,3,5),mfrow=c(1,4))
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
-     ylab="Days to BB", bty="l")
+     ylab="Days to BB", bty="l", main="Across species")
 #Add shading around line for credible intervals
 
 for(i in c(3,5,7)){
