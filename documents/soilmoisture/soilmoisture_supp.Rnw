@@ -3,6 +3,10 @@
 \documentclass{article}
 
 %Required: You must have these
+
+
+\usepackage{authblk}
+\documentclass{article}
 \usepackage{Sweave}
 \usepackage{graphicx}
 \usepackage{tabularx}
@@ -11,7 +15,10 @@
 \usepackage{pdflscape}
 \usepackage{array}
 \usepackage{gensymb}
-\usepackage{authblk}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{xr}
+\usepackage[small]{caption}
 \renewcommand{\baselinestretch}{1.8}
 %\usepackage{lineno}
 %\usepackage[backend=bibtex]{biblatex}
@@ -212,81 +219,88 @@ print(site.table, include.rownames=FALSE, hline.after = c(-1,0,1,2,3,4,5,6,7,8),
 %\end{footnotesize} 
 
 \clearpage
-<<label=xtable1a, echo=FALSE, results=tex>>=
+<<label=modtable, echo=FALSE, results=tex>>=
 
-mod.table <- xtable(bbmod, caption="\\textbf{Summaries of budburst, leafout, and flowering models}.", label="tab:mods",align=c(
+source("../../Analyses/make_tablephensm.R")
+ addtorow <- list()
+  addtorow$pos <- list(-1)
+  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Population-Level Effects} &\\multicolumn{3}{c |}{Site Effects} &\\multicolumn{3}{c |}{Site Year Effects}&\\multicolumn{3}{c |}{Species Effects}\\\\\n ")
+
+mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.", label="tab:mods",align=c(
                
-               "|p{0.09\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.10\\textwidth}|"
-               
+               "|p{0.1\\textwidth}",
+               "|p{0.05\\textwidth}",
+               "p{0.03\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+                "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}",
+               "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}",
+               "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}|"
                ))
-print(mod.table, include.rownames=FALSE, ,caption.placement="top",)
+print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
 @
 
 %comparison of control plots vs all plots
-<<label=xtablecont, echo=FALSE, results=tex>>=
-compcoefs<-read.csv("../../Analyses/soilmoisture/comp.coefs.lmer.csv")
-
-wtype.table <- xtable(compcoefs, caption="\\textbf{Comparison of coefficients from budburst models fit to data from all plots versus control plots only}.", label="tab:warmtech",align=c(
-               
-               "|p{0.09\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.08\\textwidth}",
-               "|p{0.10\\textwidth}|"
-               
-               ))
-print(wtype.table, include.rownames=FALSE, ,caption.placement="top",)
-@
 
 \section*{Supplemental Figures}
-\clearpage
- \begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
- \caption{\textbf{Locations of experiments included in the meta-analysis.}} 
- \label{fig:soilmois}
- \end{figure}
+% \clearpage
+%  \begin{figure}[h]
+% \centering
+%  \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
+%  \caption{\textbf{Locations of experiments included in the meta-analysis.}} 
+%  \label{fig:soilmois}
+%  \end{figure}
 
-\clearpage
- \begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
- \caption{\textbf{Effects of target temperature and precipitation treatments on soil moisture.}} 
- \label{fig:soilmois}
- \end{figure}
+% \clearpage
+%  \begin{figure}[h]
+% \centering
+%  \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
+%  \caption{\textbf{Effects of target temperature and precipitation treatments on soil moisture.}} 
+%  \label{fig:soilmois}
+%  \end{figure}
+% 
 
-
-\begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/soilmoishist_mn.pdf}
- \caption{\textbf{Observed daily soil moisture in all plots verus control plots.}} 
- \label{fig:sm}
- \end{figure}
-
-\begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/m5bffrdsen.pdf}
- \caption{\textbf{Model coefficients from fruiting and senescence models (with centered predictors).}} 
- \label{fig:ff}
- \end{figure}
+% \begin{figure}[h]
+% \centering
+%  \includegraphics{../../Analyses/soilmoisture/figures/soilmoishist_mn.pdf}
+%  \caption{\textbf{Observed daily soil moisture in all plots verus control plots.}} 
+%  \label{fig:sm}
+%  \end{figure}
+% 
+% \begin{figure}[h]
+% \centering
+%  \includegraphics{../../Analyses/soilmoisture/figures/m5bffrdsen.pdf}
+%  \caption{\textbf{Model coefficients from fruiting and senescence models (with centered predictors).}} 
+%  \label{fig:ff}
+%  \end{figure}
  
  \begin{figure}[h]
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/histbbloform_spef.pdf}
- \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms}.}
+ \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms} for leafout (top) and budburst (bottom) models. Histograms show species-level estimated effects for temeprature, soil, and their inteactions across four life forms (trees, shrubs, forms, and grasses).}
  \label{fig:forms}
  \end{figure}
 
  \begin{figure}[h]
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/histloecos.pdf}
- \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across ecosystem (forest vs grassland)}.}
+ \caption{\textbf{Effects of temperature and soil moisture do not differ strongly across ecosystems (forest vs grassland) for leafout (top) and budburst (bottom) models.}.}
  \label{fig:forms}
  \end{figure}
+ 
+ Questions for co-authors:
+ \begin{enumerate}
+ \item Life forms vs ecosystems figures: Life forms plots histograms of speces level effects whereas ecosystems plots all posterioes- what's your preference?
+ \item what do you think of density plots: is it fair to say that variance is greater for tempreature, even though the variances relevative to the mean is about the same?
+ \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
