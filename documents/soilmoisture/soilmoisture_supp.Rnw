@@ -62,7 +62,7 @@
 % \SweaveOpts{concordance=TRUE}
 \bibliographystyle{amnat.bst}
 
-\title{Supplemental Materials for \emph{Soil moisture interacts with temperature to affect plant phenology}}
+\title{Supplemental Materials for \emph{Drier soils delay plant phenology across temperate forest and grassland systems}}
 \begin{singlespace}
 
 \author[1,2,a]{A.K. Ettinger}
