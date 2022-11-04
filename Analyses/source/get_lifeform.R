@@ -121,6 +121,9 @@ flform$form[flform$sp.name=="Symphyotrichum.lavae"]<-"forb"#should be laeve
 flform$form[flform$sp.name=="Viola.soria"]<-"forb"
 flform$form[flform$sp.name=="Viola.sp"]<-"forb"
 
+allforms<-full_join(bbform,loform)
+allforms2<-full_join(allforms,flform)
+numforms<-table(allforms2$form)
 #Fruiting and senescence- ignoring for now
 # splegfr<- expgdd_ffrd %>% # start with the data frame
 #   distinct(sp.name, .keep_all = TRUE) %>% # establishing grouping variables

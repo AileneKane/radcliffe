@@ -28,8 +28,8 @@ library(brms)
 #load budburst model
 
 #if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
-  load("../../Analyses/output/brms/testm5cent.brms.bb.Rda")
-  mod<-testm5cent.brms
+  load("../../Analyses/output/brms/testm5.brms.bb.Rda")
+  mod<-testm5.brms
 #  }
 
 summary(mod)
@@ -50,8 +50,8 @@ colnames(bbtab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp"
 
 #add leafout
 #if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
-  load("../../Analyses/output/brms/testm5cent.brms.lo.Rda")
-  mod<-testm5cent.lod.brms
+  load("../../Analyses/output/brms/testm5.brms.lo.Rda")
+  mod<-testm5.lod.brms
   
  lotab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixed effects
               cbind(round(summary(mod)$random$sp[1:4,1:2], digits=1),c(summary(mod)$ngrps$sp,"","","")),#random effects of species
@@ -66,8 +66,8 @@ colnames(bbtab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp"
 
 #add flowerin
 #if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
-load("../../Analyses/output/brms/testm5cent.brms.ff.Rda")
-mod<-testm5cent.ffd.brms
+load("../../Analyses/output/brms/testm5.brms.ff.Rda")
+mod<-testm5.ffd.brms
 #summary(mod)
 #mod$fit
 fltab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixed effects

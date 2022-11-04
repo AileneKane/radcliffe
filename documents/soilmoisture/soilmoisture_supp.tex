@@ -1,5 +1,4 @@
-% Straight up stealing preamble from Eli Holmes 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PREAMBLE
 \documentclass{article}
 
 %Required: You must have these
@@ -196,10 +195,10 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \section* {Supplemental Tables}
 
 % latex table generated in R 4.1.3 by xtable 1.8-4 package
-% Fri Sep 30 17:12:58 2022
+% Fri Nov  4 09:50:10 2022
 \begin{table}[ht]
 \centering
-\caption{\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here.} 
+\caption{\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here. * denotes phenophases not included in this paper, because they were measured in fewer than three experiments.} 
 \label{tab:studylocs}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.04\textwidth}|p{0.18\textwidth}|p{0.2\textwidth}|p{0.08\textwidth}|p{0.1\textwidth}|p{0.07\textwidth}|p{0.09\textwidth}|}
@@ -208,19 +207,19 @@ study & location & source & data years & ecosystem & species & phenophases \\
   \hline
 exp01 & Waltham, MA, USA & Hoeppner and Dukes 2012 & 2009-2011 & grassland & 44 & bb,lo,fl \\ 
    \hline
-exp02 & Montpelier, France & Morin et al. 2010 & 2004 & temperate deciduous forest & 5 & fl,fr \\ 
+exp02 & Montpelier, France & Morin et al. 2010 & 2004 & temperate deciduous forest & 5 & fl,fr* \\ 
    \hline
 exp03 & Duke Forest, NC, USA & Clark et al. 2014 & 2009-2014 & temperate deciduous forest & 37 & bb,lo \\ 
    \hline
 exp04 & Harvard Forest, MA, USA & Clark et al. 2014 & 2009-2012 & temperate deciduous forest & 29 & bb,lo \\ 
    \hline
-exp07 & Harvard Forest, MA, USA & Pelini et al. 2011 & 2010-2015 & temperate deciduous forest & 8 & bb,lo,sen \\ 
+exp07 & Harvard Forest, MA, USA & Pelini et al. 2011 & 2010-2015 & temperate deciduous forest & 8 & bb,lo,sen* \\ 
    \hline
-exp09 & Stone Valley Forest, PA, USA & Rollinson and Kaye 2012 & 2009-2010 & temperate deciduous forest & 120 & lo,fl,fr,sen \\ 
+exp09 & Stone Valley Forest, PA, USA & Rollinson and Kaye 2012 & 2009-2010 & temperate deciduous forest & 120 & lo,fl,fr*,sen* \\ 
    \hline
 exp10 & Duke Forest, NC, USA & Marchin et al. 2015 & 2010-2013 & temperate deciduous forest & 11 & bb,fl \\ 
    \hline
-exp12 & Kessler Farm Field Laboratory, OK, USA & Sherry et al. 2007 & 2003 & grassland & 12 & fl,fr \\ 
+exp12 & Kessler Farm Field Laboratory, OK, USA & Sherry et al. 2007 & 2003 & grassland & 12 & fl,fr* \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -228,31 +227,31 @@ exp12 & Kessler Farm Field Laboratory, OK, USA & Sherry et al. 2007 & 2003 & gra
 
 \clearpage
 % latex table generated in R 4.1.3 by xtable 1.8-4 package
-% Fri Sep 30 17:13:12 2022
+% Fri Nov  4 09:50:39 2022
 \begin{table}[ht]
 \centering
 \caption{\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.} 
 \label{tab:mods}
 \begingroup\footnotesize
 \begin{tabular}{|p{0.1\textwidth}|p{0.05\textwidth}p{0.03\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}|p{0.02\textwidth}p{0.02\textwidth}p{0.04\textwidth}|p{0.02\textwidth}p{0.02\textwidth}p{0.04\textwidth}|p{0.02\textwidth}p{0.02\textwidth}p{0.04\textwidth}|}
-  \hline & \multicolumn{6}{c |}{Population-Level Effects} &\multicolumn{3}{c |}{Site Effects} &\multicolumn{3}{c |}{Site Year Effects}&\multicolumn{3}{c |}{Species Effects}\\
+  \hline & \multicolumn{6}{c |}{Average Effects} &\multicolumn{3}{c |}{Species Effects} &\multicolumn{3}{c |}{Site Effects}&\multicolumn{3}{c |}{Site-Year Effects}\\
   \hline
  & mean & error & 25\% & 75\% & 5\% & 95\% & mean & error & Ngrp & mean & error & Ngrp & mean & error & Ngrp \\ 
   \hline
-BB$\mu_{\alpha}$ & 97.20 & 5.10 & 94.10 & 100.40 & 89.00 & 105.20 & 7.4 & 4.9 & 5 & 9.3 & 2.5 & 13 & 16.10 & 2.50 & 41 \\ 
-  BB$\mu_{temp}$ & -7.80 & 2.10 & -9.20 & -6.40 & -11.30 & -4.20 &  &  &  &  &  &  & 11.40 & 1.70 &  \\ 
-  BB$\mu_{mois}$ & -1.70 & 0.60 & -2.10 & -1.30 & -2.80 & -0.70 &  &  &  &  &  &  & 2.70 & 0.60 &  \\ 
-  BB$\mu_{temp:mois}$ & 0.50 & 0.50 & 0.20 & 0.80 & -0.40 & 1.30 &  &  &  &  &  &  & 1.70 & 0.70 &  \\ 
+BB$\mu_{\alpha}$ & 97.20 & 5.10 & 94.10 & 100.40 & 89.00 & 105.20 & 16.10 & 2.50 & 41 & 7.4 & 4.9 & 5 & 9.3 & 2.5 & 13 \\ 
+  BB$\mu_{temp}$ & -7.80 & 2.10 & -9.20 & -6.40 & -11.30 & -4.20 & 11.40 & 1.70 &  &  &  &  &  &  &  \\ 
+  BB$\mu_{mois}$ & -1.70 & 0.60 & -2.10 & -1.30 & -2.80 & -0.70 & 2.70 & 0.60 &  &  &  &  &  &  &  \\ 
+  BB$\mu_{temp:mois}$ & 0.50 & 0.50 & 0.20 & 0.80 & -0.40 & 1.30 & 1.70 & 0.70 &  &  &  &  &  &  &  \\ 
    \hline
-LO$\mu_{\alpha}$ & 131.40 & 11.60 & 124.60 & 138.40 & 112.80 & 149.70 & 24.7 & 10.5 & 5 & 12.3 & 3.9 & 13 & 12.10 & 2.20 & 147 \\ 
-  LO$\mu_{temp}$ & -9.70 & 1.50 & -10.80 & -8.70 & -12.20 & -7.20 &  &  &  &  &  &  & 10.70 & 1.40 &  \\ 
-  LO$\mu_{mois}$ & -0.90 & 1.00 & -1.60 & -0.20 & -2.70 & 0.70 &  &  &  &  &  &  & 4.50 & 1.30 &  \\ 
-  LO$\mu_{temp:mois}$ & 0.00 & 0.70 & -0.50 & 0.50 & -1.20 & 1.20 &  &  &  &  &  &  & 5.10 & 0.70 &  \\ 
+LO$\mu_{\alpha}$ & 131.40 & 11.60 & 124.60 & 138.40 & 112.80 & 149.70 & 12.10 & 2.20 & 147 & 24.7 & 10.5 & 5 & 12.3 & 3.9 & 13 \\ 
+  LO$\mu_{temp}$ & -9.70 & 1.50 & -10.80 & -8.70 & -12.20 & -7.20 & 10.70 & 1.40 &  &  &  &  &  &  &  \\ 
+  LO$\mu_{mois}$ & -0.90 & 1.00 & -1.60 & -0.20 & -2.70 & 0.70 & 4.50 & 1.30 &  &  &  &  &  &  &  \\ 
+  LO$\mu_{temp:mois}$ & 0.00 & 0.70 & -0.50 & 0.50 & -1.20 & 1.20 & 5.10 & 0.70 &  &  &  &  &  &  &  \\ 
    \hline
-FL$\mu_{\alpha}$ & 165.80 & 9.10 & 160.60 & 171.10 & 151.40 & 179.60 & 11.8 & 10.1 & 5 & 8.1 & 4.6 & 8 & 48.40 & 3.40 & 127 \\ 
-  FL$\mu_{temp}$ & -7.90 & 1.30 & -8.80 & -7.00 & -10.10 & -5.70 &  &  &  &  &  &  & 5.90 & 1.20 &  \\ 
-  FL$\mu_{mois}$ & -1.20 & 0.90 & -1.80 & -0.60 & -2.70 & 0.40 &  &  &  &  &  &  & 4.30 & 1.10 &  \\ 
-  FL$\mu_{temp:mois}$ & -1.20 & 0.70 & -1.70 & -0.70 & -2.30 & 0.00 &  &  &  &  &  &  & 2.40 & 1.00 &  \\ 
+FL$\mu_{\alpha}$ & 165.80 & 9.10 & 160.60 & 171.10 & 151.40 & 179.60 & 48.40 & 3.40 & 127 & 11.8 & 10.1 & 5 & 8.1 & 4.6 & 8 \\ 
+  FL$\mu_{temp}$ & -7.90 & 1.30 & -8.80 & -7.00 & -10.10 & -5.70 & 5.90 & 1.20 &  &  &  &  &  &  &  \\ 
+  FL$\mu_{mois}$ & -1.20 & 0.90 & -1.80 & -0.60 & -2.70 & 0.40 & 4.30 & 1.10 &  &  &  &  &  &  &  \\ 
+  FL$\mu_{temp:mois}$ & -1.20 & 0.70 & -1.70 & -0.70 & -2.30 & 0.00 & 2.40 & 1.00 &  &  &  &  &  &  &  \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -290,11 +289,18 @@ FL$\mu_{\alpha}$ & 165.80 & 9.10 & 160.60 & 171.10 & 151.40 & 179.60 & 11.8 & 10
 %  \caption{\textbf{Model coefficients from fruiting and senescence models (with centered predictors).}} 
 %  \label{fig:ff}
 %  \end{figure}
- 
+ \begin{figure}[h]
+\centering
+  \noindent\makebox[\textwidth]{%
+ \includegraphics[width=1.5\textwidth]{../../Analyses/maps/soilms_experiments_map.png}}
+ \caption{\textbf{Map of locations of experiments} included in this meta-analysis .Add phenophases to this, perhaps, by filling shapes with colors associated with phenophase} 
+ \label{fig:map}
+ \end{figure}
+
  \begin{figure}[h]
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/histbbloform_spef.pdf}
- \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms} for leafout (top) and budburst (bottom) models. Histograms show species-level estimated effects for temeprature, soil, and their inteactions across four life forms (trees, shrubs, forms, and grasses).}
+ \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms} for leafout (top) and budburst (bottom) models. Histograms show species-level estimated effects for temeprature, soil, and their interactions across four life forms (trees, shrubs, forms, and grasses).}
  \label{fig:forms}
  \end{figure}
 
@@ -307,9 +313,11 @@ FL$\mu_{\alpha}$ & 165.80 & 9.10 & 160.60 & 171.10 & 151.40 & 179.60 & 11.8 & 10
  
  Questions for co-authors:
  \begin{enumerate}
- \item Life forms vs ecosystems figures: Life forms plots histograms of speces level effects whereas ecosystems plots all posterioes- what's your preference?
- \item what do you think of density plots: is it fair to say that variance is greater for tempreature, even though the variances relevative to the mean is about the same?
+ \item Life forms vs ecosystems figures: Life forms plots histograms of speceis-level effects whereas ecosystems plots all posteriores (i.e. across 8000 samples)- what's your preference?
+ \item Should I make plots of the distribution of soil moisture and temperature by site?
+
  \end{enumerate}
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

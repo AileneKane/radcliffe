@@ -96,6 +96,8 @@ wet2sm<- 1
 #mean(expgdd_bbd$soilmois_janmar)#0.2146834
 #so 10% reduction in soil moisture would be 
 #mean(expgdd_bbd$soilmois_janmar)+(mean(expgdd_bbd$soilmois_janmar)*-0.1)#0.1938242
+#mean(expgdd_bbd$ag_min_janmar)
+
 ## Plotting
 # First, we estimate the posteriors for each thing we want to plot...
 
@@ -238,8 +240,9 @@ splegbb<- expgdd_bbd %>% # start with the data frame
 splegbb<-splegbb[order(splegbb$genus.species),]
 colnames(splegbb)[2]<-"spnumbb"
 table(expgdd_bbd$site)
-table(expgdd_bbd$site,expgdd_bbd$genus.species)
-
+sitsptab<-table(expgdd_bbd$site,expgdd_bbd$genus.species)
+sitsptab[which(sitsptab>0)]<-1
+commonbbsps<-names(which(colSums(sitsptab)>1))#species that occur at more than one site.
 spnum<-c(135,28,105)
 #choose:
 #3:Acer rubrum: +inxn, - effects of both moisture and temp
@@ -262,9 +265,11 @@ unique(expgdd_bbd$site[expgdd_bbd$genus.species==135])#3,4
 figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],sitenum,"degwarm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 12, height = 4)
 #quartz()
-par(mar=c(8,7,3,5),mfrow=c(1,4))
-plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
-     ylab="Days to BB", bty="l", main="Across species")
+par(mar=c(5,6,3,0),mfrow=c(1,4))
+ylim<-c(0,160)
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming (",degree,"C)")), ylim=ylim,
+     ylab="Budburst Day (DOY)", bty="l", main="Across species", 
+     cex.main=1.2,cex.lab=1.2, cex.axis=1.2)
 #Add shading around line for credible intervals
 
 for(i in c(3,5,7)){
@@ -279,7 +284,7 @@ for(i in c(3,5,7)){
 #i=3
 
 #axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
-axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5), cex.lab=1.2, cex.axis=1.2)
 mtext("A)", side=3, line =1,adj=-.3)
 # intervals
 # for(i in 3:5){
@@ -290,7 +295,9 @@ mtext("A)", side=3, line =1,adj=-.3)
 #   lines(predicts.75per$warming, predicts.75per[,i-1], 
 #         col=cols[i-2], lwd=1, lty=2)
 # }
-legend("bottomleft",legend=c("Warming only","-100% Drier soil","100% Wetter soil"),lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=0.9)
+legend("bottomleft",
+       legend=c("Warming only","-100% Drier soil","100% Wetter soil"),
+       lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=1.2)
 let<-c("B)","C)","D)")
 for(s in 1:length(spnum)){
 for (i in 1:length(tempforecast.raw)){
@@ -315,10 +322,12 @@ predictsbb.10per<-predictsbb.10per[,-2]
 predictsbb.90per<-predicts.90per
 predictsbb.90per<-predictsbb.90per[,-2]
 xlim = c(range(tempforecast.raw))
-ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
+#ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
+ylim<-c(0,160)
 
-plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
-     ylab="Budburst Day", main=paste(spname[s],sep=","), bty="l")
+plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming (",degree,"C)")), ylim=ylim,
+     ylab="Budburst Day (DOY)", main=paste(spname[s],sep=","), bty="l", 
+     cex.main=1.2,cex.lab=1.2, cex.axis=1.2)
 
 #Add shading around line for credible intervals
 
@@ -334,7 +343,7 @@ for(j in c(3,5,7)){
 mtext(paste(let[s]), side=3, line =1,adj=-.3)
 
 #axis(side=1,at=c(0,0.32,0.64,0.96,1.28,1.60), labels=c(0,1,2,3,4,5))
-axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
+axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5), cex.lab=1.2, cex.axis=1.2)
 
 # intervals
 # for(i in 3:5){

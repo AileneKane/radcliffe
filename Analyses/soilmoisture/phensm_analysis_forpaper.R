@@ -67,12 +67,13 @@ source("Analyses/source/stanprep_phenmods.R")
 # Fit m5 to data #
 ##################
 
+mean(datalist.bbd$mois)
 
 #try the model with brms
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd.cent,
-                   chains = 2,iter = 4000,
+                   chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.999))
 
 # stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
@@ -87,7 +88,7 @@ round(fixef(testm5cent.brms, probs=c(.90,0.10)), digits=2)
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.bbdlo.cent,
-                       chains = 1,iter = 4000,
+                       chains = 4,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.999))
 # 
 # 
@@ -113,7 +114,7 @@ save(testm5cent.brms, file="Analyses/output/brms/testm5cent.brms.bblo.Rda")
 testm5cent.lod.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.lod.cent,
-                       chains = 2,iter = 4000,
+                       chains = 4,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5cent.lod.brms, file="Analyses/output/brms/testm5cent.brms.lo.Rda")
 round(fixef(testm5cent.lod.brms, probs=c(.90,0.10)), digits=2)
@@ -123,7 +124,7 @@ round(fixef(testm5cent.lod.brms, probs=c(.90,0.10)), digits=2)
 testm5cent.lodbb.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.lodbb.cent,
-                       chains = 2,iter = 4000,
+                       chains = 4,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 
 # without control, had divergent transisions and #2 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. but took a really long time to fit...7692.48 seconds (=2.1368 hrs per chain)
@@ -139,7 +140,7 @@ save(testm5cent.lodbb.brms, file="Analyses/output/brms/testm5cent.brms.lobb.Rda"
 testm5cent.lodfl.brms <- brm(y ~ temp * mois +#fixed effects
                                (temp * mois|sp) + (1|site/year), #random effects
                              data=datalist.lodfl.cent,
-                             chains = 2,iter = 4000,
+                             chains = 4,iter = 4000,
                              control = list(max_treedepth = 15,adapt_delta = 0.9999))
 save(testm5cent.lodfl.brms, file="Analyses/output/brms/testm5cent.brms.lofl.Rda")
 #1 divergent transition of warmup with 
@@ -147,7 +148,7 @@ save(testm5cent.lodfl.brms, file="Analyses/output/brms/testm5cent.brms.lofl.Rda"
 testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
                            data=datalist.ffd,
-                           chains = 2,iter = 6000,
+                           chains = 4,iter = 6000,
                            control = list(max_treedepth = 15,adapt_delta = .999))
 
 save(testm5cent.ffd.brms, file="Analyses/output/brms/testm5cent.brms.ff.Rda")
@@ -164,7 +165,7 @@ save(testm5cent.ffdlo.brms, file="Analyses/output/brms/testm5cent.brms.fflo.Rda"
 testm5cent.ffrd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
                            data=datalist.ffrd.cent,
-                           chains = 2,iter = 5000,
+                           chains = 4,iter = 5000,
                            control = list(max_treedepth = 15,adapt_delta = .9999))
 save(testm5cent.ffrd.brms, file="Analyses/output/brms/testm5cent.brms.frd.Rda")
 round(fixef(testm5cent.ffrd.brms, probs=c(.90,0.10)), digits=2)
@@ -173,7 +174,7 @@ round(fixef(testm5cent.ffrd.brms, probs=c(.90,0.10)), digits=2)
 testm5cent.sen.brms <- brm(y ~ temp * mois +#fixed effects
                               (temp * mois|sp) + (1|site/year), #random effects
                             data=datalist.sen.cent,
-                            chains = 2,iter = 6000,
+                            chains = 4,iter = 6000,
                            control = list(max_treedepth = 15,adapt_delta = .9999))
 
 save(testm5cent.sen.brms, file="Analyses/output/brms/testm5cent.brms.sen.Rda")

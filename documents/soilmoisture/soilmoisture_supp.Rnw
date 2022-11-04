@@ -1,5 +1,4 @@
-% Straight up stealing preamble from Eli Holmes 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PREAMBLE
 \documentclass{article}
 
 %Required: You must have these
@@ -202,7 +201,7 @@ library(xtable)
 library(dplyr)
 
 source("../../Analyses/exps_table_sm.R")
-site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here.", 
+site.table <- xtable(sitetable2, caption="\\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here. * denotes phenophases not included in this paper, because they were measured in fewer than three experiments.", 
         label="tab:studylocs",align=c(
                "p{0.01\\textwidth}|",
                 "|p{0.04\\textwidth}|",
@@ -224,7 +223,7 @@ print(site.table, include.rownames=FALSE, hline.after = c(-1,0,1,2,3,4,5,6,7,8),
 source("../../Analyses/make_tablephensm.R")
  addtorow <- list()
   addtorow$pos <- list(-1)
-  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Population-Level Effects} &\\multicolumn{3}{c |}{Site Effects} &\\multicolumn{3}{c |}{Site Year Effects}&\\multicolumn{3}{c |}{Species Effects}\\\\\n ")
+  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Average Effects} &\\multicolumn{3}{c |}{Species Effects} &\\multicolumn{3}{c |}{Site Effects}&\\multicolumn{3}{c |}{Site-Year Effects}\\\\\n ")
 
 mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.", label="tab:mods",align=c(
                
@@ -281,11 +280,18 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
 %  \caption{\textbf{Model coefficients from fruiting and senescence models (with centered predictors).}} 
 %  \label{fig:ff}
 %  \end{figure}
- 
+ \begin{figure}[h]
+\centering
+  \noindent\makebox[\textwidth]{%
+ \includegraphics[width=1.5\textwidth]{../../Analyses/maps/soilms_experiments_map.png}}
+ \caption{\textbf{Map of locations of experiments} included in this meta-analysis .Add phenophases to this, perhaps, by filling shapes with colors associated with phenophase} 
+ \label{fig:map}
+ \end{figure}
+
  \begin{figure}[h]
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/histbbloform_spef.pdf}
- \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms} for leafout (top) and budburst (bottom) models. Histograms show species-level estimated effects for temeprature, soil, and their inteactions across four life forms (trees, shrubs, forms, and grasses).}
+ \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms} for leafout (top) and budburst (bottom) models. Histograms show species-level estimated effects for temeprature, soil, and their interactions across four life forms (trees, shrubs, forms, and grasses).}
  \label{fig:forms}
  \end{figure}
 
@@ -298,9 +304,11 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
  
  Questions for co-authors:
  \begin{enumerate}
- \item Life forms vs ecosystems figures: Life forms plots histograms of speces level effects whereas ecosystems plots all posterioes- what's your preference?
- \item what do you think of density plots: is it fair to say that variance is greater for tempreature, even though the variances relevative to the mean is about the same?
+ \item Life forms vs ecosystems figures: Life forms plots histograms of speceis-level effects whereas ecosystems plots all posteriores (i.e. across 8000 samples)- what's your preference?
+ \item Should I make plots of the distribution of soil moisture and temperature by site?
+
  \end{enumerate}
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

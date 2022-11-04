@@ -28,17 +28,17 @@ sitetable$data_years<-c("2009-2011","2004","2009-2014","2009-2012","1998-2002","
          "2010-2015","1993","2009-2010","2010-2013","1991-1994","2003","2012-2014","2009-2011","2003-2005")
 
 sitetable$phenophase<-as.character(c("bb,lo,fl",
-                                     "fl,fr",
+                                     "fl,fr*",
                                      "bb,lo", 
                                      "bb,lo",
                                      "",
                                      "",
-                                     "bb,lo,sen",
+                                     "bb,lo,sen*",
                                      "",
-                                     "lo,fl,fr,sen",
+                                     "lo,fl,fr*,sen*",
                                      "bb,fl",
                                      "",
-                                     "fl,fr",
+                                     "fl,fr*",
                                      "","",""))
 
 sitetable$no_spp[sitetable$DatasetID=="exp01"]<-"44"
