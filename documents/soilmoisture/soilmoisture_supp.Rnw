@@ -114,7 +114,7 @@
 
 \section* {Supplemental Methods}
 \underline{Equation for phenology models}: 
-Response variable (\textit{y}) is day of year of the phenological event (budburst, leafout, or flowering). Predictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (sp, random slopes and intercepts), and  site and year nested within site (random intercepts).
+Response variable (\textit{y}) is day of year of the phenological event (budburst, leafout, or flowering). Predictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (sp, random slopes and intercepts), and site and year nested within site (random intercepts). %2202Nov14EMW -- add $i$ represents each observation 
 
 %\begin{equation}
 \begin{equation}
