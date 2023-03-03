@@ -65,10 +65,12 @@ intef<-as.data.frame(sp[,,4])
 intef$spnumbb<-rownames(intef)
 
 
-pdf(file.path(figpath,figname), height=4,width=10)
+pdf(file.path(figpath,figname), height=8,width=10)
 #quartz(height=4,width=10)
-par(mfcol=c(1,3))
+par(mfcol=c(2,3))
 plot(tempef$Estimate,moisef$Estimate,main="Budburst",xlab="Temp effects",ylab="Moisture effects", pch=16,col="gray",bty="l")
+plot(tempef$Estimate,intef$Estimate,main="Budburst",xlab="Temp effects",ylab="Interaction", pch=16,col="gray",bty="l")
+
 #add leafout
 lomod<- load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 mod<- testm5cent.lod.brms
@@ -86,6 +88,7 @@ intef<-as.data.frame(sp[,,4])
 intef$spnumbb<-rownames(intef)
 
 plot(tempef$Estimate,moisef$Estimate,main="Leafout",xlab="Temp effects",ylab="Moisture effects", pch=16,col="gray",bty="l")
+plot(tempef$Estimate,intef$Estimate,main="Leafout",xlab="Temp effects",ylab="Interaction", pch=16,col="gray",bty="l")
 
 #add flowering
 flmod<- load("Analyses/output/brms/testm5cent.brms.ff.Rda")
@@ -103,5 +106,6 @@ tempef$spnumbb<-rownames(tempef)
 intef<-as.data.frame(sp[,,4])
 intef$spnumbb<-rownames(intef)
 plot(tempef$Estimate,moisef$Estimate,main="Flowering",xlab="Temp effects",ylab="Moisture effects", pch=16,col="gray",bty="l")
+plot(tempef$Estimate,intef$Estimate,main="Flowering",xlab="Temp effects",ylab="Interaction", pch=16,col="gray",bty="l")
 
 dev.off()
