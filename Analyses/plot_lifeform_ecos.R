@@ -45,7 +45,7 @@ source("Analyses/source/stanprep_phenmods.R")
 source("Analyses/source/get_lifeform.R")
 
 ##get ecosystem
-source("Analyses/source/get_ecosystem")
+source("Analyses/source/get_ecosystem.R")
 #First, Leaf-Out
 figname<-"histloform.pdf"
 #figname<-"histbbloform.pdf"
