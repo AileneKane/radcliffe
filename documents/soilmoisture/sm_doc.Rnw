@@ -175,82 +175,54 @@ To understand how soil moisture interacts with temperature to affect phenology, 
 \par The magnitude of soil moisture effects varied across phenophases, with effects on budburst being stronger than those on leafout (\Sexpr{soileff.locent} per SD of soil moisture) and flowering (\Sexpr{soileff.flcent} per SD). Similar to budburst, temperature effects were stronger than soil moisture for leafout (for which the temperature effect was \Sexpr{tempeff.locent} per SD) and flowering (for which it was \Sexpr{tempeff.flcent} per SD), across all species (Fig \ref{fig:bblofl}). 
 %2202Nov14EMW -- below reads very statistic-y also, I wonder if we could just show the posteriors as a figure?
 \par These overall effects varied widely across species (Fig \ref{fig:bblofl}). Species-level variance for the effect of moisture was 2.7 standardized units for budburst, 4.5 for leafout, and 4.30 for flowering. Species-level variance was even greater for temperature effects: 16.3 for budburst, 10.7 for leafout, and 5.9 for flowering. Variability across species, however, was not predictable by life form (trees, shrubs, herbs, grasses, Fig S2) or ecosystem (grassland versus forests, Fig S3).
-\par We applied the above budburst model to forecast possible effects of climate change on phenology. Based on the above estimated effects, wetter soils advanced spring budburst at a rate of 5 days per 10\percent increase in soil volumetric water content (VWC). Thus, if soil moisture is reduced by 10\% of its current state, as is expected over the next 50 years in areas where many of the experiments were conducted (the northeastern United States) \citep{berg2017} (moving from, e.g.,21.5\% VWC-- the mean value for January-March across all sites for which budburst was monitored-- to 19.4\%), budburst would be delayed by approximately 1 day on average, due to changes in soil moisture alone (Fig \ref{fig:bbsp}).
+\par We applied the above budburst model to forecast possible effects of climate change on phenology. Based on the estimated effects, wetter soils advanced spring budburst at a rate of 5 days per 10\% increase in soil volumetric water content (VWC). Thus, if soil moisture is reduced by 10\% of its current state, as is expected over the next 50 years in areas where many of the experiments were conducted (the northeastern United States) \citep{berg2017} (moving from, e.g.,21.5\% VWC-- the mean value for January-March across all sites for which budburst was monitored-- to 19.4\%), budburst would be delayed by approximately 1 day on average, due to changes in soil moisture alone (Fig \ref{fig:bbsp}).
 %\item \textbf{Soil moisture effect size is bigger in full dataset than in controls only, for BB.} Mean and range of SM is similar (though max is a bit higher in full dataset; min is similar).
 %\item \textbf{Effects of climate manipulations on temperature and soil moisture}
 
 %\par Mean annual soil moisture is negatively affected by target temperature treatment, and positively affected by precipitation treatment. (Figure \ref {fig:soilmois}). These effects varied by site; for example, at exp07 soil moisture was positively affected by temperature treatment. Air temperature is positively affected by target temperature treatment, and negatively affected by precipitation treatment. (Figure S\ref {fig:temp}).
 
 \section* {DISCUSSION}
-\par Soil moisture has not been a focus of previous phenology meta-analyses \cite[e.g.,][]{wolkovich2012}, nor of most multi-species phenology studies in temperate mesic grasslands and forest ecosystems \cite[e.g.,][]{Vitass2021}.
-We found that soil moisture can strongly affect phenology in temperate non-arid ecosystems, in addition to the arid ecosystems where effects of water availability on phenology have been more often reported (e.g., refs). Our findings highlight that, in mesic grasslands and forests, too, plants need water to advance budburst, leafout, and flowering; the delaying effect that dry soils seem to have suggests that moisture can be a hidden, but potentially limiting, factor affecting phenology temperate systems not typically thought to be water-stressed. 
+\par Soil moisture has not been a focus of previous phenology meta-analyses \cite[e.g.,][]{wolkovich2012}, nor of most multi-species phenology studies in temperate mesic grasslands and forest ecosystems \cite[e.g.,][]{Vitass2021}. sWe found that soil moisture can strongly affect phenology in temperate non-arid ecosystems, in addition to the arid ecosystems where effects of water availability on phenology have been more often reported (e.g., refs). Our findings highlight that, in mesic grasslands and forests, too, plants need water to advance budburst, leafout, and flowering; the delaying effect that dry soils seem to have suggests that moisture can be a hidden, but potentially limiting, factor affecting phenology temperate systems not typically thought to be water-stressed. 
 %Although multiple environmental conditions affect phenology, we found interactive effects of soil moisture and temperature were weak for most phenophases. 
 
 \par Soil moisture is and will continue to shift with climate change \citep{berg2017}, so while we found soil moisture had smaller effects than temperature it could have a big impact. Some areas, such as the northeastern United States (where many of the experiments were conducted) are getting wetter, and other places are expected to get drier \citep{berg2017}. Overall our forecasting suggests that temperature will continue to be a dominant controller of phenology, but that soil moisture also matters, especially for certain species. 
 
-\par \bf High variation in species-level responses
-\par Despite the overall effects we quantify of delays in phenology with soil drying, our results suggest that forecasts will need to contend with high variation in species responses. We do not find strong differences in soil moisture effects across functional types (Figure S2) but there may be traits associated with these species-level differences in soil moisture effects.   
-
-\item Phenophase differences ... 
+\par \textbf {High variation in responses to soil moisture across species and phenophases}
+\par Despite the overall effects of delays in phenology with soil drying, our results suggest that forecasts will need to contend with high variation in species responses, as well as differences across phenophases. We do not find strong differences in soil moisture effects across broad functional types (Figure S2), but there may be traits associated with these species-level differences in soil moisture effects.   
+  \par -Add a ref or two about phenology-relevent-traits associated with responses to soil moisture?
+\par Our findings of variation in soil moisture effects across species and phenophase may explain inconsistencies observed in previous studies. For example, \cite{wolkovich2012} found that exotic species advance with precipitation, whereas native species delay at one site (Fargo). 
 \begin{enumerate}
-\item Our findings of variation in soil moisture effects across species and phenophase may explain inconsistencies observed in previous studies. For example, \cite{wolkovich2012} found that exotic species advance with precipitation, whereas native species delay at one site (Fargo). 
-\item Variance in soil moisture effect varied across phenophases and was lowest for budburst -- perhaps suggesting, across species, species need moisture for budburst? In contrast to temperature where the variation is higher (though the overal effect of temperature is also higher...). 
+\item Variance in soil moisture effect varied across phenophases and was lowest for budburst -- perhaps suggesting, across species, species need moisture for budburst? In contrast to temperature where the variation is higher (though the overall effect of temperature is also higher...). 
 \item Interactions were weak for budburst and leafout, and stronger for flowering (Fig. \ref{fig:bblofl}).
+
 \end{enumerate}
-\end{enumerate}
-\item {\bf Subheading}: Forecasting multiple drivers 
+\textbf {Forecasting multiple drivers }
 \begin{enumerate}
-\item Our work here shows that soil moisture affects the phenology of temperate grassland and forest systems (paragraph on putting this in the context of other systems)
-\begin{enumerate}
-\item highly-cited phenology research in temperate grassland and forest systems has frequently ignored these effects, focusing instead on temperature. Our finding that soil drying has an overall delaying effect on phenology is consistent with \citet{seyed2018}, who found that moisture deficit generally delays phenology in forest ecosystems, and with recent experimental \citep{liu2022} and observational \citep{tao2020} studies in temperate grasslands. 
-\item This fits within a larger literature from other systems that have found moisture matters to phenology, including alpine systems dominated by snowpack \citep[e.g.,][]{dunne2004,sherwood2017}, and arid/semi-arid ecosystems where precipitation is known to be more limiting \citep{tao2019}. 
-\end{enumerate}
-\item So we need forecast both effects for phenology and possibly their impacts on other drivers and limiting resources ... 
-\begin{enumerate}
+\item Our work here shows that soil moisture affects the phenology of temperate grassland and forest systems.
+\item Highly-cited phenology research in temperate grassland and forest systems has frequently ignored these effects, focusing instead on temperature. Our finding that soil drying has an overall delaying effect on phenology is consistent with \citet{seyed2018}, who found that moisture deficit generally delays phenology in forest ecosystems, and with recent experimental \citep{liu2022} and observational \citep{tao2020} studies in temperate grasslands. 
+\item Our results align within a larger literature from other systems that have found moisture matters to phenology, including alpine systems dominated by snowpack \citep[e.g.,][]{dunne2004,sherwood2017}, and arid/semi-arid ecosystems where precipitation is known to be more limiting \citep{tao2019}. 
+\item So we need to forecast both effects for phenology and possibly their impacts on other drivers and limiting resources ... 
 \item Multiple global change factors affect phenology (temperature and soil moisture here, also CO2?, nitrogen, photoperiod)
- \item Soil moisture may actually mediate plant phenology responses to warming and  nitrogen addition, too \citep{liu2022}
+ \item Soil moisture may actually mediate plant phenology responses to warming and nitrogen addition, too \citep{liu2022}
+ \end{enumerate}
+
+
  To do this, we also need to improve how we relate experiments to `real world'
- Moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments. Our study differs from some because we used field-measured soil moisture -- most studies use precipitation \citep[e.g.,][]{tao2022} or gridded moisture products \citep[e.g.,][]{tao2019}. The problems with these proxies are widely known (REF). However, our use of measured soil moisture also created a data limitation, as we were able to use only a subset of all the climate change experiments included in the ExPhen and E3 databases. So, we need more people to measure this! Such new data could help understand how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments
-
-
-
-
-\item Soil moisture and/or precipitation have been investigated frequently in arid or semi-arid ecosystems, including studies that find either no effect \citep{howell2020, sherry2007} or contrasting results across species \citep{tao2019}. 
+ Moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments. Our study differs from some because we used field-measured soil moisture -- most studies use precipitation \citep[e.g.,][]{tao2020} or gridded moisture products \citep[e.g.,][]{tao2019}. The problems with these proxies are widely known (REF). However, our use of measured soil moisture also created a data limitation, as we were able to use only a subset of all the climate change experiments included in the ExPhen and E3 databases. So, we need more people to measure this! Such new data could help understand how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments.
+\par scaling up to ecosystem? recent papers on nutrient cycling
+\begin{enumerate}
+\item Soil moisture as a key factor affecting nutrient cycling (N, CH4 uptake)\citep{liu2019soil}
+\item Soil moisture affects resorption of nitrogen and phosphorus during foliar senescence\citep{estiarte2022}.
+\item ``Species-specific biomass responses to the environment in the climate-corrected biomass were asynchronous, demonstrating the importance of species interactions in vegetation responses to global change. Biomass production was co-limited by climatic and soil drivers, with each species experiencing its own unique set of co-limitations.'' \citep{wilfahrt2021}
+\end{enumerate}
+\section* {Conclusions}
 %\citep{tao2019} "However, effects of precipitation and soil moisture on BBD varied among [herbaceous] species [in Inner Mongolia grassland]." ... "correlations between BBD and SM were negative, suggesting that greater soil moisture would result in an earlier BBD." and it seems like mostly they did not find correlations otherwise; also their data are a gridded product
 %\citep{howell2020} "Altered precipitation treatments were only applied in early years of the study and neither precipitation treatments nor the treatments’ legacies significantly affected B. tectorum phenology." But warming did advance flowering and shorten the vegetative season. % https://www.frontiersin.org/articles/10.3389/fpls.2020.570001/full
-\item Effects of moisture or precipitation on phenology have been extensively studied in alpine systems dominated by snowpack, as well, where less snow generally advances phenology \citep[e.g.,][]{dunne2004,sherwood2017}. Similarly, a study of high latitudes (>30 degrees) found that a decrease in precipitation frequency over the past three decades positively contributed to observed advances in leafout date \citep{wang2022}. %"Notably, almost one-third of significant correlations (Pfreq versus LOD) for in situ and satellite data were negative (Fig. 2j-l), meaning that, for example, a decreased Pfreq comes with a delayed LOD"
-
 
 %\par Altough soil moisture is expected to shift with climate change \citep{berg2017}, it has not been a focus of previous meta-analyses \cite[e.g.,][]{wolkovich2012}. Thus, our finding that soil moisture affects phenology, across the experiments in commmonly studied temperate forest and grassland ecosystems (i.e., those included the ExPhen database, Table \ref{tab:studylocs}, Fig. \ref{fig:map}), may surprise some. Soil moisture has been investigated frequently in arid or semi-arid ecosystems (e.g. CITE), including experiments that find either no effects (cites) or contrasting results across species (cites). Effects of moisture or precipitation on phenology have been extensively studied in alpine systems dominated by snowpack, as well, where less snow generally advances phenology \citep[e.g.,][]{dunne2004,sherwood2017}. 
-\item Our work here shows that soil moisture affects the phenology of temperate grassland and forest systems; highly-cited phenology research in these systems has frequently ignored these effects, focusing instead on temperature. Our finding that soil drying has an overall delaying effect on phenology is consistent with \citet{seyed2018}, who found that moisture deficit generally delays phenology in forest ecosystems, and with recent experimental \citep{liu2022} and observational \citep{tao2020} studies in temperate grasslands.  %tao2020:"every 1\% m3/m3 increase in soil moisture led to a green-up date that was 3 to 6 days earlier". 
-\item Our study differs from some because we used field-measured soil moisture -- most studies use precipitation \citep[e.g.,][]{tao2022} or gridded moisture products \citep[e.g.,][]{tao2019}. The problems with these proxies are widely known (REF). However, our use of measured soil moisture also created a data limition, as we were able to use only a subset of all the climate change experiments included in the ExPhen and E3 databases. 
+
 
 % could also connect to observational studies finding differences among ecoregions where species also differ (see end of doc, where I added some notes). Could stress our results mean we need to understand the drivers of these species-level differences better...
-
-\begin{itemize}
-\item Despite these overall effects of delays in phenology with soil drying, our analyses estimate wide variation across species in phenological responses to soil moisture. 
-\item Our findings of variation in soil moisture effects across species and phenophase may explain inconsistencies observed in previous studies. For example, \cite{wolkovich2012} found that exotic species advance with precipitation, whereas native species delay at one site (Fargo). 
-\item We do not find strong differences in soil moisture effects across functional types (Figure S2) but there may be traits associated with the species-level differences in soil moisture effects.  
-\item Or speculation that there may be potential phylogenetic patterns soil moisture response?
-\item Variance in soil moisture effect varied across phenophases and was lowest for budburst -- perhaps suggesting, across species, species need moisture for budburst? In contrast to temperature where the variation is higher (though the overal effect of temperature is also higher...). 
-\end{itemize}
-\item Forecasting effects of soil moisture with warming
-\begin{itemize}
-\item Soil moisture is changing -- with some areas, such as the northeastern United States getting wetter, and other places getting drier \citep{berg2017}
-\item Multiple global change factors affect phenology (temperature and soil moisture here, also CO2?, nitrogen, photoperiod)
- \item Soil moisture may actually mediate plant phenology responses to warming and  nitrogen addition, too \citep{liu2022}
-\item Some of observed variable responses to moisture, both here and in previous studies,  may be driven by temporal and spatial variation in the most limiting resource (e.g., temperature vs moisture). 
-\item Although multiple environmental conditions affect phenology, interactive effects of soil moisture and temperature were weak for most phenophases. Interactions were weak for budburst and leafout, and stronger for flowering (Fig. \ref{fig:bblofl}).
-\item Relating experiments to "real world: 
-\begin{itemize}
-\item Moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments
-\item how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments
-\end{itemize}
-\end{itemize}
-\end{enumerate}
-
-
-\section* {Conclusions}
 
 
 \bibliography{mylibrary.bib}
@@ -290,5 +262,3 @@ We found that soil moisture can strongly affect phenology in temperate non-arid 
 
 \cite{craine2012} most species flowering during warm wet times, but also discusses sort of divergence -- early versus late flowering species
 
-
-\cite{seyed2018} "Across the entire study area, slow phenological development was associated with high MAT and moisture deficit (Fig. 4-a)."
