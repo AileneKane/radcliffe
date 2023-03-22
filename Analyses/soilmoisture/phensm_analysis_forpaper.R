@@ -210,7 +210,7 @@ table(expgdd_subs$sp.name[expgdd_subs$site2 =="exp01"],expgdd_subs$year[expgdd_s
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                          (temp * mois|sp) + (1|site/year), #random effects
                        data=datalist.bbd,
-                       chains = 2,iter = 4000,
+                       chains = 4,iter = 4000,
                        control = list(max_treedepth = 15,adapt_delta = 0.99))
 
 # stancode(testm5.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
@@ -224,7 +224,7 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.lod,
-                   chains = 2,iter = 4000,
+                   chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
@@ -237,7 +237,7 @@ round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 testm5.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.ffd,
-                   chains = 2,iter = 4000,
+                   chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)

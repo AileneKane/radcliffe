@@ -5,9 +5,7 @@ options(stringsAsFactors = FALSE)
 #require(dplyr)
 
 # Set working directory: 
-#setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")
-
-
+#setwd("~/GitHub/radcliffe/documents/soilmoisture")
 
 expsites2 <- read.csv("../../Analyses/expsiteinfo.csv", header=TRUE)
 exsitetable<-expsites2 %>% 
