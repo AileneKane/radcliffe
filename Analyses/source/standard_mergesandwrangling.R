@@ -12,7 +12,9 @@
 #replace NA with "none" for blocks in treats file
 treats[which(is.na(treats$target)),]$target<-0
 treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
-expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE)
+if(length(grep("lizzie", getwd())>0)) {
+    expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), copy=TRUE) # Lizzie has to delete match="all" to make this run
+    }else expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE) 
 #dim(expclim2)#343734     27
 #head(expclim2)
 #unique(expclim2$site)#15
@@ -38,7 +40,10 @@ exppheno$site<-as.character(exppheno$site)
 exppheno$block<-as.character(exppheno$block)
 exppheno$plot<-as.character(exppheno$plot)
 
-expgdd<-inner_join(exppheno,expclim2, by=c("site", "block", "plot","year","doy"), match="all", copy=TRUE)
+
+if(length(grep("lizzie", getwd())>0)) { 
+    expgdd<-inner_join(exppheno, expclim2, by=c("site", "block", "plot","year","doy"), copy=TRUE) # This one gives a warning
+}else expgdd<-inner_join(exppheno, expclim2, by=c("site", "block", "plot","year","doy"), match="all", copy=TRUE) 
 #dim(expgdd)#63734    31
 #unique(expgdd$site)#14 sites
 #Need surftemp_mean (laready have airtempmean)

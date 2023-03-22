@@ -14,7 +14,12 @@ library(dplyr)
 library(brms)
 library(scales)
 # Setting working directory.
-setwd("~/Documents/GitHub/radcliffe")
+
+
+if(length(grep("lizzie", getwd())>0)) { 
+  setwd("~/Documents/git/projects/meta_ep2/radcliffe") 
+} else setwd("~/Documents/GitHub/radcliffe")
+
 
 figpath <- "Analyses/soilmoisture/figures"
 
@@ -65,6 +70,17 @@ intef<-as.data.frame(sp[,,4])
 intef$spnumbb<-rownames(intef)
 
 
+## START Lizzie's figure attempt
+alleff <- merge(moisef, tempef, by="spnumbb", suffixes=c("moist", "temp"))
+alleff <- merge(alleff, intef, by="spnumbb")
+
+library(ggplot2)
+
+ggplot(alleff, aes(x = Estimatetemp, y = Estimatemoist, color=Estimate)) +
+    geom_point(aes(size = Estimate), alpha = 0.5) +
+    scale_colour_viridis_c()
+## END Lizzie's figure attempt
+
 pdf(file.path(figpath,figname), height=8,width=10)
 #quartz(height=4,width=10)
 par(mfcol=c(2,3))
@@ -109,3 +125,15 @@ plot(tempef$Estimate,moisef$Estimate,main="Flowering",xlab="Temp effects",ylab="
 plot(tempef$Estimate,intef$Estimate,main="Flowering",xlab="Temp effects",ylab="Interaction", pch=16,col="gray",bty="l")
 
 dev.off()
+
+
+## START Lizzie's figure attempt
+alleff <- merge(moisef, tempef, by="spnumbb", suffixes=c("moist", "temp"))
+alleff <- merge(alleff, intef, by="spnumbb")
+
+library(ggplot2)
+
+ggplot(alleff, aes(x = Estimatetemp, y = Estimatemoist, color=Estimate)) +
+    geom_point(aes(size = Estimate), alpha = 0.5) +
+    scale_colour_viridis_c()
+## END Lizzie's figure attempt
