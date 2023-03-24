@@ -51,8 +51,62 @@ source("Analyses/source/get_lifeform.R")
 
 ##get ecosystem
 source("Analyses/source/get_ecosystem.R")
+
+#create function to plot soil mois vs temp effects and also show interaction at the same time
+ploteffs <- function(phenophase, modname){ 
+  
+mod<-modname
+fit <- fixef(mod)
+
+sp<-coef(mod,probs=c(0.1,0.9))$sp
+intercepts<-sp[,,1]
+moisef<-as.data.frame(sp[,,3])
+moisef$spnumbb<-rownames(moisef)
+
+tempef<-as.data.frame(sp[,,2])
+tempef$spnumbb<-rownames(tempef)
+
+intef<-as.data.frame(sp[,,4])
+intef$spnumbb<-rownames(intef)
+alleff <- merge(moisef, tempef, by="spnumbb", suffixes=c("moist", "temp"))
+alleff <- merge(alleff, intef, by="spnumbb")
+colnames(alleff)[which(colnames(alleff)=="Estimatetemp")]<-"Temperature.Effect"
+colnames(alleff)[which(colnames(alleff)=="Estimatemoist")]<-"Soil.Moisture.Effect"
+colnames(alleff)[which(colnames(alleff)=="Estimate")]<-"Temp.SM.Interaction"
+ggplot(alleff, aes(x = Temperature.Effect, y = Soil.Moisture.Effect, color=Temp.SM.Interaction)) +
+  ggtitle(paste(phenophase)) +
+  geom_point(aes(size = Temp.SM.Interaction), alpha = 0.5) +
+  scale_colour_viridis_c()
+}
+
 #First, budburst
+figname<- "bbmodeffplot.pdf"
+modfile<-load("Analyses/output/brms/testm5cent.brms.bb.Rda")
+pdf(file.path(figpath,figname), height=8,width=10)
+ploteffs("budburst",testm5cent.brms)
+dev.off()
+
+#Next, leafout
+figname<- "lomodeffplot.pdf"
+modfile<-load("Analyses/output/brms/testm5cent.brms.lo.Rda")
+pdf(file.path(figpath,figname), height=8,width=10)
+ploteffs("leafout",testm5cent.lod.brms)
+dev.off()
+
+#Last, flowering
+figname<- "flmodeffplot.pdf"
+modfile<-load("Analyses/output/brms/testm5cent.brms.ff.Rda")
+pdf(file.path(figpath,figname), height=8,width=10)
+ploteffs("flowering",testm5cent.ffd.brms)
+dev.off()
+
+
+
+####################################
+###### old version with base R #####
+####################################
 figname<-"smtempplot.pdf"
+pdf(file.path(figpath,figname), height=8,width=10)
 
 bbmod<- load("Analyses/output/brms/testm5cent.brms.bb.Rda")
 mod<- testm5cent.brms
@@ -75,13 +129,22 @@ alleff <- merge(moisef, tempef, by="spnumbb", suffixes=c("moist", "temp"))
 alleff <- merge(alleff, intef, by="spnumbb")
 
 library(ggplot2)
+pdf(file.path(figpath,"bbmodeffplot.pdf"), height=8,width=10)
 
 ggplot(alleff, aes(x = Estimatetemp, y = Estimatemoist, color=Estimate)) +
     geom_point(aes(size = Estimate), alpha = 0.5) +
     scale_colour_viridis_c()
+dev.off()
+pdf(file.path(figpath,"bbmodeffplot_scale"), height=8,width=10)
+
+ggplot(alleff, aes(x = Estimatetemp, y = Estimatemoist, color=Estimate)) +
+  geom_point(aes(size = Estimate), alpha = 0.5) +
+  scale_colour_viridis_c()+
+xlim(-30, 10)
+dev.off()
 ## END Lizzie's figure attempt
 
-pdf(file.path(figpath,figname), height=8,width=10)
+
 #quartz(height=4,width=10)
 par(mfcol=c(2,3))
 plot(tempef$Estimate,moisef$Estimate,main="Budburst",xlab="Temp effects",ylab="Moisture effects", pch=16,col="gray",bty="l")
