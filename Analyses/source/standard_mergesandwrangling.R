@@ -103,14 +103,14 @@ expgdd$genus.species<-paste(expgdd$genus,expgdd$species,sep=".")
 #dim(expgdd[expgdd$genus.species=="Viburnum.sp",])#3 rows
 #unique(expgdd$site[expgdd$genus.species=="Viburnum.sp"])#e
 #look at what phenophases/models this will affect
-unique(expgdd$event[expgdd$genus.species=="Acer.sp"])#"lud" "lod" "bbd"
-unique(expgdd$event[expgdd$genus.species=="Betula.sp"])#"bbd" "lod" "lud"
-unique(expgdd$event[expgdd$genus.species=="Carya.sp"])#"bbd" "lod" "lud" "sen"
-unique(expgdd$event[expgdd$genus.species=="Cornus.sp"])#" "lod" "ffrd"
-unique(expgdd$event[expgdd$genus.species=="Galium.sp"])#"lod" "
-unique(expgdd$event[expgdd$genus.species=="Magnolia.sp"])#lud" "lod" "bbd"
-unique(expgdd$event[expgdd$genus.species=="Prunus.sp"])#"lod" "bbd"
-unique(expgdd$event[expgdd$genus.species=="Quercus.sp"])#"bbd" "lod" "lud"
+# unique(expgdd$event[expgdd$genus.species=="Acer.sp"])#"lud" "lod" "bbd"
+# unique(expgdd$event[expgdd$genus.species=="Betula.sp"])#"bbd" "lod" "lud"
+# unique(expgdd$event[expgdd$genus.species=="Carya.sp"])#"bbd" "lod" "lud" "sen"
+# unique(expgdd$event[expgdd$genus.species=="Cornus.sp"])#" "lod" "ffrd"
+# unique(expgdd$event[expgdd$genus.species=="Galium.sp"])#"lod" "
+# unique(expgdd$event[expgdd$genus.species=="Magnolia.sp"])#lud" "lod" "bbd"
+# unique(expgdd$event[expgdd$genus.species=="Prunus.sp"])#"lod" "bbd"
+# unique(expgdd$event[expgdd$genus.species=="Quercus.sp"])#"bbd" "lod" "lud"
 
 expgdd<-expgdd[expgdd$genus.species!="Acer.sp",]# 
 expgdd<-expgdd[expgdd$genus.species!="Betula.sp",]#.

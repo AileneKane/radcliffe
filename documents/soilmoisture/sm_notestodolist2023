@@ -1,16 +1,29 @@
 ##Soil Moisture Questions & To Do List 2023##
 #############################################
-#MAr 22, 2023 meeting
+#Mar 22, 2023 meeting
 # 1. Table of exps: include only studies analyzed or full suite to make exclusion more clear?
-
+-List in the caption of the table which studies lost and why (soil moisture, above ground air, phenology).
 # 2. Reporting interactions on natural scale?
+-days per temperate by moisture (degrees C X VWC)
 
 # 3. Check uncentered models for number of chains and rerun as necessary.
+-also update iterations for some models
 
-#4. Refs about phenology-relevant traits associated with soil moisture differences? other ref linking traits to phenology?
+#4. Refs about phenology-relevant traits associated with soil moisture differences? 
+  -ring vs diffuse porous (which have been linked to phenology) (Lechowics)
+  -height (water transport)
+  -root phenology ()
+  - other ref linking traits to phenology?
+  -Lizzie will send paper supplement
+  
+#5. Find ref documenting problem with using preciptation or proxy for soil moisture
+-Ask Jeff or Christie about this
 
-#5. Find ref documenting problem with using preceiptation or proxy for soil moisture
+#6. Ecosystem and scaling up
+-Add some Grephon papers 
+#7. Paths forward
 
+#8. Look into joining issues
 
 #####################################
 #######Old items to check on#########
