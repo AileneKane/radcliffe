@@ -68,13 +68,22 @@ source("Analyses/source/stanprep_phenmods.R")
 ##################
 
 mean(datalist.bbd$mois)
+#try the model with no interactgions
+testmcent.brms <- brm(y ~ temp + mois +#fixed effects
+                         (temp + mois|sp) + (1|site/year), #random effects
+                       data=datalist.bbd.cent,
+                       chains = 2,iter = 2000,
+                       control = list(max_treedepth = 15,adapt_delta = 0.999))
+save(testmcent.brms, file="Analyses/output/brms/testmcentnoint.brms.bb.Rda")
+round(fixef(testmcent.brms, probs=c(.90,0.10)), digits=2)
+#needs more iteratuons...but from estinates temp effect is sinilar, mois effect is a little weaker but similar
 
 #try the model with brms
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd.cent,
                    chains = 4,iter = 4000,
-                   control = list(max_treedepth = 15,adapt_delta = 0.999))
+                   control = list(max_treedepth = 15,adapt_delta = 0.999), paralell=TRUE)
 
 # stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
 # summary(testm5cent.brms)
@@ -147,8 +156,8 @@ save(testm5cent.lodfl.brms, file="Analyses/output/brms/testm5cent.brms.lofl.Rda"
 
 testm5cent.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                              (temp * mois|sp) + (1|site/year), #random effects
-                           data=datalist.ffd,
-                           chains = 4,iter = 6000,
+                           data=datalist.ffd.cent,
+                           chains = 4,iter = 4000,
                            control = list(max_treedepth = 15,adapt_delta = .999))
 
 save(testm5cent.ffd.brms, file="Analyses/output/brms/testm5cent.brms.ff.Rda")

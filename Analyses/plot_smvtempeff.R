@@ -18,7 +18,7 @@ library(scales)
 
 if(length(grep("lizzie", getwd())>0)) { 
   setwd("~/Documents/git/projects/meta_ep2/radcliffe") 
-} else setwd("~/Documents/GitHub/radcliffe")
+} else setwd("~C:/Users/ailene.ettinger/Documents/GitHub/radcliffe")
 
 
 figpath <- "Analyses/soilmoisture/figures"
@@ -55,28 +55,36 @@ source("Analyses/source/get_ecosystem.R")
 #create function to plot soil mois vs temp effects and also show interaction at the same time
 ploteffs <- function(phenophase, modname){ 
   
-mod<-modname
-fit <- fixef(mod)
+  mod<-modname
+  fit <- fixef(mod)
 
-sp<-coef(mod,probs=c(0.1,0.9))$sp
-intercepts<-sp[,,1]
-moisef<-as.data.frame(sp[,,3])
-moisef$spnumbb<-rownames(moisef)
+  sp<-coef(mod,probs=c(0.1,0.9))$sp
+  intercepts<-sp[,,1]
+  moisef<-as.data.frame(sp[,,3])
+  moisef$spnumbb<-rownames(moisef)
 
-tempef<-as.data.frame(sp[,,2])
-tempef$spnumbb<-rownames(tempef)
+  tempef<-as.data.frame(sp[,,2])
+  tempef$spnumbb<-rownames(tempef)
 
-intef<-as.data.frame(sp[,,4])
-intef$spnumbb<-rownames(intef)
-alleff <- merge(moisef, tempef, by="spnumbb", suffixes=c("moist", "temp"))
-alleff <- merge(alleff, intef, by="spnumbb")
-colnames(alleff)[which(colnames(alleff)=="Estimatetemp")]<-"Temperature.Effect"
-colnames(alleff)[which(colnames(alleff)=="Estimatemoist")]<-"Soil.Moisture.Effect"
-colnames(alleff)[which(colnames(alleff)=="Estimate")]<-"Temp.SM.Interaction"
-ggplot(alleff, aes(x = Temperature.Effect, y = Soil.Moisture.Effect, color=Temp.SM.Interaction)) +
+  
+  alleff <- merge(moisef, tempef, by="spnumbb", suffixes=c("moist", "temp"))
+  if(dim(fit)[1]==4){intef<-as.data.frame(sp[,,4])
+    intef$spnumbb<-rownames(intef)
+    alleff <- merge(alleff, intef, by="spnumbb")
+  }
+  colnames(alleff)[which(colnames(alleff)=="Estimatetemp")]<-"Temperature.Effect"
+  colnames(alleff)[which(colnames(alleff)=="Estimatemoist")]<-"Soil.Moisture.Effect"
+  if(dim(fit)[1]==4){colnames(alleff)[which(colnames(alleff)=="Estimate")]<-"Temp.SM.Interaction"
+  ggplot(alleff, aes(x = Temperature.Effect, y = Soil.Moisture.Effect, color=Temp.SM.Interaction)) +
   ggtitle(paste(phenophase)) +
   geom_point(aes(size = Temp.SM.Interaction), alpha = 0.5) +
-  scale_colour_viridis_c()
+  scale_colour_viridis_c()}
+  if(dim(fit)[1]==3){colnames(alleff)[which(colnames(alleff)=="Estimate")]<-"Temp.SM.Interaction"
+  ggplot(alleff, aes(x = Temperature.Effect, y = Soil.Moisture.Effect)) +
+    ggtitle(paste(phenophase)) +
+    geom_point(aes(size = 12), alpha = 0.5) 
+    #scale_colour_viridis_c()
+  }
 }
 
 #First, budburst
@@ -100,6 +108,12 @@ pdf(file.path(figpath,figname), height=8,width=10)
 ploteffs("flowering",testm5cent.ffd.brms)
 dev.off()
 
+#budburst mod without interactions
+figname<- "bbnointmodeffplot.pdf"
+modfile<-load("Analyses/output/brms/testmcentnoint.brms.bb.Rda")
+pdf(file.path(figpath,figname), height=8,width=10)
+ploteffs("budburst (no int)",testm5cent.lod.brms)
+dev.off()
 
 
 ####################################
