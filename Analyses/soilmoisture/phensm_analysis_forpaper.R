@@ -25,7 +25,7 @@ rstan_options(disable_march_warning = TRUE)
 # Setting working directory. Add in your own path in an if statement for your file structure
 if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
 
-#setwd("~/Documents/GitHub/radcliffe")
+#setwd("C:/Users/ailene.ettinger/Documents/GitHub/radcliffe")
 
 #Goal: Fit a multi-model to phenology (budburst) data with temperature, soil moisture, and 
 #their interaction as explanatory variables.
@@ -44,7 +44,7 @@ use.centmod=FALSE
 
 #standard data wrangling to get expclim2 for climate analyses and expgdd for phenology analyses (with gddcrit)
 source("Analyses/source/standard_mergesandwrangling.R")
-#54352    51
+#54297    51
 
 #summarize climate data by plot (annual and seasonal temp, soil mois), 
 #merge in with expgdd file, and select out only sites with soil moisture and air temperature data, and remove NAs
