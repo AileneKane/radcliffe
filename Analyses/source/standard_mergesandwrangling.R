@@ -14,7 +14,7 @@ treats[which(is.na(treats$target)),]$target<-0
 treats[which(is.na(treats$preciptreat_amt)),]$preciptreat_amt<-100
 if(length(grep("lizzie", getwd())>0)) {
     expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), copy=TRUE) # Lizzie has to delete match="all" to make this run
-    }else expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"), match="all", copy=TRUE) 
+    }else expclim2<-left_join(expclim,treats, by=c("site", "block", "plot","temptreat","preciptreat"),copy=TRUE) 
 #dim(expclim2)#343734     27
 #head(expclim2)
 #unique(expclim2$site)#15
@@ -43,7 +43,7 @@ exppheno$plot<-as.character(exppheno$plot)
 
 if(length(grep("lizzie", getwd())>0)) { 
     expgdd<-inner_join(exppheno, expclim2, by=c("site", "block", "plot","year","doy"), copy=TRUE) # This one gives a warning
-}else expgdd<-inner_join(exppheno, expclim2, by=c("site", "block", "plot","year","doy"), match="all", copy=TRUE) 
+}else expgdd<-inner_join(exppheno, expclim2, by=c("site", "block", "plot","year","doy"), copy=TRUE, relationship="many-to-many") 
 #dim(expgdd)#63734    31
 #unique(expgdd$site)#14 sites
 #Need surftemp_mean (laready have airtempmean)
@@ -125,5 +125,7 @@ expgdd<-expgdd[expgdd$genus.species!="Viola.sp",]#
 
 #unique(expgdd$site[expgdd$genus=="Vaccinium"]) #"exp07" "exp08" "exp10"# three sites have this genus, nad one of them does not id down to species level- what to do?
 
-dim(expgdd[expgdd$site=="exp04",])#8663
-print(dim(expgdd))
+dim(expgdd[expgdd$site=="exp04",])#7880
+print(dim(expgdd))#54297 
+unique(expgdd$site)
+unique(expgdd$event)

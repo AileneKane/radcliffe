@@ -23,7 +23,7 @@ library(plotrix)
 rstan_options(disable_march_warning = TRUE)
 
 # Setting working directory. Add in your own path in an if statement for your file structure
-if(length(grep("ailene", getwd()))>0) {setwd("~/GitHub/radcliffe")}
+if(length(grep("ailene", getwd()))>0) {setwd("/Users/aileneettinger/Documents/GitHub/radcliffe")}
 
 #setwd("~/Documents/GitHub/radcliffe")
 
