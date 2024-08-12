@@ -206,14 +206,17 @@ To understand how soil moisture interacts with temperature to affect phenology, 
  \item Soil moisture may actually mediate plant phenology responses to warming and nitrogen addition, too \citep{liu2022}
  \end{enumerate}
 
-
- To do this, we also need to improve how we relate experiments to `real world'
- Moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments. Our study differs from some because we used field-measured soil moisture -- most studies use precipitation \citep[e.g.,][]{tao2020} or gridded moisture products \citep[e.g.,][]{tao2019}. The problems with these proxies are widely known (REF). However, our use of measured soil moisture also created a data limitation, as we were able to use only a subset of all the climate change experiments included in the ExPhen and E3 databases. So, we need more people to measure this! Such new data could help understand how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments.
-\par scaling up to ecosystem? recent papers on nutrient cycling
+\textbf {Implications and next steps}
+\begin{enumerate}
+\item To do this forecasting, we need to improve how we relate experiments to the `real world'. This includes moving beyond treatments levels to analyze plot-level microclimate- closer to how plants may be experiencing treatments. Our study differs from some because we used field-measured soil moisture -- most studies use precipitation \citep[e.g.,][]{tao2020} or gridded moisture products \citep[e.g.,][]{tao2019}. The problems with these proxies are widely known (REF). However, our use of measured soil moisture also created a data limitation, as we were able to use only a subset of all the climate change experiments included in the ExPhen and E3 databases. So, we need more people to measure this! Such new data could help understand how temperature is affected by soil moisture, and how soil moisture is affected by temperature treatments.
+\item  Scaling up to ecosystem? recent papers on nutrient cycling
 \begin{enumerate}
 \item Soil moisture as a key factor affecting nutrient cycling (N, CH4 uptake)\citep{liu2019soil}
 \item Soil moisture affects resorption of nitrogen and phosphorus during foliar senescence\citep{estiarte2022}.
 \item ``Species-specific biomass responses to the environment in the climate-corrected biomass were asynchronous, demonstrating the importance of species interactions in vegetation responses to global change. Biomass production was co-limited by climatic and soil drivers, with each species experiencing its own unique set of co-limitations.'' \citep{wilfahrt2021}
+\item Anytihng from Grephon we want to include?
+\end{enumerate}
+
 \end{enumerate}
 \section* {Conclusions}
 %\citep{tao2019} "However, effects of precipitation and soil moisture on BBD varied among [herbaceous] species [in Inner Mongolia grassland]." ... "correlations between BBD and SM were negative, suggesting that greater soil moisture would result in an earlier BBD." and it seems like mostly they did not find correlations otherwise; also their data are a gridded product
