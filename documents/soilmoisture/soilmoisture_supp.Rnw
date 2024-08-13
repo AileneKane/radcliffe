@@ -146,7 +146,7 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \end{equation}
 
 
-% \underline{Equations for soil moisture and temeprature models}: 
+% \underline{Equations for soil moisture and temperature models}: 
 % The equations below represent the models we used to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments treatments on soil moisture and temperature. Since the model structures for our analyses of moisture and temperature were identical, \textit{y} represents either moisture or temperature. 
 % 
 % \begin{equation}
