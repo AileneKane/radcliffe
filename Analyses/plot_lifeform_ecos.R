@@ -181,11 +181,6 @@ abline(v=0, lwd=1,col="black",lty=2)
 dev.off()
 
 
-
-mean(treet);mean(shrubt);mean(forbt);mean(grasst)
-mean(treem);mean(shrubm);mean(forbm);mean(grassm)
-
-
 #same figure but not using posterior samples- just species random effects, as I'm not sure that the above is working
 sp<-coef(mod,probs=c(0.1,0.9))$sp
 intercepts<-sp[,,1]
@@ -378,43 +373,73 @@ flmod<- load("Analyses/output/brms/testm5cent.brms.ff.Rda")
 mod<- testm5cent.ffd.brms
 fit <- fixef(mod)
 listofdraws <-as.data.frame(as.matrix(mod))
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="shrub"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+treem<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-matchExpression <- paste(flform$spnumfl[flform$form=="shrub"],",mois]", collapse = "|",sep="")
-shrubm<-as.matrix(listofdraws%>% select(matches(matchExpression)))
+#check: 
+#colnames(treem)
+#mois
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="shrub"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+shrubm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-matchExpression <- paste(flform$spnumfl[flform$form=="forb"],",mois]", collapse = "|",sep="")
-forbm<-as.matrix(listofdraws%>% select(matches(matchExpression)))
 
-matchExpression <- paste(flform$spnumfl[flform$form=="grass"],",mois]", collapse = "|",sep="")
-grassm<-as.matrix(listofdraws%>% select(matches(matchExpression)))
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="forb"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forbm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="grass"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grassm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
 #temp
-matchExpression <- paste(flform$spnumfl[flform$form=="shrub"],",temp]", collapse = "|",sep="")
-shrubt<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-mean(shrubt)
-quantile(shrubt,probs=c(0.1,.9))
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="shrub"],",temp]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+shrubt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-matchExpression <- paste(flform$spnumfl[flform$form=="forb"],",temp]", collapse = "|",sep="")
-forbt<-as.matrix(listofdraws%>% select(matches(matchExpression)))
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="forb"],",temp]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forbt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-matchExpression <- paste(flform$spnumfl[flform$form=="grass"],",temp]", collapse = "|",sep="")
-grasst<-as.matrix(listofdraws%>% select(matches(matchExpression)))
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="grass"],",temp]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grasst<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-pdf(file.path(figpath,figname), height=12,width=8)
-#quartz(height=10,width=4)
+#temp*mois interaction
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="shrub"],",temp:mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+shrubint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="forb"],",temp:mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forbint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",flform$spnumfl[flform$form=="grass"],",temp:mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grassint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+pdf(file.path(figpath,figname), height=4,width=12)
+#quartz(height=4,width=12)
 par(mfcol=c(3,2))
-hist(shrubt, main="Shrubs",xlim=c(-30,30),col=alpha("darkred",.5),xlab="Temp effects")
-hist(forbt, main="Herbs",xlim=c(-30,30),col=alpha("darkred",.5),xlab="Temp effects")
-hist(grasst, main="Grass",xlim=c(-30,30),col=alpha("darkred",.5),xlab="Temp effects")
-hist(shrubm, main="Shrubs",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effects")
-hist(forbm, main="Herbs",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effects")
-hist(grassm, main="Grass",xlim=c(-30,30),col=alpha("darkblue",.5),xlab="Mois effects")
+hist(forbt,main="Temp",xlim=c(-30,30),col=alpha("darkgreen",.4),xlab="Effect on budburst per SD")
+hist(grasst, xlim=c(-30,30),col=alpha("goldenrod",.5), add=TRUE)
+hist(shrubt, xlim=c(-30,30),col=alpha("darkblue",.5),add=TRUE)
+
+hist(forbm, main="Mois",xlim=c(-30,30),col=alpha("darkgreen",.4),xlab="Effect on budburst per SD")
+hist(grassm,col=alpha("goldenrod",.5),add=TRUE)
+hist(shrubm,col=alpha("darkblue",.5),add=TRUE)
+
+hist(forbint, main="Temp*Mois",xlim=c(-30,30),col=alpha("darkgreen",.4),xlab="Effect on budburst per SD")
+hist(shrubint, xlim=c(-25,25),col=alpha("darkblue",.5),add=TRUE)
+hist(grassint, xlim=c(-25,25),col=alpha("goldenrod",.5), add=TRUE)
+     
 dev.off()
 mean(shrubt);mean(forbt);mean(grasst)
 mean(shrubm);mean(forbm);mean(grassm)
 
 
-#Third,fruiting
+#Fourth,fruiting
 figname<-"hist.frform.pdf"
 
 frmod<- load("Analyses/output/brms/testm5cent.brms.frd.Rda")
