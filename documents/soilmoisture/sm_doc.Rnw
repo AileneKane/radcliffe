@@ -83,7 +83,7 @@
 \textbf{Author contributions}: All authors conceived of this manuscript, which began at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. AKE and EMW conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar, and wrote the manuscript. AKE compiled the datasets; AKE analyzed the data and created the figures.
 
 \textbf{Data Accessibility} 
-The data reported in this paper are from the MC3E and the new ExPhen databases, which are both available at KNB \citep{ettinger2018,ettinger2022}. %2202Nov14EMW -- I added that ExPhen is new, because often editors/reviewers look more favorably on papers presenting new data ... and this is on the cover page. 
+The data reported in this paper are from the MC3E and the new ExPhen databases, which are both available at KNB \citep{ettinger2018,ettinger2022}. 
 
 \textbf{Running title} Drier soils delay phenology
 
