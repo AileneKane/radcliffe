@@ -47,7 +47,12 @@ source("Analyses/source/get_lifeform.R")
 ##get ecosystem
 source("Analyses/source/get_ecosystem.R")
 
-#now as s density curve instead
+##functions to make the plots
+
+plot.lf<-function(mod,lifeform,)
+
+  
+#plot posterior density curves by life form
 
 figname<-"curvebbloflform.pdf"
 pdf(file.path(figpath,figname), height=12,width=18)
@@ -359,10 +364,79 @@ dev.off()
 #####################################
 ####### Ecosystem differences #######
 #####################################
-#start by using species random effects not posteriors
-lomod<- load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 mod<- testm5cent.lod.brms
 fit <- fixef(mod)
+
+listofdraws <-as.data.frame(as.matrix(mod))
+
+#moisture
+matchExpression <- paste("r_sp[",loecos$spnum[loecos$ecosystem=="forest"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forestm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",loecos$spnum[loecos$ecosystem=="grassland"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grasslandm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+#check: 
+#colnames(forestm)
+  
+  #temp
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="tree"],",temp]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  treet<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="shrub"],",temp]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  shrubt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  #mean(shrubt)
+  #quantile(shrubt,probs=c(0.1,.9))
+  
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="forb"],",temp]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  forbt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="grass"],",temp]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  grasst<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  #temp*mois interaction
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="tree"],",temp:mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  treeint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="shrub"],",temp:mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  shrubint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="forb"],",temp:mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  forbint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",loform$spnumlo[loform$form=="grass"],",temp:mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  grassint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  dta_tree <- density(treet, na.rm = TRUE)
+  dta_shrub <- density(shrubt, na.rm = TRUE)
+  dta_forb <- density(forbt, na.rm = TRUE)
+  dta_grass <- density(grasst, na.rm = TRUE)
+  
+  plot(dta_forb, col ="darkgreen", main = " ", 
+       xlim=c(-40,40),
+       ylim = c(0, max(dta_forb$y,dta_tree$y,dta_shrub$y,dta_grass$y)),
+       lwd=2,bty="l", xlab="Effect on leafout per SD",
+       cex.axis=1.5, cex.lab=1.5)
+  lines(dta_tree, col = "darkred",lwd=2)
+  lines(dta_shrub, col = "darkblue",lwd=2)
+  lines(dta_grass, col = "goldenrod",lwd=2)
+  #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+  abline(v=0, lwd=1,col="black",lty=2)
+  mtext("Leafout",side=2,line=6, cex=1.2)
+  
+  #legend("topright", c("Trees","Shrubs","Forbs","Grass"), lty = c(1,1), col = c("darkgreen","darkblue","darkred",'goldenrod'), lwd=2,bty="n")
+  
+
 #getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
 listofdraws <-as.data.frame(as.matrix(mod))
 matchExpression <- paste(loecos$spnum[loecos$ecosystem =="forest"],",mois]", collapse = "|",sep="")

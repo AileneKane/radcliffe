@@ -146,7 +146,7 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \end{equation}
 
 
-% \underline{Equations for soil moisture and temeprature models}: 
+% \underline{Equations for soil moisture and temperature models}: 
 % The equations below represent the models we used to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments treatments on soil moisture and temperature. Since the model structures for our analyses of moisture and temperature were identical, \textit{y} represents either moisture or temperature. 
 % 
 % \begin{equation}
@@ -194,8 +194,8 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \clearpage
 \section* {Supplemental Tables}
 
-% latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Aug 12 11:35:32 2024
+% latex table generated in R 4.4.1 by xtable 1.8-4 package
+% Tue Sep 24 09:42:57 2024
 \begin{table}[ht]
 \centering
 \caption{\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here. * denotes phenophases not included in this paper, because they were measured in fewer than three experiments.} 
@@ -226,8 +226,8 @@ exp12 & Kessler Farm Field Laboratory, OK, USA & Sherry et al. 2007 & 2003 & gra
 \end{table}%\end{footnotesize} 
 
 \clearpage
-% latex table generated in R 4.3.1 by xtable 1.8-4 package
-% Mon Aug 12 11:35:55 2024
+% latex table generated in R 4.4.1 by xtable 1.8-4 package
+% Tue Sep 24 09:43:13 2024
 \begin{table}[ht]
 \centering
 \caption{\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.} 
@@ -238,20 +238,20 @@ exp12 & Kessler Farm Field Laboratory, OK, USA & Sherry et al. 2007 & 2003 & gra
   \hline
  & mean & error & 25\% & 75\% & 5\% & 95\% & mean & error & Ngrp & mean & error & Ngrp & mean & error & Ngrp \\ 
   \hline
-BB$\mu_{\alpha}$ & 97.20 & 5.10 & 94.10 & 100.40 & 89.00 & 105.20 & 16.10 & 2.50 & 41 & 7.4 & 4.9 & 5 & 9.3 & 2.5 & 13 \\ 
-  BB$\mu_{temp}$ & -7.80 & 2.10 & -9.20 & -6.40 & -11.30 & -4.20 & 11.40 & 1.70 &  &  &  &  &  &  &  \\ 
+BB$\mu_{\alpha}$ & 97.20 & 5.10 & 94.00 & 100.40 & 88.60 & 105.20 & 16.00 & 2.40 & 41 & 7.3 & 5 & 5 & 9.3 & 2.4 & 13 \\ 
+  BB$\mu_{temp}$ & -7.90 & 2.10 & -9.20 & -6.50 & -11.30 & -4.50 & 11.40 & 1.60 &  &  &  &  &  &  &  \\ 
   BB$\mu_{mois}$ & -1.70 & 0.60 & -2.10 & -1.30 & -2.80 & -0.70 & 2.70 & 0.60 &  &  &  &  &  &  &  \\ 
   BB$\mu_{temp:mois}$ & 0.50 & 0.50 & 0.20 & 0.80 & -0.40 & 1.30 & 1.70 & 0.70 &  &  &  &  &  &  &  \\ 
    \hline
-LO$\mu_{\alpha}$ & 131.40 & 11.60 & 124.60 & 138.40 & 112.80 & 149.70 & 12.10 & 2.20 & 147 & 24.7 & 10.5 & 5 & 12.3 & 3.9 & 13 \\ 
-  LO$\mu_{temp}$ & -9.70 & 1.50 & -10.80 & -8.70 & -12.20 & -7.20 & 10.70 & 1.40 &  &  &  &  &  &  &  \\ 
-  LO$\mu_{mois}$ & -0.90 & 1.00 & -1.60 & -0.20 & -2.70 & 0.70 & 4.50 & 1.30 &  &  &  &  &  &  &  \\ 
-  LO$\mu_{temp:mois}$ & 0.00 & 0.70 & -0.50 & 0.50 & -1.20 & 1.20 & 5.10 & 0.70 &  &  &  &  &  &  &  \\ 
+LO$\mu_{\alpha}$ & 129.90 & 11.00 & 123.20 & 136.40 & 111.90 & 147.90 & 12.20 & 2.10 & 137 & 24.3 & 10.4 & 5 & 12.5 & 4 & 13 \\ 
+  LO$\mu_{temp}$ & -10.30 & 1.40 & -11.30 & -9.40 & -12.70 & -7.90 & 10.30 & 1.30 &  &  &  &  &  &  &  \\ 
+  LO$\mu_{mois}$ & -0.40 & 0.90 & -1.00 & 0.20 & -2.00 & 1.00 & 3.80 & 1.10 &  &  &  &  &  &  &  \\ 
+  LO$\mu_{temp:mois}$ & 0.50 & 0.70 & 0.10 & 1.00 & -0.60 & 1.60 & 4.60 & 0.60 &  &  &  &  &  &  &  \\ 
    \hline
-FL$\mu_{\alpha}$ & 165.80 & 9.10 & 160.60 & 171.10 & 151.40 & 179.60 & 48.40 & 3.40 & 127 & 11.8 & 10.1 & 5 & 8.1 & 4.6 & 8 \\ 
-  FL$\mu_{temp}$ & -7.90 & 1.30 & -8.80 & -7.00 & -10.10 & -5.70 & 5.90 & 1.20 &  &  &  &  &  &  &  \\ 
-  FL$\mu_{mois}$ & -1.20 & 0.90 & -1.80 & -0.60 & -2.70 & 0.40 & 4.30 & 1.10 &  &  &  &  &  &  &  \\ 
-  FL$\mu_{temp:mois}$ & -1.20 & 0.70 & -1.70 & -0.70 & -2.30 & 0.00 & 2.40 & 1.00 &  &  &  &  &  &  &  \\ 
+FL$\mu_{\alpha}$ & 167.00 & 9.00 & 161.80 & 172.00 & 153.00 & 180.70 & 48.20 & 3.50 & 124 & 11.6 & 10 & 5 & 8 & 4.6 & 8 \\ 
+  FL$\mu_{temp}$ & -7.90 & 1.30 & -8.80 & -7.10 & -10.20 & -5.80 & 6.20 & 1.20 &  &  &  &  &  &  &  \\ 
+  FL$\mu_{mois}$ & -1.30 & 0.90 & -1.90 & -0.70 & -2.80 & 0.20 & 3.80 & 1.10 &  &  &  &  &  &  &  \\ 
+  FL$\mu_{temp:mois}$ & -1.10 & 0.70 & -1.60 & -0.60 & -2.30 & 0.10 & 2.70 & 0.90 &  &  &  &  &  &  &  \\ 
    \hline
 \end{tabular}
 \endgroup
