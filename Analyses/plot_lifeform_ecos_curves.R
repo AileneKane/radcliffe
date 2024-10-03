@@ -1,7 +1,7 @@
 ## Started April 2021 ##
 ## By Ailene ##
 
-## plot species estimates by lifeform
+## plot species estimates by lifeform and ecosystem
 
 ############################################
 # housekeeping
@@ -399,11 +399,12 @@ matchExpression <- paste("r_sp[",loecos$spnum[loecos$ecosystem=="grassland"],",t
 cols2use<-intersect(colnames(listofdraws),matchExpression)
 grasslandint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
+figname<-"curvesloflecos.pdf"
 
-figname<-"curvesloecos.pdf"
+#figname<-"curvesloecos.pdf"
 
-pdf(file.path(figpath,figname), height=4,width=18)
-par(mfcol=c(1,3))
+pdf(file.path(figpath,figname), height=8,width=18)
+par(mfcol=c(2,3))
 
   dta_forest <- density(forestt, na.rm = TRUE)
   dta_grassland <- density(grasslandt, na.rm = TRUE)
@@ -451,9 +452,94 @@ par(mfcol=c(1,3))
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
   
-dev.off()  
+#dev.off()  
+ 
+#add flowering
+#Flowering
+  
+  flmod<- load("Analyses/output/brms/testm5cent.brms.ff.Rda")
+  mod<- testm5cent.ffd.brms
+  fit <- fixef(mod)
+  listofdraws <-as.data.frame(as.matrix(mod))
   
   
+  #moisture
+  matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="forest"],",mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  forestm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="grassland"],",mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  grasslandm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  #check: 
+  #colnames(forestm)
+  
+  #temperature
+  matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="forest"],",temp]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  forestt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+  matchExpression <- paste("r_sp[",ffcos$spnum[ffecos$ecosystem=="grassland"],",temp]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  grasslandt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  #temp*mois interaction
+  matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="forest"],",temp:mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  forestint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="grassland"],",temp:mois]", collapse = NULL,sep="")
+  cols2use<-intersect(colnames(listofdraws),matchExpression)
+  grasslandint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+  
+  dta_forest <- density(forestt, na.rm = TRUE)
+  dta_grassland <- density(grasslandt, na.rm = TRUE)
+  
+  plot(dta_forest, col ="forestgreen", main = "Temperature", 
+       xlim=c(-40,40),
+       ylim = c(0, max(dta_forest$y,dta_grassland$y)),
+       lwd=3,bty="l", xlab="Effect on flowering per SD",
+       cex.axis=1.5, cex.lab=1.5)
+  lines(dta_grassland, col = "goldenrod",lwd=3)
+  #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+  abline(v=0, lwd=1,col="black",lty=2)
+  mtext("Flowering",side=2,line=6, cex=1.2)
+  
+  #legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",'goldenrod'), lwd=2,bty="n")
+  
+  dta_forest <- density(forestt, na.rm = TRUE)
+  dta_grassland <- density(grasslandt, na.rm = TRUE)
+  
+  #moisture
+  dta_forestm <- density(forestm, na.rm = TRUE)
+  dta_grasslandm <- density(grasslandm, na.rm = TRUE)
+  
+  plot(dta_forestm, col ="forestgreen", main = "Moisture", 
+       xlim=c(-40,40),
+       ylim = c(0, max(dta_forestm$y,dta_grasslandm$y)),
+       lwd=3,bty="l", xlab="Effect on flowering per SD",
+       cex.axis=1.5, cex.lab=1.5)
+  lines(dta_grasslandm, col = "goldenrod",lwd=3)
+  #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+  abline(v=0, lwd=1,col="black",lty=2)
+  mtext("Flowering",side=2,line=6, cex=1.2)
+  
+  #interaction
+  dta_forestint <- density(forestint, na.rm = TRUE)
+  dta_grasslandint <- density(grasslandint, na.rm = TRUE)
+  
+  plot(dta_forestint, col ="forestgreen", main = "Temperature*Moisture", 
+       xlim=c(-40,40),
+       ylim = c(0, max(dta_forestint$y,dta_grasslandint$y)),
+       lwd=3,bty="l", xlab="Effect on flowering per SD",
+       cex.axis=1.5, cex.lab=1.5)
+  lines(dta_grasslandint, col = "goldenrod",lwd=3)
+  #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+  abline(v=0, lwd=1,col="black",lty=2)
+  mtext("Flowering",side=2,line=6, cex=1.2)
+  
+  dev.off()
   
 ###OLD CODE_ CAN PROBABLY DELETE?
 #getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
