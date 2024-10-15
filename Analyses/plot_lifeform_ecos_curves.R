@@ -480,7 +480,7 @@ par(mfcol=c(2,3))
   cols2use<-intersect(colnames(listofdraws),matchExpression)
   forestt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-  matchExpression <- paste("r_sp[",ffcos$spnum[ffecos$ecosystem=="grassland"],",temp]", collapse = NULL,sep="")
+  matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="grassland"],",temp]", collapse = NULL,sep="")
   cols2use<-intersect(colnames(listofdraws),matchExpression)
   grasslandt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
   

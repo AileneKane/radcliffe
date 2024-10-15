@@ -198,6 +198,8 @@ unique(datalist.bbd.cent$site)# "exp01" "exp03" "exp04" "exp07" "exp10",1 3 4 5 
 #Are individuals in the studies in our data set small? large? young/old?
 unique(expgdd_subs$site2[expgdd_subs$event=="bbd"])
 unique(expgdd_subs$site2[expgdd_subs$event=="lod"])
+unique(expgdd_subs$site2[expgdd_subs$event=="ffd"])
+
 #how many species for exp07 and exp09
 length(unique(expgdd_subs$sp.name[expgdd_subs$site2=="exp07"]))
 
@@ -228,32 +230,30 @@ testm5.brms <- brm(y ~ temp * mois +#fixed effects
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
 save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
+#
 
 #uncentered lo mod
-testm5.brms <- brm(y ~ temp * mois +#fixed effects
+testm5.lod.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.lod,
                    chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
-save(testm5.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
+save(testm5.lod.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
 # stancode(testm5.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
 # summary(testm5.brms)
 # stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
-#uncentered lo mod
-testm5.brms <- brm(y ~ temp * mois +#fixed effects
+#uncentered ffd mod
+testm5.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.ffd,
                    chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
-save(testm5.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
+save(testm5.ffd.brms, file="Analyses/output/brms/testm5.brms.ffd.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
-#
-save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
-round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
 
 #############################
 ####     GDD models     #####
