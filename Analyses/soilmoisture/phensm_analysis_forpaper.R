@@ -68,7 +68,7 @@ source("Analyses/source/stanprep_phenmods.R")
 ##################
 
 mean(datalist.bbd$mois)
-#try the model with no interactgions
+#try the centered model with no interactgions
 testmcent.brms <- brm(y ~ temp + mois +#fixed effects
                          (temp + mois|sp) + (1|site/year), #random effects
                        data=datalist.bbd.cent,
@@ -76,9 +76,9 @@ testmcent.brms <- brm(y ~ temp + mois +#fixed effects
                        control = list(max_treedepth = 15,adapt_delta = 0.999))
 save(testmcent.brms, file="Analyses/output/brms/testmcentnoint.brms.bb.Rda")
 round(fixef(testmcent.brms, probs=c(.90,0.10)), digits=2)
-#needs more iteratuons...but from estinates temp effect is sinilar, mois effect is a little weaker but similar
+#needs more iterations...but from estinates temp effect is similar, mois effect is a little weaker but similar
 
-#try the model with brms
+#try the centered model with brms
 testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd.cent,
@@ -230,7 +230,8 @@ testm5.brms <- brm(y ~ temp * mois +#fixed effects
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
 save(testm5.brms, file="Analyses/output/brms/testm5.brms.bb.Rda")
 round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
-#
+#load("Analyses/output/brms/testm5.brms.bb.Rda")
+
 
 #uncentered lo mod
 testm5.lod.brms <- brm(y ~ temp * mois +#fixed effects
@@ -239,7 +240,7 @@ testm5.lod.brms <- brm(y ~ temp * mois +#fixed effects
                    chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5.lod.brms, file="Analyses/output/brms/testm5.brms.lo.Rda")
-round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
+round(fixef(testm5.lod.brms, probs=c(.90,0.10)), digits=2)
 
 # stancode(testm5.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
 # summary(testm5.brms)
@@ -252,7 +253,7 @@ testm5.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                    chains = 4,iter = 4000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5.ffd.brms, file="Analyses/output/brms/testm5.brms.ffd.Rda")
-round(fixef(testm5.brms, probs=c(.90,0.10)), digits=2)
+round(fixef(testm5.ffd.brms, probs=c(.90,0.10)), digits=2)
 
 
 #############################
