@@ -1,11 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PREAMBLE
 \documentclass{article}
 
-%Required: You must have these
-
 
 \usepackage{authblk}
-\documentclass{article}
 \usepackage{Sweave}
 \usepackage{graphicx}
 \usepackage{tabularx}
@@ -17,7 +14,6 @@
 \usepackage{amsmath}
 \usepackage{longtable}
 \usepackage{xr}
-\usepackage[small]{caption}
 \renewcommand{\baselinestretch}{1.8}
 %\usepackage{lineno}
 %\usepackage[backend=bibtex]{biblatex}
@@ -53,7 +49,7 @@
 \fancyhead[LO]{Soil moisture and plant phenology}
 \fancyhead[RO]{2018}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END PREAMBLE THAT IS THE SAME FOR ALL EXAMPLES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%E
 
 %Start of the document
 \begin{document}
@@ -61,62 +57,15 @@
 % \SweaveOpts{concordance=TRUE}
 \bibliographystyle{amnat.bst}
 
-\title{Supplemental Materials for \emph{Drier soils delay plant phenology across temperate forest and grassland systems}}
-\begin{singlespace}
+\title{Supplemental Materials for \emph{Drier soils delay plant phenology across climate change experiments in temperate forest and grassland systems}}
 
-\author[1,2,a]{A.K. Ettinger}
-\author[3,b]{J.S. Dukes}
-\author[4,c]{M.R. Johnston}
-\author[5,d]{C.R. Rollinson}
-\author[1,4,6,e]{E.M. Wolkovich}
-
-\affil[1]{Arnold Arboretum of Harvard University, Boston, Massachusetts 02131, USA}
-
-\affil[2]{The Nature Conservancy,74 Wall Street, Seattle, Washington, 98121}
-
-
-\affil[3]{Department of Forestry \& Natural Resources and Department of Biological Sciences, Purdue University, West Lafayette, Indiana 47907, USA}
-
-\affil[4]{Department of Organismic \& Evolutionary Biology, Harvard University, Cambridge, Massachusetts 02138, USA}
-
-\affil[5]{The Morton Arboretum, Lisle, Illinois 60532, USA}
-
-\affil[6]{Forest \& Conservation Sciences, Faculty of Forestry, University of British Columbia, Vancouver, BC, Canada}
-
-\affil[a]{Corresponding author; email:ailene.ettinger@tnc.org; phone: 781-296-4821; mailing address: 74 Wall Street, Seattle, Washington, 98121 USA }
-
-%\affil[d]{jsdukes@purdue.edu}
-
-%\affil[f]{mjohnston@g.harvard.edu}
-
-%\affil[h]{crollinson@mortonarb.org}
-
-%\affil[j]{e.wolkovich@ubc.ca}
-
-\date{\today}
-\maketitle %put the fancy title on
-%\tableofcontents %add a table of contents
-
-%\textbf{Statement of authorship} 
-%All authors conceived of this manuscript, which began at a Radcliffe Exploratory Seminar in 2016, and all authors contributed to manuscript revisions. AKE and EMW conceived of the idea for the literature review, database compilation, and related Radcliffe Exploratory Seminar. AKE compiled the datasets; AKE analyzed the data and created the figures; AKE wrote the manuscript.
-
-%\textbf{Data Accessibility} %Data accessibility statement: The statement must confirm that, should the manuscript be accepted, the data supporting the results will be archived in an appropriate public repository such as Dryad or Figshare and the data DOI will be included at the end of the article.
-%The MC3E and ExPhen databases are available at KNB \citep{ettinger2018}, along with all R code from the analyses included in this paper. (Currently, metadata are published there; the full databases and R code are available to reviewers on github.) 
-
-%\textbf{Running title} 
-%\textbf{Key words} global warming, warming experiment, microclimate, phenology, direct and indirect effects, active-warming, target temperature
-\end{singlespace}
-
-
-\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\linenumbers
 
 \section* {Supplemental Methods}
-\underline{Equation for phenology models}: 
-Response variable (\textit{y}) is day of year of the phenological event (budburst, leafout, or flowering). Predictors are measured air temperature (\textit{T}) and soil moisture(\textit{SM}). Random effects are species (sp, random slopes and intercepts), and site and year nested within site (random intercepts). %2202Nov14EMW -- add $i$ represents each observation 
+\par The hierarchical linear phenology models we fit included response variable (\textit{y}), which represents day of year of the phenological event (budburst, leafout, or flowering). Predictors were measured air temperature (\textit{T}) and soil moisture(\textit{SM}), which were standardized by substracting the mean and divding by the standard deviation. Random effects are species (sp, random slopes and intercepts), and site and year nested within site (random intercepts only); $i$ represents each observation. 
 
-%\begin{equation}
+\begin{align*}
 \begin{equation}
 y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} + \beta_{temp:mois_{sp[i]}}+\epsilon_{i}\label{eq:8}
 \end{equation}
@@ -144,7 +93,7 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \begin{equation}
 \beta_{temp:mois_{sp}} \sim N(\mu_{\beta_{temp:mois}}, \sigma_{\beta_{temp:mois}})
 \end{equation}
-
+\end{align*}
 
 % \underline{Equations for soil moisture and temperature models}: 
 % The equations below represent the models we used to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments treatments on soil moisture and temperature. Since the model structures for our analyses of moisture and temperature were identical, \textit{y} represents either moisture or temperature. 
@@ -286,13 +235,6 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
  \includegraphics[width=1.5\textwidth]{../../Analyses/maps/soilms_experiments_map.png}}
  \caption{\textbf{Map of locations of experiments} included in this meta-analysis .Add phenophases to this, perhaps, by filling shapes with colors associated with phenophase} 
  \label{fig:map}
- \end{figure}
-
- \begin{figure}[h]
-\centering
- \includegraphics{../../Analyses/soilmoisture/figures/histbbloform_spef.pdf}
- \caption{\textbf{Effects of temperature, soil moisture, and their interaction do not differ strongly across life forms} for leafout (top) and budburst (bottom) models. Histograms show species-level estimated effects for temeprature, soil, and their interactions across four life forms (trees, shrubs, forms, and grasses).}
- \label{fig:forms}
  \end{figure}
 
  \begin{figure}[h]

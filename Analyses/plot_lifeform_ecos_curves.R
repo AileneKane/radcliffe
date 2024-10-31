@@ -404,7 +404,7 @@ figname<-"curvesloflecos.pdf"
 #figname<-"curvesloecos.pdf"
 
 pdf(file.path(figpath,figname), height=8,width=18)
-par(mfcol=c(2,3))
+par(mfrow=c(2,3))
 
   dta_forest <- density(forestt, na.rm = TRUE)
   dta_grassland <- density(grasslandt, na.rm = TRUE)
