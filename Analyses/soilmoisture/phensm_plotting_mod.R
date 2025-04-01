@@ -312,6 +312,10 @@ legend(leg1a, leg2, splegfl$sp.name[(as.integer(length(splegfl$sp.name)/2)+2):le
 
 dev.off()
 
+###same as above but make plot with only the most common species 
+
+
+
 
 ###Plot intercepts vs slopes of species effects
 #start with bbmod
@@ -873,5 +877,3 @@ plot(fullbb_loint$Est,fullbb_loint$Est.bb, xlab = "Int Effects (Full dataset)",y
 lines(fullbb_loint$Est,fullbb_loint$Est)
 dev.off()
 
-  
-)
