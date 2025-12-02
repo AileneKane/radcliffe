@@ -210,7 +210,7 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
  \begin{figure}[h]
 \centering
   \noindent\makebox[\textwidth]{%
- \includegraphics[width=1.5\textwidth]{../../Analyses/maps/expsites_soilmois2_edited.pdf}}
+ \includegraphics[width=1.1\textwidth]{../../Analyses/maps/expsites_soilmois2_edited.pdf}}
  \caption{\textbf{Map of locations of experiments} included in this meta-analysis. Circles represent experimental studies in forest ecosystems; diamonds are those in grasslands. See Table S1 for study details.} 
  \label{fig:map}
  \end{figure}
