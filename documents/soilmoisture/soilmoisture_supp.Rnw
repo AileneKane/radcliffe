@@ -15,6 +15,12 @@
 \usepackage{longtable}
 \usepackage{xr}
 \renewcommand{\baselinestretch}{1.8}
+
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+
+
 %\usepackage{lineno}
 %\usepackage[backend=bibtex]{biblatex}
 %Strongly recommended
@@ -63,9 +69,9 @@
 %\linenumbers
 
 \section* {Supplemental Methods}
-\par The hierarchical linear phenology models we fit included response variable (\textit{y}), which represents day of year of the phenological event (budburst, leafout, or flowering). Predictors were measured air temperature (\textit{T}) and soil moisture(\textit{SM}), which were standardized by substracting the mean and divding by the standard deviation. Random effects are species (sp, random slopes and intercepts), and site and year nested within site (random intercepts only); $i$ represents each observation. 
+\par The hierarchical linear phenology models we fit included response variable (\textit{y}), which represents day of year of the phenological event (budburst, leafout, or flowering). Predictors were measured air temperature (\textit{temp}) and soil moisture(\textit{mois}), which were standardized by substracting the mean and divding by the standard deviation. Random effects are species (\textit{sp}, random slopes and intercepts), and site and year nested within site (random intercepts only); $i$ represents each observation. 
 
-\begin{align*}
+%\begin{align*}
 \begin{equation}
 y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} + \beta_{temp:mois_{sp[i]}}+\epsilon_{i}\label{eq:8}
 \end{equation}
@@ -93,7 +99,7 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \begin{equation}
 \beta_{temp:mois_{sp}} \sim N(\mu_{\beta_{temp:mois}}, \sigma_{\beta_{temp:mois}})
 \end{equation}
-\end{align*}
+%\end{align*}
 
 % \underline{Equations for soil moisture and temperature models}: 
 % The equations below represent the models we used to understand effects of experimental temperature (\textit{eT}) and experimental preciptation (\textit{eP}) treatments treatments on soil moisture and temperature. Since the model structures for our analyses of moisture and temperature were identical, \textit{y} represents either moisture or temperature. 
@@ -133,12 +139,12 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 
 \bibliography{../../Bibliography/mylibrary.bib}
 
-\section*{References to include}
-\begin{itemize}
-\item Later flowering is  associated with low precipitation, at least in part (Crimmins et al 2010)
-\item Ganjurjav et al 2020
-\item Cabon 2020
-\end{itemize}
+%\section*{Other references we could include}
+%\begin{itemize}
+%\item Later flowering is  associated with low precipitation, at least in part (Crimmins et al 2010)
+%\item Ganjurjav et al 2020
+%\item Cabon 2020
+%\end{itemize}
 
 \clearpage
 \section* {Supplemental Tables}
@@ -197,43 +203,15 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
 @
 
 %comparison of control plots vs all plots
+\clearpage
 
 \section*{Supplemental Figures}
-% \clearpage
-%  \begin{figure}[h]
-% \centering
-%  \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
-%  \caption{\textbf{Locations of experiments included in the meta-analysis.}} 
-%  \label{fig:soilmois}
-%  \end{figure}
 
-% \clearpage
-%  \begin{figure}[h]
-% \centering
-%  \includegraphics{../../Analyses/soilmoisture/figures/smtempvstargtemppreciptreat_lineslmerALL.pdf}
-%  \caption{\textbf{Effects of target temperature and precipitation treatments on soil moisture.}} 
-%  \label{fig:soilmois}
-%  \end{figure}
-% 
-
-% \begin{figure}[h]
-% \centering
-%  \includegraphics{../../Analyses/soilmoisture/figures/soilmoishist_mn.pdf}
-%  \caption{\textbf{Observed daily soil moisture in all plots verus control plots.}} 
-%  \label{fig:sm}
-%  \end{figure}
-% 
-% \begin{figure}[h]
-% \centering
-%  \includegraphics{../../Analyses/soilmoisture/figures/m5bffrdsen.pdf}
-%  \caption{\textbf{Model coefficients from fruiting and senescence models (with centered predictors).}} 
-%  \label{fig:ff}
-%  \end{figure}
  \begin{figure}[h]
 \centering
   \noindent\makebox[\textwidth]{%
- \includegraphics[width=1.5\textwidth]{../../Analyses/maps/soilms_experiments_map.png}}
- \caption{\textbf{Map of locations of experiments} included in this meta-analysis .Add phenophases to this, perhaps, by filling shapes with colors associated with phenophase} 
+ \includegraphics[width=1.5\textwidth]{../../Analyses/maps/expsites_soilmois2_edited.pdf}}
+ \caption{\textbf{Map of locations of experiments} included in this meta-analysis. Circles represent experimental studies in forest ecosystems; diamonds are those in grasslands. See Table S1 for study details.} 
  \label{fig:map}
  \end{figure}
 
@@ -244,12 +222,14 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
  \label{fig:forms}
  \end{figure}
  
- Questions for co-authors:
- \begin{enumerate}
- \item Life forms vs ecosystems figures: Life forms plots histograms of speceis-level effects whereas ecosystems plots all posteriores (i.e. across 8000 samples)- what's your preference?
- \item Should I make plots of the distribution of soil moisture and temperature by site?
-
- \end{enumerate}
+ 
+ \begin{figure}[h]
+\centering
+ \includegraphics{../../Analyses/soilmoisture/figures/m5_bbdlofl_edited.pdf}
+ \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors)} for all species included in our models.}
+ \label{fig:forms}
+ \end{figure}
+ 
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

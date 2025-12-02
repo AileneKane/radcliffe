@@ -89,9 +89,9 @@ tempforecast.raw<-seq(0,5, by=0.5)#enter in the amount of warming (in degrees C)
 
 smforecast<-seq(-2,2, by=0.5)
 drysm<- -0.10#proportion change
-dry2sm<- -1
+dry2sm<- -.50
 wetsm<- 0.10
-wet2sm<- 1
+wet2sm<- .50
 #range(expgdd_bbd$soilmois_janmar)#0.1020346 0.3879270
 #mean(expgdd_bbd$soilmois_janmar)#0.2146834
 #so 10% reduction in soil moisture would be 
@@ -262,9 +262,10 @@ unique(expgdd_bbd$site[expgdd_bbd$genus.species==135])#3,4
 
 #spnum<-splegbb$spnumbb[25:36]
 #spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
-figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],sitenum,"degwarm.pdf", sep="_")
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],sitenum,"degwarm.10percsm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 12, height = 4)
 #quartz()
+#windows()
 par(mar=c(5,6,3,0),mfrow=c(1,4))
 ylim<-c(0,160)
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming (",degree,"C)")), ylim=ylim,
@@ -272,12 +273,12 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming
      cex.main=1.2,cex.lab=1.2, cex.axis=1.2)
 #Add shading around line for credible intervals
 
-for(i in c(3,5,7)){
+for(i in c(3,4,6)){
   polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.90per[,i-1]), predictsbb.10per[,i-1]), col = alpha(cols[i-2], 0.2), border = NA)
 }
 #i=3
 #i=5
-for(i in c(3,5,7)){
+for(i in c(3,4,6)){
   lines(predictsbb$amt.warming, predictsbb[,i-1], 
         col=cols[i-2], lwd=2)
 }
@@ -296,7 +297,7 @@ mtext("A)", side=3, line =1,adj=-.3)
 #         col=cols[i-2], lwd=1, lty=2)
 # }
 legend("bottomleft",
-       legend=c("Warming only","-100% Drier soil","100% Wetter soil"),
+       legend=c("Warming only","-10% Drier soil","10% Wetter soil"),
        lty=1,lwd=2,col=c(cols[1],cols[3],cols[5]),bty="n", cex=1.2)
 let<-c("B)","C)","D)")
 for(s in 1:length(spnum)){
@@ -331,11 +332,11 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming
 
 #Add shading around line for credible intervals
 
-for(j in c(3,5,7)){
+for(j in c(3,4,6)){
   polygon(c(rev(predictsbb$amt.warming), predictsbb$amt.warming), c(rev(predictsbb.90per[,j-1]), predictsbb.10per[,j-1]), col = alpha(cols[j-2], 0.2), border = NA)
 }
 
-for(j in c(3,5,7)){
+for(j in c(3,4,6)){
   lines(predictsbb$amt.warming, predictsbb[,j-1], 
         col=cols[j-2], lwd=2)
 }
@@ -432,7 +433,7 @@ axis(side=1,at=c(0,1,2,3,4,5), labels=c(0,1,2,3,4,5))
 #   lines(predicts.75per$warming, predicts.75per[,i-1], 
 #         col=cols[i-2], lwd=1, lty=2)
 # }
-legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
+legend(3,120,legend=c("Warming only","-10% Drier","-50% Drier","+10% Wetter","+50% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
 dev.off()
 
 
@@ -609,6 +610,3 @@ for(i in use){
 legend(.3,140,legend=round(c(cold2temp,temp,warm2temp), digits=0),lty=1,lwd=2,col=cols[use],bty="n", cex=0.9)
 mtext("Mean temp (C)", side=3,line=-3,adj)
 dev.off()
-
-
-
