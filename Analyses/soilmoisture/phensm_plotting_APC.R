@@ -154,7 +154,7 @@ xlim = c(range(tempforecast.raw))
 ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
 
 
-figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),"degwarm.pdf", sep="_")
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),"degwarm",wetsm, wet2sm, "percsm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 9, height = 6)
 
 #pdf(paste(figpath,"/tempforecast",min(tempforecast),"-",max(tempforecast),"_deg_",lat,"_",long,".pdf",sep=""))
@@ -188,7 +188,7 @@ plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab="Amount of warming (C)", ylim=ylim,
   #   lines(predicts.75per$warming, predicts.75per[,i-1], 
   #         col=cols[i-2], lwd=1, lty=2)
   # }
-legend(3,120,legend=c("Warming only","-10% Drier","-100% Drier","+10% Wetter","100% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
+legend(xlim[2]-1,ylim[2]+2,legend=c("Warming only","-10% Drier","-50% Drier","+10% Wetter","+50% Wetter"),lty=1,lwd=2,col=cols,bty="n", cex=0.9)
 dev.off()
 
 #Make version of figure with main effects and 3 species, and accounting for site effects too
@@ -262,12 +262,14 @@ unique(expgdd_bbd$site[expgdd_bbd$genus.species==135])#3,4
 
 #spnum<-splegbb$spnumbb[25:36]
 #spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
-figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],sitenum,"degwarm.10percsm.pdf", sep="_")
+figname<-paste("tempforecast","bb",min(tempforecast.raw),max(tempforecast.raw),spnum[1],spnum[2],spnum[3],sitenum,"degwarm",wet2sm, "percsm.pdf", sep="_")
 pdf(file.path(figpath,figname), width = 12, height = 4)
 #quartz()
 #windows()
 par(mar=c(5,6,3,0),mfrow=c(1,4))
-ylim<-c(0,160)
+#xlim = c(range(tempforecast.raw))
+ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
+#ylim<-c(0,160)
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming (",degree,"C)")), ylim=ylim,
      ylab="Budburst Day (DOY)", bty="l", main="Across species", 
      cex.main=1.2,cex.lab=1.2, cex.axis=1.2)
@@ -305,7 +307,7 @@ for (i in 1:length(tempforecast.raw)){
   temp<-sitetemp
   warmtemp <-tempforecast.raw[i]
   sm <-  sitemois
-  drysm<-drysm
+  drysm<-dry2sm
   bbposteriors <- getest.bb.sp(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm,wet2sm,spnum[s],sitenum)
   meanz <- unlist(lapply(bbposteriors, mean))
   quantz <- lapply(bbposteriors, function(x) quantile(x,  c(0.10, 0.5, 0.90)))
@@ -323,8 +325,8 @@ predictsbb.10per<-predictsbb.10per[,-2]
 predictsbb.90per<-predicts.90per
 predictsbb.90per<-predictsbb.90per[,-2]
 xlim = c(range(tempforecast.raw))
-#ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
-ylim<-c(0,160)
+ylim = c(min(round(predictsbb.10per[,-1], digits=0)), max(round(predictsbb.90per[,-1], digits=0)))
+#ylim<-c(0,160)
 
 plot(x=NULL,y=NULL, xlim=xlim, xaxt="n",xlab=expression(paste("Amount of warming (",degree,"C)")), ylim=ylim,
      ylab="Budburst Day (DOY)", main=paste(spname[s],sep=","), bty="l", 

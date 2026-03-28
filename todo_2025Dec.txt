@@ -1,0 +1,11 @@
+#figure showing uncertainty propagated from HArold
+photo from lizzie
+
+#bayesian workflow paper- special issue coming out in january
+- this is happening converstion shouldn't fall behind
+
+Make sure to comment on books that lizzie listed
+#Ecology forecasting by dietze
+#hobbs and hooten- look at and see if we want to 
+#bayesian data analysis updated for stan
+#
