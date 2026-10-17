@@ -113,6 +113,7 @@ plot(dta_tree, col ="darkred", main = "Temperature",
 lines(dta_shrub, col = "darkblue",lwd=2)
 #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
+mtext("A)",side=3,line=1, cex=1.2, adj=0)
 
 legend("topright", c("Trees","Shrubs","Forbs","Grass"), 
        lty = c(1,1), col = c("darkred","darkblue","darkgreen",'goldenrod'),
@@ -130,6 +131,7 @@ plot(dta_treem, col ="darkred", main = "Moisture",
 lines(dta_shrubm, col = "darkblue",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
+mtext("B)",side=3,line=1, cex=1.2, adj=0)
 
 dta_treeint <- density(treeint, na.rm = TRUE)
 dta_shrubint <- density(shrubint, na.rm = TRUE)
@@ -144,6 +146,7 @@ lines(dta_shrubint, col = "darkblue",lwd=2)
 abline(v=0, lwd=1,col="black",lty=2)
 
 #dev.off()
+mtext("C)",side=3,line=1, cex=1.2, adj=0)
 
 
 
@@ -225,6 +228,7 @@ lines(dta_grass, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
 mtext("Leafout",side=2,line=6, cex=1.2)
+mtext("D)",side=3,line=1, cex=1.2, adj=0)
 
 #legend("topright", c("Trees","Shrubs","Forbs","Grass"), lty = c(1,1), col = c("darkgreen","darkblue","darkred",'goldenrod'), lwd=2,bty="n")
 
@@ -243,6 +247,7 @@ lines(dta_shrubm, col = "darkblue",lwd=2)
 lines(dta_grassm, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
+mtext("E)",side=3,line=1, cex=1.2, adj=0)
 
 dta_treeint <- density(treeint, na.rm = TRUE)
 dta_shrubint <- density(shrubint, na.rm = TRUE)
@@ -259,6 +264,8 @@ lines(dta_shrubint, col = "darkblue",lwd=2)
 lines(dta_grassint, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
+mtext("F)",side=3,line=1, cex=1.2, adj=0)
+
 #dev.off()
 
 #Flowering
@@ -327,6 +334,7 @@ lines(dta_shrub, col = "darkblue",lwd=2)
 #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
 mtext("Flowering",side=2,line=6, cex=1.2)
+mtext("H)",side=3,line=1, cex=1.2, adj=0)
 
 #legend("topright", c("Trees","Shrubs","Forbs","Grass"), lty = c(1,1), col = c("darkgreen","darkblue","darkred",'goldenrod'), lwd=2,bty="n")
 
@@ -343,6 +351,7 @@ lines(dta_shrubm, col = "darkblue",lwd=2)
 #lines(dta_grassm, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
+mtext("I)",side=3,line=1, cex=1.2, adj=0)
 
 dta_shrubint <- density(shrubint, na.rm = TRUE)
 dta_forbint <- density(forbint, na.rm = TRUE)
@@ -357,6 +366,7 @@ lines(dta_shrubint, col = "darkblue",lwd=2)
 #lines(dta_grassint, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
+mtext("J)",side=3,line=1, cex=1.2, adj=0)
 
 dev.off()
 
@@ -419,6 +429,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
+  mtext("A)",side=3,line=1, cex=1.2, adj=0)
   
   legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",'goldenrod'), lwd=2,bty="n")
   
@@ -438,6 +449,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
+  mtext("B)",side=3,line=1, cex=1.2, adj=0)
   
   #interaction
   dta_forestint <- density(forestint, na.rm = TRUE)
@@ -452,6 +464,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
+  mtext("C)",side=3,line=1, cex=1.2, adj=0)
   
 #dev.off()  
  
@@ -506,6 +519,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Flowering",side=2,line=6, cex=1.2)
+  mtext("D)",side=3,line=1, cex=1.2, adj=0)
   
   #legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",'goldenrod'), lwd=2,bty="n")
   
@@ -525,6 +539,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Flowering",side=2,line=6, cex=1.2)
+  mtext("E)",side=3,line=1, cex=1.2, adj=0)
   
   #interaction
   dta_forestint <- density(forestint, na.rm = TRUE)
@@ -539,6 +554,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Flowering",side=2,line=6, cex=1.2)
+  mtext("F)",side=3,line=1, cex=1.2, adj=0)
   
   dev.off()
   

@@ -217,9 +217,9 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
 
  \begin{figure}[h]
 \centering
- \includegraphics{../../Analyses/soilmoisture/figures/histloecos.pdf}
+ \includegraphics{../../Analyses/soilmoisture/figures/curvesloflecos.pdf}
  \caption{\textbf{Effects of temperature and soil moisture do not differ strongly across ecosystems (forest vs grassland) for leafout (top) and budburst (bottom) models.}.}
- \label{fig:forms}
+ \label{fig:ecos}
  \end{figure}
  
  
@@ -227,7 +227,7 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
 \centering
  \includegraphics{../../Analyses/soilmoisture/figures/m5_bbdlofl_edited.pdf}
  \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors)} for all species included in our models.}
- \label{fig:forms}
+ \label{fig:modexp}
  \end{figure}
  
  

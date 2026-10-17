@@ -34,7 +34,7 @@ library(brms)
 
 summary(mod)
 names(mod)
-bbtab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixed effects
+bbtab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.1, 0.9)), digits = 1),#fixed effects
              cbind(round(summary(mod)$random$sp[1:4,1:2], digits=1),c(summary(mod)$ngrps$sp,"","","")),#random effects of species
              rbind(c(round(summary(mod)$random$site[1:2], digits=1),summary(mod)$ngrps$site),c("","",""),c("","",""),c("","","")),#ran effects of site
              rbind(c(round(summary(mod)$random$`site:year`[1:2],digits=1),summary(mod)$ngrps$`site:year`),c("","",""),c("","",""),c("","",""))#random effects of site:year
@@ -42,7 +42,7 @@ bbtab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixe
 )
 row.names(bbtab)<-c("BB$\\mu_{\\alpha}$","BB$\\mu_{temp}$","BB$\\mu_{mois}$",   
                     "BB$\\mu_{temp:mois}$")
-colnames(bbtab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
+colnames(bbtab)<- c("mean",'error',"25%", "75%","10%","90%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
 
 #bbtab_ran<-cbind(c("site","site:year","species","","",""),
        # c("$\\sigma_{Isite}$","$\\sigma_{siteyr}$", "$\\sigma_{sp}$", "$\\sigma_{temp_{sp}}$", "$\\sigma_{mois_{sp}}$","$\\sigma_{temp*mois_{sp}}$"),
@@ -53,7 +53,7 @@ colnames(bbtab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp"
   load("../../Analyses/output/brms/testm5cent.brms.lo.Rda")
   mod<-testm5cent.lod.brms
   
- lotab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixed effects
+ lotab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.1, 0.9)), digits = 1),#fixed effects
               cbind(round(summary(mod)$random$sp[1:4,1:2], digits=1),c(summary(mod)$ngrps$sp,"","","")),#random effects of species
                rbind(c(round(summary(mod)$random$site[1:2], digits=1),summary(mod)$ngrps$site),c("","",""),c("","",""),c("","","")),#ran effects of site
                rbind(c(round(summary(mod)$random$`site:year`[1:2],digits=1),summary(mod)$ngrps$`site:year`),c("","",""),c("","",""),c("","",""))#radnom effects of site:year
@@ -61,7 +61,7 @@ colnames(bbtab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp"
   )
   row.names(lotab)<-c("LO$\\mu_{\\alpha}$","LO$\\mu_{temp}$","LO$\\mu_{mois}$",   
                       "LO$\\mu_{temp:mois}$")
-  colnames(lotab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
+  colnames(lotab)<- c("mean",'error',"25%", "75%","10%","90%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
   
 
 #add flowerin
@@ -70,7 +70,7 @@ load("../../Analyses/output/brms/testm5cent.brms.ff.Rda")
 mod<-testm5cent.ffd.brms
 #summary(mod)
 #mod$fit
-fltab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixed effects
+fltab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.1, 0.9)), digits = 1),#fixed effects
              cbind(round(summary(mod)$random$sp[1:4,1:2], digits=1),c(summary(mod)$ngrps$sp,"","","")),#random effects of species
              rbind(c(round(summary(mod)$random$site[1:2], digits=1),summary(mod)$ngrps$site),c("","",""),c("","",""),c("","","")),#ran effects of site
              rbind(c(round(summary(mod)$random$`site:year`[1:2],digits=1),summary(mod)$ngrps$`site:year`),c("","",""),c("","",""),c("","",""))#random effects of site:year
@@ -78,7 +78,7 @@ fltab<-cbind(round(fixef(mod,probs = c(0.25,0.75,0.05, 0.95)), digits = 1),#fixe
 )
 row.names(fltab)<-c("FL$\\mu_{\\alpha}$","FL$\\mu_{temp}$","FL$\\mu_{mois}$",   
                     "FL$\\mu_{temp:mois}$")
-colnames(fltab)<- c("mean",'error',"25%", "75%","5%","95%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
+colnames(fltab)<- c("mean",'error',"25%", "75%","10%","90%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
 #flysigma<-c("$\\sigma_{y}$",summary(mod)$spec_pars[1:2],summary(mod)$nobs)
 
 #add leafout, flowering to same table

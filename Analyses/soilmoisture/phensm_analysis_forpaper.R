@@ -69,13 +69,13 @@ source("Analyses/source/stanprep_phenmods.R")
 
 mean(datalist.bbd$mois)
 #try the centered model with no interactgions
-testmcent.brms <- brm(y ~ temp + mois +#fixed effects
-                         (temp + mois|sp) + (1|site/year), #random effects
-                       data=datalist.bbd.cent,
-                       chains = 2,iter = 2000,
-                       control = list(max_treedepth = 15,adapt_delta = 0.999))
-save(testmcent.brms, file="Analyses/output/brms/testmcentnoint.brms.bb.Rda")
-round(fixef(testmcent.brms, probs=c(.90,0.10)), digits=2)
+# testmcent.brms <- brm(y ~ temp + mois +#fixed effects
+#                          (temp + mois|sp) + (1|site/year), #random effects
+#                        data=datalist.bbd.cent,
+#                        chains = 2,iter = 2000,
+#                        control = list(max_treedepth = 15,adapt_delta = 0.999))
+# save(testmcent.brms, file="Analyses/output/brms/testmcentnoint.brms.bb.Rda")
+# round(fixef(testmcent.brms, probs=c(.90,0.10)), digits=2)
 #needs more iterations...but from estinates temp effect is similar, mois effect is a little weaker but similar
 
 #try the centered model with brms
@@ -83,7 +83,7 @@ testm5cent.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.bbd.cent,
                    chains = 4,iter = 4000,
-                   control = list(max_treedepth = 15,adapt_delta = 0.999), paralell=TRUE)
+                   control = list(max_treedepth = 15,adapt_delta = 0.999))
 
 # stancode(testm5cent.brms)#took 15986.5 seconds for one chain, 15185.4 for the other (~4 hours per chain)
 # summary(testm5cent.brms)
@@ -246,11 +246,11 @@ round(fixef(testm5.lod.brms, probs=c(.90,0.10)), digits=2)
 # summary(testm5.brms)
 # stanplot(testm5cent.brms, pars = "^b_", title="Budburst model, with species and site/year random effects")
 # #a: 99.02, temp=--10.40, mois=-1.37, tmint=0.29
-#uncentered ffd mod
+#uncentered ffd mod (for 1 divergent transition and low bulk effective sample so iterations were increased to 6000)
 testm5.ffd.brms <- brm(y ~ temp * mois +#fixed effects
                      (temp * mois|sp) + (1|site/year), #random effects
                    data=datalist.ffd,
-                   chains = 4,iter = 4000,
+                   chains = 4,iter = 6000,
                    control = list(max_treedepth = 15,adapt_delta = 0.99))
 save(testm5.ffd.brms, file="Analyses/output/brms/testm5.brms.ffd.Rda")
 round(fixef(testm5.ffd.brms, probs=c(.90,0.10)), digits=2)
