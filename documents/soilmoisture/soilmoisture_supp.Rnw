@@ -202,6 +202,68 @@ mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, an
 print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
 @
 
+ecosystem_post_table
+
+<<label=modtable, echo=FALSE, results=tex>>=
+
+source("../../Analyses/make_tablephensm.R")
+ addtorow <- list()
+  addtorow$pos <- list(-1)
+  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Average Effects} &\\multicolumn{3}{c |}{Species Effects} &\\multicolumn{3}{c |}{Site Effects}&\\multicolumn{3}{c |}{Site-Year Effects}\\\\\n ")
+
+mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.", label="tab:mods",align=c(
+               
+               "|p{0.1\\textwidth}",
+               "|p{0.05\\textwidth}",
+               "p{0.03\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+                "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}",
+               "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}",
+               "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}|"
+               ))
+print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
+@
+
+ecosystem_post_table
+
+<<label=modtable, echo=FALSE, results=tex>>=
+
+source("../../Analyses/make_tablephensm.R")
+ addtorow <- list()
+  addtorow$pos <- list(-1)
+  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Average Effects} &\\multicolumn{3}{c |}{Species Effects} &\\multicolumn{3}{c |}{Site Effects}&\\multicolumn{3}{c |}{Site-Year Effects}\\\\\n ")
+
+mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.", label="tab:mods",align=c(
+               
+               "|p{0.1\\textwidth}",
+               "|p{0.05\\textwidth}",
+               "p{0.03\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+               "p{0.05\\textwidth}",
+                "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}",
+               "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}",
+               "|p{0.02\\textwidth}",
+               "p{0.02\\textwidth}",
+               "p{0.04\\textwidth}|"
+               ))
+print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
+@
+
 %comparison of control plots vs all plots
 \clearpage
 

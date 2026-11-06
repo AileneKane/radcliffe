@@ -78,8 +78,6 @@ treem<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 matchExpression <- paste("r_sp[",bbform$spnumbb[bbform$form=="shrub"],",mois]", collapse = NULL,sep="")
 cols2use<-intersect(colnames(listofdraws),matchExpression)
 shrubm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
-quantile(shrubm,.5)
-mean(shrubm)
 #temp
 matchExpression <- paste("r_sp[",bbform$spnumbb[bbform$form=="tree"],",temp]", collapse = NULL,sep="")
 cols2use<-intersect(colnames(listofdraws),matchExpression)
@@ -88,8 +86,6 @@ treet<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 matchExpression <- paste("r_sp[",bbform$spnumbb[bbform$form=="shrub"],",temp]", collapse = NULL,sep="")
 cols2use<-intersect(colnames(listofdraws),matchExpression)
 shrubt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
-#mean(shrubt)
-#quantile(shrubt,probs=c(0.1,.9))
 
 #temp*mois interaction
 matchExpression <- paste("r_sp[",bbform$spnumbb[bbform$form=="tree"],",temp:mois]", collapse = NULL,sep="")
@@ -124,7 +120,7 @@ dta_treem <- density(treem, na.rm = TRUE)
 dta_shrubm <- density(shrubm, na.rm = TRUE)
 
 plot(dta_treem, col ="darkred", main = "Moisture", 
-     xlim=c(-10,10),
+     xlim=c(-20,20),
      ylim = c(0, max(dta_treem$y,dta_shrubm$y)),
      lwd=2,bty="l", xlab="Effect on budburst per SD",
      cex.axis=1.5, cex.lab=1.5, cex.main=1.5)
@@ -137,7 +133,7 @@ dta_treeint <- density(treeint, na.rm = TRUE)
 dta_shrubint <- density(shrubint, na.rm = TRUE)
 
 plot(dta_treeint, col ="darkred", main = "Temp*Moist", 
-     xlim=c(-10,10),
+     xlim=c(-20,20),
      ylim = c(0, max(dta_treeint$y,dta_shrubint$y)),
      lwd=2,bty="l", xlab="Effect on budburst per SD",
      cex.axis=1.5, cex.lab=1.5, cex.main=1.5)
@@ -147,9 +143,17 @@ abline(v=0, lwd=1,col="black",lty=2)
 
 #dev.off()
 mtext("C)",side=3,line=1, cex=1.2, adj=0)
+#save mean, median, quantiles for table
 
-
-
+bb_lifeform_posts<-rbind(
+    c("budburst","tree","$\\mu_{temp}$",round(mean(treet), digits=2),round(median(treet), digits=2),round(quantile(treet,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("budburst","tree","$\\mu_{mois}$",round(mean(treem), digits=2),round(median(treem), digits=2),round(quantile(treem,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("budburst","tree","$\\mu_{temp:mois}$",round(mean(treeint), digits=2),round(median(treeint), digits=2),round(quantile(treeint,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("budburst","shrub","$\\mu_{temp}$",round(mean(shrubt), digits=2),round(median(shrubt), digits=2),round(quantile(shrubt,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("budburst","shrub","$\\mu_{mois}$",round(mean(shrubm), digits=2),round(median(shrubm), digits=2),round(quantile(shrubm,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("budburst","shrub","$\\mu_{temp:mois}$",round(mean(shrubint), digits=2),round(median(shrubint), digits=2),round(quantile(shrubint,probs=c(0.1,.25,.75,.9)), digits=2))
+) 
+    
 #Leaf-Out
 lomod<- load("Analyses/output/brms/testm5cent.brms.lo.Rda")
 mod<- testm5cent.lod.brms
@@ -238,7 +242,7 @@ dta_forbm <- density(forbm, na.rm = TRUE)
 dta_grassm <- density(grassm, na.rm = TRUE)
 
 plot(dta_forbm, col ="darkgreen", main = " ", 
-     xlim=c(-10,10),
+     xlim=c(-20,20),
      ylim = c(0, max(dta_forbm$y,dta_treem$y,dta_shrubm$y,dta_grassm$y)),
      lwd=2,bty="l", xlab="Effect on leafout per SD",
      cex.axis=1.5, cex.lab=1.5)
@@ -255,7 +259,7 @@ dta_forbint <- density(forbint, na.rm = TRUE)
 dta_grassint<- density(grassint, na.rm = TRUE)
 
 plot(dta_forbint, col ="darkgreen", main = " ", 
-     xlim=c(-10,10),
+     xlim=c(-20,20),
      ylim = c(0, max(dta_forbint$y,dta_treeint$y,dta_shrubint$y,dta_grassint$y)),
      lwd=2,bty="l", xlab="Effect on leafout per SD",
      cex.axis=1.5, cex.lab=1.5)
@@ -265,6 +269,24 @@ lines(dta_grassint, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
 mtext("F)",side=3,line=1, cex=1.2, adj=0)
+
+#save posteriors in table
+lo_lifeform_posts<-rbind(
+  c("leafout","tree","$\\mu_{temp}$",round(mean(treet), digits=2),round(median(treet), digits=2),round(quantile(treet,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","tree","$\\mu_{mois}$",round(mean(treem), digits=2),round(median(treem), digits=2),round(quantile(treem,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","tree","$\\mu_{temp:mois}$",round(mean(treeint), digits=2),round(median(treeint), digits=2),round(quantile(treeint,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","shrub","$\\mu_{temp}$",round(mean(shrubt), digits=2),round(median(shrubt), digits=2),round(quantile(shrubt,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","shrub","$\\mu_{mois}$",round(mean(shrubm), digits=2),round(median(shrubm), digits=2),round(quantile(shrubm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","shrub","$\\mu_{temp:mois}$",round(mean(shrubint), digits=2),round(median(shrubint), digits=2),round(quantile(shrubint,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","forb","$\\mu_{temp}$",round(mean(forbt), digits=2),round(median(forbt), digits=2),round(quantile(forbt,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","forb","$\\mu_{mois}$",round(mean(forbm), digits=2),round(median(forbm), digits=2),round(quantile(forbm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","forb","$\\mu_{temp:mois}$",round(mean(forbint), digits=2),round(median(forbint), digits=2),round(quantile(forbint,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","grass","$\\mu_{temp}$",round(mean(grasst), digits=2),round(median(grasst), digits=2),round(quantile(grasst,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","grass","$\\mu_{mois}$",round(mean(grassm), digits=2),round(median(grassm), digits=2),round(quantile(grassm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("leafout","grass","$\\mu_{temp:mois}$",round(mean(grassint), digits=2),round(median(grassint), digits=2),round(quantile(grassint,probs=c(0.1,.25,.75,.9)), digits=2))
+)
+
+
 
 #dev.off()
 
@@ -334,7 +356,7 @@ lines(dta_shrub, col = "darkblue",lwd=2)
 #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
 mtext("Flowering",side=2,line=6, cex=1.2)
-mtext("H)",side=3,line=1, cex=1.2, adj=0)
+mtext("G)",side=3,line=1, cex=1.2, adj=0)
 
 #legend("topright", c("Trees","Shrubs","Forbs","Grass"), lty = c(1,1), col = c("darkgreen","darkblue","darkred",'goldenrod'), lwd=2,bty="n")
 
@@ -343,22 +365,22 @@ dta_forbm <- density(forbm, na.rm = TRUE)
 #dta_grassm <- density(grassm, na.rm = TRUE)
 
 plot(dta_forbm, col ="darkgreen", main = " ", 
-     xlim=c(-10,10),
+     xlim=c(-20,20),
      ylim = c(0, max(dta_forbm$y,dta_treem$y,dta_shrubm$y,dta_grassm$y)),
-     lwd=2,bty="l", xlab="Effect on flowerin per SD",
+     lwd=2,bty="l", xlab="Effect on flowering per SD",
      cex.axis=1.5, cex.lab=1.5)
 lines(dta_shrubm, col = "darkblue",lwd=2)
 #lines(dta_grassm, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
-mtext("I)",side=3,line=1, cex=1.2, adj=0)
+mtext("H)",side=3,line=1, cex=1.2, adj=0)
 
 dta_shrubint <- density(shrubint, na.rm = TRUE)
 dta_forbint <- density(forbint, na.rm = TRUE)
 #dta_grassint<- density(grassint, na.rm = TRUE)
 
 plot(dta_forbint, col ="darkgreen", main = " ", 
-     xlim=c(-10,10),
+     xlim=c(-20,20),
      ylim = c(0, max(dta_forbint$y,dta_treeint$y,dta_shrubint$y,dta_grassint$y)),
      lwd=2,bty="l", xlab="Effect on flowering per SD",
      cex.axis=1.5, cex.lab=1.5)
@@ -366,14 +388,137 @@ lines(dta_shrubint, col = "darkblue",lwd=2)
 #lines(dta_grassint, col = "goldenrod",lwd=2)
 #abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
 abline(v=0, lwd=1,col="black",lty=2)
-mtext("J)",side=3,line=1, cex=1.2, adj=0)
+mtext("I)",side=3,line=1, cex=1.2, adj=0)
 
 dev.off()
 
+#flowering posteriors
+fl_lifeform_posts<-rbind(
+  c("flowering","shrub","$\\mu_{temp}$",round(mean(shrubt), digits=2),round(median(shrubt), digits=2),round(quantile(shrubt,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("flowering","shrub","$\\mu_{mois}$",round(mean(shrubm), digits=2),round(median(shrubm), digits=2),round(quantile(shrubm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("flowering","shrub","$\\mu_{temp:mois}$",round(mean(shrubint), digits=2),round(median(shrubint), digits=2),round(quantile(shrubint,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("flowering","forb","$\\mu_{temp}$",round(mean(forbt), digits=2),round(median(forbt), digits=2),round(quantile(forbt,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("flowering","forb","$\\mu_{mois}$",round(mean(forbm), digits=2),round(median(forbm), digits=2),round(quantile(forbm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("flowering","forb","$\\mu_{temp:mois}$",round(mean(forbint), digits=2),round(median(forbint), digits=2),round(quantile(forbint,probs=c(0.1,.25,.75,.9)), digits=2)) 
+)
+
+#table of all phenophases
+allphen_lifeform_posts<-rbind(
+  bb_lifeform_posts,
+  lo_lifeform_posts,
+  fl_lifeform_posts
+)
+colnames(allphen_lifeform_posts)[1:5]<- c("phenophase","lifeform","predictor","mean","50%")
+write.csv(allphen_lifeform_posts,"Analyses/soilmoisture/lifeform_table.csv",row.names = FALSE)
 
 #####################################
 ####### Ecosystem differences #######
 #####################################
+
+figname<-"curvesbbloflecos.pdf"
+
+pdf(file.path(figpath,figname), height=8,width=18)
+#windows()
+par(mfrow=c(3,3))
+
+#budburst
+bbmod<- load("Analyses/output/brms/testm5cent.brms.bb.Rda")
+mod<- testm5cent.brms
+fit <- fixef(mod)
+
+listofdraws <-as.data.frame(as.matrix(mod))
+
+#moisture
+matchExpression <- paste("r_sp[",bbecos$spnum[bbecos$ecosystem=="forest"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forestm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",bbecos$spnum[bbecos$ecosystem=="grassland"],",mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grasslandm<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+#check: 
+#colnames(forestm)
+
+#temperature
+matchExpression <- paste("r_sp[",bbecos$spnum[bbecos$ecosystem=="forest"],",temp]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forestt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",bbecos$spnum[bbecos$ecosystem=="grassland"],",temp]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grasslandt<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+#temp*mois interaction
+matchExpression <- paste("r_sp[",bbecos$spnum[bbecos$ecosystem=="forest"],",temp:mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+forestint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+matchExpression <- paste("r_sp[",bbecos$spnum[bbecos$ecosystem=="grassland"],",temp:mois]", collapse = NULL,sep="")
+cols2use<-intersect(colnames(listofdraws),matchExpression)
+grasslandint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
+
+
+dta_forest <- density(forestt, na.rm = TRUE)
+dta_grassland <- density(grasslandt, na.rm = TRUE)
+
+plot(dta_forest, col ="forestgreen", main = "Temperature", 
+     xlim=c(-40,40),
+     ylim = c(0, max(dta_forest$y,dta_grassland$y)),
+     lwd=3,bty="l", xlab="Effect on budburst per SD",
+     cex.axis=1.5, cex.lab=1.5)
+lines(dta_grassland, col = "goldenrod",lwd=3)
+#abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+mtext("Leafout",side=2,line=6, cex=1.2)
+mtext("A)",side=3,line=1, cex=1.2, adj=0)
+
+legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",'goldenrod'), lwd=2,bty="n")
+
+dta_forest <- density(forestt, na.rm = TRUE)
+dta_grassland <- density(grasslandt, na.rm = TRUE)
+
+#moisture
+dta_forestm <- density(forestm, na.rm = TRUE)
+dta_grasslandm <- density(grasslandm, na.rm = TRUE)
+
+plot(dta_forestm, col ="forestgreen", main = "Moisture", 
+     xlim=c(-20,20),
+     ylim = c(0, max(dta_forestm$y,dta_grasslandm$y)),
+     lwd=3,bty="l", xlab="Effect on budburst per SD",
+     cex.axis=1.5, cex.lab=1.5)
+lines(dta_grasslandm, col = "goldenrod",lwd=3)
+#abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+mtext("Budburst",side=2,line=6, cex=1.2)
+mtext("B)",side=3,line=1, cex=1.2, adj=0)
+
+#interaction
+dta_forestint <- density(forestint, na.rm = TRUE)
+dta_grasslandint <- density(grasslandint, na.rm = TRUE)
+
+plot(dta_forestint, col ="forestgreen", main = "Temperature*Moisture", 
+     xlim=c(-20,20),
+     ylim = c(0, max(dta_forestint$y,dta_grasslandint$y)),
+     lwd=3,bty="l", xlab="Effect on budburst per SD",
+     cex.axis=1.5, cex.lab=1.5)
+lines(dta_grasslandint, col = "goldenrod",lwd=3)
+#abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
+abline(v=0, lwd=1,col="black",lty=2)
+mtext("Budburst",side=2,line=6, cex=1.2)
+mtext("C)",side=3,line=1, cex=1.2, adj=0)
+
+#save posteriors in table
+bb_ecosystem_posts<-rbind(
+  c("budburst","forest","$\\mu_{temp}$",round(mean(forestt), digits=2),round(median(forestt), digits=2),round(quantile(forestt,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("budburst","forest","$\\mu_{mois}$",round(mean(forestm), digits=2),round(median(forestm), digits=2),round(quantile(forestm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("budburst","forest","$\\mu_{temp:mois}$",round(mean(forestint), digits=2),round(median(forestint), digits=2),round(quantile(forestint,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("budburst","grassland","$\\mu_{temp}$",round(mean(grasslandt), digits=2),round(median(grasslandt), digits=2),round(quantile(grasslandt,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("budburst","grassland","$\\mu_{mois}$",round(mean(grasslandm), digits=2),round(median(grasslandm), digits=2),round(quantile(grasslandm,probs=c(0.1,.25,.75,.9)), digits=2)),
+  c("budburst","grassland","$\\mu_{temp:mois}$",round(mean(grasslandint), digits=2),round(median(grasslandint), digits=2),round(quantile(grasslandint,probs=c(0.1,.25,.75,.9)), digits=2))
+)
+
+#Leafout
 mod<- testm5cent.lod.brms
 fit <- fixef(mod)
 
@@ -409,14 +554,6 @@ matchExpression <- paste("r_sp[",loecos$spnum[loecos$ecosystem=="grassland"],",t
 cols2use<-intersect(colnames(listofdraws),matchExpression)
 grasslandint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
 
-figname<-"curvesloflecos.pdf"
-
-#figname<-"curvesloecos.pdf"
-
-pdf(file.path(figpath,figname), height=8,width=18)
-#windows()
-par(mfrow=c(2,3))
-
   dta_forest <- density(forestt, na.rm = TRUE)
   dta_grassland <- density(grasslandt, na.rm = TRUE)
   
@@ -429,9 +566,8 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
-  mtext("A)",side=3,line=1, cex=1.2, adj=0)
+  mtext("D)",side=3,line=1, cex=1.2, adj=0)
   
-  legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",'goldenrod'), lwd=2,bty="n")
   
   dta_forest <- density(forestt, na.rm = TRUE)
   dta_grassland <- density(grasslandt, na.rm = TRUE)
@@ -441,7 +577,7 @@ par(mfrow=c(2,3))
   dta_grasslandm <- density(grasslandm, na.rm = TRUE)
   
   plot(dta_forestm, col ="forestgreen", main = "Moisture", 
-       xlim=c(-40,40),
+       xlim=c(-20,20),
        ylim = c(0, max(dta_forestm$y,dta_grasslandm$y)),
        lwd=3,bty="l", xlab="Effect on leafout per SD",
        cex.axis=1.5, cex.lab=1.5)
@@ -449,14 +585,14 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
-  mtext("B)",side=3,line=1, cex=1.2, adj=0)
+  mtext("E)",side=3,line=1, cex=1.2, adj=0)
   
   #interaction
   dta_forestint <- density(forestint, na.rm = TRUE)
   dta_grasslandint <- density(grasslandint, na.rm = TRUE)
   
   plot(dta_forestint, col ="forestgreen", main = "Temperature*Moisture", 
-       xlim=c(-40,40),
+       xlim=c(-20,20),
        ylim = c(0, max(dta_forestint$y,dta_grasslandint$y)),
        lwd=3,bty="l", xlab="Effect on leafout per SD",
        cex.axis=1.5, cex.lab=1.5)
@@ -464,18 +600,25 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Leafout",side=2,line=6, cex=1.2)
-  mtext("C)",side=3,line=1, cex=1.2, adj=0)
+  mtext("F)",side=3,line=1, cex=1.2, adj=0)
   
-#dev.off()  
- 
-#add flowering
+  #save posteriors in table
+  lo_ecosystem_posts<-rbind(
+    c("leafout","forest","$\\mu_{temp}$",round(mean(forestt), digits=2),round(median(forestt), digits=2),round(quantile(forestt,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("leafout","forest","$\\mu_{mois}$",round(mean(forestm), digits=2),round(median(forestm), digits=2),round(quantile(forestm,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("leafout","forest","$\\mu_{temp:mois}$",round(mean(forestint), digits=2),round(median(forestint), digits=2),round(quantile(forestint,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("leafout","grassland","$\\mu_{temp}$",round(mean(grasslandt), digits=2),round(median(grasslandt), digits=2),round(quantile(grasslandt,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("leafout","grassland","$\\mu_{mois}$",round(mean(grasslandm), digits=2),round(median(grasslandm), digits=2),round(quantile(grasslandm,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("leafout","grassland","$\\mu_{temp:mois}$",round(mean(grasslandint), digits=2),round(median(grasslandint), digits=2),round(quantile(grasslandint,probs=c(0.1,.25,.75,.9)), digits=2))
+  )
+  
+
 #Flowering
   
   flmod<- load("Analyses/output/brms/testm5cent.brms.ff.Rda")
   mod<- testm5cent.ffd.brms
   fit <- fixef(mod)
   listofdraws <-as.data.frame(as.matrix(mod))
-  
   
   #moisture
   matchExpression <- paste("r_sp[",ffecos$spnum[ffecos$ecosystem=="forest"],",mois]", collapse = NULL,sep="")
@@ -519,7 +662,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Flowering",side=2,line=6, cex=1.2)
-  mtext("D)",side=3,line=1, cex=1.2, adj=0)
+  mtext("G)",side=3,line=1, cex=1.2, adj=0)
   
   #legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",'goldenrod'), lwd=2,bty="n")
   
@@ -539,7 +682,7 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Flowering",side=2,line=6, cex=1.2)
-  mtext("E)",side=3,line=1, cex=1.2, adj=0)
+  mtext("H)",side=3,line=1, cex=1.2, adj=0)
   
   #interaction
   dta_forestint <- density(forestint, na.rm = TRUE)
@@ -554,95 +697,79 @@ par(mfrow=c(2,3))
   #abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
   abline(v=0, lwd=1,col="black",lty=2)
   mtext("Flowering",side=2,line=6, cex=1.2)
-  mtext("F)",side=3,line=1, cex=1.2, adj=0)
+  mtext("I)",side=3,line=1, cex=1.2, adj=0)
   
   dev.off()
+
+  #Table for supplement
+  #flowering posteriors
+  fl_ecosystem_posts<-rbind(
+    c("flowering","forest","$\\mu_{temp}$",round(mean(forestt), digits=2),round(median(forestt), digits=2),round(quantile(forestt,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("flowering","forest","$\\mu_{mois}$",round(mean(forestm), digits=2),round(median(forestm), digits=2),round(quantile(forestm,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("flowering","forest","$\\mu_{temp:mois}$",round(mean(forestint), digits=2),round(median(forestint), digits=2),round(quantile(forestint,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("flowering","grassland","$\\mu_{temp}$",round(mean(grasslandt), digits=2),round(median(grasslandt), digits=2),round(quantile(grasslandt,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("flowering","grassland","$\\mu_{mois}$",round(mean(grasslandm), digits=2),round(median(grasslandm), digits=2),round(quantile(grasslandm,probs=c(0.1,.25,.75,.9)), digits=2)),
+    c("flowering","grassland","$\\mu_{temp:mois}$",round(mean(grasslandint), digits=2),round(median(grasslandint), digits=2),round(quantile(grasslandint,probs=c(0.1,.25,.75,.9)), digits=2)) 
+  )
   
-###OLD CODE_ CAN PROBABLY DELETE?
-#getest.bb.sp <- function(mod, temp, sm, warmtemp, drysm,dry2sm,wetsm, wet2sm,spnum,sitenum){
-listofdraws <-as.data.frame(as.matrix(mod))
-matchExpression <- paste(loecos$spnum[loecos$ecosystem =="forest"],",mois]", collapse = "|",sep="")
-forestm<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-
-matchExpression <- paste(loecos$spnum[loecos$ecosystem =="grassland"],",mois]", collapse = "|",sep="")
-grassm<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-
-#temp
-matchExpression <- paste(loecos$spnum[loecos$ecosystem =="forest"],",temp]", collapse = "|",sep="")
-forestt<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-
-matchExpression <- paste(loecos$spnum[loecos$ecosystem =="grassland"],",temp]", collapse = "|",sep="")
-grasst<-as.matrix(listofdraws%>% select(matches(matchExpression)))
-meanz <- unlist(lapply(forestt, mean))
-dim(forestt)
-hist(colMeans(forestt))
-mean(forestt)
-mean(grasst)
-quantile(forestt,probs=c(0.1,.9))
-quantile(grasst,probs=c(0.1,.9))
-
-figname<-"histloecos.pdf"
-
-pdf(file.path(figpath,figname), height=12,width=8)
-#quartz(height=10,width=4)
-#windows()
-par(mfcol=c(2,2))
-hist(forestt, main="Forest",xlim=c(-30,30),col=alpha("darkgreen",.5),xlab="Temp effects")
-hist(grasst, main="Grassland",xlim=c(-30,30),col=alpha("goldenrod",.5),xlab="Temp effects")
-hist(forestm, main="Forest",xlim=c(-30,30),col=alpha("darkgreen",.5),xlab="Mois effects")
-hist(grassm, main="Grassland",xlim=c(-30,30),col=alpha("goldenrod",.5),xlab="Mois effects")
-dev.off()
-
-#same figure but not using posterior samples- just species random effects, as I'm not sure that the above is working
-sp<-coef(mod,probs=c(0.1,0.9))$sp
-intercepts<-sp[,,1]
-moisef<-as.data.frame(sp[,,3])
-moisef$spnum<-rownames(moisef)
-
-tempef<-as.data.frame(sp[,,2])
-tempef$spnum<-rownames(tempef)
-
-intef<-as.data.frame(sp[,,4])
-intef$spnum<-rownames(intef)
-
-loecos$spnum<-as.character(loecos$spnum)
-
-tempecos<-left_join(tempef,loecos, by="spnum")
-tempecos$sp.eco<-paste(tempecos$sp.name,tempecos$ecosystem)
-tempecos2<- tempecos %>% # start with the data frame
-  distinct(sp.eco, .keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(sp.name,ecosystem,Estimate)
-
-moisecos<-left_join(moisef,loecos)
-moisecos$sp.eco<-paste(moisecos$sp.name,moisecos$ecosystem)
-moisecos2<- moisecos %>% # start with the data frame
-  distinct(sp.eco, .keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(sp.name,ecosystem,Estimate)
-
-intecos<-left_join(intef,loecos)
-intecos$sp.eco<-paste(intecos$sp.name,intecos$ecosystem)
-intecos2<- intecos %>% # start with the data frame
-  distinct(sp.eco, .keep_all = TRUE) %>% # establishing grouping variables
-  dplyr::select(sp.name,ecosystem,Estimate)
-
-figname<-"histloecos_spef.pdf"
-
-#windows(height=4,width=10)
-par(mfcol=c(1,2))
-hist(tempecos2$Estimate[tempecos2$ecosystem=="forest"],main="Temperature Effect",xlim=c(-40,35),col=alpha("darkgreen",.5),xlab="Temp effects")
-hist(tempecos2$Estimate[tempecos2$ecosystem=="grassland"], col=alpha("goldenrod",.5), add = TRUE)
-abline(v=fixef(mod)[2,1], lwd=2,col="red", lty=1)
-legend("topright",legend=c("forest","grassland"),fill=alpha(c("darkgreen","goldenrod"),.7))
-abline(v=0, lwd=1,col="black",lty=2)
-
-hist(moisecos2$Estimate[moisecos2$ecosystem=="forest"],main="Moisture Effect",xlim=c(-40,35),col=alpha("darkgreen",.5),xlab="Temp effects")
-hist(moisecos2$Estimate[moisecos2$ecosystem=="grassland"], col=alpha("goldenrod",.5), add = TRUE)
-abline(v=fixef(mod)[3,1], lwd=2,col="red", lty=1)
-abline(v=0, lwd=1,col="black",lty=2)
-
-hist(intform$Estimate[intform$form=="tree"],main="Temp*Mois",xlim=c(-15,15),ylim=c(0,20),col=alpha("darkred",.5),xlab="Temp effects")
-hist(intform$Estimate[intform$form=="shrub"], col=alpha("blue",.5), add = TRUE)
-abline(v=fixef(mod)[4,1], lwd=2,col="red",lty=1)
-abline(v=0, lwd=1,col="black",lty=2)
-
-dev.off()
+  #table of both ecosystemns across all phenophses
+  allphen_ecosystem_posts<-rbind(
+    bb_ecosystem_posts,
+    lo_ecosystem_posts,
+    fl_ecosystem_posts
+  )
+  colnames(allphen_ecosystem_posts)[1:5]<- c("phenophase","ecosystem","predictor","mean","50%")
+  
+  write.csv(allphen_ecosystem_posts,"Analyses/soilmoisture/ecosystem_post_table.csv",row.names = FALSE)
+  
+  
+  
+  
+  
+  
+  ##using ggplot, just to check...
+  
+  bbmod<- load("Analyses/output/brms/testm5cent.brms.bb.Rda")
+  fit<- testm5cent.brms
+  colnames(bbform)[2]<-"sp"
+  
+library(brms)
+  library(tidybayes)
+  library(dplyr)
+  library(ggplot2)
+  
+  
+  temp_draws <- fit %>%
+    spread_draws(r_sp[sp,temp]) %>%
+    left_join(bbform, by = "sp")
+  temp_draws<-temp_draws[temp_draws$temp=="temp",]
+  ggplot(temp_draws,
+         aes(x = r_sp,
+             colour = form,
+             fill = form)) +
+    geom_density(alpha = 0.2, linewidth = 1.1) +
+    theme_classic() +
+    labs(
+      x = "Species temperature effect",
+      y = "Density",
+      colour = "Life form",
+      fill = "Life form"
+    )
+  
+  mois_draws <- fit %>%
+    spread_draws(r_sp[sp,mois]) %>%
+    left_join(bbform, by = "sp")
+  mois_draws<-mois_draws[mois_draws$mois=="mois",]
+  ggplot(mois_draws,
+         aes(x = r_sp,
+             colour = form,
+             fill = form)) +
+    geom_density(alpha = 0.2, linewidth = 1.1) +
+    theme_classic() +
+    labs(
+      x = "Species soil moisture effect",
+      y = "Density",
+      colour = "Life form",
+      fill = "Life form"
+    )
+  

@@ -64,7 +64,7 @@ colnames(bbtab)<- c("mean",'error',"25%", "75%","10%","90%","mean",'error',"Ngrp
   colnames(lotab)<- c("mean",'error',"25%", "75%","10%","90%","mean",'error',"Ngrp","mean",'error',"Ngrp","mean",'error',"Ngrp")
   
 
-#add flowerin
+#add flowering
 #if(remove.conifers==TRUE & use.airtemp==TRUE & use.centmod==TRUE){
 load("../../Analyses/output/brms/testm5cent.brms.ff.Rda")
 mod<-testm5cent.ffd.brms
