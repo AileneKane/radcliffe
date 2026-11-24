@@ -149,8 +149,8 @@ y_{i}=\alpha_{sp[i],site[year[i]]} + \beta_{temp_{sp[i]}}+ \beta_{mois_{sp[i]}} 
 \clearpage
 \section* {Supplemental Tables}
 
-% latex table generated in R 4.6.1 by xtable 1.8-8 package
-% Sat Oct 17 08:06:09 2026
+% latex table generated in R 4.6.2 by xtable 1.8-8 package
+% Mon Nov 23 15:22:00 2026
 \begin{table}[ht]
 \centering
 \caption{\textbf{Experimental sites and phenophases included in the ExPhen database}. Experimental sites correspond to the map (Figure S1). We give the study ID, location, source, years of data included, ecosystem, number of species, and phenophases included: budburst (bb), leafout (lo), flowering (fl), fruiting (fr), or senesence (sen) day of year. Note that some sites may have multiple sources; however, we list only one here. * denotes phenophases not included in this paper, because they were measured in fewer than three experiments.} 
@@ -181,8 +181,8 @@ exp12 & Kessler Farm Field Laboratory, OK, USA & Sherry et al. 2007 & 2003 & gra
 \end{table}%\end{footnotesize} 
 
 \clearpage
-% latex table generated in R 4.6.1 by xtable 1.8-8 package
-% Sat Oct 17 08:06:19 2026
+% latex table generated in R 4.6.2 by xtable 1.8-8 package
+% Mon Nov 23 15:22:13 2026
 \begin{table}[ht]
 \centering
 \caption{\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.} 
@@ -207,6 +207,84 @@ FL$\mu_{\alpha}$ & 166.80 & 8.80 & 161.80 & 171.70 & 156.70 & 176.70 & 48.50 & 3
   FL$\mu_{temp}$ & -8.00 & 1.30 & -8.80 & -7.10 & -9.70 & -6.30 & 6.20 & 1.10 &  &  &  &  &  &  &  \\ 
   FL$\mu_{mois}$ & -1.30 & 0.90 & -1.90 & -0.70 & -2.50 & -0.10 & 3.80 & 1.10 &  &  &  &  &  &  &  \\ 
   FL$\mu_{temp:mois}$ & -1.10 & 0.80 & -1.60 & -0.60 & -2.10 & -0.20 & 2.80 & 0.90 &  &  &  &  &  &  &  \\ 
+   \hline
+\end{tabular}
+\endgroup
+\end{table}
+
+% latex table generated in R 4.6.2 by xtable 1.8-8 package
+% Mon Nov 23 15:22:13 2026
+\begin{table}[ht]
+\centering
+\caption{\textbf{Summaries of posteriors by ecosystem type, across budburst, leafout, and flowering models} with centered predictors.} 
+\label{tab:lifeform}
+\begingroup\footnotesize
+\begin{tabular}{|p{0.08\textwidth}|p{0.08\textwidth}|p{0.14\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}|}
+  \hline
+phenophase & lifeform & predictor & mean & 50\% & 10\% & 25\% & 75\% & 90\% \\ 
+  \hline
+budburst & tree & $\mu_{temp}$ & -1.62 & 0.69 & -10.73 & -2.81 & 4.20 & 7.81 \\ 
+   &  & $\mu_{mois}$ & -0.20 & -0.06 & -3.57 & -1.75 & 1.31 & 2.94 \\ 
+   &  & $\mu_{temp:mois}$ & -0.16 & 0.05 & -1.96 & -0.80 & 0.86 & 1.67 \\ 
+   & shrub & $\mu_{temp}$ & 4.24 & 4.09 & -5.62 & -0.53 & 8.88 & 14.38 \\ 
+   &  & $\mu_{mois}$ & 0.42 & 0.50 & -2.59 & -1.08 & 2.00 & 3.27 \\ 
+   &  & $\mu_{temp:mois}$ & 0.41 & 0.36 & -1.40 & -0.47 & 1.26 & 2.28 \\ 
+   \hline
+leafout & tree & $\mu_{temp}$ & -2.38 & -4.00 & -10.65 & -7.21 & 0.89 & 10.23 \\ 
+   &  & $\mu_{mois}$ & 0.10 & 0.21 & -4.46 & -2.09 & 2.30 & 4.39 \\ 
+   &  & $\mu_{temp:mois}$ & 1.57 & 1.10 & -4.84 & -1.49 & 4.52 & 9.27 \\ 
+   & shrub & $\mu_{temp}$ & -1.41 & -0.84 & -14.09 & -7.91 & 5.17 & 10.49 \\ 
+   &  & $\mu_{mois}$ & 0.54 & 0.52 & -3.95 & -1.76 & 2.81 & 5.07 \\ 
+   &  & $\mu_{temp:mois}$ & -0.37 & -0.37 & -5.40 & -2.93 & 2.19 & 4.71 \\ 
+   & forb & $\mu_{temp}$ & 1.75 & 2.38 & -12.48 & -4.99 & 9.23 & 15.10 \\ 
+   &  & $\mu_{mois}$ & -0.26 & -0.29 & -5.24 & -2.78 & 2.21 & 4.75 \\ 
+   &  & $\mu_{temp:mois}$ & -0.67 & -0.82 & -5.76 & -3.36 & 1.79 & 4.65 \\ 
+   & grass & $\mu_{temp}$ & -5.57 & -5.55 & -12.31 & -9.14 & -2.00 & 1.18 \\ 
+   &  & $\mu_{mois}$ & 0.94 & 0.80 & -3.03 & -1.16 & 2.94 & 5.06 \\ 
+   &  & $\mu_{temp:mois}$ & 1.60 & 1.58 & -1.37 & 0.07 & 3.11 & 4.49 \\ 
+   \hline
+flowering & shrub & $\mu_{temp}$ & -0.74 & -0.73 & -7.90 & -4.37 & 2.92 & 6.44 \\ 
+   &  & $\mu_{mois}$ & 0.08 & 0.21 & -4.23 & -1.95 & 2.21 & 4.14 \\ 
+   &  & $\mu_{temp:mois}$ & -0.40 & -0.34 & -3.63 & -1.89 & 1.16 & 2.78 \\ 
+   & forb & $\mu_{temp}$ & -0.03 & 0.14 & -7.63 & -3.77 & 3.85 & 7.30 \\ 
+   &  & $\mu_{mois}$ & 0.11 & 0.19 & -4.51 & -2.08 & 2.38 & 4.63 \\ 
+   &  & $\mu_{temp:mois}$ & 0.01 & 0.04 & -3.31 & -1.56 & 1.62 & 3.29 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\end{table}
+
+
+% latex table generated in R 4.6.2 by xtable 1.8-8 package
+% Mon Nov 23 15:22:13 2026
+\begin{table}[ht]
+\centering
+\caption{\textbf{Summaries of posteriors by ecosystem type, across budburst, leafout, and flowering models} with centered predictors.} 
+\label{tab:ecos}
+\begingroup\footnotesize
+\begin{tabular}{|p{0.08\textwidth}|p{0.08\textwidth}|p{0.14\textwidth}|p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}p{0.05\textwidth}|}
+ phenophase & ecosystem & predictor & mean & 50\% & 10\% & 25\% & 75\% & 90\% \\ 
+  \hline
+budburst & forest & $\mu_{temp}$ & -0.01 & 1.45 & -8.86 & -2.44 & 5.69 & 10.27 \\ 
+   &  & $\mu_{mois}$ & -0.19 & -0.06 & -3.40 & -1.69 & 1.32 & 2.78 \\ 
+   &  & $\mu_{temp:mois}$ & 0.01 & 0.15 & -1.80 & -0.70 & 0.99 & 1.87 \\ 
+   & grassland & $\mu_{temp}$ & 1.08 & 1.08 & -3.31 & -1.23 & 3.48 & 5.53 \\ 
+   &  & $\mu_{mois}$ & 1.26 & 1.01 & -0.91 & -0.06 & 2.43 & 3.82 \\ 
+   &  & $\mu_{temp:mois}$ & 0.17 & 0.16 & -1.10 & -0.44 & 0.77 & 1.46 \\ 
+   \hline
+leafout & forest & $\mu_{temp}$ & -0.03 & -0.54 & -12.30 & -6.61 & 6.89 & 13.33 \\ 
+   &  & $\mu_{mois}$ & 0.00 & 0.02 & -4.81 & -2.40 & 2.38 & 4.73 \\ 
+   &  & $\mu_{temp:mois}$ & -0.01 & -0.23 & -5.53 & -2.89 & 2.54 & 5.75 \\ 
+   & grassland & $\mu_{temp}$ & 0.17 & -0.52 & -9.47 & -4.38 & 4.66 & 12.30 \\ 
+   &  & $\mu_{mois}$ & 0.26 & 0.69 & -4.28 & -1.69 & 2.35 & 4.01 \\ 
+   &  & $\mu_{temp:mois}$ & -0.01 & 0.38 & -6.16 & -2.05 & 2.77 & 4.96 \\ 
+   \hline
+flowering & forest & $\mu_{temp}$ & -0.43 & -0.23 & -7.99 & -4.09 & 3.42 & 6.91 \\ 
+   &  & $\mu_{mois}$ & 0.19 & 0.23 & -4.27 & -1.95 & 2.38 & 4.61 \\ 
+   &  & $\mu_{temp:mois}$ & -0.14 & -0.07 & -3.43 & -1.67 & 1.46 & 3.08 \\ 
+   & grassland & $\mu_{temp}$ & 0.61 & 1.03 & -8.03 & -3.40 & 4.86 & 8.33 \\ 
+   &  & $\mu_{mois}$ & -0.21 & 0.02 & -5.57 & -2.57 & 2.39 & 4.78 \\ 
+   &  & $\mu_{temp:mois}$ & 0.21 & 0.30 & -3.69 & -1.54 & 2.06 & 3.91 \\ 
    \hline
 \end{tabular}
 \endgroup

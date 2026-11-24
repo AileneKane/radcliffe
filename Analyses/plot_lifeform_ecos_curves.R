@@ -478,6 +478,8 @@ legend("topright", c("Forest","Grassland"), lty = c(1,1), col = c("forestgreen",
 dta_forest <- density(forestt, na.rm = TRUE)
 dta_grassland <- density(grasslandt, na.rm = TRUE)
 
+
+
 #moisture
 dta_forestm <- density(forestm, na.rm = TRUE)
 dta_grasslandm <- density(grasslandm, na.rm = TRUE)
@@ -712,7 +714,7 @@ grasslandint<-as.matrix(listofdraws%>% select(all_of(cols2use)))
     c("flowering","grassland","$\\mu_{temp:mois}$",round(mean(grasslandint), digits=2),round(median(grasslandint), digits=2),round(quantile(grasslandint,probs=c(0.1,.25,.75,.9)), digits=2)) 
   )
   
-  #table of both ecosystemns across all phenophses
+  #table of both ecosystems across all phenophses
   allphen_ecosystem_posts<-rbind(
     bb_ecosystem_posts,
     lo_ecosystem_posts,

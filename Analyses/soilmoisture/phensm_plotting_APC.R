@@ -250,6 +250,7 @@ spnum<-c(135,28,105)
 #28: Carya glabra, -inxn, - effects of both moisture and temp
 #Or 22: Betula, -inxn, - effects of both moisture and temp
 #135 = Quercus nigra,  inxn term close to 0, wide incertainty intervales effects of both moisture and temp
+# 20: 
 sitenum = 4
 spname<-splegbb$sp.name[match(spnum,splegbb$spnumb)]
 
@@ -258,6 +259,7 @@ unique(expgdd_bbd$site[expgdd_bbd$genus.species==28])#3,4
 unique(expgdd_bbd$site[expgdd_bbd$genus.species==3])#1,3,4,5,7
 unique(expgdd_bbd$site[expgdd_bbd$genus.species==105])#3,4
 unique(expgdd_bbd$site[expgdd_bbd$genus.species==135])#3,4
+unique(expgdd_bbd$site[expgdd_bbd$genus.species==20])#4
 
 
 #spnum<-splegbb$spnumbb[25:36]

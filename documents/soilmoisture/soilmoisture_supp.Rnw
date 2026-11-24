@@ -202,66 +202,60 @@ mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, an
 print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
 @
 
-ecosystem_post_table
 
-<<label=modtable, echo=FALSE, results=tex>>=
+<<label=lifeformtable, echo=FALSE, results=tex>>=
 
-source("../../Analyses/make_tablephensm.R")
- addtorow <- list()
-  addtorow$pos <- list(-1)
-  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Average Effects} &\\multicolumn{3}{c |}{Species Effects} &\\multicolumn{3}{c |}{Site Effects}&\\multicolumn{3}{c |}{Site-Year Effects}\\\\\n ")
+lifeformtab<-read.csv("../../Analyses/soilmoisture/lifeform_table.csv")
+row.names(lifeformtab)<-NULL
+blanks<-c(2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24)
+lifeformtab$phenophase[blanks]<-""
+blanks2<-c(2,3,5,6,8,9,11,12,14,15,17,18,20,21,23,24)
+lifeformtab$lifeform[blanks2]<-""
+colnames(lifeformtab)[5:9]<-c("50\\%","10\\%","25\\%","75\\%","90\\%")      
 
-mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.", label="tab:mods",align=c(
+mod.table <- xtable(lifeformtab, caption="\\textbf{Summaries of posteriors by life form, across budburst, leafout, and flowering models} with centered predictors.", label="tab:lifeform",align=c(
                
-               "|p{0.1\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.14\\textwidth}",
                "|p{0.05\\textwidth}",
-               "p{0.03\\textwidth}",
                "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
-                "|p{0.02\\textwidth}",
-               "p{0.02\\textwidth}",
-               "p{0.04\\textwidth}",
-               "|p{0.02\\textwidth}",
-               "p{0.02\\textwidth}",
-               "p{0.04\\textwidth}",
-               "|p{0.02\\textwidth}",
-               "p{0.02\\textwidth}",
-               "p{0.04\\textwidth}|"
+               "p{0.05\\textwidth}|"
                ))
-print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
+print(mod.table, include.rownames=FALSE, hline.after = c(-1,0,6,18,24),caption.placement="top",size="\\footnotesize",sanitize.text.function = identity)
 @
 
-ecosystem_post_table
 
-<<label=modtable, echo=FALSE, results=tex>>=
 
-source("../../Analyses/make_tablephensm.R")
- addtorow <- list()
-  addtorow$pos <- list(-1)
-  addtorow$command <- c("\\hline & \\multicolumn{6}{c |}{Average Effects} &\\multicolumn{3}{c |}{Species Effects} &\\multicolumn{3}{c |}{Site Effects}&\\multicolumn{3}{c |}{Site-Year Effects}\\\\\n ")
+<<label=ecosystem_post_table, echo=FALSE, results=tex>>=
 
-mod.table <- xtable(alltab, caption="\\textbf{Summaries of budburst, leafout, and flowering models} with centered predictors.", label="tab:mods",align=c(
+ecostab<-read.csv("../../Analyses/soilmoisture/ecosystem_post_table.csv")
+row.names(ecostab)<-NULL
+
+blanks<-c(2,3,4,5,6,8,9,10,11,12,14,15,16,17,18)
+ecostab$phenophase[blanks]<-""
+blanks2<-c(2,3,5,6,8,9,11,12,14,15,17,18)
+ecostab$ecosystem[blanks2]<-""
+colnames(ecostab)[5:9]<-c("50\\%","10\\%","25\\%","75\\%","90\\%")      
+
+mod.table <- xtable(ecostab, caption="\\textbf{Summaries of posteriors by ecosystem type, across budburst, leafout, and flowering models} with centered predictors.", label="tab:ecos",align=c(
                
-               "|p{0.1\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.08\\textwidth}",
+               "|p{0.14\\textwidth}",
                "|p{0.05\\textwidth}",
-               "p{0.03\\textwidth}",
                "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
+              "p{0.05\\textwidth}",
                "p{0.05\\textwidth}",
-               "p{0.05\\textwidth}",
-                "|p{0.02\\textwidth}",
-               "p{0.02\\textwidth}",
-               "p{0.04\\textwidth}",
-               "|p{0.02\\textwidth}",
-               "p{0.02\\textwidth}",
-               "p{0.04\\textwidth}",
-               "|p{0.02\\textwidth}",
-               "p{0.02\\textwidth}",
-               "p{0.04\\textwidth}|"
+               "p{0.05\\textwidth}|"
                ))
-print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.placement="top",size="\\footnotesize",sanitize.rownames.function=identity,add.to.row=addtorow)
+print(mod.table, include.rownames=FALSE, hline.after = c(0,6,12,18),caption.placement="top",size="\\footnotesize",sanitize.text.function = identity)
 @
 
 %comparison of control plots vs all plots
@@ -279,17 +273,17 @@ print(mod.table, include.rownames=TRUE, hline.after = c(-1,0,4,8,12),caption.pla
 
  \begin{figure}[h]
 \centering
- \includegraphics{../../Analyses/soilmoisture/figures/curvesloflecos.pdf}
- \caption{\textbf{Effects of temperature and soil moisture do not differ strongly across ecosystems (forest vs grassland) for leafout (top) and budburst (bottom) models.}.}
- \label{fig:ecos}
+ \includegraphics{../../Analyses/soilmoisture/figures/m5_bbdlofl_edited.pdf}
+ \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors)} for all species included in our models.}
+ \label{fig:modexp}
  \end{figure}
  
  
  \begin{figure}[h]
 \centering
- \includegraphics{../../Analyses/soilmoisture/figures/m5_bbdlofl_edited.pdf}
- \caption{\textbf{Model coefficients from budburst, leafout, and flowering models (with centered predictors)} for all species included in our models.}
- \label{fig:modexp}
+ \includegraphics{../../Analyses/soilmoisture/figures/curvesloflecos.pdf}
+ \caption{\textbf{Effects of temperature and soil moisture do not differ strongly across ecosystems (forest vs grassland) for leafout (top) and budburst (bottom) models.}.}
+ \label{fig:ecos}
  \end{figure}
  
  
