@@ -116,7 +116,8 @@ sp<-4*(seq(1:dim(speffbb$sp)[1])/dim(speffbb$sp)[1])
 nsp<-dim(speffbb$sp)[1]
 nspall<-dim(splegall)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
-my.pch <- rep(21:25, each=30)[1:nsp]
+my.pch <- rep(21:25, each=round((nsp/5), digits=0))[1:nsp]
+my.pch[is.na(my.pch)]<-8
 greens<-brewer.pal(8,"Greens")
 for(i in 1:nrow(fix)){
   arrows(speffbb$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speffbb$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
@@ -188,7 +189,9 @@ sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 #colors differ by species
 nsp<-dim(speff$sp)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
-my.pch <- rep(21:25, each=30)[1:nsp]
+my.pch <- rep(21:25, each=round((nsp/5), digits=0))[1:nsp]
+my.pch[is.na(my.pch)]<-8
+
 for(i in 1:nrow(fix)){
   arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
@@ -268,7 +271,7 @@ sp<-4*(seq(1:dim(speff$sp)[1])/dim(speff$sp)[1])
 nsp<-dim(speff$sp)[1]
 nspall<-dim(splegall)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
-my.pch <- rep(21:25, each=30)[1:nsp]
+my.pch <- rep(21:25, each=round((nsp/5), digits=0))[1:nsp]
 greens<-brewer.pal(8,"Greens")
 for(i in 1:nrow(fix)){
   arrows(speff$sp[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speff$sp[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
@@ -366,7 +369,8 @@ sp<-4*(seq(1:dim(speffbb.common)[1])/dim(speffbb.common)[1])
 nsp<-dim(speffbb.common)[1]
 nspall<-dim(splegbb.common)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
-my.pch <- rep(21:25, each=30)[1:nsp]
+my.pch <- rep(21:25, each=round((nsp/5), digits=0))[1:nsp]
+
 greens<-brewer.pal(8,"Greens")
 for(i in 1:nrow(fix)){
   arrows(speffbb.common[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, speffbb.common[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
@@ -391,7 +395,7 @@ points(fix[,'Estimate'],
 abline(v = 0, lty = 2)
 mtext("A)", side=3, line =0,adj=-.3)
 par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+5
+leg1<-maxx+15
 leg2<-5*(nrow(fix):1)[1]+1
 legend(leg1, leg2, splegbb.common$sp.name,
        pch=my.pch,
@@ -439,7 +443,7 @@ sp<-4*(seq(1:dim(spefflo.common)[1])/dim(spefflo.common)[1])
 #colors differ by species
 nsp<-dim(spefflo.common)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
-my.pch <- rep(21:25, each=30)[1:nsp]
+my.pch <- rep(21:25, each=round((nsp/5), digits=0))[1:nsp]
 for(i in 1:nrow(fix)){
   arrows(spefflo.common[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, spefflo.common[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
          len = 0, col = alpha(my.pal, 0.5)) 
@@ -463,13 +467,13 @@ par(xpd=FALSE) # so line stays within plot bounds
 
 abline(v = 0, lty = 2)
 par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+3
+leg1<-maxx+15
 leg2<-5*(nrow(fix):1)[1]+1
 
-legend(leg1, leg2, spleglo.common$sp.name[1:as.integer(length(spleglo.common$sp.name))+1],
-       pch=my.pch[1:as.integer(length(spleglo.common$sp.name))+1],
-       col=alpha(my.pal, .5)[1:as.integer(length(spleglo.common$sp.name))+1],
-       pt.bg=alpha(my.pal, .5)[1:as.integer(length(spleglo.common$sp.name))+1],
+legend(leg1, leg2, spleglo.common$sp.name,
+       pch=my.pch,
+       col=alpha(my.pal, .5),
+       pt.bg=alpha(my.pal, .5),
        bty = "n",
        cex=0.7, text.font=3)
 #dev.off()
@@ -513,7 +517,7 @@ sp<-4*(seq(1:dim(spefffl.common)[1])/dim(spefffl.common)[1])
 nsp<-dim(spefffl.common)[1]
 nspall<-dim(splegfl.common)[1]
 my.pal <- rep(brewer.pal(n = 12, name = "Set3"), 13)[1:nsp]
-my.pch <- rep(21:25, each=30)[1:nsp]
+my.pch <- rep(21:25, each=round((nsp/5), digits=0))[1:nsp]
 greens<-brewer.pal(8,"Greens")
 for(i in 1:nrow(fix)){
   arrows(spefffl.common[,"Q90",i+1],  5*(nrow(fix):1)[i]-.5-sp, spefffl.common[,"Q10",i+1],  5*(nrow(fix):1)[i]-.5-sp,
@@ -539,13 +543,13 @@ par(xpd=FALSE) # so line stays within plot bounds
 abline(v = 0, lty = 2)
 
 par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+2
+leg1<-maxx+15
 leg2<-5*(nrow(fix):1)[1]+1
 
-legend(leg1, leg2, splegfl.common$sp.name[1:as.integer(length(splegfl.common$sp.name))+1],
-       pch=my.pch[1:as.integer(length(splegfl.common$sp.name))+1],
-       col=alpha(my.pal, .5)[1:as.integer(length(splegfl.common$sp.name))+1],
-       pt.bg=alpha(my.pal, .5)[1:as.integer(length(splegfl.common$sp.name))+1],
+legend(leg1, leg2, splegfl.common$sp.name,
+       pch=my.pch,
+       col=alpha(my.pal, .5),
+       pt.bg=alpha(my.pal, .5),
        bty = "n",
        cex=0.70, text.font=3)
 
@@ -867,7 +871,7 @@ points(fix[,'Estimate'],
 
 abline(v = 0, lty = 2)
 par(xpd=TRUE) # so I can plot legend outside
-leg1<-maxx+6
+leg1<-maxx+
 leg2<-5*(nrow(fix):1)[1]+5
 legend(leg1, leg2, spleglofl$sp.name,
        pch=my.pch,
